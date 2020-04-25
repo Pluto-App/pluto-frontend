@@ -35,7 +35,7 @@
  }
  
  .discover-banner {
-   background: url('./assets/discover1.jpg');
+   background: url('../assets/discover1.jpg');
    background-repeat: no-repeat;
    background-size: cover;
    min-height: 300px;

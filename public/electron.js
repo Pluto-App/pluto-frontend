@@ -1,31 +1,45 @@
+const { app, BrowserWindow } = require('electron')
 
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
+const path = require('path')
+const url = require('url')
 
-const path = require('path');
-const url = require('url');
-const isDev = require('electron-is-dev');
-
-let mainWindow;
+let mainWindow
 
 function createWindow() {
-  mainWindow = new BrowserWindow({ width: 315, height: 320, titleBarStyle: 'hiddenInset', frame: false})
-  mainWindow.loadURL(isDev ? 'http://localhost:3000':`file://${path.join(__dirname, '../build/index.html')}`);
-  mainWindow.on('closed', () => mainWindow = null);
-  mainWindow.setMenu(null);
+  mainWindow = new BrowserWindow({
+    width: 315, 
+    height: 320, 
+    titleBarStyle: 'hiddenInset', 
+    frame: false,
+    webPreferences: {
+      nodeIntegration: true
+    }
+  })
+
+  mainWindow.loadURL(
+    'http://localhost:3000' ||
+      url.format({
+        pathname: path.join(__dirname, '/../build/index.html'),
+        protocol: 'file:',
+        slashes: true
+      })
+  )
+
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
 }
 
-app.on('ready', createWindow);
+app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit();
+    app.quit()
   }
-});
+})
 
 app.on('activate', () => {
   if (mainWindow === null) {
-    createWindow();
+    createWindow()
   }
-});
+})
