@@ -17,12 +17,14 @@
     "overmind-react": "^24.0.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "tailwindcss": "^1.3.5"
   },
   "homepage": "./",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build:style":"tailwind build src/styles/index.css -o src/styles/tailwind.css",
+    "start": "npm run build:style && react-scripts start",
+    "build": "npm run build:style && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "concurrently \"BROWSER=none npm start\" \"wait-on http://localhost:3000 && electron .\"",
@@ -59,10 +61,12 @@
     ]
   },
   "devDependencies": {
+    "autoprefixer": "^9.7.6",
     "concurrently": "^5.2.0",
     "electron": "^8.2.3",
     "electron-builder": "^22.5.1",
     "electron-react-devtools": "^0.5.3",
+    "postcss-cli": "^7.1.0",
     "wait-on": "^4.0.2"
   }
 }
