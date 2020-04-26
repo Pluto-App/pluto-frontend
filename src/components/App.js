@@ -1,17 +1,32 @@
 import * as React from 'react'
 import { useOvermind } from '../overmind'
-import LoginPage from './loginPageComponent'
+import LoginPage from './pages/LoginPage'
+import HomePage from './pages/HomePage'
 import TopBar from './topBarComponent'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
 const App = () => {
   
   const { state, actions, effects, reaction } = useOvermind()
 
   return (
-    <div className="App">
+    <Router>
       <TopBar />
-      <LoginPage />
-    </div>
+      <Switch>
+          <Route exact path="/">
+            <LoginPage />
+          </Route>
+          <Route exact path="/home">
+            <HomePage />
+          </Route> 
+      </Switch>
+      
+    </Router>
   );
 }
 

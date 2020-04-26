@@ -5,6 +5,16 @@ const TopBar = (props) => {
   
   const { state, actions, effects, reaction } = useOvermind()
 
+  const close = () => {
+    var win = window.require('electron').remote.getCurrentWindow();
+    win.close(); 
+  }
+
+  const minimize = () => {
+    var win = window.require('electron').remote.getCurrentWindow();
+    win.minimize(); 
+  }
+
   return (
       <div style={{height: "30px", width:"100%", background:"#000" }}>
         <div className="flex justify-between items-center px-2 p-0">
@@ -14,9 +24,9 @@ const TopBar = (props) => {
         <div class="flex-1 draggable-elem" style={{ height: "30px" }}>
         </div>
         <div className="flex items-center">
-          <button className="text-white hover:bg-gray-800" style= {{ marginRight: "15px" }}> 
+          <button onClick={minimize} className="text-white hover:bg-gray-800" style= {{ marginRight: "15px" }}> 
             <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0", marginTop: "-15px" }}> minimize </i></button>
-          <button className="text-white hover:bg-gray-800" >
+          <button onClick={close} className="text-white hover:bg-gray-800" >
             <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}> close </i>
           </button>
         </div>
