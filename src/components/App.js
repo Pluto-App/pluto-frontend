@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useOvermind } from '../overmind'
-import LoginPage from './loginPageComponent'
-import TopBar from './topBarComponent'
+import LoginPage from './loginPage'
+import TopBar from './topBar'
 
 const App = () => {
   
