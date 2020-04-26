@@ -9,8 +9,10 @@ const LoginPage = (props) => {
   const { state, actions, effects, reaction } = useOvermind();
 
   const login = (e) => {
-    window.require("electron").ipcRenderer.send('resize-normal');
-    history.push('/home');
+    actions.handleLogin().then(() => {
+      window.require("electron").ipcRenderer.send('resize-normal');
+      history.push('/home');
+    });
   }
  
   const openSignup = (e) => {

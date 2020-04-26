@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useOvermind } from '../overmind'
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
-import TopBar from './topBar'
+import TopBar from './widgets/Topbar'
 import {
   BrowserRouter as Router,
   Switch,
