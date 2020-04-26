@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useOvermind } from '../overmind'
+import { useOvermind } from '../../overmind'
 const { remote } = window.require('electron');
 const { ipcRenderer } = window.require('electron')
 const { app } = window.require('electron')

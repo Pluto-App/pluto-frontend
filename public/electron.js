@@ -1,7 +1,7 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 
 const path = require('path')
-const url = require('url')
+const url = require('url');
 
 let mainWindow
 
@@ -27,6 +27,14 @@ function createWindow() {
 
   mainWindow.on('closed', () => {
     mainWindow = null
+  });
+
+  ipcMain.on('resize-login', (event, arg) => {
+    mainWindow.setSize(315,320)
+  })
+
+  ipcMain.on('resize-normal', (event, arg) => {
+    mainWindow.setSize(315,606)
   })
 }
 
