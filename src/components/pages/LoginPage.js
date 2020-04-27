@@ -1,13 +1,14 @@
 import * as React from 'react'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom";
+import googleLogo from "../../assets/google.svg";
 import { googleSignIn } from "../../auth/auth";
-import googleLogo from "../../assets/google.svg"
+import { google_auth } from "../../firebase/AuthHandler";
 
 const LoginPage = (props) => {
 
   let history = useHistory();
-  
+
   const { state, actions, effects, reaction } = useOvermind();
 
   const login = (e) => {
@@ -19,7 +20,10 @@ const LoginPage = (props) => {
  
   const googleSignInAction = (e) => {
     e.preventDefault();
-    googleSignIn();
+    // TODO Handle Google Login here.
+    // google_auth()
+    // googleSignIn();
+    history.push('/home');
   }
 
   const openSignup = (e) => {
