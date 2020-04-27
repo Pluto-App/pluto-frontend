@@ -20,7 +20,8 @@ export const signInWithPopup = async () => {
         titleBarStyle: 'hiddenInset', 
         // frame: false,
         webPreferences: {
-          nodeIntegration: true
+          nodeIntegration: false, 
+          nativeWindowOpen: true
         }
       })
   
