@@ -19,7 +19,6 @@ const TopBar = (props) => {
     var window = remote.getCurrentWindow();
     window.close();
     // ipcRenderer.send('window-all-closed');
-    // app.quit()
   }
 
   return (
