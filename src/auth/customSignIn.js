@@ -1,13 +1,13 @@
 import axios from 'axios'
 
-export const mySignInFunction = async (data) => {
+export const mySignInFunction = async (payload) => {
     
     const customHeaders = {
         'content-type': 'application/json',
     };
 
     const resp = await axios.post('http://localhost:7500/login', {
-        data
+        payload
     }, customHeaders).then(response => {
         // test response here. 
     }).catch(error => {
