@@ -8,8 +8,8 @@ const REACT_APP_GOOGLE_AUTHORIZATION_URL='https://accounts.google.com/o/oauth2/v
 const REACT_APP_GOOGLE_TOKEN_URL='https://www.googleapis.com/oauth2/v4/token'
 const REACT_APP_GOOGLE_PROFILE_URL='https://www.googleapis.com/userinfo/v2/me'
 const REACT_APP_GOOGLE_REDIRECT_URI='http://verify.pluto-office.com'
-const REACT_APP_GOOGLE_CLIENT_SECRET='cijpaDECWyD_5L8-EVVElGEJ'
-const REACT_APP_GOOGLE_CLIENT_ID='43442370807-fr1gtb34pnt1laucssaf2e85t1bijgtn.apps.googleusercontent.com'
+const REACT_APP_GOOGLE_CLIENT_SECRET='ST8rCDTHlxd8rt_GDEfZ2Qas'
+const REACT_APP_GOOGLE_CLIENT_ID='43442370807-7jk41hq8c4uqi10pi1beubfma1s3qcln.apps.googleusercontent.com'
 
 export const signInWithPopup = async () => {
     return new Promise((resolve, reject) => {
@@ -18,7 +18,7 @@ export const signInWithPopup = async () => {
         height: 650,
         show: true,
         titleBarStyle: 'hiddenInset', 
-        frame: false,
+        // frame: false,  // TODO Render top bar in login-auth pagw
         webPreferences: {
           nodeIntegration: false, 
           nativeWindowOpen: true
