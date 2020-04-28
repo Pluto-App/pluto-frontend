@@ -2,8 +2,7 @@ import * as React from 'react'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom";
 import googleLogo from "../../assets/google.svg";
-import { googleSignIn } from "../../auth/auth";
-import { google_auth } from "../../firebase/AuthHandler";
+import { googleSignIn } from "../../auth/authhandle";
 
 const LoginPage = (props) => {
 
@@ -19,11 +18,11 @@ const LoginPage = (props) => {
   }
  
   const googleSignInAction = (e) => {
-    e.preventDefault();
     // TODO Handle Google Login here.
-    // google_auth()
-    // googleSignIn();
-    history.push('/home');
+    googleSignIn().then(() => {
+      window.require("electron").ipcRenderer.send('resize-normal');
+      history.push('/home');
+    })
   }
 
   const openSignup = (e) => {
