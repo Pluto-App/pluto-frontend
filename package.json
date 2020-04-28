@@ -68,7 +68,7 @@
   "devDependencies": {
     "autoprefixer": "^9.7.6",
     "concurrently": "^5.2.0",
-    "electron": "^8.2.3",
+    "electron": "^8.2.4",
     "electron-builder": "^22.5.1",
     "electron-react-devtools": "^0.5.3",
     "postcss-cli": "^7.1.0",

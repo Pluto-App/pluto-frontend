@@ -1,5 +1,4 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
-
 const path = require('path')
 const url = require('url');
 
@@ -36,6 +35,7 @@ function createWindow() {
   ipcMain.on('resize-normal', (event, arg) => {
     mainWindow.setSize(315,606)
   })
+
 }
 
 app.on('ready', createWindow)

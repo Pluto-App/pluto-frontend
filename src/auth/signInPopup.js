@@ -1,21 +1,20 @@
-import {parse} from 'url'
+import { parse } from 'url'
 import axios from 'axios'
 import qs from 'qs'
 
-const remote = window.require('electron').remote
-const { session } = window.require('electron')
-
+const electron = window.require('electron')
 const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
 const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token'
 const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me'
 const GOOGLE_REDIRECT_URI = 'http://www.s3ed4tf.com'
+const GOOGLE_CLIENT_SECRET = '-cpgr2iXUtBHQZZKqZ08Y5fe'
 const GOOGLE_CLIENT_ID = '43442370807-gj07kd9t0gh5le38n84pn7hqofnfcinq.apps.googleusercontent.com'
 
 export const signInWithPopup = async () => {
     return new Promise((resolve, reject) => {
-      const authWindow = new remote.BrowserWindow({
-        width: 500,
-        height: 600,
+      const authWindow = new electron.remote.BrowserWindow({
+        width: 650,
+        height: 650,
         show: true,
         titleBarStyle: 'hiddenInset', 
         // frame: false,
@@ -47,7 +46,7 @@ export const signInWithPopup = async () => {
             // Login is complete
             authWindow.removeAllListeners('closed')
             setImmediate(() => authWindow.close())
-              // This is the authorization code we need to request tokens
+            // This is the authorization code we need to request tokens
             resolve(query.code)
           }
         }
@@ -57,32 +56,18 @@ export const signInWithPopup = async () => {
         // TODO: Handle this smoothly
         throw new Error('Auth window was closed by user')
       })
-
-      authWindow.webContents.on('did-finish-load', function () {
-        // TODO Cant keep frameless. 
-        authWindow.loadURL(authUrl, {userAgent: 'Chrome'});
-      });
   
       authWindow.webContents.on('will-navigate', (event, url) => {
         handleNavigation(url)
       })
   
       // Depreciated. 
-      // authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
-      //   alert("Login Started")
-      //   handleNavigation(newUrl)
-      // })
+      authWindow.webContents.on('did-redirect-navigation', (event, newUrl) => {
+        handleNavigation(newUrl)
+      })
 
-      var filter = {
-        urls: [GOOGLE_REDIRECT_URI + '*']
-      };
-
-      // New Way, but need to test it.
-      // session.defaultSession.webRequest.onCompleted(filter, (details) => {
-      //   var url = details.url;
-      //   handleNavigation(url);
-      // });
-      
+       // User Agent needed, or else google will complain and stop auth process.
+      authWindow.loadURL(authUrl, {userAgent: 'Chrome'}); 
     })
   }
 
@@ -91,6 +76,7 @@ export const signInWithPopup = async () => {
       code,
       client_id: GOOGLE_CLIENT_ID,
       redirect_uri: GOOGLE_REDIRECT_URI,
+      client_secret: GOOGLE_CLIENT_SECRET, // necessary
       grant_type: 'authorization_code',
     }), {
       headers: {

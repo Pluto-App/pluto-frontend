@@ -11,6 +11,5 @@ export const googleSignIn = async () => {
     displayName: name,
     idToken: tokens.id_token,
   }
-
   return mySignInFunction(providerUser)
 }
