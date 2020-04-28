@@ -3,12 +3,13 @@ import axios from 'axios'
 import qs from 'qs'
 
 const electron = window.require('electron')
-const GOOGLE_AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
-const GOOGLE_TOKEN_URL = 'https://www.googleapis.com/oauth2/v4/token'
-const GOOGLE_PROFILE_URL = 'https://www.googleapis.com/userinfo/v2/me'
-const GOOGLE_REDIRECT_URI = 'http://www.s3ed4tf.com'
-const GOOGLE_CLIENT_SECRET = '-cpgr2iXUtBHQZZKqZ08Y5fe'
-const GOOGLE_CLIENT_ID = '43442370807-gj07kd9t0gh5le38n84pn7hqofnfcinq.apps.googleusercontent.com'
+
+const REACT_APP_GOOGLE_AUTHORIZATION_URL='https://accounts.google.com/o/oauth2/v2/auth'
+const REACT_APP_GOOGLE_TOKEN_URL='https://www.googleapis.com/oauth2/v4/token'
+const REACT_APP_GOOGLE_PROFILE_URL='https://www.googleapis.com/userinfo/v2/me'
+const REACT_APP_GOOGLE_REDIRECT_URI='http://verify.pluto-office.com'
+const REACT_APP_GOOGLE_CLIENT_SECRET='cijpaDECWyD_5L8-EVVElGEJ'
+const REACT_APP_GOOGLE_CLIENT_ID='43442370807-fr1gtb34pnt1laucssaf2e85t1bijgtn.apps.googleusercontent.com'
 
 export const signInWithPopup = async () => {
     return new Promise((resolve, reject) => {
@@ -17,7 +18,7 @@ export const signInWithPopup = async () => {
         height: 650,
         show: true,
         titleBarStyle: 'hiddenInset', 
-        // frame: false,
+        frame: false,
         webPreferences: {
           nodeIntegration: false, 
           nativeWindowOpen: true
@@ -27,11 +28,11 @@ export const signInWithPopup = async () => {
       // TODO: Generate and validate PKCE code_challenge value
       const urlParams = {
         response_type: 'code',
-        redirect_uri: GOOGLE_REDIRECT_URI,
-        client_id: GOOGLE_CLIENT_ID,
+        redirect_uri: REACT_APP_GOOGLE_REDIRECT_URI,
+        client_id: REACT_APP_GOOGLE_CLIENT_ID,
         scope: 'profile email',
       }
-      const authUrl = `${GOOGLE_AUTHORIZATION_URL}?${qs.stringify(urlParams)}`
+      const authUrl = `${REACT_APP_GOOGLE_AUTHORIZATION_URL}?${qs.stringify(urlParams)}`
   
 
       // Fixed redirect_uri. 
@@ -61,7 +62,7 @@ export const signInWithPopup = async () => {
         handleNavigation(url)
       })
   
-      // Depreciated. 
+      // Depreciated. did-get-redirect-request
       authWindow.webContents.on('did-redirect-navigation', (event, newUrl) => {
         handleNavigation(newUrl)
       })
@@ -72,11 +73,11 @@ export const signInWithPopup = async () => {
   }
 
   export const fetchAccessTokens = async (code) => {
-    const response = await axios.post(GOOGLE_TOKEN_URL, qs.stringify({
+    const response = await axios.post(REACT_APP_GOOGLE_TOKEN_URL, qs.stringify({
       code,
-      client_id: GOOGLE_CLIENT_ID,
-      redirect_uri: GOOGLE_REDIRECT_URI,
-      client_secret: GOOGLE_CLIENT_SECRET, // necessary
+      client_id: REACT_APP_GOOGLE_CLIENT_ID,
+      redirect_uri: REACT_APP_GOOGLE_REDIRECT_URI,
+      client_secret: REACT_APP_GOOGLE_CLIENT_SECRET, // necessary
       grant_type: 'authorization_code',
     }), {
       headers: {
@@ -87,7 +88,7 @@ export const signInWithPopup = async () => {
   }
 
   export const fetchGoogleProfile = async (accessToken) => {
-    const response = await axios.get(GOOGLE_PROFILE_URL, {
+    const response = await axios.get(REACT_APP_GOOGLE_PROFILE_URL, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${accessToken}`,

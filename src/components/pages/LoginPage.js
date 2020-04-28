@@ -4,25 +4,22 @@ import { useHistory } from "react-router-dom";
 import googleLogo from "../../assets/google.svg";
 import { googleSignIn } from "../../auth/authhandle";
 
-
 const LoginPage = (props) => {
 
   let history = useHistory();
 
   const { state, actions, effects, reaction } = useOvermind();
 
-  const login = (e) => {
-    actions.handleLogin().then(() => {
-      window.require("electron").ipcRenderer.send('resize-normal');
-      history.push('/home');
-    });
-  }
+  // const login = (e) => {
+  //   actions.handleLogin().then(() => {
+  //     window.require("electron").ipcRenderer.send('resize-normal');
+  //     history.push('/home');
+  //   });
+  // }
  
   const googleSignInAction = (e) => {
     e.preventDefault();
-    // TODO Handle Google Login here.
-    googleSignIn().then((data) => {
-      alert(data)
+    googleSignIn().then(() => {
       window.require("electron").ipcRenderer.send('resize-normal');
       history.push('/home');
     })
