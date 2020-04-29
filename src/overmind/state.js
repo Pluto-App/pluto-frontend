@@ -3,4 +3,5 @@ export const state = {
     name: 'Pluto Dev Team',
     signedIn : false,
     loggedIn : false, 
+    postData : ''
   }

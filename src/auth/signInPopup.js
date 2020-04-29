@@ -1,6 +1,7 @@
 import { parse } from 'url'
 import axios from 'axios'
 import qs from 'qs'
+import { auth } from 'firebase'
 
 const electron = window.require('electron')
 
@@ -10,6 +11,11 @@ const REACT_APP_GOOGLE_PROFILE_URL='https://www.googleapis.com/userinfo/v2/me'
 const REACT_APP_GOOGLE_REDIRECT_URI='http://verify.pluto-office.com'
 const REACT_APP_GOOGLE_CLIENT_SECRET='ST8rCDTHlxd8rt_GDEfZ2Qas'
 const REACT_APP_GOOGLE_CLIENT_ID='43442370807-7jk41hq8c4uqi10pi1beubfma1s3qcln.apps.googleusercontent.com'
+
+// New OAuth Creds
+// const REACT_APP_GOOGLE_REDIRECT_URI='http://verify.pluto-office.com'
+// const REACT_APP_GOOGLE_CLIENT_SECRET='hwS5p_swd6N9TBuMSTy2cgcP'
+// const REACT_APP_GOOGLE_CLIENT_ID='535193691278-fnl1o968cuck09sum0mdfg00of0e3tf5.apps.googleusercontent.com'
 
 export const signInWithPopup = async () => {
     return new Promise((resolve, reject) => {
@@ -24,6 +30,9 @@ export const signInWithPopup = async () => {
           nativeWindowOpen: true
         }
       })
+
+      // Remove file mennu
+      authWindow.setMenu(null);
   
       // TODO: Generate and validate PKCE code_challenge value
       const urlParams = {
