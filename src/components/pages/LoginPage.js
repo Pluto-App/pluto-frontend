@@ -18,8 +18,7 @@ const LoginPage = (props) => {
   // }
  
   const googleSignInAction = (e) => {
-    e.preventDefault();
-    googleSignIn().then(() => {
+    actions.googlehandleLogin().then(() => {
       window.require("electron").ipcRenderer.send('resize-normal');
       history.push('/home');
     })

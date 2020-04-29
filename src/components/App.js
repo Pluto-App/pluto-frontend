@@ -3,6 +3,8 @@ import { useOvermind } from '../overmind'
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
 import TopBar from './widgets/Topbar'
+import TeamRegisterPage from './pages/Teams/TeamRegisterPage'
+import TeamProfile from './pages/Teams/TeamProfile'
 import {
   BrowserRouter as Router,
   Switch,
@@ -24,6 +26,12 @@ const App = () => {
           <Route exact path="/home">
             <HomePage />
           </Route> 
+          <Route exact path="/add-team">
+            <TeamRegisterPage />
+          </Route>
+          <Route exact path="/team-profile">
+            <TeamProfile />
+          </Route>
       </Switch>
       
     </Router>

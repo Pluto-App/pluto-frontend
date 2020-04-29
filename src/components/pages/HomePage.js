@@ -21,9 +21,9 @@ export default function HomePage() {
             <Sidebar></Sidebar>
             <div class="w-full bg-gray-900 ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)"}}>
                 <button
-                onClick={logout}
-                className="w-full bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
-                type="button"> Logout
+                    onClick={logout}
+                    className="w-full bg-red-700 hover:bg-red-500 text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
+                    type="button"> Logout
                 </button> 
             </div>
         </div>
