@@ -1,7 +1,6 @@
 import { parse } from 'url'
 import axios from 'axios'
 import qs from 'qs'
-import { auth } from 'firebase'
 
 const electron = window.require('electron')
 
