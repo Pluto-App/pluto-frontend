@@ -3,6 +3,7 @@ import React from 'react'
 import Sidebar from '../../widgets/Sidebar'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
+import BackButton from '../tidbits/BackButton'
 
 export default function TeamRegisterPage() {
 
@@ -10,18 +11,10 @@ export default function TeamRegisterPage() {
 
     const { state, actions, effects, reaction } = useOvermind();
 
-    const back = (e) => {
-        history.push('/home');
-    }
-
     return (
         <div className="w-full flex">
-            <div class="w-full bg-gray-900 ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)"}}>
-                <button
-                    onClick={back}
-                    className="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
-                    type="button"> Back
-                </button> 
+            <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)"}}>
+            <BackButton url={'/home'}></BackButton>
                 <form className="px-8 pt-6 pb-8 mb-4">
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" for="username">

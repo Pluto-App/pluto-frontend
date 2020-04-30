@@ -10,15 +10,16 @@ export default function HomePage() {
     const { state, actions, effects, reaction } = useOvermind();
 
     const logout = (e) => {
+        e.preventDefault();
         actions.handleLogout().then(() => {
             window.require("electron").ipcRenderer.send('resize-login');
             history.push('/');
-          }); 
+        }); 
     }
 
     return (
         <div className="w-full flex">
-            <Sidebar></Sidebar>
+            <Sidebar avatarArray={state.avatarArray}></Sidebar>
             <div class="w-full bg-gray-900 ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)"}}>
                 <button
                     onClick={logout}

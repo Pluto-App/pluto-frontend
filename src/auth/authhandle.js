@@ -1,4 +1,4 @@
-import { mySignInFunction } from './customSignIn'
+import { postHandler } from '../custom/customHandlers'
 import { signInWithPopup, fetchAccessTokens, fetchGoogleProfile } from "./signInPopup";
 
 export const googleSignIn = async () => {
@@ -9,7 +9,7 @@ export const googleSignIn = async () => {
     id: id,
     email: email,
     name: name,
-    // idToken: tokens.id_token,
+    idToken: tokens.id_token,
   }
-  return await mySignInFunction(providerUser)
+  return await postHandler('https://pluto-office.herokuapp.com/login', providerUser)
 }

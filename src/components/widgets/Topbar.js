@@ -1,14 +1,10 @@
 import * as React from 'react'
 import { useOvermind } from '../../overmind'
 const { remote } = window.require('electron');
-const { ipcRenderer } = window.require('electron')
-const { app } = window.require('electron')
 
 // TODO Need to show some tooltip using Tailwind CSS ToolTip
 const TopBar = (props) => {
   
-  const { state, actions, effects, reaction } = useOvermind()
-
   const minimize = () => {
     var window = remote.getCurrentWindow();
     window.minimize();
