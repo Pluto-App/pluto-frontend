@@ -8,5 +8,6 @@ export const state = {
     teamCreateUrl : '',
     loginUrl : 'https://pluto-office.herokuapp.com/login', 
     createTeamUrl : 'https://pluto-office.herokuapp.com/addteam',
-    providerUser : {}
+    providerUser : {},
+    postdata : {},
   }

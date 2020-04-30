@@ -13,7 +13,7 @@ const LoginPage = () => {
     e.preventDefault();
     actions.googlehandleLogin().then(() => {
       window.require("electron").ipcRenderer.send('resize-normal');
-      state.postData.addStatus ? history.push('/add-team') : history.push('/home');
+      state.postData.data.addStatus ? history.push('/add-team') : history.push('/home');
     })
   }
 
