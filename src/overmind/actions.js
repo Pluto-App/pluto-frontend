@@ -7,7 +7,7 @@ export const handleLogout = async ({state, effects}) => {
 export const googlehandleLogin = async ({state, effects}) => {
     state.loggedIn = true
     state.signedIn = true;
-    state.postData = await googleSignIn() 
+    state.postData = await googleSignIn()
 }
 
 export const createTeam = async ({state, effects}, values) => {
