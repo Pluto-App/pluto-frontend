@@ -17,14 +17,15 @@ export const googlehandleLogin = async ({state, effects}) => {
 export const createTeam = async ({state, effects}, values) => {
     state.newTeamData = await effects.postHandler(state.createTeamUrl, values)
     state.teamDataInfo[state.activeTeamId].isActive = false
-    state.teamDataInfo[state.newTeamData.id] = {
-        id : state.newTeamData.id,
+    state.activeTeamId = state.newTeamData.teamid
+    state.teamDataInfo[state.newTeamData.teamid] = {
+        id : state.newTeamData.teamid,
         isActive : true,
         owner : state.newTeamData.owner,
         name : state.newTeamData.name,
         plan : 'Regular', // change later.
-        avatarUrlId : 854,
-        members : [],
+        avatarUrlId : 266,
+        members : [state.newTeamData.owner],
     }
 }
 

@@ -9,7 +9,7 @@ const customHeaders = {
 export const postHandler = async (url, payload) => {
 
     var data; 
-    
+    alert(qs.stringify(payload))
     try {
         let dump = await axios.post(url, qs.stringify(payload), customHeaders)
         data = await dump.data

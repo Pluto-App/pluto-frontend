@@ -14,7 +14,7 @@ export default function TeamRegisterPage() {
         e.preventDefault();
         // POST Request to create team. 
         await actions.createTeam({
-            id : state.userProfileData.userid, // Google ID of owner profile becomes team id.
+            id : state.userProfileData.id, // Google ID of owner profile becomes team id.
             name : state.change["teamname"],
             owner : state.change["teamowner"]
         })
