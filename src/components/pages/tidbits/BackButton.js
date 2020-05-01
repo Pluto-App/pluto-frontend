@@ -9,14 +9,15 @@ export default function BackButton(props) {
         e.preventDefault()
         history.push(props.url);
     }
-
+    
     return (
             <button
                     onClick={back}
-                    className="text-white font-bold py-2 px-4 mt-2"
+                    className="text-white font-bold mb-4 tracking-wide flex items-center py-3 px-3 no-underline text-sm"
                     type="button"
                 > 
-                <i className="material-icons md-light md-inactive">keyboard_backspace</i>
+                <i className="material-icons mr-1">keyboard_backspace</i>
+                    Back
             </button> 
     )
 }

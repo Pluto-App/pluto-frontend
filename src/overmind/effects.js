@@ -1,7 +1,9 @@
 import * as axios from 'axios'
+import qs from 'qs'
 
 const customHeaders = {
     'content-type': 'application/json',
+    // 'Content-Type': 'application/x-www-form-urlencoded',
 };
 
 export const postHandler = async (url, payload) => {
@@ -9,7 +11,7 @@ export const postHandler = async (url, payload) => {
     var data; 
     
     try {
-        let dump = await axios.post(url, { payload }, customHeaders)
+        let dump = await axios.post(url, qs.stringify(payload), customHeaders)
         data = await dump.data
     } catch (error) {
         alert(error)
@@ -24,7 +26,8 @@ export const getHandler = async (url, payload) => {
     var data; 
     
     try {
-        data = await axios.get(url, { payload }, customHeaders)
+        let dump = await axios.get(url, qs.stringify(payload), customHeaders)
+        data = await dump.data
     } catch (error) {
         alert(error)
     }
@@ -37,7 +40,8 @@ export const updateHandler = async (url, payload) => {
     var data; 
     
     try {
-        data = await axios.update(url, { payload }, customHeaders)
+        let dump = await axios.update(url, qs.stringify(payload), customHeaders)
+        data = await dump.data
     } catch (error) {
         alert(error)
     }
