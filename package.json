@@ -37,7 +37,7 @@
     "preelectron-pack": "npm run build"
   },
   "build": {
-    "appId": "com.example.electron-cra",
+    "appId": "com.plutooffice.electron-cra",
     "files": [
       "build/**/*",
       "node_modules/**/*"

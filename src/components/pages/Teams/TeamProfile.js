@@ -3,6 +3,7 @@ import React from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import BackButton from '../tidbits/BackButton'
+import Sidebar from '../../widgets/Sidebar'
 
 export default function TeamProfile() {
 
@@ -11,8 +12,9 @@ export default function TeamProfile() {
 
     return (
         <div className="w-full flex">
-            <div class="w-full bg-gray-900 ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)"}}>
-                <BackButton url={'/home'}></BackButton>
+            <Sidebar avatarArray={state.avatarArray}></Sidebar>
+            <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)", marginLeft: "49px"}}>
+                <BackButton url={'/home'}></BackButton> Team Profile Page
                 <pre className="px-8 pt-6 pb-8 mb-4 w-full text-white font-bold py-2 px-4 mt-2">
                     Team Name : 
                 </pre>
