@@ -9,13 +9,15 @@ export const postHandler = async (url, payload) => {
     var data; 
     
     try {
-        data = await axios.post(url, { payload }, customHeaders)
+        let dump = await axios.post(url, { payload }, customHeaders)
+        data = await dump.data
     } catch (error) {
         alert(error)
     }
 
     return data
 } 
+
 
 export const getHandler = async (url, payload) => {
 

@@ -4,10 +4,11 @@ export const state = {
     loggedIn : false, 
     teamAdd : false,
     userProfileInfo : '',
-    avatarArray : [1, 2, 3, 4, 5, 6, 7],
+    avatarArray : [1, 10, 89],
     teamCreateUrl : '',
     loginUrl : 'https://pluto-office.herokuapp.com/login', 
     createTeamUrl : 'https://pluto-office.herokuapp.com/addteam',
-    providerUser : {},
-    postdata : {},
+    userProfileData : {},
+    newTeamData : {},
+    userTeamsData : {}
   }
