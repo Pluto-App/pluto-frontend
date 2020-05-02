@@ -4,12 +4,10 @@ export const state = {
     loggedIn : false, 
     teamAdd : false,
     loginStarted : false,
-    teamsArray : [84, 52, 965, 235, 41, 87],
     loginUrl : 'https://pluto-office.herokuapp.com/login', 
     createTeamUrl : 'https://pluto-office.herokuapp.com/addteam',
     userProfileData : {},
     newTeamData : {},
-    userTeamsData : {}, 
     activeTeamId : 84, // team currently active in user scope
     teamDataInfo : {
       84 : {
