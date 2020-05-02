@@ -2,7 +2,7 @@ export const state = {
     change : {}, 
     signedIn : false,
     loggedIn : false, 
-    teamAdd : false,
+    addingTeam : false,
     loginStarted : false,
     loginUrl : 'https://pluto-office.herokuapp.com/login', 
     createTeamUrl : 'https://pluto-office.herokuapp.com/addteam',

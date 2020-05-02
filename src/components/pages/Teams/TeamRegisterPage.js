@@ -3,10 +3,18 @@ import React from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import BackButton from '../tidbits/BackButton'
+import { css } from "@emotion/core";
+import RingLoader from "react-spinners/RingLoader";
 
 export default function TeamRegisterPage() {
 
     let history = useHistory();
+    
+    const override = css`
+        display: block;
+        margin: 0 auto;
+        border-color: green;
+    `;
 
     const { state, actions, effects, reaction } = useOvermind();
 
@@ -59,11 +67,19 @@ export default function TeamRegisterPage() {
                                 type="text" 
                                 placeholder="Team Owner" />
                     </div>
-                    <div className="flex items-center justify-between">
-                        <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={createTeam}>
-                            Create Team
-                        </button>
-                    </div>
+                    { !state.addingTeam ? 
+                        <div className="flex items-center justify-between">
+                            <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={createTeam}>
+                                Create Team
+                            </button>
+                        </div> : 
+                        <RingLoader
+                            css={override}
+                            size={50}
+                            color={"green"}
+                            loading={state.addingTeam}
+                        />
+                    }
                 </form>
             </div>
         </div>

@@ -1,7 +1,8 @@
 import { googleSignIn } from '../auth/authhandle'
 
 export const handleLogout = async ({state}) => {
-    state.loggedIn = false
+    state.loggedIn = false;
+    state.userProfileData = {}
 }
 
 export const googlehandleLogin = async ({state, effects}) => {
@@ -15,7 +16,9 @@ export const googlehandleLogin = async ({state, effects}) => {
 }
 
 export const createTeam = async ({state, effects}, values) => {
+    state.addingTeam = true;
     state.newTeamData = await effects.postHandler(state.createTeamUrl, values)
+    state.addingTeam = false;
     state.teamDataInfo[state.activeTeamId].isActive = false
     state.activeTeamId = state.newTeamData.teamid
     state.teamDataInfo[state.newTeamData.teamid] = {
