@@ -28,6 +28,7 @@ export const createTeam = async ({state, effects}, values) => {
         name : state.newTeamData.name,
         plan : 'Regular', // change later.
         avatarUrlId : 266,
+        magiclink : state.newTeamData.magiclink,
         members : [state.newTeamData.owner],
     }
 }
