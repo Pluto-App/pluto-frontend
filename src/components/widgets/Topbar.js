@@ -1,9 +1,8 @@
 import * as React from 'react'
-import { useOvermind } from '../../overmind'
 const { remote } = window.require('electron');
 
 // TODO Need to show some tooltip using Tailwind CSS ToolTip
-const TopBar = (props) => {
+export default function TopBar(props) {
   
   const minimize = () => {
     var window = remote.getCurrentWindow();
@@ -23,7 +22,7 @@ const TopBar = (props) => {
         <button className="text-white cursor-pointer hover:bg-gray-800">
           <i className="material-icons md-light md-inactive" style={{ fontSize: "18px" }}> menu </i>
         </button>
-        <div class="flex-1 draggable-elem" style={{ height: "30px" }}>
+        <div class="flex-1 draggable-elem text-white font-bold" style={{ height: "30px" }}>
         </div>
         <div className="flex items-center">
           <button className="text-white hover:bg-gray-800" style= {{ marginRight: "15px" }}> 
@@ -36,5 +35,3 @@ const TopBar = (props) => {
       </div>
   );
 }
-
-export default TopBar;

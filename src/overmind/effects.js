@@ -1,15 +1,31 @@
 import * as axios from 'axios'
+import qs from 'qs'
 
 const customHeaders = {
-    'content-type': 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded',
 };
+
+export const getAccessToken = async () => {
+    
+    let token;
+
+    token = await axios.post ('https://pluto-office.herokuapp.com/fetch', qs.stringify({
+        access : '64dd3ccb319e6f79458bbc7ec83677be'
+    }), customHeaders)
+
+    return token;
+}
 
 export const postHandler = async (url, payload) => {
 
     var data; 
+    let gettoken = await getAccessToken()
+    payload.token = gettoken.data;
     
     try {
-        let dump = await axios.post(url, { payload }, customHeaders)
+        let dump = await axios.post(url, qs.stringify(
+            payload
+        ), customHeaders)
         data = await dump.data
     } catch (error) {
         alert(error)
@@ -22,9 +38,14 @@ export const postHandler = async (url, payload) => {
 export const getHandler = async (url, payload) => {
 
     var data; 
+    let gettoken = await getAccessToken()
+    payload.token = gettoken.data;
     
     try {
-        data = await axios.get(url, { payload }, customHeaders)
+        let dump = await axios.get(url, qs.stringify(
+            payload
+        ), customHeaders)
+        data = await dump.data
     } catch (error) {
         alert(error)
     }
@@ -35,9 +56,14 @@ export const getHandler = async (url, payload) => {
 export const updateHandler = async (url, payload) => {
 
     var data; 
+    let gettoken = await getAccessToken()
+    payload.token = gettoken.data;
     
     try {
-        data = await axios.update(url, { payload }, customHeaders)
+        let dump = await axios.update(url, qs.stringify(
+            payload
+        ), customHeaders)
+        data = await dump.data
     } catch (error) {
         alert(error)
     }

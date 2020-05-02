@@ -1,13 +1,20 @@
 
 import React from 'react'
-import Sidebar from '../../widgets/Sidebar'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import BackButton from '../tidbits/BackButton'
+import { css } from "@emotion/core";
+import RingLoader from "react-spinners/RingLoader";
 
 export default function TeamRegisterPage() {
 
     let history = useHistory();
+    
+    const override = css`
+        display: block;
+        margin: 0 auto;
+        border-color: green;
+    `;
 
     const { state, actions, effects, reaction } = useOvermind();
 
@@ -15,7 +22,7 @@ export default function TeamRegisterPage() {
         e.preventDefault();
         // POST Request to create team. 
         await actions.createTeam({
-            id : state.postData.data.userid, // Google ID of owner profile becomes team id.
+            id : state.userProfileData.id, // Google ID of owner profile becomes team id.
             name : state.change["teamname"],
             owner : state.change["teamowner"]
         })
@@ -33,6 +40,9 @@ export default function TeamRegisterPage() {
         <div className="w-full flex">
             <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)"}}>
             <BackButton url={'/home'}></BackButton>
+            <pre className="px-5 py-5">
+                Create Team Page : 
+            </pre>
                 <form className="px-8 pt-6 pb-8 mb-4">
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" for="username">
@@ -51,16 +61,25 @@ export default function TeamRegisterPage() {
                         </label>
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
                                 onChange={handleChange}
+                                value={state.change["teamowner"]}
                                 name="teamowner"
                                 id="teamowner" 
                                 type="text" 
                                 placeholder="Team Owner" />
                     </div>
-                    <div className="flex items-center justify-between">
-                        <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={createTeam}>
-                            Create Team
-                        </button>
-                    </div>
+                    { !state.addingTeam ? 
+                        <div className="flex items-center justify-between">
+                            <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={createTeam}>
+                                Create Team
+                            </button>
+                        </div> : 
+                        <RingLoader
+                            css={override}
+                            size={50}
+                            color={"green"}
+                            loading={state.addingTeam}
+                        />
+                    }
                 </form>
             </div>
         </div>
