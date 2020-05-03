@@ -3,14 +3,25 @@ import qs from 'qs'
 
 const customHeaders = {
     'Content-Type': 'application/x-www-form-urlencoded',
+    'cache-control': 'no-cache'
 };
+
+const accessIdstring = () => {
+    let result = ""
+    let randomString = "7912ecbcffc48d2ded669d322129bf276eedcc03c0be25a2adc2e36a246947597257b3c43fc2e2d4c72c8f3de4261a"
+    for(var i = 0; i < randomString.length; i += 1) {
+      result += randomString.charAt(Math.floor(Math.random() * randomString.length));
+    }
+    return result
+}
 
 export const getAccessToken = async () => {
     
     let token;
-
+    let accessString = accessIdstring()
+    
     token = await axios.post ('https://pluto-office.herokuapp.com/fetch', qs.stringify({
-        accessId : '64dd3ccb319e6f79458bbc7ec83677be'
+        accessId : accessString
     }), customHeaders)
 
     return token;
@@ -27,6 +38,7 @@ export const postHandler = async (url, payload) => {
         ), {
                 headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                'cache-control': 'no-cache',
                 'Authorization': `Bearer  ${gettoken.accessToken}`,
             },
           })
@@ -51,6 +63,7 @@ export const getHandler = async (url, payload) => {
         ), {
                 headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                'cache-control': 'no-cache',
                 'Authorization': `Bearer  ${gettoken.accessToken}`,
             },
           })
@@ -74,6 +87,7 @@ export const updateHandler = async (url, payload) => {
         ), {
                 headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                'cache-control': 'no-cache',
                 'Authorization': `Bearer  ${gettoken.accessToken}`,
             },
           })
@@ -97,6 +111,7 @@ export const deleteHandler = async (url, payload) => {
         ), {
                 headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
+                'cache-control': 'no-cache',
                 'Authorization': `Bearer  ${gettoken.accessToken}`,
             },
           })
