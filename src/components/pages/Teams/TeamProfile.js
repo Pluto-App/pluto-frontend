@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
@@ -13,18 +12,53 @@ export default function TeamProfile() {
 
     const { state, actions, effects, reaction } = useOvermind();
 
+    const [MemberArray, updateMembersArray] = useState([]);
+
     useEffect(() => {
 
-        // Populate using POST request data from /usersbyteamid, pass teamid. Memo it.
+        // Populate using POST request data from /usersbyteamid, pass teamid. Memo it. Populate MemberArray
         const MembersData = async (teamid) => {
             await actions.usersbyteamid({
                 teamid : teamid
             })
         }
 
-        MembersData("jrdf9827ds34r")
+        let TeamMembers = [
+            {
+                id : 55486464,
+                url : 'https://gravatar.com/avatar/42a342f34c62e2951e25ad55c7920647?s=400&d=robohash&r=x',
+                name : 'Chris Wane',
+                statusColor : 'red'
+            },
+            {
+                id : 884574541,
+                url : 'https://gravatar.com/avatar/f8bb85e63f1f81ac473f8439db9309da?s=400&d=robohash&r=x',
+                name : 'Abhishek Wani',
+                statusColor : 'orange'
+            },
+            {
+                id : 9653214567,
+                url : 'https://gravatar.com/avatar/2186b975d2d8ac084397b3fe1a42795d?s=400&d=robohash&r=x',
+                name : 'Robin Pike',
+                statusColor : 'green'
+            },
+            {
+                id : 66352144,
+                url : 'https://gravatar.com/avatar/fe78f037abc7274b60227211bcaddc2e?s=400&d=robohash&r=x',
+                name : 'Harish Yadav',
+                statusColor : 'green'
+            },
+            {
+                id : 77415523,
+                url : state.userProfileData.profilePictureUrl,
+                name : 'Sumit Lahiri',
+                statusColor : 'green'
+            },
+        ]
 
-    }, [actions])
+        updateMembersArray(TeamMembers)
+
+    }, [actions, state.userProfileData.profilePictureUrl])
 
     return (
         <div className="w-full flex">
@@ -58,10 +92,11 @@ export default function TeamProfile() {
                 <pre className="text-grey font-bold text-sm px-2 tracking-wide mt-2 hover:bg-gray-800">
                    Team Members : 
                 </pre>
-                <UserListItem id={'74554'} url={'https://gravatar.com/avatar/6a36a53c51c57afc033dbf1bb0529dda?s=400&d=robohash&r=x'} name={"Puneet Acharya"} statusColor={'red'}/>
-                <UserListItem id={'99654'} url={'https://gravatar.com/avatar/2186b975d2d8ac084397b3fe1a42795d?s=400&d=robohash&r=x'} name={"Chris Chan"} statusColor={'orange'}/>
-                <UserListItem id={'73214'} url={'https://gravatar.com/avatar/a6cb3d209b64a8524ef80d93f18f7bf8?s=400&d=robohash&r=x'} name={"Abhishek Wani"} statusColor={'green'}/>
-                <UserListItem id={'66254'} url={state.userProfileData.profilePictureUrl} name={"Sumit Lahiri"} statusColor={'green'}/>
+                {
+                    MemberArray.map((member) => 
+                        <UserListItem id={member.id} url={member.url} name={member.name} statusColor={member.statusColor}/>
+                    )
+                }
             </div>
         </div>
     )
