@@ -15,12 +15,24 @@ export default function Sidebar(props) {
     }
 
     useEffect(() => {
+
+        // Populate using POST request data from /teamsbyuserid pass userid. Memo it. 
+        const TeamData = async (userid) => {
+            await actions.teamsbyuserid({
+                userid : userid
+            })
+        }
+
+        TeamData(state.userProfileData.userid)
+
         let arr = []
         Object.entries(state.teamDataInfo).map(([key, value]) => {
             arr.push(key)
         })
+
         updateTeamArray(arr)
-    }, [state.teamDataInfo])
+
+    }, [state.userProfileData.userid, state.teamDataInfo, actions])
 
     return (
         <div className="w-15 bg-gray-900 text-white border-r border-blackblack fixed min-h-screen ">

@@ -22,9 +22,8 @@ export default function TeamRegisterPage() {
         e.preventDefault();
         // POST Request to create team. 
         await actions.createTeam({
-            id : state.userProfileData.id, // Google ID of owner profile becomes team id.
-            name : state.change["teamname"],
-            owner : state.change["teamowner"]
+            userid : state.userProfileData.userid, // Google ID of owner profile becomes part of team id. Memo it. 
+            teamname : state.change["teamname"]
         })
         history.push('/home')
     }
@@ -54,18 +53,6 @@ export default function TeamRegisterPage() {
                                 id="teamname" 
                                 type="text" 
                                 placeholder="Team Name" />
-                    </div>
-                    <div className="mb-6">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" for="password">
-                            Choose Team Owner
-                        </label>
-                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                                onChange={handleChange}
-                                value={state.change["teamowner"]}
-                                name="teamowner"
-                                id="teamowner" 
-                                type="text" 
-                                placeholder="Team Owner" />
                     </div>
                     { !state.addingTeam ? 
                         <div className="flex items-center justify-between">

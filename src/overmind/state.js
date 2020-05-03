@@ -4,6 +4,8 @@ export const state = {
     loggedIn : false, 
     addingTeam : false,
     loginStarted : false,
+    getTeamsUrl : 'https://pluto-office.herokuapp.com/teamsbyuserid',
+    getTeamMembersUrl : 'https://pluto-office.herokuapp.com/usersbyteamid',
     loginUrl : 'https://pluto-office.herokuapp.com/login', 
     createTeamUrl : 'https://pluto-office.herokuapp.com/addteam',
     userProfileData : {},

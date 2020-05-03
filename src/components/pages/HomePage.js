@@ -3,6 +3,8 @@ import Sidebar from '../widgets/Sidebar'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
 import MainBar from "../widgets/MainBar"
+import UserListItem from "./tidbits/UserListItem"
+import RoomListItem from "./tidbits/RoomListItem"
 
 export default function HomePage() {
 
@@ -21,16 +23,26 @@ export default function HomePage() {
             <Sidebar></Sidebar>
             <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)", marginLeft: "49px"}}>
                 <MainBar/>
-                <div className="sidebar-icons" style={{height: "75vh"}}>
-                    <div className="flex justify-between items-center p-2 pl-3">
-                        <div className="text-white font-bold tracking-wide text-xs">Online Members : 
-                            
-                        </div>
-                        <button className="text-white">
-                            <i className="material-icons md-light md-inactive" style={{fontSize: "18px", margin: "0"}}>add</i>
-                        </button>
+
+                <div className="sidebar-icons" style={{height: "relative"}}>
+                    <div className="flex justify-between items-center p-2 pl-3 hover:bg-gray-700">
+                        <div className="text-white font-bold tracking-wide text-xs">Team Rooms : </div>
                     </div>
+                    <RoomListItem id={"6322147"} url={"https://gravatar.com/avatar/6a36a53c51c57afc033dbf1bb0529dda?s=400&d=robohash&r=x"} name={"Daily Stand Up"} />
+                    <RoomListItem id={"9965124"} url={"https://gravatar.com/avatar/4df79c0cb57ed430c7fca7eff845f8a2?s=400&d=robohash&r=x"} name={"War Room"} />
+                    <RoomListItem id={"1145255"} url={"https://gravatar.com/avatar/c04ac69cdd3046e6be2df57b0b54b645?s=400&d=robohash&r=x"} name={"Cooler Side-Talks "} />
                 </div>
+
+                <div className="sidebar-icons" style={{height: "relative"}}>
+                    <div className="flex justify-between items-center p-2 pl-3 hover:bg-gray-800">
+                        <div className="text-white font-bold tracking-wide text-xs">Online Members : </div>
+                    </div>
+                    <UserListItem id={'74554'} url={'https://gravatar.com/avatar/6a36a53c51c57afc033dbf1bb0529dda?s=400&d=robohash&r=x'} name={"Puneet Acharya"} statusColor={'red'}/>
+                    <UserListItem id={'99654'} url={'https://gravatar.com/avatar/2186b975d2d8ac084397b3fe1a42795d?s=400&d=robohash&r=x'} name={"Chris Chan"} statusColor={'orange'}/>
+                    <UserListItem id={'73214'} url={'https://gravatar.com/avatar/a6cb3d209b64a8524ef80d93f18f7bf8?s=400&d=robohash&r=x'} name={"Abhishek Wani"} statusColor={'green'}/>
+                    <UserListItem id={'66254'} url={state.userProfileData.profilePictureUrl} name={"Sumit Lahiri"} statusColor={'green'}/>
+                </div>
+                
                 <div className="absolute pin-b pb-4" style={{width: "calc(95% - 50px)"}}>
                     <div className="mt-4 px-3 w-full">
                         <button 
@@ -41,18 +53,6 @@ export default function HomePage() {
                     </div>
                 </div>
                 </div>
-
-                {/* <div class="items-center absolute rounded-sm bg-white mx-2 p-2 py-4" style={customStyle}>
-                    <h4 class="font-bold text-xl text-center mb-2">Invite Teammates to<br/>Pluto Office App</h4>
-                        <p class="text-grey-darker mb-3 text-center">
-                            Share this link with others to grant access to this team.
-                        </p>
-                    <input value="https://onyomark.com/asd234" class="w-full shadow appearance-none border rounded py-2 px-3 text-grey-darkest bg-grey" />
-                    <button 
-                        class="bg-purple w-full rounded-sm flex justify-center items-center hover:bg-purple-dark text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
-                        type="button"
-                    >Copy Invite</button>
-                </div> */}
         </div>
     )
     
