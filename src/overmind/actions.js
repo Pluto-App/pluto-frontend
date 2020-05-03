@@ -12,7 +12,7 @@ export const googlehandleLogin = async ({state, effects}) => {
     state.loggedIn = true
     state.signedIn = true;
     state.loginStarted = false;
-    state.change["teamowner"] = state.userProfileData.name
+    state.change["teamowner"] = state.userProfileData.username
 }
 
 export const createTeam = async ({state, effects}, values) => {
@@ -31,6 +31,16 @@ export const createTeam = async ({state, effects}, values) => {
         magiclink : state.newTeamData.magiclink,
         members : [state.newTeamData.owner],
     }
+}
+
+export const teamsbyuserid = async ({state, effects}, values) => {
+    let dump = await effects.postHandler(state.getTeamsUrl, values)
+    return dump.teams
+}
+
+export const usersbyteamid = async ({state, effects}, values) => {
+    let dump = await effects.postHandler(state.getTeamMembersUrl, values)
+    return dump.users
 }
 
 export const handleChangeMutations = async ({state}, values) => {

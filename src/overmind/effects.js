@@ -39,7 +39,7 @@ export const postHandler = async (url, payload) => {
                 headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'cache-control': 'no-cache',
-                'Authorization': `Bearer  ${gettoken.accessToken}`,
+                'Authorization': `Bearer ${gettoken.accessToken}`
             },
           })
         data = await dump.data
@@ -64,7 +64,7 @@ export const getHandler = async (url, payload) => {
                 headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'cache-control': 'no-cache',
-                'Authorization': `Bearer  ${gettoken.accessToken}`,
+                'Authorization': `Bearer ${gettoken.accessToken}`
             },
           })
         data = await dump.data
@@ -88,7 +88,7 @@ export const updateHandler = async (url, payload) => {
                 headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'cache-control': 'no-cache',
-                'Authorization': `Bearer  ${gettoken.accessToken}`,
+                'Authorization': `Bearer ${gettoken.accessToken}`
             },
           })
         data = await dump.data
@@ -112,7 +112,7 @@ export const deleteHandler = async (url, payload) => {
                 headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'cache-control': 'no-cache',
-                'Authorization': `Bearer  ${gettoken.accessToken}`,
+                'Authorization': `Bearer ${gettoken.accessToken}`
             },
           })
         data = await dump.data

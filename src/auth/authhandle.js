@@ -5,11 +5,11 @@ export const googleSignIn = async () => {
   const tokens = await fetchAccessTokens(code)
   const {id, email, name, picture} = await fetchGoogleProfile(tokens.access_token)
   const providerUser = {
-    id: id,
-    email: email,
-    name: name,
-    // idToken: tokens.id_token,
-    picture: picture
+    userid: id,
+    useremail: email,
+    username: name,
+    profilePictureUrl: picture,
+    idToken: tokens.id_token,
   }
   return providerUser
 }
