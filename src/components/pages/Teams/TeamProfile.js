@@ -50,7 +50,7 @@ export default function TeamProfile() {
             },
             {
                 id : 77415523,
-                url : state.userProfileData.profilePictureUrl,
+                url : state.userProfileData.avatar,
                 name : 'Sumit Lahiri',
                 statusColor : 'green'
             },
@@ -58,7 +58,7 @@ export default function TeamProfile() {
 
         updateMembersArray(TeamMembers)
 
-    }, [actions, state.userProfileData.profilePictureUrl])
+    }, [actions, state.userProfileData.avatar])
 
     return (
         <div className="w-full flex">

@@ -33,14 +33,14 @@ export default function UserProfile() {
             <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)", marginLeft: "49px"}}>
                 <MainBar />
                 <BackButton url={'/home'}></BackButton>
-                { state.userProfileData.profilePictureUrl == null ? <RingLoader
+                { state.userProfileData.avatar == null ? <RingLoader
                     css={override}
                     size={75}
                     color={"red"}
-                    loading={state.userProfileData.profilePictureUrl}
+                    loading={state.userProfileData.avatar == null}
                 /> :
                 <div className="px-4 py-4 flex items-center justify-center text-black text-2xl rounded-full mb-1 overflow-hidden">
-                    <img src={state.userProfileData.profilePictureUrl} alt="" />
+                    <img src={state.userProfileData.avatar} alt="" />
                 </div> }
                     <p className="text-grey font-bold text-sm px-5 tracking-wide mt-2">{state.userProfileData.username}</p>
                     <p className="text-grey font-bold text-sm px-5 tracking-wide mt-2">{state.userProfileData.useremail}</p>

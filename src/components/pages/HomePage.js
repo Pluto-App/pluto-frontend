@@ -85,7 +85,7 @@ export default function HomePage() {
             },
             {
                 id : 77415523,
-                url : state.userProfileData.profilePictureUrl,
+                url : state.userProfileData.avatar,
                 name : 'Sumit Lahiri',
                 statusColor : 'green'
             }
@@ -93,7 +93,7 @@ export default function HomePage() {
 
         updateOnlineMembersArray(OnlineMembersArray)
 
-    }, [actions, state.userProfileData.profilePictureUrl])
+    }, [actions, state.userProfileData.avatar])
 
  
     const customStyle = {

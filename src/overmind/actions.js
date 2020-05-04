@@ -24,12 +24,12 @@ export const createTeam = async ({state, effects}, values) => {
     state.teamDataInfo[state.newTeamData.teamid] = {
         id : state.newTeamData.teamid,
         isActive : true,
-        owner : state.newTeamData.owner,
-        name : state.newTeamData.name,
-        plan : 'Regular', // change later.
+        owner : state.newTeamData.teamowner,
+        name : state.newTeamData.teamname,
+        plan : 'Regular', 
+        avatar : state.newTeamData.avatar,
         avatarUrlId : 266,
         magiclink : state.newTeamData.magiclink,
-        members : [state.newTeamData.owner],
     }
 }
 
