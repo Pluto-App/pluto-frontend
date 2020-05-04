@@ -23,10 +23,12 @@ export default function HomePage() {
 
     const [OnlineMembersArray, updateOnlineMembersArray] = useState([]);
     const [TeamRoomsArray, updateTeamsRoomsArray] = useState([]);
+    const [showModal, toggleShowModal] = useState(false);
 
-    const toggleModalItem = (e) => {
-        // Open model for Showing magic link for adding new team members.
-        // https://pluto-office.herokuapp.com/bymglnk/nfc03f898jf3
+    const openInviteLink = (e) => {
+        e.preventDefault();
+        toggleShowModal(showModal => !showModal)
+        window.require("electron").shell.openExternal('https://pluto.abhishekwani.now.sh/join-team/' + state.teamDataInfo[state.activeTeamId].magiclink);
     }
 
     useEffect(() => {
@@ -38,28 +40,28 @@ export default function HomePage() {
         let RoomListArray = [
             {
                 id : 55486464,
-                url : 'https://picsum.photos/id/1/200/300',
-                name : 'Timeline Room'
+                url : 'https://media.timeout.com/images/101609205/750/422/image.jpg',
+                name : 'Coffee Room ☕'
             },
             {
                 id : 884574541,
-                url : 'https://picsum.photos/id/35/200/300',
-                name : 'War Room'
+                url : 'https://img.icons8.com/dusk/64/000000/timeline.png',
+                name : 'Progess Updates 🏁'
             },
             {
                 id : 9653214567,
-                url : 'https://picsum.photos/id/39/200/300',
-                name : 'Water Cooler-Talks'
+                url : 'https://image.shutterstock.com/image-photo/kanban-board-one-prerequisites-agile-260nw-1203911209.jpg',
+                name : 'Daily Standup 🚀'
             },
             {
                 id : 55486464,
-                url : 'https://picsum.photos/id/225/200/300',
-                name : 'Friday Update'
+                url : 'https://zioconnects.com/wp-content/uploads/2017/06/Ravago-Conference-Room-A1-1200x800.jpg',
+                name : 'Conference Room ⚙️'
             },
             {
                 id : 77452144,
-                url : 'https://picsum.photos/id/168/200/300',
-                name : 'Monday Lags'
+                url : 'https://vignette.wikia.nocookie.net/harrypotter/images/c/cf/HPDH2-0996.jpg/revision/latest?cb=20140828115840',
+                name : 'Room of Requirement 💁🏻'
             },
         ]
 
@@ -88,8 +90,8 @@ export default function HomePage() {
             },
             {
                 id : 66352144,
-                url : 'https://gravatar.com/avatar/fe78f037abc7274b60227211bcaddc2e?s=400&d=robohash&r=x',
-                name : 'Harish Yadav',
+                url : 'https://img.icons8.com/metro/26/000000/command-line.png',
+                name : 'Stanley Wu',
                 statusColor : 'green'
             },
             {
@@ -105,8 +107,8 @@ export default function HomePage() {
     }, [actions, state.userProfileData.avatar])
 
     const customStyle = {
-        "top": "30%",
-        "width": "100%  box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.1), 0 4px 6px -2px rgba(255, 255, 255, 0.05)"
+        "top": "52%",
+        "width": "calc(94% - 50px)"
     }
 
     return (
@@ -159,13 +161,31 @@ export default function HomePage() {
                         <button 
                             className="bg-purple-700 w-full rounded-full flex justify-center items-center hover:bg-purple-500 text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
                             type="button"
-                            onClick={(e) => {
-                                toggleModalItem(e)
+                            onClick={() => {
+                                toggleShowModal(showModal => !showModal)
                             }}>
                             <i class="material-icons md-light md-inactive mr-2">person_add</i>Invite Teammates
                         </button>
                     </div>
                 </div>
+                {
+                    showModal ? 
+                    <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={customStyle}
+                    onClick={(e) => {
+                        openInviteLink(e)
+                    }}>
+                      <h4 className="font-bold text-xl text-gray-600 text-center mb-2"> Invite Teammates to <br /> Pluto Office </h4>
+                        <p className="text-purple-700 mb-3 text-center">
+                            Share this link with others to grant access to this team.
+                        </p>
+                        <input 
+                            value={'https://pluto.abhishekwani.now.sh/join-team/' + state.teamDataInfo[state.activeTeamId].magiclink} 
+                            className="w-full shadow appearance-none border rounded py-1 px-1 text-gray-900 bg-purple-200" />
+                    </div> : 
+                    <span>
+
+                    </span>
+                }
                 </div>
         </div>
     )

@@ -2,7 +2,6 @@ import { googleSignIn } from '../auth/authhandle'
 
 export const handleLogout = async ({state}) => {
     state.loggedIn = false;
-    state.userProfileData = {}
 }
 
 export const googlehandleLogin = async ({state, effects}) => {
