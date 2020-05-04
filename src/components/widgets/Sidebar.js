@@ -24,25 +24,14 @@ export default function Sidebar(props) {
 
         loadTeams(state.userProfileData.userid)
 
-    }, [])
+    }, [state.userProfileData.userid, actions])
     
-    useEffect(() => {
-
-        let arr = []
-        Object.entries(state.teamDataInfo).map(([key, value]) => {
-            arr.push(key)
-        })
-
-        updateTeamArray(arr)
-
-    }, [state.teamDataInfo])
-
     return (
         <div className="w-15 bg-gray-900 text-white border-r border-blackblack fixed min-h-screen ">
             <div className="sidebar-icons">
                 {
                     // This is how we useEffect & useState 
-                    teamArray.map((id) => 
+                    Object.entries(state.teamDataInfo).map(([id, value]) => 
                         state.teamDataInfo[id].isActive ?
                         <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer bg-indigo-900 hover:bg-gray-800" id={id} key={id}
                             onClick={(e) => {

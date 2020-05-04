@@ -5,10 +5,19 @@ import { useHistory } from "react-router-dom"
 import MainBar from "../widgets/MainBar"
 import UserListItem from "./tidbits/UserListItem"
 import RoomListItem from "./tidbits/RoomListItem"
+import { css } from "@emotion/core";
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default function HomePage() {
 
     let history = useHistory();
+
+    const override = css`
+        display: block;
+        margin: 0 auto;
+        border-color: white;
+    `;
+
 
     const { state, actions, effects, reaction } = useOvermind();
 
@@ -114,9 +123,16 @@ export default function HomePage() {
                         </button>
                     </div>
                     {
+                        !state.loadingHome ? 
                         TeamRoomsArray.map((rooms) => 
                             <RoomListItem id={rooms.id} url={rooms.url} name={rooms.name} />
-                        )
+                            ) : 
+                            <BeatLoader
+                                css={override}
+                                size={15}
+                                color={"white"}
+                                loading={state.loadingHome}
+                            />
                     }
                 </div>
 
@@ -125,9 +141,16 @@ export default function HomePage() {
                         <div className="text-white font-bold tracking-wide text-xs">Online Members : </div>
                     </div>
                     {
+                        !state.loadingHome ? 
                         OnlineMembersArray.map((member) => 
                             <UserListItem id={member.id} url={member.url} name={member.name} statusColor={member.statusColor}/>
-                    )
+                        ) : 
+                        <BeatLoader
+                            css={override}
+                            size={15}
+                            color={"white"}
+                            loading={state.loadingHome}
+                        />
                 }
                 </div>
                 

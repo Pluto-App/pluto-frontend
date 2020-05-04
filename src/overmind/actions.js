@@ -36,8 +36,8 @@ export const createTeam = async ({state, effects}, values) => {
 }
 
 export const teamsbyuserid = async ({state, effects}, values) => {
+    state.loadingHome = true
     let dump = await effects.postHandler(state.getTeamsUrl, values)
-    state.teamDataInfo[state.activeTeamId].isActive = false
     if (dump.teams !== []) {
         dump.teams.map((t) => {
             state.teamDataInfo[t.teamid] = {
@@ -51,14 +51,31 @@ export const teamsbyuserid = async ({state, effects}, values) => {
             }
         })
     }
+
+    if (state.activeTeamId === 0) {
+        state.activeTeamId = dump.teams[0].teamid
+    } 
+
     state.teamDataInfo[state.activeTeamId].isActive = true
-    return null;
+    state.loadingHome = false
 }
 
-// export const usersbyteamid = async ({state, effects}, values) => {
-//     let dump = await effects.postHandler(state.getTeamMembersUrl, values)
-//     return dump.users
-// }
+export const usersbyteamid = async ({state, effects}, values) => {
+    let dump = await effects.postHandler(state.getTeamMembersUrl, values)
+    state.loadingMembers = true
+    state.memberList = {}
+    if (dump.users !== []) {
+        dump.users.map((u) => {
+            state.memberList[u.id] = {
+                userid : u.id,
+                username : u.username, 
+                usermail : u.email,
+                avatar : u.avatar
+            }
+        })
+    }
+    state.loadingMembers = false
+}
 
 export const handleChangeMutations = async ({state}, values) => {
     state.change[values.target] = values.value
