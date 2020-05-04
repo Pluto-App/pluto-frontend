@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader';
 import * as React from 'react'
 import { useOvermind } from '../overmind'
 import LoginPage from './pages/LoginPage'
@@ -42,4 +43,4 @@ const App = () => {
   );
 }
 
-export default App;
+export default hot(module)(App);

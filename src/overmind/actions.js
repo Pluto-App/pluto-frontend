@@ -7,7 +7,7 @@ export const handleLogout = async ({state}) => {
 
 export const googlehandleLogin = async ({state, effects}) => {
     state.loginStarted = true;
-    state.userProfileData = await googleSignIn()
+    state.userProfileData =  await googleSignIn()
     await effects.postHandler(state.loginUrl, state.userProfileData)
     state.loggedIn = true
     state.signedIn = true;
