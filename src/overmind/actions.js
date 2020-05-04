@@ -35,10 +35,25 @@ export const createTeam = async ({state, effects}, values) => {
     }
 }
 
-// export const teamsbyuserid = async ({state, effects}, values) => {
-//     let dump = await effects.postHandler(state.getTeamsUrl, values)
-//     return dump.teams
-// }
+export const teamsbyuserid = async ({state, effects}, values) => {
+    let dump = await effects.postHandler(state.getTeamsUrl, values)
+    state.teamDataInfo[state.activeTeamId].isActive = false
+    if (dump.teams !== []) {
+        dump.teams.map((t) => {
+            state.teamDataInfo[t.teamid] = {
+                teamid : t.teamid,
+                teamowner : t.teamowner,
+                teamname : t.teamname,
+                avatar : t.avatar,
+                magiclink : t.magiclink,
+                isActive : false,
+                plan : 'Regular'
+            }
+        })
+    }
+    state.teamDataInfo[state.activeTeamId].isActive = true
+    return null;
+}
 
 // export const usersbyteamid = async ({state, effects}, values) => {
 //     let dump = await effects.postHandler(state.getTeamMembersUrl, values)

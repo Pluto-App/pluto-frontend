@@ -95,7 +95,6 @@ export default function HomePage() {
 
     }, [actions, state.userProfileData.avatar])
 
- 
     const customStyle = {
         "top": "30%",
         "width": "100%  box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.1), 0 4px 6px -2px rgba(255, 255, 255, 0.05)"
@@ -137,8 +136,8 @@ export default function HomePage() {
                         <button 
                             className="bg-purple-700 w-full rounded-full flex justify-center items-center hover:bg-purple-500 text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
                             type="button"
-                            onClick={() => {
-                                toggleModalItem()
+                            onClick={(e) => {
+                                toggleModalItem(e)
                             }}>
                             <i class="material-icons md-light md-inactive mr-2">person_add</i>Invite Teammates
                         </button>

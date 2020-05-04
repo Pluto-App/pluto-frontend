@@ -16,14 +16,17 @@ export default function Sidebar(props) {
 
     useEffect(() => {
 
-        // Populate using POST request data from /teamsbyuserid pass userid. Memo it. 
-        // const TeamData = async (userid) => {
-        //     await actions.teamsbyuserid({
-        //         userid : userid
-        //     })
-        // }
+        const loadTeams = async (id) => {
+            actions.teamsbyuserid({
+                userid : id
+            })   
+        }
 
-        // TeamData(state.userProfileData.userid)
+        loadTeams(state.userProfileData.userid)
+
+    }, [])
+    
+    useEffect(() => {
 
         let arr = []
         Object.entries(state.teamDataInfo).map(([key, value]) => {
@@ -32,7 +35,7 @@ export default function Sidebar(props) {
 
         updateTeamArray(arr)
 
-    }, [state.userProfileData.userid, state.teamDataInfo, actions])
+    }, [state.teamDataInfo])
 
     return (
         <div className="w-15 bg-gray-900 text-white border-r border-blackblack fixed min-h-screen ">
@@ -41,7 +44,7 @@ export default function Sidebar(props) {
                     // This is how we useEffect & useState 
                     teamArray.map((id) => 
                         state.teamDataInfo[id].isActive ?
-                        <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer bg-indigo-900 hover:bg-gray-800" id={id}
+                        <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer bg-indigo-900 hover:bg-gray-800" id={id} key={id}
                             onClick={(e) => {
                                 e.preventDefault()
                                 actions.changeActiveTeam(id).then(() => {
@@ -52,7 +55,7 @@ export default function Sidebar(props) {
                                 <img src={state.teamDataInfo[id].avatar} alt="T" />
                             </div>
                         </a> :
-                        <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer hover:bg-gray-800" id={id}
+                        <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer hover:bg-gray-800" id={id} key={id}
                             onClick={(e) => {
                                 e.preventDefault()
                                 actions.changeActiveTeam(id).then(() => {
