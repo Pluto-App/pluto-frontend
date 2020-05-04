@@ -1,6 +1,4 @@
-import { hot } from 'react-hot-loader';
 import * as React from 'react'
-import { useOvermind } from '../overmind'
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
 import TopBar from './widgets/Topbar'
@@ -16,8 +14,6 @@ import {
 
 const App = () => {
   
-  const { state, actions, effects, reaction } = useOvermind()
-
   return (
     <Router>
       <TopBar />
@@ -43,4 +39,4 @@ const App = () => {
   );
 }
 
-export default hot(module)(App);
+export default App;

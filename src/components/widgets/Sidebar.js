@@ -17,13 +17,13 @@ export default function Sidebar(props) {
     useEffect(() => {
 
         // Populate using POST request data from /teamsbyuserid pass userid. Memo it. 
-        const TeamData = async (userid) => {
-            await actions.teamsbyuserid({
-                userid : userid
-            })
-        }
+        // const TeamData = async (userid) => {
+        //     await actions.teamsbyuserid({
+        //         userid : userid
+        //     })
+        // }
 
-        TeamData(state.userProfileData.userid)
+        // TeamData(state.userProfileData.userid)
 
         let arr = []
         Object.entries(state.teamDataInfo).map(([key, value]) => {
@@ -49,7 +49,7 @@ export default function Sidebar(props) {
                                 })
                             }}>
                             <div className="bg-white h-8 w-8 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
-                                <img src={'https://api.adorable.io/avatars/285/abott@adorable' + state.teamDataInfo[id].avatarUrlId} alt="T" />
+                                <img src={state.teamDataInfo[id].avatar} alt="T" />
                             </div>
                         </a> :
                         <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer hover:bg-gray-800" id={id}
@@ -60,7 +60,7 @@ export default function Sidebar(props) {
                                 })
                             }}>
                             <div className="bg-white h-8 w-8 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
-                                <img src={'https://api.adorable.io/avatars/285/abott@adorable' + state.teamDataInfo[id].avatarUrlId} alt="T" />
+                                <img src={state.teamDataInfo[id].avatar} alt="T" />
                             </div>
                         </a>
                     )

@@ -16,7 +16,7 @@ export default function MainBar() {
                         <p 
                             onClick="" // listOpen Toggle
                             className="flex p-1 items-center text-grey-dark font-bold rounded-lg hover:text-white cursor-pointer hover:bg-grey-darker">
-                                {state.teamDataInfo[state.activeTeamId].name}
+                                {state.teamDataInfo[state.activeTeamId].teamname}
                         </p>
                         <div className="flex items-center">
                             <button className="text-white hover:bg-grey-darker rounded-lg p-1"  onClick={(e) => {

@@ -67,10 +67,10 @@ export default function TeamProfile() {
                 <MainBar/>
                 <BackButton url={'/home'}></BackButton>
                 <pre className="text-grey font-bold text-sm px-2 tracking-wide mt-2">
-                    Team Name : {state.teamDataInfo[state.activeTeamId].name}
+                    Team Name : {state.teamDataInfo[state.activeTeamId].teamname}
                 </pre>
                 <pre className="text-grey font-bold text-sm px-2 tracking-wide mt-2">
-                    Team Owner : {state.teamDataInfo[state.activeTeamId].owner}
+                    Team Owner : {state.teamDataInfo[state.activeTeamId].teamowner}
                 </pre>
                 <pre className="text-grey font-bold text-sm px-2 tracking-wide mt-2">
                     Team Plan : {state.teamDataInfo[state.activeTeamId].plan}

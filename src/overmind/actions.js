@@ -16,32 +16,34 @@ export const googlehandleLogin = async ({state, effects}) => {
 }
 
 export const createTeam = async ({state, effects}, values) => {
+
     state.addingTeam = true;
-    state.newTeamData = await effects.postHandler(state.createTeamUrl, values)
+    let newTeamData = await effects.postHandler(state.createTeamUrl, values)
     state.addingTeam = false;
+
     state.teamDataInfo[state.activeTeamId].isActive = false
-    state.activeTeamId = state.newTeamData.teamid
-    state.teamDataInfo[state.newTeamData.teamid] = {
-        id : state.newTeamData.teamid,
+
+    state.activeTeamId = newTeamData.teamid
+    state.teamDataInfo[newTeamData.teamid] = {
+        teamid : newTeamData.teamid,
+        teamowner : newTeamData.teamowner,
+        teamname : newTeamData.teamname,
+        avatar : newTeamData.avatar,
+        magiclink : newTeamData.magiclink,
         isActive : true,
-        owner : state.newTeamData.teamowner,
-        name : state.newTeamData.teamname,
-        plan : 'Regular', 
-        avatar : state.newTeamData.avatar,
-        avatarUrlId : 266,
-        magiclink : state.newTeamData.magiclink,
+        plan : 'Regular'
     }
 }
 
-export const teamsbyuserid = async ({state, effects}, values) => {
-    let dump = await effects.postHandler(state.getTeamsUrl, values)
-    return dump.teams
-}
+// export const teamsbyuserid = async ({state, effects}, values) => {
+//     let dump = await effects.postHandler(state.getTeamsUrl, values)
+//     return dump.teams
+// }
 
-export const usersbyteamid = async ({state, effects}, values) => {
-    let dump = await effects.postHandler(state.getTeamMembersUrl, values)
-    return dump.users
-}
+// export const usersbyteamid = async ({state, effects}, values) => {
+//     let dump = await effects.postHandler(state.getTeamMembersUrl, values)
+//     return dump.users
+// }
 
 export const handleChangeMutations = async ({state}, values) => {
     state.change[values.target] = values.value
