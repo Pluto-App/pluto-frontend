@@ -8,13 +8,15 @@ export const state = {
     loadingHome : true,
     loadingMembers : true,
     userProfileData : {},
-    memberList : {},
-
-    getTeamsUrl : 'https://pluto-office.herokuapp.com/teamsbyuserid',
-    getTeamMembersUrl : 'https://pluto-office.herokuapp.com/usersbyteamid',
-    loginUrl : 'https://pluto-office.herokuapp.com/login', 
-    createTeamUrl : 'https://pluto-office.herokuapp.com/addteam',
-    
+    teamDataInfo : {},
     activeTeamId : 0, 
-    teamDataInfo : {}
+    memberList : {},
+    activeMemberId : '',
+    loggedInUserId : '',
+
+    getTeamsUrl : 'https://pluto-office.herokuapp.com/teams/teamsbyuserid',
+    getTeamMembersUrl : 'https://pluto-office.herokuapp.com/users/usersbyteamid',
+    loginUrl : 'https://pluto-office.herokuapp.com/users/login', 
+    createTeamUrl : 'https://pluto-office.herokuapp.com/teams/addteam',
+
   }
