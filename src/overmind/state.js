@@ -10,6 +10,7 @@ export const state = {
     teamDataInfo : {},
     activeTeamId : 0, 
     memberList : {},
+    teamRooms : {},
     activeMemberId : '',
     loggedInUserId : '',
   }

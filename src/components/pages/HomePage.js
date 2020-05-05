@@ -18,11 +18,11 @@ export default function HomePage() {
         border-color: white;
     `;
 
-
     const { state, actions, effects, reaction } = useOvermind();
 
     const [OnlineMembersArray, updateOnlineMembersArray] = useState([]);
     const [TeamRoomsArray, updateTeamsRoomsArray] = useState([]);
+    const [copySuccess, togglecopySuccess] = useState(false);
     const [showModal, toggleShowModal] = useState(false);
 
     const openInviteLink = (e) => {
@@ -33,9 +33,11 @@ export default function HomePage() {
 
     useEffect(() => {
         
-        const getTeamRooms = (teamid) => {
-            // Populate TeamRoomsArray array here from Team Id
-        }
+        // const getTeamRooms = async (teamid) => {
+        //     await actions.getTeamRoomsFromId(teamid)
+        // }
+
+        // getTeamRooms(state.teamDataInfo[state.activeTeamId].teamid)
         
         let RoomListArray = [
             {
@@ -67,13 +69,16 @@ export default function HomePage() {
 
         updateTeamsRoomsArray(RoomListArray)
     
-    }, [])
+    }, [actions, state.teamDataInfo, state.activeTeamId])
 
     useEffect(() => {
 
-        const getOnlineMembers = (teamid) => {
-            // Populate OnlineMembersArray array here
-        }
+        // All Online Members of the team.
+        // const getOnlineMembers = async (teamid) => {
+        //     await actions.getOnlineMembersList(teamid)
+        // }
+
+        // getOnlineMembers(state.teamDataInfo[state.activeTeamId].teamid)
 
         let OnlineMembersArray = [
             {
@@ -104,10 +109,10 @@ export default function HomePage() {
 
         updateOnlineMembersArray(OnlineMembersArray)
 
-    }, [actions, state.userProfileData.avatar])
+    }, [actions, state.teamDataInfo, state.activeTeamId, state.userProfileData.avatar])
 
     const customStyle = {
-        "top": "52%",
+        "top": "46%",
         "width": "calc(94% - 50px)"
     }
 
@@ -162,6 +167,7 @@ export default function HomePage() {
                             className="bg-purple-700 w-full rounded-full flex justify-center items-center hover:bg-purple-500 text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
                             type="button"
                             onClick={() => {
+                                togglecopySuccess(false);
                                 toggleShowModal(showModal => !showModal)
                             }}>
                             <i class="material-icons md-light md-inactive mr-2">person_add</i>Invite Teammates
@@ -172,15 +178,27 @@ export default function HomePage() {
                     showModal ? 
                     <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={customStyle}
                     onClick={(e) => {
-                        openInviteLink(e)
                     }}>
                       <h4 className="font-bold text-xl text-gray-600 text-center mb-2"> Invite Teammates to <br /> Pluto Office </h4>
                         <p className="text-purple-700 mb-3 text-center">
                             Share this link with others to grant access to this team.
                         </p>
                         <input 
+                            id="InviteModalLink"
                             value={'https://pluto.abhishekwani.now.sh/join-team/' + state.teamDataInfo[state.activeTeamId].magiclink} 
-                            className="w-full shadow appearance-none border rounded py-1 px-1 text-gray-900 bg-purple-200" />
+                            className="w-full shadow appearance-none border text-purple-700 rounded py-1 px-1 bg-purple-200" />
+                        <button
+                            className="bg-purple-900 w-full rounded-sm flex justify-center text-white items-center hover:bg-purple-dark text-white font-bold py-2 px-2 mt-2 focus:outline-none focus:shadow-outline"
+                            type="button"
+                            onClick = {(e) => {
+                                var copyText = document.getElementById("InviteModalLink");
+                                copyText.select();
+                                copyText.setSelectionRange(0, 99999)
+                                document.execCommand("copy");
+                                togglecopySuccess(true);
+                                setTimeout(() => toggleShowModal(showModal => !showModal), 1000);
+                            }}
+                        >{!copySuccess ? "Copy Invite" : "Copied !!"}</button>
                     </div> : 
                     <span>
 

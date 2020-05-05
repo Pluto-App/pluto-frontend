@@ -89,3 +89,11 @@ export const changeActiveTeam = async ({state}, values) => {
 export const setOwnerName = async ({state}, values) => {
     state.change[values.target] = values.value
 }
+
+export const getTeamRoomsFromId = async ({state, effects}, values) => {
+    // Passed Team Id.
+}
+
+export const getOnlineMembersList = async ({state, effects}, value) => {
+    // Online members List.
+}
