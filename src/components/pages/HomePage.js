@@ -113,7 +113,7 @@ export default function HomePage() {
                     {
                         !state.loadingTeams ? 
                         TeamRoomsArray.map((rooms) => 
-                            <RoomListItem id={rooms.id} url={rooms.url} name={rooms.name} />
+                                <RoomListItem id={rooms.id} url={rooms.url} name={rooms.name} />
                             ) : 
                             <BeatLoader
                                 css={override}
@@ -141,13 +141,14 @@ export default function HomePage() {
                             />
                         </div>
                     }
-                </div>
                     <div className="flex justify-center items-center" style={{height: "15px"}}>
                         <div className="text-gray-500"></div>
                         <button className="text-white focus:outline-none">
                             <i className="material-icons hover:bg-gray-700" style={{fontSize: "18px", margin: "0"}}>keyboard_arrow_down</i>
                         </button>
                     </div>
+                </div>
+
                 <div className="sidebar-icons" style={{height: "relative"}}>
                     <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
                         <div className="text-gray-500 font-bold tracking-wide text-xs">Team Mates</div>
