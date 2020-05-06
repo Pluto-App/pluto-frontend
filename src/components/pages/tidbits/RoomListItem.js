@@ -26,22 +26,22 @@ export default function RoomListItem(props) {
             clickFunc()
         }}>
             <div className="flex justify-start p-2">
-                <div className="bg-white h-5 w-5 flex text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
-                    <img src={props.url} alt="T" />
+                <div className="flex text-gray-500 font-semibold rounded-lg overflow-hidden">
+                    <i className="material-icons md-light md-inactive hover:text-indigo-400" style={{fontSize: "20px", margin: "0"}}>volume_up</i>
                 </div>
                 <div className="text-white px-2 font-bold tracking-wide text-xs">
                     {props.name} 
                 </div>
             </div>
             <div className="flex justify-end">
-                <button className="text-indigo-400 hover:text-indigo-900 px-1">
-                    <i className="material-icons md-light md-inactive" style={{fontSize: "15px", margin: "0"}}>description</i>
+                <button className="text-gray-300 hover:text-indigo-500 px-1">
+                    <i className="material-icons md-light md-inactive" style={{fontSize: "15px", margin: "0"}}>notes</i>
                 </button>
-                <button className="text-white hover:text-green-400 px-1" onClick={() => {
+                <button className="text-gray-300 hover:text-indigo-500 px-1" onClick={() => {
                     toggleShowModal(showModal => !showModal) }}>
-                    <i className="material-icons md-light md-inactive" style={{fontSize: "15px", margin: "0"}}>chat</i>
+                    <i className="material-icons md-light md-inactive" style={{fontSize: "15px", margin: "0"}}>question_answer</i>
                 </button>
-                <button className="text-indigo-600 hover:text-indigo-300 px-1">
+                <button className="text-gray-300 hover:text-indigo-500 px-1">
                     <i className="material-icons md-light md-inactive" style={{fontSize: "18px", margin: "0"}}>video_call</i>
                 </button>
                 {

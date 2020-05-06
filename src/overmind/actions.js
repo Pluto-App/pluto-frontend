@@ -35,7 +35,9 @@ export const createTeam = async ({state, effects}, values) => {
 }
 
 export const teamsbyuserid = async ({state, effects}, values) => {
-    state.loadingHome = true
+
+    state.loadingTeams = true
+    
     let dump = await effects.postHandler(process.env.REACT_APP_getTeamsUrl, values)
     if (dump.teams !== []) {
         dump.teams.map((t) => {
@@ -56,12 +58,14 @@ export const teamsbyuserid = async ({state, effects}, values) => {
     } 
 
     state.teamDataInfo[state.activeTeamId].isActive = true
-    state.loadingHome = false
+    state.loadingTeams = false
 }
 
 export const usersbyteamid = async ({state, effects}, values) => {
-    let dump = await effects.postHandler(process.env.REACT_APP_getTeamMembersUrl, values)
+
     state.loadingMembers = true
+    let dump = await effects.postHandler(process.env.REACT_APP_getTeamMembersUrl, values)
+
     state.memberList = {}
     if (dump.users !== []) {
         dump.users.map((u) => {
@@ -69,10 +73,12 @@ export const usersbyteamid = async ({state, effects}, values) => {
                 userid : u.id,
                 username : u.username, 
                 usermail : u.email,
-                avatar : u.avatar
+                avatar : u.avatar, 
+                statusColor : 'green' // How to update it via sockets?
             }
         })
     }
+
     state.loadingMembers = false
 }
 

@@ -25,25 +25,26 @@ export default function UserListItem(props) {
                     clickFunc()
                 }}>
                     <div className="flex justify-start p-2 pl-1">
-                        <div className="bg-white h-4 w-4 flex text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
+                        <div className="bg-white h-4 w-4 flex text-black text-2xl font-semibold rounded-lg overflow-hidden">
                             <img src={props.url} alt="T" />
                         </div>
-                        <div className="text-white px-2 font-bold tracking-wide text-xs">
+                        <svg height="8" width="8">
+                            <circle cx="4" cy="4" r="4" fill={props.statusColor} />
+                                Sorry, your browser does not support inline SVG.  
+                        </svg>
+                        <div className="text-white px-1 font-bold tracking-wide text-xs">
                             {props.name}
                         </div>
-                        <svg height="10" width="10">
-                                <circle cx="5" cy="5" r="4" fill={props.statusColor} />
-                        </svg>
                     </div>
                     <div className="flex justify-end">
-                        <button className="text-indigo-400 hover:text-indigo-900 px-1">
-                            <i className="material-icons md-light md-inactive" style={{fontSize: "15px", margin: "0"}}>description</i>
+                    <button className="text-gray-300 hover:text-indigo-500 px-1">
+                            <i className="material-icons md-light md-inactive" style={{fontSize: "15px", margin: "0"}}>notes</i>
                         </button>
-                        <button className="text-white hover:text-green-400 px-1" onClick={() => {
+                        <button className="text-gray-300 hover:text-indigo-500 px-1" onClick={() => {
                             toggleShowModal(showModal => !showModal) }}>
-                            <i className="material-icons md-light md-inactive" style={{fontSize: "15px", margin: "0"}}>chat</i>
+                            <i className="material-icons md-light md-inactive" style={{fontSize: "15px", margin: "0"}}>question_answer</i>
                         </button>
-                        <button className="text-indigo-600 hover:text-indigo-300 px-1">
+                        <button className="text-gray-300 hover:text-indigo-500 px-1">
                             <i className="material-icons md-light md-inactive" style={{fontSize: "18px", margin: "0"}}>video_call</i>
                         </button>
                         {
@@ -54,12 +55,13 @@ export default function UserListItem(props) {
                                     <div className="bg-white h-4 w-4 flex text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
                                         <img src={props.url} alt="T" />
                                     </div>
-                                    <div className="text-gray-500 px-2 font-bold tracking-wide text-xs">
+                                    <svg height="8" width="8">
+                                        <circle cx="4" cy="4" r="5" fill={props.statusColor} />
+                                            Sorry, your browser does not support inline SVG.  
+                                    </svg>
+                                    <div className="text-gray-600 px-1 font-bold tracking-wide text-xs">
                                         {props.name}
                                     </div>
-                                    <svg height="10" width="10">
-                                            <circle cx="5" cy="5" r="4" fill={props.statusColor} />
-                                    </svg>
                                 </div>
                                 <input 
                                     placeholder='Send Message'

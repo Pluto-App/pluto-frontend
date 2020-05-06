@@ -19,97 +19,63 @@ export default function HomePage() {
     `;
 
     const { state, actions, effects, reaction } = useOvermind();
-
-    const [OnlineMembersArray, updateOnlineMembersArray] = useState([]);
     const [TeamRoomsArray, updateTeamsRoomsArray] = useState([]);
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showModal, toggleShowModal] = useState(false);
 
-    const openInviteLink = (e) => {
-        e.preventDefault();
-        toggleShowModal(showModal => !showModal)
-        window.require("electron").shell.openExternal('https://pluto.abhishekwani.now.sh/join-team/' + state.teamDataInfo[state.activeTeamId].magiclink);
-    }
-
-    useEffect(() => {
-        
-        // const getTeamRooms = async (teamid) => {
-        //     await actions.getTeamRoomsFromId(teamid)
-        // }
-
-        // getTeamRooms(state.teamDataInfo[state.activeTeamId].teamid)
-        
-        let RoomListArray = [
-            {
-                id : 55486464,
-                url : 'https://media.timeout.com/images/101609205/750/422/image.jpg',
-                name : 'Coffee Room ☕'
-            },
-            {
-                id : 884574541,
-                url : 'https://img.icons8.com/dusk/64/000000/timeline.png',
-                name : 'Progess Updates 🏁'
-            },
-            {
-                id : 9653214567,
-                url : 'https://image.shutterstock.com/image-photo/kanban-board-one-prerequisites-agile-260nw-1203911209.jpg',
-                name : 'Daily Standup 🚀'
-            },
-            {
-                id : 55486464,
-                url : 'https://zioconnects.com/wp-content/uploads/2017/06/Ravago-Conference-Room-A1-1200x800.jpg',
-                name : 'Conference Room ⚙️'
-            },
-            {
-                id : 77452144,
-                url : 'https://vignette.wikia.nocookie.net/harrypotter/images/c/cf/HPDH2-0996.jpg/revision/latest?cb=20140828115840',
-                name : 'Room of Requirement 💁🏻'
-            },
-        ]
-
-        updateTeamsRoomsArray(RoomListArray)
-    
-    }, [actions, state.teamDataInfo, state.activeTeamId])
-
-    useEffect(() => {
-
-        // All Online Members of the team.
-        // const getOnlineMembers = async (teamid) => {
-        //     await actions.getOnlineMembersList(teamid)
-        // }
-
-        // getOnlineMembers(state.teamDataInfo[state.activeTeamId].teamid)
-
-        let OnlineMembersArray = [
-            {
-                id : 9653214567,
-                url : 'https://gravatar.com/avatar/2186b975d2d8ac084397b3fe1a42795d?s=400&d=robohash&r=x',
-                name : 'Robin Pike',
-                statusColor : 'green'
-            },
-            {
-                id : 33651474,
-                url : 'https://gravatar.com/avatar/1f1181db29ab95f4adf790463b8b6ef9?s=400&d=robohash&r=x',
-                name : 'Jessica Abel',
-                statusColor : 'green'
-            },
-            {
-                id : 66352144,
-                url : 'https://img.icons8.com/metro/26/000000/command-line.png',
-                name : 'Stanley Wu',
-                statusColor : 'green'
-            },
-            {
-                id : 77415523,
-                url : state.userProfileData.avatar,
-                name : 'Sumit Lahiri',
-                statusColor : 'green'
+     useEffect(
+         () => {
+            const loadTeamsbyUserId = async (userid) => {
+                await actions.teamsbyuserid({
+                    userid : userid
+                })
             }
-        ]
 
-        updateOnlineMembersArray(OnlineMembersArray)
+            loadTeamsbyUserId(state.userProfileData.userid)    
+            let RoomListArray = [
+                {
+                    id : 55486464,
+                    url : 'https://media.timeout.com/images/101609205/750/422/image.jpg',
+                    name : 'Coffee Room ☕'
+                },
+                {
+                    id : 884574541,
+                    url : 'https://img.icons8.com/dusk/64/000000/timeline.png',
+                    name : 'Progess Updates 🏁'
+                },
+                {
+                    id : 9653214567,
+                    url : 'https://image.shutterstock.com/image-photo/kanban-board-one-prerequisites-agile-260nw-1203911209.jpg',
+                    name : 'Daily Standup 🚀'
+                },
+                {
+                    id : 55486464,
+                    url : 'https://zioconnects.com/wp-content/uploads/2017/06/Ravago-Conference-Room-A1-1200x800.jpg',
+                    name : 'Conference Room ⚙️'
+                },
+                {
+                    id : 77452144,
+                    url : 'https://vignette.wikia.nocookie.net/harrypotter/images/c/cf/HPDH2-0996.jpg/revision/latest?cb=20140828115840',
+                    name : 'Requirements 💁🏻'
+                },
+            ]
 
-    }, [actions, state.teamDataInfo, state.activeTeamId, state.userProfileData.avatar])
+            updateTeamsRoomsArray(RoomListArray)
+        }, [actions, state.userProfileData.userid]
+    )
+
+    useEffect(
+        () => {
+            if(state.activeTeamId !== 0) {
+                const MembersData = async (teamid) => {
+                    await actions.usersbyteamid({
+                        teamid : teamid
+                    })
+                }
+                MembersData(state.activeTeamId)
+            }
+        }, [actions, state.activeTeamId]
+    )
 
     const customStyle = {
         "top": "46%",
@@ -123,14 +89,14 @@ export default function HomePage() {
                 <MainBar/>
 
                 <div className="sidebar-icons" style={{height: "relative"}}>
-                    <div className="flex justify-between items-center p-2 pl-3 hover:bg-gray-700">
-                        <div className="text-white font-bold tracking-wide text-xs">Team Rooms : </div>
+                    <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
+                        <div className="text-gray-500 font-bold tracking-wide text-xs">Rooms</div>
                         <button className="text-white">
                             <i className="material-icons md-light md-inactive" style={{fontSize: "18px", margin: "0"}}>add</i>
                         </button>
                     </div>
                     {
-                        !state.loadingHome ? 
+                        !state.loadingTeams ? 
                         TeamRoomsArray.map((rooms) => 
                             <RoomListItem id={rooms.id} url={rooms.url} name={rooms.name} />
                             ) : 
@@ -138,29 +104,39 @@ export default function HomePage() {
                                 css={override}
                                 size={15}
                                 color={"white"}
-                                loading={state.loadingHome}
+                                loading={state.loadingTeams}
                             />
                     }
                 </div>
-
+                    <div className="flex justify-center items-center" style={{height: "15px"}}>
+                        <div className="text-gray-500"></div>
+                        <button className="text-white focus:outline-none">
+                            <i className="material-icons hover:bg-gray-700" style={{fontSize: "18px", margin: "0"}}>keyboard_arrow_down</i>
+                        </button>
+                    </div>
                 <div className="sidebar-icons" style={{height: "relative"}}>
-                    <div className="flex justify-between items-center p-2 pl-3 hover:bg-gray-800">
-                        <div className="text-white font-bold tracking-wide text-xs">Online Members : </div>
+                    <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
+                        <div className="text-gray-500 font-bold tracking-wide text-xs">Members</div>
                     </div>
                     {
-                        !state.loadingHome ? 
-                        OnlineMembersArray.map((member) => 
-                            <UserListItem id={member.id} url={member.url} name={member.name} statusColor={member.statusColor}/>
-                        ) : 
-                        <BeatLoader
-                            css={override}
-                            size={15}
-                            color={"white"}
-                            loading={state.loadingHome}
-                        />
-                }
+                        !state.loadingMembers ? 
+                            Object.entries(state.memberList).map(([key, member]) => 
+                                <UserListItem data-record-id={key} id={member.userid} key={member.userid} url={member.avatar} name={member.username} email={member.useremail} statusColor={member.statusColor}/>
+                            ) : 
+                            <BeatLoader
+                                css={override}
+                                size={15}
+                                color={"white"}
+                                loading={state.loadingMembers}
+                            />
+                    }
                 </div>
-                
+                    <div className="flex justify-center items-center" style={{height: "15px"}}>
+                        <div className="text-gray-500"></div>
+                        <button className="text-white focus:outline-none">
+                            <i className="material-icons hover:bg-gray-700" style={{fontSize: "18px", margin: "0"}}>keyboard_arrow_down</i>
+                        </button>
+                    </div>
                 <div className="absolute pin-b pb-4" style={{width: "calc(95% - 50px)"}}>
                     <div className="mt-4 px-3 w-full">
                         <button 

@@ -1,4 +1,4 @@
-import { hot } from 'react-hot-loader';
+import { hot } from 'react-hot-loader/root';
 import * as React from 'react'
 import { render } from 'react-dom'
 import { createOvermind } from 'overmind'
@@ -13,8 +13,8 @@ const overmind = createOvermind(config, {
   devtools: "http://127.0.0.1:5000"
 })
 
-const NewOverMind = hot(module)(overmind)
-const NewApp = hot(module)(App)
+const NewOverMind = hot(overmind)
+const NewApp = hot(App)
 
 render(
   <Provider value={NewOverMind}>

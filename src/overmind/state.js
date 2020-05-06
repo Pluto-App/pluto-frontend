@@ -4,7 +4,7 @@ export const state = {
     loggedIn : false, 
     addingTeam : false,
     loginStarted : false,
-    loadingHome : true,
+    loadingTeams : true,
     loadingMembers : true,
     userProfileData : {},
     teamDataInfo : {},

@@ -20,31 +20,6 @@ export default function TeamProfile() {
 
     const { state, actions, effects, reaction } = useOvermind();
 
-    const [MemberArray, updateMembersArray] = useState([]);
-
-    useEffect(() => {
-
-        const MembersData = async (teamid) => {
-            await actions.usersbyteamid({
-                teamid : teamid
-            })
-        }
-
-        MembersData(state.activeTeamId)
-
-    }, [actions, state.activeTeamId])
-
-    useEffect(() => {
-
-        let arr = []
-        Object.entries(state.memberList).map(([key, value]) => {
-            arr.push(value)
-        })
-
-        updateMembersArray(arr)
-
-    }, [state.memberList])
-
     return (
         <div className="w-full flex">
             <Sidebar></Sidebar>
@@ -74,21 +49,6 @@ export default function TeamProfile() {
                         </button> 
                     </div>
                 </div>
-                <pre className="text-grey font-bold text-sm px-2 tracking-wide mt-2 hover:bg-gray-800">
-                   Team Members : 
-                </pre>
-                {
-                    !state.loadingMembers ? 
-                    MemberArray.map((member) => 
-                        <UserListItem id={member.userid} key={member.userid} url={member.avatar} name={member.username} email={member.useremail} statusColor='red'/>
-                    ) : 
-                    <BeatLoader
-                        css={override}
-                        size={10}
-                        color={"white"}
-                        loading={state.loadingMembers}
-                    />
-                }
             </div>
         </div>
     )
