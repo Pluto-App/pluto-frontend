@@ -37,12 +37,11 @@ export default function TeamRegisterPage() {
 
     return (
         <div className="w-full flex">
-            <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)"}}>
+            <div className="w-full bg-black ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)"}}>
             <BackButton url={'/home'}></BackButton>
-            <pre className="px-5 py-5">
-                Create Team Page : 
-            </pre>
-                <form className="px-8 pt-6 pb-8 mb-4">
+            <p className="font-bold px-4 text-white">Create New Team</p>
+            <p className="text-gray-700 px-4">You will be set as Team Owner</p>
+                <form className="px-4 pt-6 pb-8 mb-4">
                     <div className="mb-4">
                         <label className="block text-gray-700 text-sm font-bold mb-2" for="username">
                             Unquie Team Name
@@ -56,7 +55,7 @@ export default function TeamRegisterPage() {
                     </div>
                     { !state.addingTeam ? 
                         <div className="flex items-center justify-between">
-                            <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={createTeam}>
+                            <button className="bg-indigo-500 w-full hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onClick={createTeam}>
                                 Create Team
                             </button>
                         </div> : 

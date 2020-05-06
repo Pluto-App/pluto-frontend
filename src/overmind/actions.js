@@ -1,5 +1,16 @@
 import { googleSignIn } from '../auth/authhandle'
 
+export const randomStringGen = async ({state, effects}, values) => {
+
+    let result = ""
+    let randomString = "7912ecbcffc48d2ded669cnxmkslhfyqowpslmvbvz3c0be25a2adc2e36a246947597257b3c43fc2e2d4c72c80be25a2adc2e36ayshgfbdpl987jhdt3refwvsbvcnxmkslhfyqowpslmvbvzdaf1639djs6sh"
+    for(var i = 0; i < randomString.length; i += 1) {
+      result += randomString.charAt(Math.floor(Math.random() * values));
+    }
+
+    return result
+}
+
 export const handleLogout = async ({state}) => {
     state.loggedIn = false;
 }

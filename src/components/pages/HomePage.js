@@ -22,6 +22,28 @@ export default function HomePage() {
     const [TeamRoomsArray, updateTeamsRoomsArray] = useState([]);
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showModal, toggleShowModal] = useState(false);
+    const [isAddingRoom, setIsAddingRoom] = useState(false);
+
+    const addingNewRoom = (e) => {
+        let id = actions.randomStringGen(9);
+        let newRoom = {
+            id : id,
+            url : 'https://media.timeout.com/images/101609205/750/422/image.jpg',
+            name : state.change["roomname"]
+        }
+        let arr = [...TeamRoomsArray]
+        arr.push(newRoom)
+        updateTeamsRoomsArray(arr)
+        // TODO Add New Room to Backend
+    }
+
+    const handleChange = async (e) => {
+        await actions.handleChangeMutations({
+            target : e.target.name, 
+            value : e.target.value
+        })
+    }
+
 
      useEffect(
          () => {
@@ -39,11 +61,6 @@ export default function HomePage() {
                     name : 'Coffee Room ☕'
                 },
                 {
-                    id : 884574541,
-                    url : 'https://img.icons8.com/dusk/64/000000/timeline.png',
-                    name : 'Progess Updates 🏁'
-                },
-                {
                     id : 9653214567,
                     url : 'https://image.shutterstock.com/image-photo/kanban-board-one-prerequisites-agile-260nw-1203911209.jpg',
                     name : 'Daily Standup 🚀'
@@ -52,12 +69,7 @@ export default function HomePage() {
                     id : 55486464,
                     url : 'https://zioconnects.com/wp-content/uploads/2017/06/Ravago-Conference-Room-A1-1200x800.jpg',
                     name : 'Conference Room ⚙️'
-                },
-                {
-                    id : 77452144,
-                    url : 'https://vignette.wikia.nocookie.net/harrypotter/images/c/cf/HPDH2-0996.jpg/revision/latest?cb=20140828115840',
-                    name : 'Requirements 💁🏻'
-                },
+                }
             ]
 
             updateTeamsRoomsArray(RoomListArray)
@@ -91,8 +103,11 @@ export default function HomePage() {
                 <div className="sidebar-icons" style={{height: "relative"}}>
                     <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
                         <div className="text-gray-500 font-bold tracking-wide text-xs">Rooms</div>
-                        <button className="text-white">
-                            <i className="material-icons md-light md-inactive" style={{fontSize: "18px", margin: "0"}}>add</i>
+                        <button className="text-white focus:outline-none hover:bg-gray-800">
+                            <i className="material-icons md-light md-inactive" onClick={(e) => {
+                                e.preventDefault();
+                                setIsAddingRoom(isAddingRoom => !isAddingRoom)
+                            }} style={{fontSize: "18px", margin: "0"}}>add</i>
                         </button>
                     </div>
                     {
@@ -107,6 +122,25 @@ export default function HomePage() {
                                 loading={state.loadingTeams}
                             />
                     }
+                    {
+                        isAddingRoom && 
+                        <div className="flex justify-center items-center hover:bg-gray-800">
+                            <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                                style={{ width:"95%" }}
+                                onChange={handleChange}
+                                onKeyPress={(e) => {
+                                    if(e.keyCode === 13 || e.which === 13 ) {
+                                        e.target.value === '' ? alert("Text Cant be Empty !") : setIsAddingRoom(false)
+                                        addingNewRoom()
+                                    } 
+                                }}
+                                name="roomname" 
+                                id="roomname" 
+                                type="text" 
+                                placeholder="Add New Room" 
+                            />
+                        </div>
+                    }
                 </div>
                     <div className="flex justify-center items-center" style={{height: "15px"}}>
                         <div className="text-gray-500"></div>
@@ -116,7 +150,7 @@ export default function HomePage() {
                     </div>
                 <div className="sidebar-icons" style={{height: "relative"}}>
                     <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
-                        <div className="text-gray-500 font-bold tracking-wide text-xs">Members</div>
+                        <div className="text-gray-500 font-bold tracking-wide text-xs">Team Mates</div>
                     </div>
                     {
                         !state.loadingMembers ? 
