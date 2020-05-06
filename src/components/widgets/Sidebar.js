@@ -1,69 +1,68 @@
 import React, { useEffect, useState }from 'react'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
+import { css } from "@emotion/core";
+import HashLoader from "react-spinners/HashLoader";
 
 export default function Sidebar(props) {
 
     let history = useHistory();
     
-    const [ teamArray, updateTeamArray ] = useState([])
     const { state, actions, effects, reaction } = useOvermind();
+
+    const override = css`
+        display: block;
+        margin: 0 auto;
+        border-color: purple;
+    `;
 
     const addTeam = (e) => {
         e.preventDefault()
         history.push('/add-team');
     }
 
-    useEffect(() => {
-
-        // Populate using POST request data from /teamsbyuserid pass userid. Memo it. 
-        const TeamData = async (userid) => {
-            await actions.teamsbyuserid({
-                userid : userid
-            })
-        }
-
-        TeamData(state.userProfileData.userid)
-
-        let arr = []
-        Object.entries(state.teamDataInfo).map(([key, value]) => {
-            arr.push(key)
-        })
-
-        updateTeamArray(arr)
-
-    }, [state.userProfileData.userid, state.teamDataInfo, actions])
-
     return (
         <div className="w-15 bg-gray-900 text-white border-r border-blackblack fixed min-h-screen ">
             <div className="sidebar-icons">
+                <a className="sidebar-icon flex items-center text-grey  px-2 py-2 no-underline cursor-pointer hover:bg-gray-800" onClick="">
+                    <div className="bg-white h-8 w-8 flex items-center justify-center text-purple-500 text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
+                        <i className="material-icons">work_outline</i>
+                    </div>
+                </a>
                 {
-                    // This is how we useEffect & useState 
-                    teamArray.map((id) => 
-                        state.teamDataInfo[id].isActive ?
-                        <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer bg-indigo-900 hover:bg-gray-800" id={id}
-                            onClick={(e) => {
-                                e.preventDefault()
-                                actions.changeActiveTeam(id).then(() => {
-                                    history.push('/home')
-                                })
-                            }}>
-                            <div className="bg-white h-8 w-8 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
-                                <img src={'https://api.adorable.io/avatars/285/abott@adorable' + state.teamDataInfo[id].avatarUrlId} alt="T" />
-                            </div>
-                        </a> :
-                        <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer hover:bg-gray-800" id={id}
-                            onClick={(e) => {
-                                e.preventDefault()
-                                actions.changeActiveTeam(id).then(() => {
-                                    history.push('/home')
-                                })
-                            }}>
-                            <div className="bg-white h-8 w-8 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
-                                <img src={'https://api.adorable.io/avatars/285/abott@adorable' + state.teamDataInfo[id].avatarUrlId} alt="T" />
-                            </div>
-                        </a>
-                    )
+                    !state.loadingTeams ? 
+                        state.teamDataInfo !== {} &&
+                            Object.entries(state.teamDataInfo).map(([id, value]) => 
+                                state.teamDataInfo[id].isActive ?
+                                <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer bg-purple-700 hover:bg-gray-800" id={id} key={id}
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        actions.changeActiveTeam(id).then(() => {
+                                            history.push('/home')
+                                        })
+                                    }}>
+                                    <div className="bg-white h-8 w-8 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
+                                        <img src={state.teamDataInfo[id].avatar} alt="T" />
+                                    </div>
+                                </a> :
+                                <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer hover:bg-gray-800" id={id} key={id}
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        actions.changeActiveTeam(id).then(() => {
+                                            history.push('/home')
+                                        })
+                                    }}>
+                                    <div className="bg-white h-8 w-8 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
+                                        <img src={state.teamDataInfo[id].avatar} alt="T" />
+                                    </div>
+                                </a>
+                            ) : 
+                            <HashLoader
+                                css={override}
+                                size={25}
+                                color={"purple"}
+                                loading={state.loadingTeams}
+                            />
                 }
                 <a href="/add-team" className="sidebar-icon flex items-center text-grey  px-2 py-2 no-underline cursor-pointer hover:bg-gray-800" onClick={addTeam}>
                     <div className="bg-white h-8 w-8 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">

@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { useOvermind } from '../overmind'
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
 import TopBar from './widgets/Topbar'
 import TeamRegisterPage from './pages/Teams/TeamRegisterPage'
 import TeamProfile from './pages/Teams/TeamProfile'
 import UserProfile from './pages/Users/UserProfile'
+import UserUpdate from './pages/Users/UserUpdate'
 
 import {
   BrowserRouter as Router,
@@ -15,8 +15,6 @@ import {
 
 const App = () => {
   
-  const { state, actions, effects, reaction } = useOvermind()
-
   return (
     <Router>
       <TopBar />
@@ -35,6 +33,9 @@ const App = () => {
           </Route>
           <Route exact path="/user-profile">
             <UserProfile />
+          </Route>
+          <Route exact path="/user-update">
+            <UserUpdate />
           </Route>
       </Switch>
       

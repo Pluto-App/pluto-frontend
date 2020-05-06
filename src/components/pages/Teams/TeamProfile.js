@@ -5,99 +5,54 @@ import BackButton from '../tidbits/BackButton'
 import UserListItem from '../tidbits/UserListItem'
 import Sidebar from '../../widgets/Sidebar'
 import MainBar from '../../widgets/MainBar'
+import { css } from "@emotion/core";
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default function TeamProfile() {
 
     let history = useHistory();
 
+    const override = css`
+        display: block;
+        margin: 0 auto;
+        border-color: white;
+    `;
+
     const { state, actions, effects, reaction } = useOvermind();
-
-    const [MemberArray, updateMembersArray] = useState([]);
-
-    useEffect(() => {
-
-        // Populate using POST request data from /usersbyteamid, pass teamid. Memo it. Populate MemberArray
-        const MembersData = async (teamid) => {
-            await actions.usersbyteamid({
-                teamid : teamid
-            })
-        }
-
-        let TeamMembers = [
-            {
-                id : 55486464,
-                url : 'https://gravatar.com/avatar/42a342f34c62e2951e25ad55c7920647?s=400&d=robohash&r=x',
-                name : 'Chris Wane',
-                statusColor : 'red'
-            },
-            {
-                id : 884574541,
-                url : 'https://gravatar.com/avatar/f8bb85e63f1f81ac473f8439db9309da?s=400&d=robohash&r=x',
-                name : 'Abhishek Wani',
-                statusColor : 'orange'
-            },
-            {
-                id : 9653214567,
-                url : 'https://gravatar.com/avatar/2186b975d2d8ac084397b3fe1a42795d?s=400&d=robohash&r=x',
-                name : 'Robin Pike',
-                statusColor : 'green'
-            },
-            {
-                id : 66352144,
-                url : 'https://gravatar.com/avatar/fe78f037abc7274b60227211bcaddc2e?s=400&d=robohash&r=x',
-                name : 'Harish Yadav',
-                statusColor : 'green'
-            },
-            {
-                id : 77415523,
-                url : state.userProfileData.profilePictureUrl,
-                name : 'Sumit Lahiri',
-                statusColor : 'green'
-            },
-        ]
-
-        updateMembersArray(TeamMembers)
-
-    }, [actions, state.userProfileData.profilePictureUrl])
 
     return (
         <div className="w-full flex">
-            <Sidebar></Sidebar>
-            <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)", marginLeft: "49px"}}>
-                <MainBar/>
+            <div className="bg-black flex-1 px-3 text-white pt-2" style={{height: "calc(100vh - 30px)"}}>
                 <BackButton url={'/home'}></BackButton>
-                <pre className="text-grey font-bold text-sm px-2 tracking-wide mt-2">
-                    Team Name : {state.teamDataInfo[state.activeTeamId].name}
-                </pre>
-                <pre className="text-grey font-bold text-sm px-2 tracking-wide mt-2">
-                    Team Owner : {state.teamDataInfo[state.activeTeamId].owner}
-                </pre>
-                <pre className="text-grey font-bold text-sm px-2 tracking-wide mt-2">
-                    Team Plan : {state.teamDataInfo[state.activeTeamId].plan}
-                </pre>
-                <div className="w-full flex px-8 pt-6 pb-8 mb-4 items-center">
-                    <div className="py-2 m-2">
-                        <button
-                            className="bg-green-900 hover:bg-green-700 text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline rounded-full"
-                            type="button"><i className="material-icons mr-1">videocam</i>
-                        </button> 
+                <p className="text-grey font-bold text-sm tracking-wide mt-2">TEAM INFO</p>
+                    <div className="mt-3 mb-4 bg-gray-900" style={{height: "1px", width:"100%"}}></div>
+                    <div className="flex">
+                    <div className="bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-full mb-1 overflow-hidden">
+                            <img src={state.teamDataInfo[state.activeTeamId].avatar} alt="" />
                     </div>
-                    <div className="py-2 m-2">
-                        <button
-                            className="bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-2  focus:outline-none focus:shadow-outline rounded-full"
-                            type="button"> <i className="material-icons mr-1">headset_mic</i>
-                        </button> 
+                <div className="ml-3">
+                    <p className="font-bold text-white">{state.teamDataInfo[state.activeTeamId].teamname}</p>
+                    <p className="text-gray-500">{state.teamDataInfo[state.activeTeamId].teamowner}</p>
+                        <button className="flex px-1 mt-2 items-center text-gray-500 font-bold rounded-lg focus:outline-none hover:text-white cursor-pointer hover:bg-gray-900"> 
+                            <svg height="10" width="10">
+                                <circle cx="6" cy="6" r="4" stroke="black" stroke-width="0" fill="green" />
+                                Sorry, your browser does not support inline SVG.  
+                            </svg><span className="ml-2">{state.teamDataInfo[state.activeTeamId].teamowner}</span>
+                                <i className="material-icons md-light md-inactive ml-1 mt-1" style={{fontSize: "15px"}}>chat</i>
+                        </button>
                     </div>
                 </div>
-                <pre className="text-grey font-bold text-sm px-2 tracking-wide mt-2 hover:bg-gray-800">
-                   Team Members : 
-                </pre>
-                {
-                    MemberArray.map((member) => 
-                        <UserListItem id={member.id} url={member.url} name={member.name} statusColor={member.statusColor}/>
-                    )
-                }
+                <p className="text-grey font-bold mb-4 text-sm tracking-wide mt-5">OPTIONS</p>
+                    <div className="mt-3 bg-gray-900" style={{ height: "1px", width:"100%"}}></div>
+                        <button className="w-full text-white hover:bg-gray-800 rounded-lg p-1 flex items-center mt-2" >
+                            <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px"}}>redeem</i>{state.teamDataInfo[state.activeTeamId].plan}</button>
+                    <div className="mt-3 bg-gray-900" style={{ height: "1px", width:"100%"}}></div>  
+                        <button className="w-full text-white hover:bg-gray-800 rounded-lg p-1 flex items-center mt-2" onClick="">
+                        <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px"}}>settings</i>Update Team</button>
+                    <div className="mt-3 bg-gray-900" style={{ height: "1px", width:"100%"}}></div>  
+                        <button className="w-full text-white hover:bg-gray-800 rounded-lg p-1 flex items-center mt-2" onClick="">
+                        <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px"}}>trending_up</i>Upgrade Plan</button>
             </div>
-        </div>
+        </div>  
     )
 }

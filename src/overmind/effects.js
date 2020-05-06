@@ -20,7 +20,7 @@ export const getAccessToken = async () => {
     let token;
     let accessString = accessIdstring()
     
-    token = await axios.post ('https://pluto-office.herokuapp.com/fetch', qs.stringify({
+    token = await axios.post (process.env.REACT_APP_fetchurl, qs.stringify({
         accessId : accessString
     }), customHeaders)
 

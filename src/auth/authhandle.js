@@ -8,7 +8,7 @@ export const googleSignIn = async () => {
     userid: id,
     useremail: email,
     username: name,
-    profilePictureUrl: picture,
+    avatar: picture,
     idToken: tokens.id_token,
   }
   return providerUser

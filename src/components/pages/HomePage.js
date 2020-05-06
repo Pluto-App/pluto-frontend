@@ -5,100 +5,93 @@ import { useHistory } from "react-router-dom"
 import MainBar from "../widgets/MainBar"
 import UserListItem from "./tidbits/UserListItem"
 import RoomListItem from "./tidbits/RoomListItem"
+import { css } from "@emotion/core";
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default function HomePage() {
 
     let history = useHistory();
 
+    const override = css`
+        display: block;
+        margin: 0 auto;
+        border-color: white;
+    `;
+
     const { state, actions, effects, reaction } = useOvermind();
-
-    const [OnlineMembersArray, updateOnlineMembersArray] = useState([]);
     const [TeamRoomsArray, updateTeamsRoomsArray] = useState([]);
+    const [copySuccess, togglecopySuccess] = useState(false);
+    const [showModal, toggleShowModal] = useState(false);
+    const [isAddingRoom, setIsAddingRoom] = useState(false);
 
-    const toggleModalItem = (e) => {
-        // Open model for Showing magic link for adding new team members.
-        // https://pluto-office.herokuapp.com/bymglnk/nfc03f898jf3
+    const addingNewRoom = (e) => {
+        let id = actions.randomStringGen(9);
+        let newRoom = {
+            id : id,
+            url : 'https://media.timeout.com/images/101609205/750/422/image.jpg',
+            name : state.change["roomname"]
+        }
+        let arr = [...TeamRoomsArray]
+        arr.push(newRoom)
+        updateTeamsRoomsArray(arr)
+        // TODO Add New Room to Backend
     }
 
-    useEffect(() => {
-        
-        const getTeamRooms = (teamid) => {
-            // Populate TeamRoomsArray array here from Team Id
-        }
-        
-        let RoomListArray = [
-            {
-                id : 55486464,
-                url : 'https://picsum.photos/id/1/200/300',
-                name : 'Timeline Room'
-            },
-            {
-                id : 884574541,
-                url : 'https://picsum.photos/id/35/200/300',
-                name : 'War Room'
-            },
-            {
-                id : 9653214567,
-                url : 'https://picsum.photos/id/39/200/300',
-                name : 'Water Cooler-Talks'
-            },
-            {
-                id : 55486464,
-                url : 'https://picsum.photos/id/225/200/300',
-                name : 'Friday Update'
-            },
-            {
-                id : 77452144,
-                url : 'https://picsum.photos/id/168/200/300',
-                name : 'Monday Lags'
-            },
-        ]
+    const handleChange = async (e) => {
+        await actions.handleChangeMutations({
+            target : e.target.name, 
+            value : e.target.value
+        })
+    }
 
-        updateTeamsRoomsArray(RoomListArray)
-    
-    }, [])
 
-    useEffect(() => {
-
-        const getOnlineMembers = (teamid) => {
-            // Populate OnlineMembersArray array here
-        }
-
-        let OnlineMembersArray = [
-            {
-                id : 9653214567,
-                url : 'https://gravatar.com/avatar/2186b975d2d8ac084397b3fe1a42795d?s=400&d=robohash&r=x',
-                name : 'Robin Pike',
-                statusColor : 'green'
-            },
-            {
-                id : 33651474,
-                url : 'https://gravatar.com/avatar/1f1181db29ab95f4adf790463b8b6ef9?s=400&d=robohash&r=x',
-                name : 'Jessica Abel',
-                statusColor : 'green'
-            },
-            {
-                id : 66352144,
-                url : 'https://gravatar.com/avatar/fe78f037abc7274b60227211bcaddc2e?s=400&d=robohash&r=x',
-                name : 'Harish Yadav',
-                statusColor : 'green'
-            },
-            {
-                id : 77415523,
-                url : state.userProfileData.profilePictureUrl,
-                name : 'Sumit Lahiri',
-                statusColor : 'green'
+     useEffect(
+         () => {
+            const loadTeamsbyUserId = async (userid) => {
+                await actions.teamsbyuserid({
+                    userid : userid
+                })
             }
-        ]
 
-        updateOnlineMembersArray(OnlineMembersArray)
+            loadTeamsbyUserId(state.userProfileData.userid)    
+            let RoomListArray = [
+                {
+                    id : 55486464,
+                    url : 'https://media.timeout.com/images/101609205/750/422/image.jpg',
+                    name : 'Coffee Room ☕'
+                },
+                {
+                    id : 9653214567,
+                    url : 'https://image.shutterstock.com/image-photo/kanban-board-one-prerequisites-agile-260nw-1203911209.jpg',
+                    name : 'Daily Standup 🚀'
+                },
+                {
+                    id : 55486464,
+                    url : 'https://zioconnects.com/wp-content/uploads/2017/06/Ravago-Conference-Room-A1-1200x800.jpg',
+                    name : 'Conference Room ⚙️'
+                }
+            ]
 
-    }, [actions, state.userProfileData.profilePictureUrl])
+            updateTeamsRoomsArray(RoomListArray)
+        }, [actions, state.userProfileData.userid]
+    )
 
- 
+    useEffect(
+        () => {
+            if(state.activeTeamId !== 0) {
+                const MembersData = async (teamid) => {
+                    await actions.usersbyteamid({
+                        teamid : teamid
+                    })
+                }
+                MembersData(state.activeTeamId)
+            }
+        }, [actions, state.activeTeamId]
+    )
+
     const customStyle = {
-        "top": "30%",
-        "width": "100%  box-shadow: 0 10px 15px -3px rgba(255, 255, 255, 0.1), 0 4px 6px -2px rgba(255, 255, 255, 0.05)"
+        "top": "46%",
+        "width": "calc(94% - 50px)"
     }
 
     return (
@@ -108,42 +101,120 @@ export default function HomePage() {
                 <MainBar/>
 
                 <div className="sidebar-icons" style={{height: "relative"}}>
-                    <div className="flex justify-between items-center p-2 pl-3 hover:bg-gray-700">
-                        <div className="text-white font-bold tracking-wide text-xs">Team Rooms : </div>
-                        <button className="text-white">
-                            <i className="material-icons md-light md-inactive" style={{fontSize: "18px", margin: "0"}}>add</i>
+                    <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
+                        <div className="text-gray-500 font-bold tracking-wide text-xs">Rooms</div>
+                        <button className="text-white focus:outline-none hover:bg-gray-800">
+                            <i className="material-icons md-light md-inactive" onClick={(e) => {
+                                e.preventDefault();
+                                setIsAddingRoom(isAddingRoom => !isAddingRoom)
+                            }} style={{fontSize: "18px", margin: "0"}}>add</i>
                         </button>
                     </div>
                     {
+                        !state.loadingTeams ? 
                         TeamRoomsArray.map((rooms) => 
-                            <RoomListItem id={rooms.id} url={rooms.url} name={rooms.name} />
-                        )
+                                <RoomListItem id={rooms.id} url={rooms.url} name={rooms.name} />
+                            ) : 
+                            <BeatLoader
+                                css={override}
+                                size={15}
+                                color={"white"}
+                                loading={state.loadingTeams}
+                            />
                     }
+                    {
+                        isAddingRoom && 
+                        <div className="flex justify-center items-center hover:bg-gray-800">
+                            <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                                style={{ width:"95%" }}
+                                onChange={handleChange}
+                                onKeyPress={(e) => {
+                                    if(e.keyCode === 13 || e.which === 13 ) {
+                                        e.target.value === '' ? alert("Text Cant be Empty !") : setIsAddingRoom(false)
+                                        addingNewRoom()
+                                    } 
+                                }}
+                                name="roomname" 
+                                id="roomname" 
+                                type="text" 
+                                placeholder="Add New Room" 
+                            />
+                        </div>
+                    }
+                    <div className="flex justify-center items-center" style={{height: "15px"}}>
+                        <div className="text-gray-500"></div>
+                        <button className="text-white focus:outline-none">
+                            <i className="material-icons hover:bg-gray-700" style={{fontSize: "18px", margin: "0"}}>keyboard_arrow_down</i>
+                        </button>
+                    </div>
                 </div>
 
                 <div className="sidebar-icons" style={{height: "relative"}}>
-                    <div className="flex justify-between items-center p-2 pl-3 hover:bg-gray-800">
-                        <div className="text-white font-bold tracking-wide text-xs">Online Members : </div>
+                    <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
+                        <div className="text-gray-500 font-bold tracking-wide text-xs">Team Mates</div>
                     </div>
                     {
-                        OnlineMembersArray.map((member) => 
-                            <UserListItem id={member.id} url={member.url} name={member.name} statusColor={member.statusColor}/>
-                    )
-                }
+                        !state.loadingMembers ? 
+                            Object.entries(state.memberList).map(([key, member]) => 
+                                <UserListItem data-record-id={key} id={member.userid} key={member.userid} url={member.avatar} name={member.username} email={member.useremail} statusColor={member.statusColor}/>
+                            ) : 
+                            <BeatLoader
+                                css={override}
+                                size={15}
+                                color={"white"}
+                                loading={state.loadingMembers}
+                            />
+                    }
                 </div>
-                
+                    <div className="flex justify-center items-center" style={{height: "15px"}}>
+                        <div className="text-gray-500"></div>
+                        <button className="text-white focus:outline-none">
+                            <i className="material-icons hover:bg-gray-700" style={{fontSize: "18px", margin: "0"}}>keyboard_arrow_down</i>
+                        </button>
+                    </div>
                 <div className="absolute pin-b pb-4" style={{width: "calc(95% - 50px)"}}>
                     <div className="mt-4 px-3 w-full">
                         <button 
                             className="bg-purple-700 w-full rounded-full flex justify-center items-center hover:bg-purple-500 text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
                             type="button"
                             onClick={() => {
-                                toggleModalItem()
+                                togglecopySuccess(false);
+                                toggleShowModal(showModal => !showModal)
                             }}>
                             <i class="material-icons md-light md-inactive mr-2">person_add</i>Invite Teammates
                         </button>
                     </div>
                 </div>
+                {
+                    showModal ? 
+                    <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={customStyle}
+                    onClick={(e) => {
+                    }}>
+                      <h4 className="font-bold text-xl text-gray-600 text-center mb-2"> Invite Teammates to <br /> Pluto Office </h4>
+                        <p className="text-purple-700 mb-3 text-center">
+                            Share this link with others to grant access to this team.
+                        </p>
+                        <input 
+                            id="InviteModalLink"
+                            value={'https://pluto.abhishekwani.now.sh/join-team/' + state.teamDataInfo[state.activeTeamId].magiclink} 
+                            className="w-full shadow appearance-none border text-purple-700 rounded py-1 px-1 bg-purple-200" />
+                        <button
+                            className="bg-purple-900 w-full rounded-sm flex justify-center text-white items-center hover:bg-purple-dark text-white font-bold py-2 px-2 mt-2 focus:outline-none focus:shadow-outline"
+                            type="button"
+                            onClick = {(e) => {
+                                var copyText = document.getElementById("InviteModalLink");
+                                copyText.select();
+                                copyText.setSelectionRange(0, 99999)
+                                document.execCommand("copy");
+                                togglecopySuccess(true);
+                                setTimeout(() => toggleShowModal(showModal => !showModal), 1000);
+                            }}
+                        >{!copySuccess ? "Copy Invite" : "Copied !!"}</button>
+                    </div> : 
+                    <span>
+
+                    </span>
+                }
                 </div>
         </div>
     )
