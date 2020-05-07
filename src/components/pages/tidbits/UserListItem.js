@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function UserListItem(props) {
 
@@ -26,6 +28,19 @@ export default function UserListItem(props) {
         "width": "230px",
         "left" : "55px",
         "position" : "absolute"
+    }
+
+    const options = {
+        // onOpen: props => console.log(props.foo),
+        // onClose: props => console.log(props.foo),
+        autoClose: 2000,
+        position: toast.POSITION.BOTTOM_RIGHT,
+        pauseOnHover: true,
+    };
+
+    const removeUserHandler = async (e) => {
+        await actions.removeTeamMember(props.id) 
+        toast.error(props.name + " removed", options);
     }
 
     const clickFunc = (e) => {
@@ -86,7 +101,9 @@ export default function UserListItem(props) {
                                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px"}}>video_call</i>Video Call
                                             </button>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width:"100%"}}></div>  
-                                            <button className="w-full text-red-500 hover:bg-red-300 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" onClick="">
+                                            <button className="w-full text-red-500 hover:bg-red-300 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" onClick={(e) => {
+                                                removeUserHandler(e)
+                                            }}>
                                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px"}}>delete_forever</i>Remove Member
                                             </button>
                                    </div>

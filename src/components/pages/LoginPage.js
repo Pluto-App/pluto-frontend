@@ -4,6 +4,8 @@ import { useHistory } from "react-router-dom";
 import { css } from "@emotion/core";
 import RingLoader from "react-spinners/RingLoader";
 import googleLogo from "../../assets/google.svg";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
 
@@ -13,6 +15,15 @@ const LoginPage = () => {
     border-color: red;
   `;
 
+  const options = {
+      // onOpen: props => console.log(props.foo),
+      // onClose: props => console.log(props.foo),
+      autoClose: 3000,
+      position: toast.POSITION.BOTTOM_RIGHT,
+      pauseOnHover: true,
+  };
+
+
   let history = useHistory();
 
   const { state, actions, effects, reaction } = useOvermind();
@@ -21,6 +32,7 @@ const LoginPage = () => {
     e.preventDefault();
     actions.googlehandleLogin().then(() => {
       window.require("electron").ipcRenderer.send('resize-normal');
+      toast.success("Login Successful", options); 
       state.userProfileData.addStatus ? history.push('/add-team') : history.push('/home')
     })
   }

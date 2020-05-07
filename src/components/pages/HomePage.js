@@ -7,6 +7,47 @@ import UserListItem from "./tidbits/UserListItem"
 import RoomListItem from "./tidbits/RoomListItem"
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+function RoomList(props) {
+
+    const roomlist = props.map((rooms) =>
+        <RoomListItem
+            key={rooms.id.toString()}
+            id={rooms.id}
+            name={rooms.name}
+        />
+    )
+
+    return (
+        <div>
+            {roomlist}
+        </div>
+    );
+}
+
+function MembersList(props) {
+
+    const memberList = props.map((member) =>
+        <UserListItem
+            data-record-id={member.userid}
+            id={member.userid}
+            key={member.userid.toString()}
+            url={member.avatar}
+            name={member.username}
+            email={member.useremail}
+            statusColor={member.statusColor}
+        />
+    )
+
+    return (
+        <div>
+            {memberList}
+        </div>
+    );
+}
+
 
 export default function HomePage() {
 
@@ -24,19 +65,15 @@ export default function HomePage() {
     const [showInviteModal, toggleshowInviteModal] = useState(false);
     const [isAddingRoom, setIsAddingRoom] = useState(false);
 
-    const addingNewRoom = () => {
+    const addingNewRoom = async (val) => {
 
-        let id = actions.randomStringGen(9);
         let newRoom = {
-            id: id,
-            name: state.change["roomname"]
+            id: await actions.randomStringGen(10),
+            name: val
         }
-        
-        let arr = [...state.RoomListArray]
 
-        arr.unshift(newRoom)
-        
-        actions.loadDefaultRooms(arr)
+        actions.addNewRoom(newRoom)
+        toast.success(val + " room added", options);
         // TODO Add New Room to Backend
     }
 
@@ -55,26 +92,7 @@ export default function HomePage() {
                     userid: userid
                 })
             }
-
             loadTeamsbyUserId(state.userProfileData.userid)
-
-            let RoomListArray = [
-                {
-                    id: 55486464,
-                    name: 'Coffee Room ☕'
-                },
-                {
-                    id: 9653214567,
-                    name: 'Daily Standup 🚀'
-                },
-                {
-                    id: 55486464,
-                    name: 'Conference Room ⚙️'
-                }
-            ]
-
-            actions.loadDefaultRooms(RoomListArray)
-
         }, [actions, state.userProfileData.userid]
     )
 
@@ -96,6 +114,14 @@ export default function HomePage() {
         "width": "calc(94% - 50px)"
     }
 
+    const options = {
+        // onOpen: props => console.log(props.foo),
+        // onClose: props => console.log(props.foo),
+        autoClose: 2000,
+        position: toast.POSITION.BOTTOM_RIGHT,
+        pauseOnHover: true,
+    };
+
     return (
         <div className="w-full flex">
             <Sidebar></Sidebar>
@@ -104,7 +130,7 @@ export default function HomePage() {
 
                 <div className="sidebar-icons" style={{ height: "relative" }}>
                     <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
-                        <div className="text-gray-500 font-bold tracking-wide text-xs">Rooms</div>
+                        <div className="text-gray-500 px-3 font-bold tracking-wide text-xs">Rooms</div>
                         <button className="text-white focus:outline-none hover:bg-gray-800">
                             <i className="material-icons md-light md-inactive" onClick={(e) => {
                                 e.preventDefault();
@@ -115,34 +141,38 @@ export default function HomePage() {
                     {
                         isAddingRoom &&
                         <div className="flex justify-center items-center hover:bg-gray-800">
-                            <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700 leading-tight focus:outline-none"
                                 style={{ width: "95%" }}
                                 onChange={handleChange}
                                 onKeyPress={(e) => {
                                     if (e.keyCode === 13 || e.which === 13) {
-                                        e.target.value === '' ? alert("Text Cant be Empty !") : setIsAddingRoom(false)
-                                        addingNewRoom()
+                                        if (e.target.value === '') {
+                                            toast.error("Room Name can't be Empty", options);
+                                        } else {
+                                            setIsAddingRoom(false)
+                                            addingNewRoom(e.target.value)
+                                        }
                                     }
                                 }}
                                 name="roomname"
                                 id="roomname"
                                 type="text"
                                 placeholder="Add New Room"
-                            />
+                                autoFocus />
                         </div>
                     }
-                    {
-                        !state.loadingTeams ?
-                            state.RoomListArray.map((rooms) =>
-                                <RoomListItem id={rooms.id} name={rooms.name} />
-                            ) :
-                            <BeatLoader
-                                css={override}
-                                size={15}
-                                color={"white"}
-                                loading={state.loadingTeams}
-                            />
-                    }
+                    <div className="" style={{ height: "115px", overflowY: "scroll" }}>
+                        {
+                            !state.loadingRooms ?
+                                RoomList(state.RoomListArray) :
+                                <BeatLoader
+                                    css={override}
+                                    size={15}
+                                    color={"white"}
+                                    loading={state.loadingRooms}
+                                />
+                        }
+                    </div>
                     <div className="flex justify-center items-center" style={{ height: "15px" }}>
                         <div className="text-gray-500"></div>
                         <button className="text-white focus:outline-none">
@@ -152,14 +182,12 @@ export default function HomePage() {
                 </div>
 
                 <div className="sidebar-icons" style={{ height: "relative" }}>
-                    <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
-                        <div className="text-gray-500 font-bold tracking-wide text-xs">Team Mates</div>
+                    <div className="flex justify-between items-center p-2 pl-2 hover:bg-gray-800">
+                        <div className="text-gray-500 px-3 font-bold tracking-wide text-xs">Team Mates</div>
                     </div>
                     {
                         !state.loadingMembers ?
-                            Object.entries(state.memberList).map(([key, member]) =>
-                                <UserListItem data-record-id={key} id={member.userid} key={member.userid} url={member.avatar} name={member.username} email={member.useremail} statusColor={member.statusColor} />
-                            ) :
+                            MembersList(state.memberList) :
                             <BeatLoader
                                 css={override}
                                 size={15}
