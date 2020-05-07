@@ -9,8 +9,9 @@ export const state = {
     userProfileData : {},
     teamDataInfo : {},
     activeTeamId : 0, 
+    activeRoomId : 0,
     memberList : {},
-    teamRooms : {},
+    RoomListArray : [],
     activeMemberId : '',
     loggedInUserId : '',
   }

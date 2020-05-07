@@ -9,16 +9,24 @@ export default function RoomListItem(props) {
 
     const { state, actions, effects, reaction } = useOvermind();
 
-    const [showModal, toggleShowModal] = useState(false);
+    const [showChatModal, toggleshowChatModal] = useState(false);
     const [showMenu, toggleShowMenu] = useState(false);
-    const [startedEditing, updateEditSataus] = useState(false);
+    const [startedEditing, updateEditStatus] = useState(false);
     const [editText, updateEditText] = useState(props.name);
 
     const clickFunc = (e) => {
-        updateEditSataus(startedEditing => !startedEditing)
+        updateEditStatus(startedEditing => !startedEditing)
     }
 
-    const customStyle = {
+    const customMenuStyle = {
+        "top": "75px",
+        "height" : "185px",
+        "width": "230px",
+        "left" : "55px",
+        "position" : "absolute"
+    }
+
+    const customChatStyle = {
         "top": "75px",
         "height" : "185px",
         "width": "230px",
@@ -51,7 +59,7 @@ export default function RoomListItem(props) {
                             }
                             onKeyPress={(e) => {
                                 if (e.keyCode === 13 || e.which === 13) {
-                                    e.target.value === '' ? alert("Text Cant be Empty !") : updateEditSataus(false)
+                                    e.target.value === '' ? alert("Text Cant be Empty !") : updateEditStatus(false)
                                     updateEditText(e.target.value)
                                     // TODO Trigger Name Edit to database via backend
                                 }
@@ -76,7 +84,7 @@ export default function RoomListItem(props) {
                         <div className="flex">
                             {
                                 showMenu &&
-                                <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customStyle}>
+                                <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customMenuStyle}>
                                     <div className="flex w-full justify-end">
                                         <i className="material-icons text-white hover:bg-gray-900 md-light md-inactive" style={{ fontSize: "20px", margin: "0" }} onClick={() => {
                                             toggleShowMenu(showMenu => !showMenu)
@@ -92,12 +100,15 @@ export default function RoomListItem(props) {
                                                 </button>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
                                         <button className="w-full text-white focus:outline-none hover:bg-gray-800 rounded-lg flex font-bold tracking-wide text-xs items-center" onClick={() => {
-                                            toggleShowModal(showModal => !showModal)
+                                            toggleShowMenu(showMenu => !showMenu)
+                                            toggleshowChatModal(showChatModal => !showChatModal)
                                         }}>
                                             <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>question_answer</i>Group Chat
                                                 </button>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
-                                        <button className="w-full text-white hover:bg-gray-800 focus:outline-none rounded-lg flex font-bold tracking-wide text-xs items-center" onClick="">
+                                        <button className="w-full text-white hover:bg-gray-800 focus:outline-none rounded-lg flex font-bold tracking-wide text-xs items-center" onClick={(e) => {
+                                            handleVideoCall(e)
+                                        }}>
                                             <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>video_call</i>Group Call
                                                 </button>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
@@ -108,22 +119,23 @@ export default function RoomListItem(props) {
                                 </div>
                             }
                             <button className="text-gray-300 hover:text-indigo-500 px-1 focus:outline-none" onClick={(e) => {
-                                toggleShowMenu(showMenu => !showMenu)
-                            }}>
+                                    toggleShowMenu(showMenu => !showMenu)
+                                }}>
                                 <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}>more_vert</i>
                             </button>
                             {
-                                showModal &&
-                                <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customStyle}>
+                                showChatModal &&
+                                <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customChatStyle}>
                                     <div className="flex w-full justify-end">
                                         <i className="material-icons text-white hover:bg-gray-900 md-light md-inactive" style={{ fontSize: "20px", margin: "0" }} onClick={() => {
-                                            toggleShowModal(showModal => !showModal)
+                                            toggleShowMenu(false)
+                                            toggleshowChatModal(showChatModal => !showChatModal)
                                         }}>close</i>
                                     </div>
-                                    <h4 className="font-bold text-xl text-gray-500 text-center mb-1"> Messenger </h4>
+                                    <h4 className="font-bold text-xl text-gray-400 text-center mb-1"> Messenger </h4>
                                     <div className="flex justify-start bg-black p-2 pl-1">
                                         <div className="text-white px-1 font-bold tracking-wide text-xs">
-                                            {props.name}
+                                            {editText}
                                         </div>
                                     </div>
                                     <input

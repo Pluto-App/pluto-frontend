@@ -107,6 +107,10 @@ export const setOwnerName = async ({state}, values) => {
     state.change[values.target] = values.value
 }
 
+export const loadDefaultRooms = ({state}, values) => {
+    state.RoomListArray = values
+}
+
 export const getTeamRoomsFromId = async ({state, effects}, values) => {
     // Passed Team Id.
 }

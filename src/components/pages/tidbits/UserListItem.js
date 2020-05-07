@@ -9,10 +9,18 @@ export default function UserListItem(props) {
 
     const { state, actions, effects, reaction } = useOvermind();
 
-    const [showModal, toggleShowModal] = useState(false);
+    const [showChatModal, toggleshowChatModal] = useState(false);
     const [showMenu, toggleShowMenu] = useState(false);
 
-    const customStyle = {
+    const customMenuStyle = {
+        "top": "75px",
+        "height" : "180px",
+        "width": "230px",
+        "left" : "55px",
+        "position" : "absolute"
+    }
+
+    const customChatStyle = {
         "top": "75px",
         "height" : "180px",
         "width": "230px",
@@ -43,7 +51,7 @@ export default function UserListItem(props) {
                     <div className="flex">
                         {
                                 showMenu && 
-                                <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customStyle}>
+                                <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customMenuStyle}>
                                     <div className="flex w-full justify-end">
                                         <i className="material-icons text-white hover:bg-gray-900 md-light md-inactive" style={{ fontSize: "20px", margin: "0" }} onClick={() => {
                                             toggleShowMenu(showMenu => !showMenu)
@@ -68,7 +76,9 @@ export default function UserListItem(props) {
                                             </button>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width:"100%"}}></div>  
                                             <button className="w-full text-white focus:outline-none hover:bg-gray-800 rounded-lg flex font-bold tracking-wide text-xs items-center" onClick={() => {
-                                        toggleShowModal(showModal => !showModal) }}>
+                                                toggleShowMenu(false)
+                                                toggleshowChatModal(showChatModal => !showChatModal)
+                                            }}>
                                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px"}}>question_answer</i>Instant Chat
                                             </button>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width:"100%"}}></div>  
@@ -88,11 +98,12 @@ export default function UserListItem(props) {
                             <i className="material-icons md-light md-inactive" style={{fontSize: "18px", margin: "0"}}>more_vert</i>
                         </button>
                         {
-                            showModal &&
-                            <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customStyle}>
+                            showChatModal &&
+                            <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customChatStyle}>
                                     <div className="flex w-full justify-end">
                                         <i className="material-icons text-white hover:bg-gray-900 md-light md-inactive" style={{ fontSize: "20px", margin: "0" }} onClick={() => {
-                                            toggleShowModal(showModal => !showModal)
+                                                toggleShowMenu(false)
+                                                toggleshowChatModal(showChatModal => !showChatModal)
                                         }}>close</i>
                                     </div>
                                 <h4 className="font-bold text-xl text-gray-600 text-center mb-1"> Messenger </h4>
