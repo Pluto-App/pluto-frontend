@@ -32,8 +32,8 @@ const LoginPage = () => {
     e.preventDefault();
     actions.googlehandleLogin().then(() => {
       window.require("electron").ipcRenderer.send('resize-normal');
-      toast.success("Login Successful", options); 
       state.userProfileData.addStatus ? history.push('/add-team') : history.push('/home')
+      toast.success("Logged In", options)
     })
   }
 

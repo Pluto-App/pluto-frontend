@@ -30,7 +30,8 @@ export const handleLogout = async ({ state }) => {
 export const googlehandleLogin = async ({ state, effects }) => {
     state.loginStarted = true;
     state.userProfileData = await googleSignIn()
-    await effects.postHandler(process.env.REACT_APP_loginUrl, state.userProfileData)
+    let data = await effects.postHandler(process.env.REACT_APP_loginUrl, state.userProfileData)
+    state.userProfileData.addStatus = data.addStatus
     state.loggedIn = true
     state.signedIn = true;
     state.loginStarted = false;
@@ -43,20 +44,25 @@ export const createTeam = async ({ state, effects }, values) => {
     let newTeamData = await effects.postHandler(process.env.REACT_APP_createTeamUrl, values)
     state.addingTeam = false;
 
-    state.teamDataInfo[state.activeTeamId].isActive = false
-
-    if (newTeamData !== undefined) {
+    if (newTeamData !== undefined && newTeamData.addStatus !== 0) {
+        
+        if (!state.userProfileData.addStatus && state.activeTeamId !== 0)
+            state.teamDataInfo[state.activeTeamId].isActive = false
+        
         state.activeTeamId = newTeamData.teamid
         state.teamDataInfo[newTeamData.teamid] = {
             teamid: newTeamData.teamid,
             teamowner: newTeamData.teamowner,
             teamname: newTeamData.teamname,
+            teamownerid : newTeamData.teamownerid,
             avatar: newTeamData.avatar,
             magiclink: newTeamData.magiclink,
             isActive: true,
             plan: 'Regular'
         }
-        toast.success("Team Created", options)
+        toast.success("Team created", options)
+    } else if (newTeamData.addStatus === 0) {
+        toast.error("Team already exists", options)
     } else {
         toast.error("Team creation failed", options)
     }
@@ -67,25 +73,32 @@ export const teamsbyuserid = async ({ state, effects }, values) => {
     state.loadingTeams = true
     state.loadingRooms = true
     let dump = await effects.postHandler(process.env.REACT_APP_getTeamsUrl, values)
-    if (dump.teams !== []) {
+
+    if (Array.isArray(dump.teams) && dump.teams.length) {
         dump.teams.map((t) => {
             state.teamDataInfo[t.teamid] = {
                 teamid: t.teamid,
                 teamowner: t.teamowner,
                 teamname: t.teamname,
+                teamownerid : t.teamownerid,
                 avatar: t.avatar,
                 magiclink: t.magiclink,
                 isActive: false,
                 plan: 'Regular'
             }
         })
+        if (state.activeTeamId === 0) {
+            state.activeTeamId = dump.teams[0].teamid
+        }
+        state.teamDataInfo[state.activeTeamId].isActive = true
+    } else {
+        state.loadingRooms = false
+        state.loadingTeams = false
+        state.loadingMembers = false
+        state.teamDataInfo = {}
+        toast.error("You don't belong to any team", options)
     }
 
-    if (state.activeTeamId === 0) {
-        state.activeTeamId = dump.teams[0].teamid
-    }
-
-    state.teamDataInfo[state.activeTeamId].isActive = true
     state.loadingRooms = false
     state.loadingTeams = false
 }
@@ -96,7 +109,8 @@ export const usersbyteamid = async ({ state, effects }, values) => {
     let dump = await effects.postHandler(process.env.REACT_APP_getTeamMembersUrl, values)
 
     state.memberList = []
-    if (dump.users !== []) {
+
+    if (Array.isArray(dump.users) && dump.users.length) {
         dump.users.map((u) => {
             let userObj = {
                 userid: u.id,
@@ -107,6 +121,9 @@ export const usersbyteamid = async ({ state, effects }, values) => {
             }
             state.memberList.push(userObj)
         })
+    } else {
+        toast.error("Could not load users", options)
+        state.loadingMembers = false
     }
 
     state.loadingMembers = false
@@ -130,6 +147,7 @@ export const addNewRoom = ({ state }, values) => {
     state.loadingRooms = true
     state.RoomListArray.unshift(values)
     state.loadingRooms = false
+    // TODO Remove room from backend by activeTeamId and values. 
 }
 
 export const removeRoom = async ({ state }, values) => {
@@ -145,14 +163,14 @@ export const removeRoom = async ({ state }, values) => {
 export const removeTeamMember = async ({ state, effects }, values) => {
     state.loadingMembers = true;
     let arr = state.memberList.filter((member) => {
-        return member.userid !== values
+        return member.userid !== values.userid
     })
+    await effects.postHandler(process.env.REACT_APP_deluserfromteam, values)
     state.memberList = arr
     state.loadingMembers = false;
-    // TODO REmove user from the backend db by teamid, userid. 
 }
 
-export const getTeamRoomsFromId = async ({ state, effects }, values) => {
+export const roomsbyteamid = async ({ state, effects }, values) => {
     // Passed Team Id.
 }
 

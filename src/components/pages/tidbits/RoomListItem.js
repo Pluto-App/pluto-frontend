@@ -50,8 +50,12 @@ export default function RoomListItem(props) {
     }
 
     const removeRoomHandler = async (e) => {
-        await actions.removeRoom(props.id) 
-        toast.error(roomName + " room removed", options);
+        if(state.teamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
+            await actions.removeRoom(props.id) 
+            toast.error(roomName + " room removed", options);
+        } else {
+            toast.error("Only Owners can remove", options);
+        }
     }
 
     return (
