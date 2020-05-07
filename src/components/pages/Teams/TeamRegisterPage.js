@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom"
 import BackButton from '../tidbits/BackButton'
 import { css } from "@emotion/core";
 import RingLoader from "react-spinners/RingLoader";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function TeamRegisterPage() {
 
@@ -16,6 +18,14 @@ export default function TeamRegisterPage() {
         border-color: green;
     `;
 
+    const options = {
+        // onOpen: props => console.log(props.foo),
+        // onClose: props => console.log(props.foo),
+        autoClose: 3000,
+        position: toast.POSITION.BOTTOM_RIGHT,
+        pauseOnHover: true,
+    };
+  
     const { state, actions, effects, reaction } = useOvermind();
 
     const createTeam = async (e) => {
@@ -23,7 +33,7 @@ export default function TeamRegisterPage() {
         // POST Request to create team. 
         await actions.createTeam({
             userid : state.userProfileData.userid, // Google ID of owner profile becomes part of team id. Memo it. 
-            teamname : state.change["teamname"]
+            teamname : state.change["teamname"] 
         })
         history.push('/home')
     }
@@ -47,11 +57,16 @@ export default function TeamRegisterPage() {
                             Unquie Team Name
                         </label>
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
-                                onChange={handleChange}
+                                onChange={(e) => {
+                                    if (e.target.value === "") {
+                                        toast.error("Team Name Empty", options); 
+                                    } else handleChange(e)
+                                }}
                                 name="teamname" 
                                 id="teamname" 
                                 type="text" 
-                                placeholder="Team Name" />
+                                placeholder="Team Name" 
+                            autoFocus/>
                     </div>
                     { !state.addingTeam ? 
                         <div className="flex items-center justify-between">

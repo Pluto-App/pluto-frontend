@@ -1,4 +1,4 @@
-import React, { useEffect, useState }from 'react'
+import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
 import { css } from "@emotion/core";
@@ -7,7 +7,7 @@ import HashLoader from "react-spinners/HashLoader";
 export default function Sidebar(props) {
 
     let history = useHistory();
-    
+
     const { state, actions, effects, reaction } = useOvermind();
 
     const override = css`
@@ -30,10 +30,10 @@ export default function Sidebar(props) {
                     </div>
                 </a>
                 {
-                    !state.loadingTeams ? 
+                    !state.loadingTeams ?
                         state.teamDataInfo !== {} &&
-                            Object.entries(state.teamDataInfo).map(([id, value]) => 
-                                state.teamDataInfo[id].isActive ?
+                        Object.entries(state.teamDataInfo).map(([id, value]) =>
+                            state.teamDataInfo[id].isActive ?
                                 <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer bg-purple-700 hover:bg-gray-800" id={id} key={id}
                                     onClick={(e) => {
                                         e.preventDefault()
@@ -56,13 +56,13 @@ export default function Sidebar(props) {
                                         <img src={state.teamDataInfo[id].avatar} alt="T" />
                                     </div>
                                 </a>
-                            ) : 
-                            <HashLoader
-                                css={override}
-                                size={25}
-                                color={"purple"}
-                                loading={state.loadingTeams}
-                            />
+                        ) :
+                        <HashLoader
+                            css={override}
+                            size={25}
+                            color={"purple"}
+                            loading={state.loadingTeams}
+                        />
                 }
                 <a href="/add-team" className="sidebar-icon flex items-center text-grey  px-2 py-2 no-underline cursor-pointer hover:bg-gray-800" onClick={addTeam}>
                     <div className="bg-white h-8 w-8 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">

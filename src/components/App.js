@@ -6,6 +6,8 @@ import TeamRegisterPage from './pages/Teams/TeamRegisterPage'
 import TeamProfile from './pages/Teams/TeamProfile'
 import UserProfile from './pages/Users/UserProfile'
 import UserUpdate from './pages/Users/UserUpdate'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import {
   BrowserRouter as Router,
@@ -38,7 +40,7 @@ const App = () => {
             <UserUpdate />
           </Route>
       </Switch>
-      
+      <ToastContainer />
     </Router>
   );
 }
