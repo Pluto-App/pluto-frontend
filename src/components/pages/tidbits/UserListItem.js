@@ -39,8 +39,21 @@ export default function UserListItem(props) {
     };
 
     const removeUserHandler = async (e) => {
-        await actions.removeTeamMember(props.id) 
-        toast.error(props.name + " removed", options);
+        
+        if (props.id === state.teamDataInfo[state.activeTeamId].teamownerid) {
+            toast.error("Can't remove owner", options);
+            return;
+        }
+        
+        if(state.teamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
+            await actions.removeTeamMember({
+                userid : props.id,
+                teamid : state.activeTeamId
+            }) 
+            toast.error(props.name + " removed", options);
+        } else {
+            toast.error("Only Owners can remove", options);
+        }
     }
 
     const clickFunc = (e) => {
