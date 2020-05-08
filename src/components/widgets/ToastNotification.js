@@ -5,6 +5,10 @@ const options = {
     autoClose: 1500,
     position: toast.POSITION.BOTTOM_RIGHT,
     pauseOnHover: true,
+    hideProgressBar: false,
+    closeOnClick: true,
+    draggable: true,
+    progress: undefined,
 };
 
 export default function ToastNotification(condition, content) {
@@ -21,6 +25,8 @@ export default function ToastNotification(condition, content) {
         case 'warn' : 
             toast.warn(content, options); 
             break;
-        default : break;
+        default : 
+            toast(content, options); 
+            break;
     }
 }

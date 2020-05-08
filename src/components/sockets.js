@@ -14,6 +14,6 @@ export const events = {
     room_switch : "Room Switch", 
     audio_call : "Audio Call", 
     video_call : "Video Call", 
-    connected : "connected", 
+    live : "live", 
     remove_member : "Remove Member"
 }
