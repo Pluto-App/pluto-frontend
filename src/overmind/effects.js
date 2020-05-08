@@ -27,14 +27,13 @@ const accessIdstring = () => {
 
 export const getAccessToken = async () => {
 
-    let token;
     let accessString = accessIdstring()
 
-    token = await axios.post(process.env.REACT_APP_fetchurl, qs.stringify({
+    let token = await axios.post(process.env.REACT_APP_FETCH_URL, qs.stringify({
         accessId: accessString
     }), customHeaders)
 
-    return token;
+    return token.data.accessToken;
 }
 
 export const postHandler = async (url, payload) => {
@@ -49,7 +48,7 @@ export const postHandler = async (url, payload) => {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'cache-control': 'no-cache',
-                'Authorization': `Bearer ${gettoken.accessToken}`
+                'authorization': `Bearer ${gettoken}`
             },
         })
         data = await dump.data
@@ -74,7 +73,7 @@ export const getHandler = async (url, payload) => {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'cache-control': 'no-cache',
-                'Authorization': `Bearer ${gettoken.accessToken}`
+                'authorization': `Bearer ${gettoken}`
             },
         })
         data = await dump.data
@@ -98,7 +97,7 @@ export const updateHandler = async (url, payload) => {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'cache-control': 'no-cache',
-                'Authorization': `Bearer ${gettoken.accessToken}`
+                'authorization': `Bearer ${gettoken}`
             },
         })
         data = await dump.data
@@ -122,7 +121,7 @@ export const deleteHandler = async (url, payload) => {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'cache-control': 'no-cache',
-                'Authorization': `Bearer ${gettoken.accessToken}`
+                'authorization': `Bearer ${gettoken}`
             },
         })
         data = await dump.data
