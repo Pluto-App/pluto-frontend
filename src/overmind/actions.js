@@ -1,37 +1,20 @@
 import { googleSignIn } from '../auth/authhandle'
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-const options = {
-    // onOpen: props => console.log(props.foo),
-    // onClose: props => console.log(props.foo),
-    autoClose: 2000,
-    position: toast.POSITION.BOTTOM_RIGHT,
-    pauseOnHover: true,
-};
-
-export const randomStringGen = async ({ state, effects }, values) => {
-
-    let result = ""
-    let randomString = "7912ecbcffc48d2ded669cnxmkslhfyqowpslmvbvz3c0be25a2adc2e36a246947597257b3c43fc2e2d4c72c80be25a2adc2e36ayshgfbdpl987jhdt3refwvsbvcnxmkslhfyqowpslmvbvzdaf1639djs6sh"
-
-    for (var i = 0; i < randomString.length; i += 1) {
-        result += randomString.charAt(Math.floor(Math.random() * values));
-    }
-
-    return result
-}
+import ToastNotification from '../components/widgets/ToastNotification'
+import { socket_live, events } from '../components/sockets'
 
 export const handleLogout = async ({ state }) => {
     state.loggedIn = false;
-    toast.info("Logged Out", options)
+    socket_live.emit(events.offline, state.userProfileData.userid)
+    ToastNotification('info', "Logged Out")
 }
 
 export const googlehandleLogin = async ({ state, effects }) => {
     state.loginStarted = true;
+    ToastNotification('info', "Logging In...")
     state.userProfileData = await googleSignIn()
-    let dump = await effects.postHandler(process.env.REACT_APP_loginUrl, state.userProfileData)
+    let dump = await effects.postHandler(process.env.REACT_APP_LOGIN_URL, state.userProfileData)
     state.userProfileData.addStatus = dump.addStatus
+    socket_live.emit(events.online, state.userProfileData.userid)
     state.loggedIn = true
     state.signedIn = true;
     state.loginStarted = false;
@@ -41,7 +24,7 @@ export const googlehandleLogin = async ({ state, effects }) => {
 export const createTeam = async ({ state, effects }, values) => {
 
     state.addingTeam = true;
-    let newTeamData = await effects.postHandler(process.env.REACT_APP_createTeamUrl, values)
+    let newTeamData = await effects.postHandler(process.env.REACT_APP_CREATE_TEAM_URL, values)
     state.addingTeam = false;
 
     if (newTeamData !== undefined && newTeamData.addStatus !== 0) {
@@ -60,11 +43,12 @@ export const createTeam = async ({ state, effects }, values) => {
             isActive: true,
             plan: 'Regular'
         }
-        toast.success("Team created", options)
+        ToastNotification('success', "Team created")
+        socket_live.emit(events.new_team, state.activeTeamId, state.userProfileData.userid)
     } else if (newTeamData.addStatus === 0) {
-        toast.error("Team already exists", options)
+        ToastNotification('error', "Team already exists")
     } else {
-        toast.error("Team creation failed", options)
+        ToastNotification('error', "Team creation failed")
     }
 }
 
@@ -72,7 +56,7 @@ export const teamsbyuserid = async ({ state, effects }, values) => {
 
     state.loadingTeams = true
     state.loadingRooms = true
-    let dump = await effects.postHandler(process.env.REACT_APP_getTeamsUrl, values)
+    let dump = await effects.postHandler(process.env.REACT_APP_GET_TEAMS_URL, values)
 
     if (Array.isArray(dump.teams) && dump.teams.length) {
         dump.teams.map((t) => {
@@ -96,7 +80,7 @@ export const teamsbyuserid = async ({ state, effects }, values) => {
         state.loadingTeams = false
         state.loadingMembers = false
         state.teamDataInfo = {}
-        toast.error("You don't belong to any team", options)
+        ToastNotification('error', "You don't belong to any team.")
     }
 
     state.loadingRooms = false
@@ -106,7 +90,7 @@ export const teamsbyuserid = async ({ state, effects }, values) => {
 export const usersbyteamid = async ({ state, effects }, values) => {
 
     state.loadingMembers = true
-    let dump = await effects.postHandler(process.env.REACT_APP_getTeamMembersUrl, values)
+    let dump = await effects.postHandler(process.env.REACT_APP_GET_TEAM_MEMBERS_URL, values)
 
     state.memberList = []
 
@@ -122,7 +106,7 @@ export const usersbyteamid = async ({ state, effects }, values) => {
             state.memberList.push(userObj)
         })
     } else {
-        toast.error("Could not load users", options)
+        ToastNotification('error', "Could not load users")
         state.loadingMembers = false
     }
 
@@ -134,6 +118,7 @@ export const handleChangeMutations = async ({ state }, values) => {
 }
 
 export const changeActiveTeam = async ({ state }, values) => {
+    socket_live.emit(events.team_switch, state.activeTeamId, state.userProfileData.userid)
     state.teamDataInfo[state.activeTeamId].isActive = false
     state.activeTeamId = values
     state.teamDataInfo[values].isActive = true
@@ -144,6 +129,8 @@ export const setOwnerName = async ({ state }, values) => {
 }
 
 export const addNewRoom = ({ state }, values) => {
+    // REACT_APP_ADD_ROOM_TO_TEAM
+    socket_live.emit(events.new_room, state.activeTeamId, state.userProfileData.userid)
     state.loadingRooms = true
     state.RoomListArray.unshift(values)
     state.loadingRooms = false
@@ -151,6 +138,8 @@ export const addNewRoom = ({ state }, values) => {
 }
 
 export const removeRoom = async ({ state }, values) => {
+    // REACT_APP_DELETE_ROOM_FROM_TEAM
+    socket_live.emit(events.remove_room, state.activeTeamId, state.userProfileData.userid)
     state.loadingRooms = true
     let arr = await state.RoomListArray.filter((rooms) => {
         return rooms.id !== values
@@ -162,18 +151,21 @@ export const removeRoom = async ({ state }, values) => {
 
 export const removeTeamMember = async ({ state, effects }, values) => {
     state.loadingMembers = true;
+    socket_live.emit(events.remove_member, values)
     let arr = state.memberList.filter((member) => {
         return member.userid !== values.userid
     })
-    await effects.postHandler(process.env.REACT_APP_deluserfromteam, values)
+    await effects.postHandler(process.env.REACT_APP_DELETE_USER_FROM_TEAM, values)
     state.memberList = arr
     state.loadingMembers = false;
 }
 
 export const roomsbyteamid = async ({ state, effects }, values) => {
     // Passed Team Id.
+    // REACT_APP_GET_ROOMS_FROM_ID
 }
 
 export const getOnlineMembersList = async ({ state, effects }, value) => {
     // Online members List.
+    // REACT_APP_LIVE_ENDPOINT
 }

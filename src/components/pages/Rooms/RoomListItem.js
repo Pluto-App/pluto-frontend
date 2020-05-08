@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import ToastNotification from '../../widgets/ToastNotification';
 
 export default function RoomListItem(props) {
 
@@ -36,14 +35,6 @@ export default function RoomListItem(props) {
         "position" : "absolute"
     }
 
-    const options = {
-        // onOpen: props => console.log(props.foo),
-        // onClose: props => console.log(props.foo),
-        autoClose: 2000,
-        position: toast.POSITION.BOTTOM_RIGHT,
-        pauseOnHover: true,
-    };
-
     const handleVideoCall = (e, id) => {
         //load video call window. 
         // window.require("electron").ipcRenderer.send('load-video-window', id);
@@ -52,9 +43,9 @@ export default function RoomListItem(props) {
     const removeRoomHandler = async (e) => {
         if(state.teamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
             await actions.removeRoom(props.id) 
-            toast.error(roomName + " room removed", options);
+            ToastNotification('error', roomName + " room removed");
         } else {
-            toast.error("Only Owners can remove", options);
+            ToastNotification('error', "Only Owners can remove")
         }
     }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
 import { css } from "@emotion/core";

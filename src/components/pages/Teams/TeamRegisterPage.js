@@ -2,11 +2,10 @@
 import React from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
-import BackButton from '../tidbits/BackButton'
+import BackButton from '../../widgets/BackButton'
 import { css } from "@emotion/core";
 import RingLoader from "react-spinners/RingLoader";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import ToastNotification from '../../widgets/ToastNotification';
 
 export default function TeamRegisterPage() {
 
@@ -18,14 +17,6 @@ export default function TeamRegisterPage() {
         border-color: green;
     `;
 
-    const options = {
-        // onOpen: props => console.log(props.foo),
-        // onClose: props => console.log(props.foo),
-        autoClose: 3000,
-        position: toast.POSITION.BOTTOM_RIGHT,
-        pauseOnHover: true,
-    };
-  
     const { state, actions, effects, reaction } = useOvermind();
 
     const createTeam = async (e) => {
@@ -59,7 +50,7 @@ export default function TeamRegisterPage() {
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
                                 onChange={(e) => {
                                     if (e.target.value === "") {
-                                        toast.error("Team Name Empty", options); 
+                                        ToastNotification('error', "Team Name can't be empty")
                                     } else handleChange(e)
                                 }}
                                 name="teamname" 

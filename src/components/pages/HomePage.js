@@ -3,15 +3,13 @@ import Sidebar from '../widgets/Sidebar'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
 import MainBar from "../widgets/MainBar"
-import UserListItem from "./tidbits/UserListItem"
-import RoomListItem from "./tidbits/RoomListItem"
+import UserListItem from "./Users/UserListItem"
+import RoomListItem from "./Rooms/RoomListItem"
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import socketIOClient from "socket.io-client";
+import { socket_live, events } from '../sockets'
 
-const ENDPOINT = "https://sockets-pluto-office.herokuapp.com/";
+import ToastNotification from '../widgets/ToastNotification'
 
 function RoomList(props) {
 
@@ -62,7 +60,7 @@ export default function HomePage() {
         border-color: white;
     `;
 
-    const { state, actions, effects, reaction } = useOvermind();
+    const { state, actions, effects } = useOvermind();
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showInviteModal, toggleshowInviteModal] = useState(false);
     const [isAddingRoom, setIsAddingRoom] = useState(false);
@@ -70,12 +68,12 @@ export default function HomePage() {
     const addingNewRoom = async (val) => {
 
         let newRoom = {
-            id: await actions.randomStringGen(10),
+            id: await effects.randomStringGen(12),
             name: val
         }
 
         actions.addNewRoom(newRoom)
-        toast.success(val + " room added", options);
+        ToastNotification('success', val + " room added.")
         // TODO Add New Room to Backend
     }
 
@@ -88,9 +86,8 @@ export default function HomePage() {
 
     useEffect(
         () => {
-            const socket = socketIOClient(ENDPOINT);
-            socket.on("FromAPI", socket_data => {
-                toast.success(socket_data.message, options)
+            socket_live.on(events.connected, socket_data => {
+                ToastNotification('success', socket_data.message)
             });
         }, []
     );
@@ -124,14 +121,6 @@ export default function HomePage() {
         "width": "calc(94% - 50px)"
     }
 
-    const options = {
-        // onOpen: props => console.log(props.foo),
-        // onClose: props => console.log(props.foo),
-        autoClose: 2000,
-        position: toast.POSITION.BOTTOM_RIGHT,
-        pauseOnHover: true,
-    };
-
     return (
         <div className="w-full flex">
             <Sidebar></Sidebar>
@@ -157,7 +146,7 @@ export default function HomePage() {
                                 onKeyPress={(e) => {
                                     if (e.keyCode === 13 || e.which === 13) {
                                         if (e.target.value === '') {
-                                            toast.error("Room Name can't be Empty", options);
+                                            ToastNotification('error', "Room name can't be empty")
                                         } else {
                                             setIsAddingRoom(false)
                                             addingNewRoom(e.target.value)

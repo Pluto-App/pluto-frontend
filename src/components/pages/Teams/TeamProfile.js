@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
-import BackButton from '../tidbits/BackButton'
-import UserListItem from '../tidbits/UserListItem'
-import Sidebar from '../../widgets/Sidebar'
-import MainBar from '../../widgets/MainBar'
-import { css } from "@emotion/core";
-import BeatLoader from "react-spinners/BeatLoader";
+import BackButton from '../../widgets/BackButton'
 
 export default function TeamProfile() {
 
     let history = useHistory();
-
-    const override = css`
-        display: block;
-        margin: 0 auto;
-        border-color: white;
-    `;
 
     const { state, actions, effects, reaction } = useOvermind();
 
