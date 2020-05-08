@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { socket_live } from '../sockets'
+import { socket_live, events } from '../sockets'
 import { useOvermind } from '../../overmind'
 const { remote } = window.require('electron');
 
@@ -15,7 +15,7 @@ export default function TopBar(props) {
 
   const close = () => {
     // TODO need to close all windows here. 
-    socket_live.emit("Offline", state.userProfileData.userid)
+    socket_live.emit(events.offline, state.userProfileData.userid)
     var window = remote.getCurrentWindow();
     window.close();
     // ipcRenderer.send('window-all-closed');

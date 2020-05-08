@@ -7,7 +7,7 @@ import UserListItem from "./Users/UserListItem"
 import RoomListItem from "./Rooms/RoomListItem"
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
-import { socket_live } from '../sockets'
+import { socket_live, events } from '../sockets'
 
 import ToastNotification from '../widgets/ToastNotification'
 
@@ -86,7 +86,7 @@ export default function HomePage() {
 
     useEffect(
         () => {
-            socket_live.on("FromAPI", socket_data => {
+            socket_live.on(events.connected, socket_data => {
                 ToastNotification('success', socket_data.message)
             });
         }, []
