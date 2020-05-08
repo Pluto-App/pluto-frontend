@@ -60,7 +60,7 @@ export default function HomePage() {
         border-color: white;
     `;
 
-    const { state, actions, effects, reaction } = useOvermind();
+    const { state, actions, effects } = useOvermind();
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showInviteModal, toggleshowInviteModal] = useState(false);
     const [isAddingRoom, setIsAddingRoom] = useState(false);
@@ -68,7 +68,7 @@ export default function HomePage() {
     const addingNewRoom = async (val) => {
 
         let newRoom = {
-            id: await actions.randomStringGen(10),
+            id: await effects.randomStringGen(12),
             name: val
         }
 

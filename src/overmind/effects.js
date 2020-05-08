@@ -16,7 +16,7 @@ const options = {
     pauseOnHover: true,
 };
 
-const accessIdstring = () => {
+export const randomStringGen = () => {
     let result = ""
     let randomString = "79z1v2ecbcffc48d2dexzd6r69dr32o2129bf276eedcc03c0be2q5a23adc2e3mm6a52w4694txy675w97295zl7nb3c4r3fc2e2pd4c72c8f3de40261a0"
     for (var i = 0; i < randomString.length; i += 1) {
@@ -27,7 +27,7 @@ const accessIdstring = () => {
 
 export const getAccessToken = async () => {
 
-    let accessString = accessIdstring()
+    let accessString = randomStringGen()
 
     let token = await axios.post(process.env.REACT_APP_FETCH_URL, qs.stringify({
         accessId: accessString
