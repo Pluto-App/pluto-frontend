@@ -1,5 +1,6 @@
 {
   "name": "plutoapp-new-frontend",
+  "productName": "Pluto App",
   "version": "0.1.0",
   "main": "public/electron.js",
   "author": "Pluto Dev Team <lahiri.devs@gmail.com>",
@@ -44,22 +45,21 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "concurrently --kill-others \"BROWSER=none npm start\" \"wait-on http://localhost:3000 && electron .\"",
-    "pack": "electron-builder --dir",
+    "electron-pack": "electron-builder build -ml -c.extraMetadata.main=build/electron.js",
     "preelectron-pack": "npm run build",
     "dist": "electron-builder install-app-deps && electron-builder",
     "exec-start": "electron-builder start",
     "electron-start": "electron ./build",
-    "package": "electron-packager build pluto-app --all"
+    "package": "npm run build && electron-packager build pluto-app --all"
   },
   "build": {
     "appId": "com.plutooffice.electron-cra",
     "files": [
       "build/**/*",
-      "node_modules/**/*",
-      "public/**/*"
+      "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "src/assets"
     },
     "win": {
       "target": [
