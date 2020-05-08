@@ -49,7 +49,7 @@
     "dist": "electron-builder install-app-deps && electron-builder",
     "exec-start": "electron-builder start",
     "electron-start": "electron ./build",
-    "package": "electron-packager ./build pluto-office"
+    "package": "electron-packager build pluto-app --all"
   },
   "build": {
     "appId": "com.plutooffice.electron-cra",

@@ -1,5 +1,4 @@
 import React from 'react'
-import Sidebar from '../widgets/Sidebar'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
 import { css } from "@emotion/core";

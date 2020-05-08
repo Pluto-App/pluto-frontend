@@ -2,7 +2,7 @@
 import React from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
-import BackButton from '../tidbits/BackButton'
+import BackButton from '../../widgets/BackButton'
 import { css } from "@emotion/core";
 import RingLoader from "react-spinners/RingLoader";
 import { toast } from 'react-toastify';

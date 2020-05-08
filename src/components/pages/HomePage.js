@@ -3,8 +3,8 @@ import Sidebar from '../widgets/Sidebar'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
 import MainBar from "../widgets/MainBar"
-import UserListItem from "./tidbits/UserListItem"
-import RoomListItem from "./tidbits/RoomListItem"
+import UserListItem from "./Users/UserListItem"
+import RoomListItem from "./Rooms/RoomListItem"
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import { toast } from 'react-toastify';
