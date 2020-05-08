@@ -49,6 +49,9 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.locals
+.env copy
+start.sh
 
 npm-debug.log*
 yarn-debug.log*
