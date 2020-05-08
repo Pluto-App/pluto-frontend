@@ -11,8 +11,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import socketIOClient from "socket.io-client";
 
-const ENDPOINT = "https://sockets-pluto-office.herokuapp.com/";
-
 function RoomList(props) {
 
     const roomlist = props.map((rooms) =>
@@ -88,7 +86,7 @@ export default function HomePage() {
 
     useEffect(
         () => {
-            const socket = socketIOClient(ENDPOINT);
+            const socket = socketIOClient(process.env.REACT_APP_LIVE_ENDPOINT);
             socket.on("FromAPI", socket_data => {
                 toast.success(socket_data.message, options)
             });
