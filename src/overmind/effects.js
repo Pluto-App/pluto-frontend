@@ -1,19 +1,10 @@
 import * as axios from 'axios'
 import qs from 'qs'
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import ToastNotification from '../components/widgets/ToastNotification'
 
 const customHeaders = {
     'Content-Type': 'application/x-www-form-urlencoded',
     'cache-control': 'no-cache'
-};
-
-const options = {
-    // onOpen: props => console.log(props.foo),
-    // onClose: props => console.log(props.foo),
-    autoClose: 2000,
-    position: toast.POSITION.BOTTOM_RIGHT,
-    pauseOnHover: true,
 };
 
 export const randomStringGen = () => {
@@ -53,7 +44,7 @@ export const postHandler = async (url, payload) => {
         })
         data = await dump.data
     } catch (error) {
-        toast.error(error, options);
+        ToastNotification('error', error)
     }
 
     return data
@@ -78,7 +69,7 @@ export const getHandler = async (url, payload) => {
         })
         data = await dump.data
     } catch (error) {
-        toast.error(error, options);
+        ToastNotification('error', error)
     }
 
     return data
@@ -102,7 +93,7 @@ export const updateHandler = async (url, payload) => {
         })
         data = await dump.data
     } catch (error) {
-        toast.error(error, options);
+        ToastNotification('error', error)
     }
 
     return data
@@ -126,7 +117,7 @@ export const deleteHandler = async (url, payload) => {
         })
         data = await dump.data
     } catch (error) {
-        toast.error(error, options);
+        ToastNotification('error', error)
     }
 
     return data

@@ -7,9 +7,9 @@ import UserListItem from "./Users/UserListItem"
 import RoomListItem from "./Rooms/RoomListItem"
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import socketIOClient from "socket.io-client";
+import { socket_live } from '../sockets'
+
+import ToastNotification from '../widgets/ToastNotification'
 
 function RoomList(props) {
 
@@ -73,7 +73,7 @@ export default function HomePage() {
         }
 
         actions.addNewRoom(newRoom)
-        toast.success(val + " room added", options);
+        ToastNotification('success', val + " room added.")
         // TODO Add New Room to Backend
     }
 
@@ -86,9 +86,8 @@ export default function HomePage() {
 
     useEffect(
         () => {
-            const socket = socketIOClient(process.env.REACT_APP_LIVE_ENDPOINT);
-            socket.on("FromAPI", socket_data => {
-                toast.success(socket_data.message, options)
+            socket_live.on("FromAPI", socket_data => {
+                ToastNotification('success', socket_data.message)
             });
         }, []
     );
@@ -122,14 +121,6 @@ export default function HomePage() {
         "width": "calc(94% - 50px)"
     }
 
-    const options = {
-        // onOpen: props => console.log(props.foo),
-        // onClose: props => console.log(props.foo),
-        autoClose: 2000,
-        position: toast.POSITION.BOTTOM_RIGHT,
-        pauseOnHover: true,
-    };
-
     return (
         <div className="w-full flex">
             <Sidebar></Sidebar>
@@ -155,7 +146,7 @@ export default function HomePage() {
                                 onKeyPress={(e) => {
                                     if (e.keyCode === 13 || e.which === 13) {
                                         if (e.target.value === '') {
-                                            toast.error("Room Name can't be Empty", options);
+                                            ToastNotification('error', "Room name can't be empty")
                                         } else {
                                             setIsAddingRoom(false)
                                             addingNewRoom(e.target.value)

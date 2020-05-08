@@ -1,25 +1,20 @@
 import { googleSignIn } from '../auth/authhandle'
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-const options = {
-    // onOpen: props => console.log(props.foo),
-    // onClose: props => console.log(props.foo),
-    autoClose: 1000,
-    position: toast.POSITION.BOTTOM_RIGHT,
-    pauseOnHover: true,
-};
+import ToastNotification from '../components/widgets/ToastNotification'
+import { socket_live } from '../components/sockets'
 
 export const handleLogout = async ({ state }) => {
     state.loggedIn = false;
-    toast.info("Logged Out", options)
+    socket_live.emit("Offline", state.userProfileData.userid)
+    ToastNotification('info', "Logged Out")
 }
 
 export const googlehandleLogin = async ({ state, effects }) => {
     state.loginStarted = true;
+    ToastNotification('info', "Logging In...")
     state.userProfileData = await googleSignIn()
     let dump = await effects.postHandler(process.env.REACT_APP_LOGIN_URL, state.userProfileData)
     state.userProfileData.addStatus = dump.addStatus
+    socket_live.emit("Online", state.userProfileData.userid)
     state.loggedIn = true
     state.signedIn = true;
     state.loginStarted = false;
@@ -48,11 +43,12 @@ export const createTeam = async ({ state, effects }, values) => {
             isActive: true,
             plan: 'Regular'
         }
-        toast.success("Team created", options)
+        ToastNotification('success', "Team created")
+        socket_live.emit("New Team", state.activeTeamId, state.userProfileData.userid)
     } else if (newTeamData.addStatus === 0) {
-        toast.error("Team already exists", options)
+        ToastNotification('error', "Team already exists")
     } else {
-        toast.error("Team creation failed", options)
+        ToastNotification('error', "Team creation failed")
     }
 }
 
@@ -84,7 +80,7 @@ export const teamsbyuserid = async ({ state, effects }, values) => {
         state.loadingTeams = false
         state.loadingMembers = false
         state.teamDataInfo = {}
-        toast.error("You don't belong to any team", options)
+        ToastNotification('error', "You don't belong to any team.")
     }
 
     state.loadingRooms = false
@@ -110,7 +106,7 @@ export const usersbyteamid = async ({ state, effects }, values) => {
             state.memberList.push(userObj)
         })
     } else {
-        toast.error("Could not load users", options)
+        ToastNotification('error', "Could not load users")
         state.loadingMembers = false
     }
 
@@ -122,6 +118,7 @@ export const handleChangeMutations = async ({ state }, values) => {
 }
 
 export const changeActiveTeam = async ({ state }, values) => {
+    socket_live.emit("Team Switch", state.activeTeamId, state.userProfileData.userid)
     state.teamDataInfo[state.activeTeamId].isActive = false
     state.activeTeamId = values
     state.teamDataInfo[values].isActive = true
@@ -133,6 +130,7 @@ export const setOwnerName = async ({ state }, values) => {
 
 export const addNewRoom = ({ state }, values) => {
     // REACT_APP_ADD_ROOM_TO_TEAM
+    socket_live.emit("New Room", state.activeTeamId, state.userProfileData.userid)
     state.loadingRooms = true
     state.RoomListArray.unshift(values)
     state.loadingRooms = false
@@ -141,6 +139,7 @@ export const addNewRoom = ({ state }, values) => {
 
 export const removeRoom = async ({ state }, values) => {
     // REACT_APP_DELETE_ROOM_FROM_TEAM
+    socket_live.emit("Remove Room", state.activeTeamId, state.userProfileData.userid)
     state.loadingRooms = true
     let arr = await state.RoomListArray.filter((rooms) => {
         return rooms.id !== values

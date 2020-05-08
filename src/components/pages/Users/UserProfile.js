@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import BackButton from '../../widgets/BackButton'
-import Sidebar from '../../widgets/Sidebar'
-import MainBar from '../../widgets/MainBar'
 import { css } from "@emotion/core";
 import RingLoader from "react-spinners/RingLoader";
 

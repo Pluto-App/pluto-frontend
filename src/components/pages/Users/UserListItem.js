@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import ToastNotification from '../../widgets/ToastNotification';
 
 export default function UserListItem(props) {
 
@@ -30,18 +29,10 @@ export default function UserListItem(props) {
         "position" : "absolute"
     }
 
-    const options = {
-        // onOpen: props => console.log(props.foo),
-        // onClose: props => console.log(props.foo),
-        autoClose: 2000,
-        position: toast.POSITION.BOTTOM_RIGHT,
-        pauseOnHover: true,
-    };
-
     const removeUserHandler = async (e) => {
         
         if (props.id === state.teamDataInfo[state.activeTeamId].teamownerid) {
-            toast.error("Can't remove owner", options);
+            ToastNotification('error', "Can't remove Owner")
             return;
         }
         
@@ -50,9 +41,9 @@ export default function UserListItem(props) {
                 userid : props.id,
                 teamid : state.activeTeamId
             }) 
-            toast.error(props.name + " removed", options);
+            ToastNotification('error', props.name + " removed")
         } else {
-            toast.error("Only Owners can remove", options);
+            ToastNotification('error', "Only Owners can remove")
         }
     }
 
