@@ -9,6 +9,9 @@ import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import socketIOClient from "socket.io-client";
+
+const ENDPOINT = "https://sockets-pluto-office.herokuapp.com/";
 
 function RoomList(props) {
 
@@ -60,7 +63,6 @@ export default function HomePage() {
     `;
 
     const { state, actions, effects, reaction } = useOvermind();
-
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showInviteModal, toggleshowInviteModal] = useState(false);
     const [isAddingRoom, setIsAddingRoom] = useState(false);
@@ -84,6 +86,14 @@ export default function HomePage() {
         })
     }
 
+    useEffect(
+        () => {
+            const socket = socketIOClient(ENDPOINT);
+            socket.on("FromAPI", socket_data => {
+                toast.success(socket_data.message, options)
+            });
+        }, []
+    );
 
     useEffect(
         () => {
