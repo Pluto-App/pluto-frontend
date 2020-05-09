@@ -51,7 +51,10 @@
 .env.production.local
 .locals
 .env copy
+.prod
+
 start.sh
+prod.sh
 
 npm-debug.log*
 yarn-debug.log*
