@@ -13,18 +13,5 @@ export const state = {
     memberList: [],
     activeMemberId: '',
     loggedInUserId: '',
-    RoomListArray: [
-        {
-            id: 1,
-            name: 'Coffee Room ☕'
-        },
-        {
-            id: 2,
-            name: 'Daily Standup 🚀'
-        },
-        {
-            id: 3,
-            name: 'Conference Room ⚙️'
-        }
-    ]
+    RoomListArray: []
 }

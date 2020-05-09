@@ -10,7 +10,7 @@ export const handleLogout = async ({ state }) => {
 
 export const googlehandleLogin = async ({ state, effects }) => {
     state.loginStarted = true;
-    ToastNotification('info', "Logging In...")
+    ToastNotification('info', "Logging In...🚀")
     state.userProfileData = await googleSignIn()
     let dump = await effects.postHandler(process.env.REACT_APP_LOGIN_URL, state.userProfileData)
     state.userProfileData.addStatus = dump.addStatus
@@ -43,7 +43,7 @@ export const createTeam = async ({ state, effects }, values) => {
             isActive: true,
             plan: 'Regular'
         }
-        ToastNotification('success', "Team created")
+        ToastNotification('success', "Team created...🚀")
         socket_live.emit(events.new_team, state.activeTeamId, state.userProfileData.userid)
     } else if (newTeamData.addStatus === 0) {
         ToastNotification('error', "Team already exists")
@@ -124,45 +124,69 @@ export const changeActiveTeam = async ({ state }, values) => {
     state.teamDataInfo[values].isActive = true
 }
 
+export const changeActiveRoom = async ({ state }, values) => {
+    socket_live.emit(events.room_switch, state.activeTeamId, state.userProfileData.userid)
+    state.activeRoomId = values
+}
+
 export const setOwnerName = async ({ state }, values) => {
     state.change[values.target] = values.value
 }
 
-export const addNewRoom = ({ state }, values) => {
-    // REACT_APP_ADD_ROOM_TO_TEAM
+export const addNewRoom = async ({ state, effects }, values) => {
+
     socket_live.emit(events.new_room, state.activeTeamId, state.userProfileData.userid)
     state.loadingRooms = true
-    state.RoomListArray.unshift(values)
+    let roomdump = await effects.postHandler(process.env.REACT_APP_ADD_ROOM_TO_TEAM, values)
+
+    if (Array.isArray(roomdump.rooms) && roomdump.rooms.length) {
+        roomdump.rooms.map((room) => {
+            state.RoomListArray.unshift(room)
+        })
+    }
+
     state.loadingRooms = false
-    // TODO Remove room from backend by activeTeamId and values. 
 }
 
-export const removeRoom = async ({ state }, values) => {
-    // REACT_APP_DELETE_ROOM_FROM_TEAM
+export const removeRoom = async ({ state, effects }, values) => {
+
     socket_live.emit(events.remove_room, state.activeTeamId, state.userProfileData.userid)
+    
     state.loadingRooms = true
+    await effects.postHandler(process.env.REACT_APP_DELETE_ROOM_FROM_TEAM, values)
     let arr = await state.RoomListArray.filter((rooms) => {
-        return rooms.id !== values
+        return rooms.id !== values.roomid
     })
+    
     state.RoomListArray = arr
     state.loadingRooms = false
-    // TODO Remove room from backend by activeTeamId and values. 
 }
 
 export const removeTeamMember = async ({ state, effects }, values) => {
     state.loadingMembers = true;
+    
     socket_live.emit(events.remove_member, values)
     let arr = state.memberList.filter((member) => {
         return member.userid !== values.userid
     })
+    
     await effects.postHandler(process.env.REACT_APP_DELETE_USER_FROM_TEAM, values)
     state.memberList = arr
     state.loadingMembers = false;
 }
 
 export const roomsbyteamid = async ({ state, effects }, values) => {
-    // Passed Team Id.
-    // REACT_APP_GET_ROOMS_FROM_ID
+    state.loadingRooms = true
+    let roomdump = await effects.postHandler(process.env.REACT_APP_GET_ROOMS_FROM_ID, values)
+    
+    state.RoomListArray = [];
+    if (Array.isArray(roomdump.rooms) && roomdump.rooms.length) {
+        roomdump.rooms.map((room) => {
+            state.RoomListArray.push(room)
+        })
+    }
+
+    state.loadingRooms = false
 }
 
 export const getOnlineMembersList = async ({ state, effects }, value) => {

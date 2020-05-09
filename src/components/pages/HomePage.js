@@ -17,7 +17,7 @@ function RoomList(props) {
         <RoomListItem
             key={rooms.id.toString()}
             id={rooms.id}
-            name={rooms.name}
+            name={rooms.roomname}
         />
     )
 
@@ -65,15 +65,15 @@ export default function HomePage() {
     const [showInviteModal, toggleshowInviteModal] = useState(false);
     const [isAddingRoom, setIsAddingRoom] = useState(false);
 
-    const addingNewRoom = async (val) => {
+    const addingNewRoom = async (roomname) => {
 
         let newRoom = {
-            id: await effects.randomStringGen(12),
-            name: val
+            teamid : state.activeTeamId,
+            roomname: roomname + " 👌" // Emoji Supported ? 
         }
 
         actions.addNewRoom(newRoom)
-        ToastNotification('success', val + " room added.")
+        ToastNotification('success', roomname + " room added. 😎")
         // TODO Add New Room to Backend
     }
 
@@ -86,7 +86,7 @@ export default function HomePage() {
 
     useEffect(
         () => {
-            socket_live.on(events.connected, socket_data => {
+            socket_live.on(events.live, socket_data => {
                 ToastNotification('success', socket_data.message)
             });
         }, []
@@ -106,6 +106,12 @@ export default function HomePage() {
     useEffect(
         () => {
             if (state.activeTeamId !== 0) {
+                const RoomListbyId = async (teamid) => {
+                    await actions.roomsbyteamid({
+                        teamid: teamid
+                    })
+                }
+                RoomListbyId(state.activeTeamId)
                 const MembersData = async (teamid) => {
                     await actions.usersbyteamid({
                         teamid: teamid
@@ -115,6 +121,7 @@ export default function HomePage() {
             }
         }, [actions, state.activeTeamId]
     )
+
 
     const customStyle = {
         "top": "46%",

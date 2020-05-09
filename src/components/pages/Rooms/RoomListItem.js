@@ -42,15 +42,25 @@ export default function RoomListItem(props) {
 
     const removeRoomHandler = async (e) => {
         if(state.teamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
-            await actions.removeRoom(props.id) 
+            await actions.removeRoom({
+                roomid : props.id, 
+                teamid : state.activeTeamId
+            }) 
             ToastNotification('error', roomName + " room removed");
         } else {
             ToastNotification('error', "Only Owners can remove")
         }
     }
 
+    const handleClick = (e) => {
+        actions.changeActiveRoom(props.id)
+        ToastNotification('warn', "Added to " + roomName)
+    }
+ 
     return (
-        <div id={props.id}>
+        <div id={props.id} onClick={(e) => {
+            handleClick(e)
+        }}>
             {
                 startedEditing ?
                     <div className="flex justify-center items-center hover:bg-gray-800"
