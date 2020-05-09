@@ -3,7 +3,7 @@ import socketIOClient from "socket.io-client";
 export const socket_live = socketIOClient(process.env.REACT_APP_LIVE_ENDPOINT);
 export const socket_chat = socketIOClient(process.env.REACT_APP_CHAT_ENDPOINT);
 
-export const events = {
+export  const events = {
     offline : "Offline", 
     online : "Online",
     sleeping : "Sleeping", 
@@ -15,5 +15,8 @@ export const events = {
     audio_call : "Audio Call", 
     video_call : "Video Call", 
     live : "live", 
-    remove_member : "Remove Member"
-}
+    remove_member : "Remove Member", 
+    member_room_switch : "Member Room Switch",
+    room_welcome : "Room Welcome",
+    user_join : "User Joined"
+  }

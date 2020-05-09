@@ -55,6 +55,7 @@ export default function RoomListItem(props) {
     const handleClick = (e) => {
         actions.changeActiveRoom(props.id)
         ToastNotification('warn', "Added to " + roomName)
+        // Emit Socket 
     }
  
     return (
