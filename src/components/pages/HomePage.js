@@ -7,8 +7,6 @@ import UserListItem from "./Users/UserListItem"
 import RoomListItem from "./Rooms/RoomListItem"
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
-import { socket_live, events } from '../sockets'
-
 import ToastNotification from '../widgets/ToastNotification'
 
 function RoomList(props) {
@@ -60,7 +58,7 @@ export default function HomePage() {
         border-color: white;
     `;
 
-    const { state, actions, effects } = useOvermind();
+    const { state, actions } = useOvermind();
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showInviteModal, toggleshowInviteModal] = useState(false);
     const [isAddingRoom, setIsAddingRoom] = useState(false);
@@ -73,8 +71,6 @@ export default function HomePage() {
         }
 
         actions.addNewRoom(newRoom)
-        ToastNotification('success', roomname + " room added. 😎")
-        // TODO Add New Room to Backend
     }
 
     const handleChange = async (e) => {
@@ -83,14 +79,6 @@ export default function HomePage() {
             value: e.target.value
         })
     }
-
-    useEffect(
-        () => {
-            socket_live.on(events.live, socket_data => {
-                ToastNotification('success', socket_data.message)
-            });
-        }, []
-    );
 
     useEffect(
         () => {

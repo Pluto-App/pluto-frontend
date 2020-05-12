@@ -36,7 +36,7 @@ export default function RoomListItem(props) {
     }
 
     const handleVideoCall = (e, id) => {
-        //load video call window. 
+        // load video call window. 
         // window.require("electron").ipcRenderer.send('load-video-window', id);
     }
 
@@ -44,24 +44,24 @@ export default function RoomListItem(props) {
         if(state.teamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
             await actions.removeRoom({
                 roomid : props.id, 
-                teamid : state.activeTeamId
+                teamid : state.activeTeamId, 
+                roomname : roomName
             }) 
-            ToastNotification('error', roomName + " room removed");
         } else {
             ToastNotification('error', "Only Owners can remove")
         }
     }
 
     const handleClick = (e) => {
-        actions.changeActiveRoom(props.id)
-        ToastNotification('warn', "Added to " + roomName)
-        // Emit Socket 
+        history.push("/room-profile")
+        actions.changeActiveRoom({
+            roomid : props.id,
+            roomname : roomName,
+        })
     }
  
     return (
-        <div id={props.id} onClick={(e) => {
-            handleClick(e)
-        }}>
+        <div id={props.id}>
             {
                 startedEditing ?
                     <div className="flex justify-center items-center hover:bg-gray-800"
@@ -98,7 +98,11 @@ export default function RoomListItem(props) {
                             <div className="flex text-gray-500 font-semibold rounded-lg overflow-hidden">
                                 <i className="material-icons md-light md-inactive hover:text-indigo-400" style={{ fontSize: "20px", margin: "0" }}>volume_up</i>
                             </div>
-                            <div className="text-white px-2 font-bold tracking-wide text-xs">
+                            <div className="text-white px-2 font-bold tracking-wide text-xs" 
+                            onClick={(e) => {
+                                handleClick(e)
+                            }}
+                            >
                                 {roomName}
                             </div>
                         </div>
@@ -141,9 +145,11 @@ export default function RoomListItem(props) {
                                     </div>
                                 </div>
                             }
-                            <button className="text-gray-300 hover:text-indigo-500 px-1 focus:outline-none" onClick={(e) => {
-                                    toggleShowMenu(showMenu => !showMenu)
-                                }}>
+                            <button className="text-gray-300 hover:text-indigo-500 px-1 focus:outline-none" 
+                                                                    onClick={() => {
+                                                                        toggleShowMenu(showMenu => !showMenu)
+                                                                    }}
+                            >
                                 <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}>more_vert</i>
                             </button>
                             {
