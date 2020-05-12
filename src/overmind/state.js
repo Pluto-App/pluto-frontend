@@ -6,12 +6,13 @@ export const state = {
     loginStarted: false,
     loadingTeams: true,
     loadingMembers: true,
-    userProfileData: {},
-    teamDataInfo: {},
+    userProfileData: {}, 
+    teamDataInfo: {}, // Use ES6 MAP /SET
     activeTeamId: 0,
     activeRoomId: 0,
-    memberList: [],
+    activeRoomName: "",
+    memberList: [],  // Use ES6 MAP /SET
     activeMemberId: '',
     loggedInUserId: '',
-    RoomListArray: []
+    RoomListArray: [] // Use ES6 MAP /SET
 }
