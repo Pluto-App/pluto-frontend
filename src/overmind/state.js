@@ -14,5 +14,5 @@ export const state = {
     memberList: [],  // Use ES6 MAP /SET
     activeMemberId: '',
     loggedInUserId: '',
-    RoomListArray: [] // Use ES6 MAP /SET
+    RoomListArray: []
 }

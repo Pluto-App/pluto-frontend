@@ -1,13 +1,16 @@
 import { googleSignIn } from '../auth/authhandle'
 import ToastNotification from '../components/widgets/ToastNotification'
 import { socket_live, events } from '../components/sockets'
+import { values } from 'lodash'
 
 export const handleLogout = async ({ state }) => {
-    state.loggedIn = false;
     socket_live.emit(events.offline, {
-        userid : state.userProfileData.userid
+        userid : state.userProfileData.userid, 
+        username : state.userProfileData.username, 
+        useremail : state.userProfileData.useremail, 
+        avatar : state.userProfileData.avatar, 
     })
-    ToastNotification('info', "Logged Out")
+    state.loggedIn = false;
 }
 
 export const googlehandleLogin = async ({ state, effects }) => {
@@ -16,9 +19,6 @@ export const googlehandleLogin = async ({ state, effects }) => {
     state.userProfileData = await googleSignIn()
     let dump = await effects.postHandler(process.env.REACT_APP_LOGIN_URL, state.userProfileData)
     state.userProfileData.addStatus = dump.addStatus
-    socket_live.emit(events.online, {
-        userid : state.userProfileData.userid
-    })
     state.loggedIn = true
     state.signedIn = true;
     state.loginStarted = false;
@@ -47,10 +47,10 @@ export const createTeam = async ({ state, effects }, values) => {
             isActive: true,
             plan: 'Regular'
         }
-        ToastNotification('success', "Team created...🚀")
         socket_live.emit(events.new_team, {
             teamid : state.activeTeamId, 
-            userid : state.userProfileData.userid
+            userid : state.userProfileData.userid, 
+            teamname : state.teamDataInfo[state.activeTeamId].teamname 
         })
         socket_live.emit(events.team_switch, {
             teamid : state.activeTeamId, 
@@ -226,9 +226,4 @@ export const roomsbyteamid = async ({ state, effects }, values) => {
     }
 
     state.loadingRooms = false
-}
-
-export const getOnlineMembersList = async ({ state, effects }, value) => {
-    // Online members List.
-    // REACT_APP_LIVE_ENDPOINT
 }

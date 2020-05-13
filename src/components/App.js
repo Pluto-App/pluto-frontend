@@ -10,6 +10,7 @@ import UserUpdate from './pages/Users/UserUpdate'
 import { ToastContainer } from 'react-toastify';
 import ToastNotification from './widgets/ToastNotification'
 import { socket_live, events } from './sockets'
+import { useOvermind } from '../overmind'
 
 import {
   BrowserRouter as Router,
@@ -19,9 +20,12 @@ import {
 
 const App = () => {
 
+  const { state, actions } = useOvermind();
+
   useEffect(
     () => {
 
+        let interval = 0;
         // Check and emit liveness
         socket_live.on(events.live, data => {
             ToastNotification('info', data.message)
@@ -65,12 +69,47 @@ const App = () => {
           ToastNotification('info', data.message)
         })
 
-        // TODO Populate Online Users list based on this, 
+        // When a new team is created, users of the app
+        // are notified. 
+        socket_live.on(events.new_team, (data) => {
+          ToastNotification('success', data.message)
+        })
+
+        socket_live.on(events.online, (data) => {
+          ToastNotification('success', 'Online')
+          // TODO Add users to set here.
+        })
+
+        socket_live.on(events.offline, (data) => {
+          ToastNotification('success', 'Offline')
+          // TODO Delete users from set if already 
+          // present in online list. 
+        })
+
+        socket_live.on('disconnect', () => {
+          ToastNotification('error', 'Socket disconnect')
+        })
+
+        if (interval) {
+          clearInterval(interval);
+        }
+
+        // Emit online event
+        interval = setInterval(() => {
+          let data = {
+            userid : state.userProfileData.userid, 
+            username : state.userProfileData.username,
+            useremail : state.userProfileData.useremail, 
+            avatar : state.userProfileData.avatar
+          }
+          socket_live.emit(events.online, data)
+        }, 10000)
 
         return () => {
-            ToastNotification('error', "App Unmount")
+            ToastNotification('error', "App Unmount");
+            clearInterval(interval);
         }
-    }, []
+    }
   );
 
 
