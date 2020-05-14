@@ -1,11 +1,11 @@
 {
   "name": "pluto-office",
-  "productName": "Pluto App",
-  "version": "0.1.0",
+  "productName": "pluto-office",
+  "version": "0.1.1",
   "main": "public/electron.js",
   "author": "Pluto Dev Team <lahiri.devs@gmail.com>",
   "email": "lahiri.dev@gmail.com",
-  "description": "Pluto Office App",
+  "description": "pluto-office-app",
   "private": true,
   "dependencies": {
     "@emotion/core": "^10.0.28",
@@ -38,59 +38,59 @@
     "url": "^0.11.0"
   },
   "homepage": "./",
-  "build": { 
+  "build": {
     "appId": "com.pluto.plutoapp",
-     "compression": "normal",
-     "productName": "pluto",
-     "files" : [
+    "compression": "normal",
+    "productName": "pluto-office",
+    "files": [
       "build/**/*",
       "node_modules/**/*",
       "src/assets/**/*"
     ],
-     "directories": {
+    "directories": {
       "buildResources": "assets",
       "output": "dist"
-    }, 
-     "mac": {  
-      "icon": "assets/macos/logo.icns", 
+    },
+    "mac": {
+      "icon": "assets/macos/logo.icns",
       "type": "distribution",
-       "target": [ 
-             "pkg",    
-             "dmg",     
-             "mas"  
-       ],      
-     "publish": {
-         "provider":"github"
-       }  
-  },  
-   "mas": {  
-     "entitlements": "assets/entitlements.mas.plist",
-     "entitlementsInherit": "assets/entitlements.mas.inherit.plist",
-     "provisioningProfile": "assets/embedded.provisionprofile"    
- },    
- "win": {
-    "target": [
-      "nsis",
-      "msi"
-    ],    
-    "icon": "assets/windows/logo.ico",
-      "publish": {      
+      "target": [
+        "pkg",
+        "dmg",
+        "mas"
+      ],
+      "publish": {
         "provider": "github"
-      } 
-    },   
-  "linux": { 
+      }
+    },
+    "mas": {
+      "entitlements": "assets/entitlements.mas.plist",
+      "entitlementsInherit": "assets/entitlements.mas.inherit.plist",
+      "provisioningProfile": "assets/embedded.provisionprofile"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "nsis-web"
+      ],
+      "icon": "assets/windows/logo.ico",
+      "publish": {
+        "provider": "github"
+      }
+    },
+    "linux": {
       "icon": "assets/logo.png",
-       "target": [   
-          "snap",     
-          "AppImage", 
-          "deb"   
-        ],     
-    "description": "pluto", 
-    "category": "office",   
-    "publish": {  
-       "provider": "github"
-      }  
-    } 
+      "target": [
+        "snap",
+        "AppImage",
+        "deb"
+      ],
+      "description": "pluto-office",
+      "category": "office",
+      "publish": {
+        "provider": "github"
+      }
+    }
   },
   "scripts": {
     "build:style": "tailwind build src/styles/index.css -o src/styles/tailwind.css",
@@ -99,7 +99,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "concurrently --kill-others \"BROWSER=none npm start\" \"wait-on http://localhost:3000 && electron .\"",
-    "release": "npm run build && electron-builder --mac --win --linux --publish=always"
+    "release": "npm run build && electron-builder build --mac --win --linux --publish=always"
   },
   "eslintConfig": {
     "extends": "react-app"
