@@ -43,12 +43,12 @@
      "compression": "normal",
      "productName": "pluto",
      "files" : [
-      "build",
-      "node_modules",
-      "src/assets"
+      "build/**/*",
+      "node_modules/**/*",
+      "src/assets/**/*"
     ],
      "directories": {
-      "buildResources": "public",
+      "buildResources": "assets",
       "output": "dist"
     }, 
      "mac": {  
@@ -60,8 +60,7 @@
              "mas"  
        ],      
      "publish": {
-         "provider":"github",  
-         "token": "${GITHUB_TOKEN}"
+         "provider":"github"
        }  
   },  
    "mas": {  
@@ -72,8 +71,6 @@
  "win": {
     "target": [
       "nsis",
-      "nsis-web",
-      "portable", 
       "msi"
     ],    
     "icon": "assets/windows/logo.ico",
@@ -102,7 +99,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "concurrently --kill-others \"BROWSER=none npm start\" \"wait-on http://localhost:3000 && electron .\"",
-    "release": "npm run build && electron-builder --publish=always"
+    "release": "npm run build && electron-builder --mac --win --linux --publish=always"
   },
   "eslintConfig": {
     "extends": "react-app"
