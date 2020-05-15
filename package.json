@@ -43,45 +43,47 @@
     "compression": "normal",
     "productName": "pluto-office",
     "files": [
-      "build/**/*",
-      "node_modules/**/*",
-      "src/assets/**/*"
+      "./build/**/*",
+      "./node_modules/**/*",
+      "./src/assets/**/*"
     ],
     "directories": {
       "buildResources": "assets",
       "output": "dist"
     },
     "mac": {
-      "icon": "assets/macos/logo.icns",
+      "icon": "./assets/macos/logo.icns",
       "type": "distribution",
       "target": [
         "pkg",
-        "tar.gz"
+        "tar.gz", 
+        "mas", 
+        "dmg" 
       ],
       "publish": {
         "provider": "github"
       }
     },
     "mas": {
-      "entitlements": "assets/entitlements.mas.plist",
-      "entitlementsInherit": "assets/entitlements.mas.inherit.plist",
-      "provisioningProfile": "assets/embedded.provisionprofile"
+      "entitlements": "./assets/entitlements.mas.plist"
     },
     "win": {
       "target": [
         "nsis",
-        "nsis-web"
+        "nsis-web", 
+        "portable"
       ],
-      "icon": "assets/windows/logo.ico",
+      "icon": "./assets/windows/logo.ico",
       "publish": {
         "provider": "github"
       }
     },
     "linux": {
-      "icon": "assets/logo.png",
+      "icon": "./assets/logo.png",
       "target": [
         "snap",
-        "deb"
+        "deb", 
+        "AppImage"
       ],
       "description": "pluto-office",
       "category": "office",
