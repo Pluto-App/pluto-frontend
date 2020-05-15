@@ -7,11 +7,11 @@ export const state = {
     loadingTeams: true,
     loadingMembers: true,
     userProfileData: {}, 
-    teamDataInfo: {}, // Use ES6 MAP /SET
+    teamDataInfo: {}, 
     activeTeamId: 0,
     activeRoomId: 0,
     activeRoomName: "",
-    memberList: [],  // Use ES6 MAP /SET
+    memberList: [], 
     activeMemberId: '',
     loggedInUserId: '',
     RoomListArray: []

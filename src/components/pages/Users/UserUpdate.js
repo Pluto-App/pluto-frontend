@@ -9,7 +9,7 @@ export default function UserUpdate() {
 
     let history = useHistory();
 
-    const { state, actions, effects, reaction } = useOvermind();
+    const { state, actions } = useOvermind();
 
     const override = css`
         display: block;

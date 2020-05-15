@@ -8,7 +8,7 @@ export default function UserListItem(props) {
 
     let history = useHistory();
 
-    const { state, actions, effects, reaction } = useOvermind();
+    const { state, actions } = useOvermind();
 
     const [showChatModal, toggleshowChatModal] = useState(false);
     const [showMenu, toggleShowMenu] = useState(false);
