@@ -19,6 +19,6 @@ const NewApp = hot(App)
 render(
   <Provider value={NewOverMind}>
     <NewApp />
-  </Provider> , 
+  </Provider>,
   document.getElementById('root')
 );

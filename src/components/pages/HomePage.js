@@ -47,7 +47,6 @@ function MembersList(props) {
     );
 }
 
-
 export default function HomePage() {
 
     let history = useHistory();
@@ -66,8 +65,8 @@ export default function HomePage() {
     const addingNewRoom = async (roomname) => {
 
         let newRoom = {
-            teamid : state.activeTeamId,
-            roomname: roomname + " 👌" // Emoji Supported ? 
+            teamid: state.activeTeamId,
+            roomname: roomname + " 👌"
         }
 
         actions.addNewRoom(newRoom)
@@ -236,8 +235,7 @@ export default function HomePage() {
                             >{!copySuccess ? "Copy Invite" : "Copied !!"}</button>
                         </div> :
                         <span>
-
-                        </span>
+                    </span>
                 }
             </div>
         </div>

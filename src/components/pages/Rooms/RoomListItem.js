@@ -8,7 +8,7 @@ export default function RoomListItem(props) {
 
     let history = useHistory();
 
-    const { state, actions, effects, reaction } = useOvermind();
+    const { state, actions } = useOvermind();
 
     const [showChatModal, toggleshowChatModal] = useState(false);
     const [showMenu, toggleShowMenu] = useState(false);
@@ -21,18 +21,18 @@ export default function RoomListItem(props) {
 
     const customMenuStyle = {
         "top": "75px",
-        "height" : "185px",
+        "height": "185px",
         "width": "230px",
-        "left" : "55px",
-        "position" : "absolute"
+        "left": "55px",
+        "position": "absolute"
     }
 
     const customChatStyle = {
         "top": "75px",
-        "height" : "185px",
+        "height": "185px",
         "width": "230px",
-        "left" : "55px",
-        "position" : "absolute"
+        "left": "55px",
+        "position": "absolute"
     }
 
     const handleVideoCall = (e, id) => {
@@ -41,12 +41,12 @@ export default function RoomListItem(props) {
     }
 
     const removeRoomHandler = async (e) => {
-        if(state.teamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
+        if (state.teamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
             await actions.removeRoom({
-                roomid : props.id, 
-                teamid : state.activeTeamId, 
-                roomname : roomName
-            }) 
+                roomid: props.id,
+                teamid: state.activeTeamId,
+                roomname: roomName
+            })
         } else {
             ToastNotification('error', "Only Owners can remove")
         }
@@ -55,11 +55,11 @@ export default function RoomListItem(props) {
     const handleClick = (e) => {
         history.push("/room-profile")
         actions.changeActiveRoom({
-            roomid : props.id,
-            roomname : roomName,
+            roomid: props.id,
+            roomname: roomName,
         })
     }
- 
+
     return (
         <div id={props.id}>
             {
@@ -87,7 +87,7 @@ export default function RoomListItem(props) {
                             }}
                             type="text"
                             value={roomName}
-                        autoFocus/>
+                            autoFocus />
                     </div>
                     :
                     <div className="flex py-0 justify-between p-1 hover:bg-gray-800" id={props.id} onContextMenu={(e) => {
@@ -98,10 +98,10 @@ export default function RoomListItem(props) {
                             <div className="flex text-gray-500 font-semibold rounded-lg overflow-hidden">
                                 <i className="material-icons md-light md-inactive hover:text-indigo-400" style={{ fontSize: "20px", margin: "0" }}>volume_up</i>
                             </div>
-                            <div className="text-white px-2 font-bold tracking-wide text-xs" 
-                            onClick={(e) => {
-                                handleClick(e)
-                            }}
+                            <div className="text-white px-2 font-bold tracking-wide text-xs"
+                                onClick={(e) => {
+                                    handleClick(e)
+                                }}
                             >
                                 {roomName}
                             </div>
@@ -145,10 +145,10 @@ export default function RoomListItem(props) {
                                     </div>
                                 </div>
                             }
-                            <button className="text-gray-300 hover:text-indigo-500 px-1 focus:outline-none" 
-                                                                    onClick={() => {
-                                                                        toggleShowMenu(showMenu => !showMenu)
-                                                                    }}
+                            <button className="text-gray-300 hover:text-indigo-500 px-1 focus:outline-none"
+                                onClick={() => {
+                                    toggleShowMenu(showMenu => !showMenu)
+                                }}
                             >
                                 <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}>more_vert</i>
                             </button>

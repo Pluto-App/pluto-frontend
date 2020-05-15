@@ -8,7 +8,7 @@ export default function Sidebar(props) {
 
     let history = useHistory();
 
-    const { state, actions, effects, reaction } = useOvermind();
+    const { state, actions } = useOvermind();
 
     const override = css`
         display: block;

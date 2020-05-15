@@ -6,9 +6,9 @@ let mainWindow
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 315, 
-    height: 320, 
-    titleBarStyle: 'hiddenInset', 
+    width: 315,
+    height: 320,
+    titleBarStyle: 'hiddenInset',
     frame: false,
     webPreferences: {
       nodeIntegration: true
@@ -17,11 +17,11 @@ function createWindow() {
 
   mainWindow.loadURL(
     'http://localhost:3000' ||
-      url.format({
-        pathname: path.join(__dirname, '/../build/index.html'),
-        protocol: 'file:',
-        slashes: true
-      })
+    url.format({
+      pathname: path.join(__dirname, '/../build/index.html'),
+      protocol: 'file:',
+      slashes: true
+    })
   )
 
   // mainWindow.webContents.openDevTools();
@@ -31,11 +31,11 @@ function createWindow() {
   });
 
   ipcMain.on('resize-login', (event, arg) => {
-    mainWindow.setSize(315,320)
+    mainWindow.setSize(315, 320)
   })
 
   ipcMain.on('resize-normal', (event, arg) => {
-    mainWindow.setSize(315,606)
+    mainWindow.setSize(315, 606)
   })
 
 }
