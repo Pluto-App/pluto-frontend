@@ -235,7 +235,7 @@ export default function HomePage() {
                             >{!copySuccess ? "Copy Invite" : "Copied !!"}</button>
                         </div> :
                         <span>
-                    </span>
+                        </span>
                 }
             </div>
         </div>

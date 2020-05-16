@@ -7,12 +7,7 @@ import { socket_live, events } from '../components/sockets'
  * Need to see if Google Sign-Out necessary. 
  */
 export const handleLogout = async ({ state }) => {
-    socket_live.emit(events.offline, {
-        userid: state.userProfileData.userid,
-        username: state.userProfileData.username,
-        useremail: state.userProfileData.useremail,
-        avatar: state.userProfileData.avatar
-    })
+    socket_live.emit(events.offline, state.userProfileData.userid)
     state.loggedIn = false;
 }
 
@@ -244,4 +239,8 @@ export const roomsbyteamid = async ({ state, effects }, values) => {
     }
 
     state.loadingRooms = false
+}
+
+export const updateOnlineMembersList = async ({ state, effects }, values) => {
+    state.OnlineMembers = Array.from(values)
 }

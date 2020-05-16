@@ -21,6 +21,7 @@ import {
 const App = () => {
 
   const { state, actions } = useOvermind();
+  const [OnlineMembers, updateOnlineMembers] = useState(new Set())
 
   useEffect(
     () => {
@@ -76,12 +77,13 @@ const App = () => {
       })
 
       socket_live.on(events.online, (data) => {
-        // TODO Add users to set here.
+        updateOnlineMembers(OnlineMembers => OnlineMembers.add(data))
+        actions.updateOnlineMembersList(OnlineMembers)
       })
 
       socket_live.on(events.offline, (data) => {
-        // TODO Delete users from set if already 
-        // present in online list. 
+        updateOnlineMembers(OnlineMembers => OnlineMembers.delete(data))
+        actions.updateOnlineMembersList(OnlineMembers)
       })
 
       socket_live.on('disconnect', () => {
@@ -94,13 +96,8 @@ const App = () => {
 
       // Emit online event
       interval = setInterval(() => {
-        let data = {
-          userid: state.userProfileData.userid,
-          username: state.userProfileData.username,
-          useremail: state.userProfileData.useremail,
-          avatar: state.userProfileData.avatar
-        }
-        socket_live.emit(events.online, data)
+        if (state.loggedIn)
+          socket_live.emit(events.online, state.userProfileData.userid)
       }, 10000)
 
       return () => {

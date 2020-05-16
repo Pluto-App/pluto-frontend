@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import BackButton from '../../widgets/BackButton'
+import UserListItem from '../Users/UserListItem'
 
 export default function RoomProfile() {
 
@@ -9,6 +10,8 @@ export default function RoomProfile() {
 
     const { state, actions } = useOvermind();
 
+    // state.OnlineMembers [array]
+    
     return (
         <div className="w-full flex">
             <div className="bg-black flex-1 px-3 text-white pt-2" style={{ height: "calc(100vh - 30px)" }}>

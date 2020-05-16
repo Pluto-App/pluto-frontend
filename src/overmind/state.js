@@ -6,13 +6,14 @@ export const state = {
     loginStarted: false,
     loadingTeams: true,
     loadingMembers: true,
-    userProfileData: {}, 
-    teamDataInfo: {}, 
+    userProfileData: {},
+    teamDataInfo: {},
     activeTeamId: 0,
     activeRoomId: 0,
     activeRoomName: "",
-    memberList: [], 
+    memberList: [],
     activeMemberId: '',
     loggedInUserId: '',
-    RoomListArray: []
+    RoomListArray: [],
+    OnlineMembers: []
 }
