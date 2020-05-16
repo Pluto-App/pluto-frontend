@@ -10,8 +10,10 @@ export default function RoomProfile() {
 
     const { state, actions } = useOvermind();
 
-    // state.OnlineMembers [array]
-    
+    useEffect(() => {
+        // FIXME Load Room Members oon room change by activeRoomId and activeTeamId
+    }, []) 
+
     return (
         <div className="w-full flex">
             <div className="bg-black flex-1 px-3 text-white pt-2" style={{ height: "calc(100vh - 30px)" }}>

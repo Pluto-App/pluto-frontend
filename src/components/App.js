@@ -21,15 +21,16 @@ import {
 const App = () => {
 
   const { state, actions } = useOvermind();
-  const [OnlineMembers, updateOnlineMembers] = useState(new Set())
+  const [OnlMem, updateOnlMem] = useState(new Set())
 
   useEffect(
     () => {
 
       let interval = 0;
+
       // Check and emit liveness
-      socket_live.on(events.live, data => {
-        ToastNotification('info', data.message)
+      socket_live.on(events.ping, () => {
+        socket_live.emit(events.pong, state.userProfileData.userid)
       });
 
       // Welcome Message when you join a new room. 
@@ -64,26 +65,31 @@ const App = () => {
       })
 
       // When a new person joins a team 
-      // or switches team, we show who joined 
-      // in.
+      // or switches team, we show who joined in.
       socket_live.on(events.team_switch, (data) => {
         ToastNotification('info', data.message)
       })
 
-      // When a new team is created, users of the app
-      // are notified. 
+      // When a new team is created, 
+      // users of the app are notified. 
       socket_live.on(events.new_team, (data) => {
         ToastNotification('success', data.message)
       })
 
+      // Some User is Online
       socket_live.on(events.online, (data) => {
-        updateOnlineMembers(OnlineMembers => OnlineMembers.add(data))
-        actions.updateOnlineMembersList(OnlineMembers)
+        const newOnlMemSet = new Set(OnlMem)
+        newOnlMemSet.add(data)
+        updateOnlMem(newOnlMemSet)
+        actions.updateOnlineMembersList(OnlMem)
       })
 
+      // Some User is Offline
       socket_live.on(events.offline, (data) => {
-        updateOnlineMembers(OnlineMembers => OnlineMembers.delete(data))
-        actions.updateOnlineMembersList(OnlineMembers)
+        const newOnlMemSet = new Set(OnlMem)
+        newOnlMemSet.delete(data)
+        updateOnlMem(newOnlMemSet)
+        actions.updateOnlineMembersList(OnlMem)
       })
 
       socket_live.on('disconnect', () => {
@@ -94,9 +100,9 @@ const App = () => {
         clearInterval(interval);
       }
 
-      // Emit online event
       interval = setInterval(() => {
         if (state.loggedIn)
+          // Emit User is online.
           socket_live.emit(events.online, state.userProfileData.userid)
       }, 10000)
 
