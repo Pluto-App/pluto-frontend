@@ -15,12 +15,7 @@ export default function TopBar(props) {
 
   const close = () => {
     // TODO need to close all windows here. 
-    socket_live.emit(events.offline, {
-      userid: state.userProfileData.userid,
-      username: state.userProfileData.username,
-      useremail: state.userProfileData.useremail,
-      avatar: state.userProfileData.avatar
-    })
+    socket_live.emit(events.offline, state.userProfileData.userid)
     var window = remote.getCurrentWindow();
     window.close();
   }
