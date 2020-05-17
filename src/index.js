@@ -10,7 +10,7 @@ import './assets/fonts/css/icons.css'
 import App from './components/App';
 
 const overmind = createOvermind(config, {
-  devtools: "http://127.0.0.1:5000"
+  devtools: "localhost:5000"
 })
 
 const NewOverMind = hot(overmind)

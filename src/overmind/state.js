@@ -11,9 +11,9 @@ export const state = {
     activeTeamId: 0,
     activeRoomId: 0,
     activeRoomName: "",
-    memberList: [],
     activeMemberId: '',
     loggedInUserId: '',
     RoomListArray: [],
-    OnlineMembers: []
+    OnlineMembers: [],
+    memberList: []
 }

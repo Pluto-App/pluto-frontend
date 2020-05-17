@@ -5,6 +5,7 @@ import { socket_live, events } from '../components/sockets'
 /**
  * Handle Logout action of the app. 
  * Need to see if Google Sign-Out necessary. 
+ * Emit User went Offline.
  */
 export const handleLogout = async ({ state }) => {
     socket_live.emit(events.offline, state.userProfileData.userid)
@@ -14,6 +15,7 @@ export const handleLogout = async ({ state }) => {
 /**
  * App Google Sign-in Handler.
  * See auth folder for more details.  
+ * Emit User is online.
  */
 export const googlehandleLogin = async ({ state, effects }) => {
     state.loginStarted = true;
@@ -22,6 +24,7 @@ export const googlehandleLogin = async ({ state, effects }) => {
     let googleHandleData = await effects.postHandler(process.env.REACT_APP_LOGIN_URL, state.userProfileData)
     state.userProfileData.addStatus = googleHandleData.addStatus
     state.change["teamowner"] = state.userProfileData.username
+    socket_live.emit(events.online, state.userProfileData.userid)
     state.loggedIn = true
     state.signedIn = true;
     state.loginStarted = false;
@@ -29,7 +32,9 @@ export const googlehandleLogin = async ({ state, effects }) => {
 
 /**
  * Create team. 
- * Emit new creation to fellow team mates
+ * Emit new team creation to fellow team mates
+ * Emit Team Switch as well. Since the default is 
+ * to switch to new team. 
  * Add team to DB.
  */
 export const createTeam = async ({ state, effects }, values) => {
@@ -74,6 +79,11 @@ export const createTeam = async ({ state, effects }, values) => {
     state.addingTeam = false;
 }
 
+/**
+ * Emit Team Switch and 
+ * Load all the teams the user is a
+ * part of.
+ */
 export const teamsbyuserid = async ({ state, effects }, values) => {
 
     state.loadingTeams = true
@@ -118,6 +128,9 @@ export const teamsbyuserid = async ({ state, effects }, values) => {
     state.loadingMembers = false
 }
 
+/** 
+ * Load all team mates for a team from the DB. 
+*/
 export const usersbyteamid = async ({ state, effects }, values) => {
 
     state.loadingMembers = true
@@ -144,10 +157,16 @@ export const usersbyteamid = async ({ state, effects }, values) => {
     state.loadingMembers = false
 }
 
+/** 
+ * Handle Form Input value mutations. 
+*/
 export const handleChangeMutations = async ({ state }, values) => {
     state.change[values.target] = values.value
 }
 
+/**
+ * Emit Team Switch Event
+ */
 export const changeActiveTeam = async ({ state }, values) => {
     socket_live.emit(events.team_switch, {
         teamid: state.activeTeamId,
@@ -160,6 +179,9 @@ export const changeActiveTeam = async ({ state }, values) => {
     state.teamDataInfo[values].isActive = true
 }
 
+/**
+ * Emit Room Switch Event
+ */
 export const changeActiveRoom = async ({ state }, values) => {
     socket_live.emit(events.room_switch, {
         username: state.userProfileData.username,
@@ -176,6 +198,10 @@ export const setOwnerName = async ({ state }, values) => {
     state.change[values.target] = values.value
 }
 
+/**
+ * Emit new room creation to all team members. 
+ * Add new room to DB.
+ */
 export const addNewRoom = async ({ state, effects }, values) => {
 
     state.loadingRooms = true
@@ -196,6 +222,10 @@ export const addNewRoom = async ({ state, effects }, values) => {
     state.loadingRooms = false
 }
 
+/**
+ * Emit Room Deletion event. 
+ * TODO Remove all team mates fropm the room. 
+ */
 export const removeRoom = async ({ state, effects }, values) => {
 
     state.loadingRooms = true
@@ -214,6 +244,9 @@ export const removeRoom = async ({ state, effects }, values) => {
     state.loadingRooms = false
 }
 
+/**
+ * Emit Team Member was removed. 
+ */
 export const removeTeamMember = async ({ state, effects }, values) => {
     state.loadingMembers = true;
 
@@ -227,6 +260,9 @@ export const removeTeamMember = async ({ state, effects }, values) => {
     state.loadingMembers = false;
 }
 
+/**
+ * Load all rooms in the team by teamid. 
+ */
 export const roomsbyteamid = async ({ state, effects }, values) => {
     state.loadingRooms = true
     let roomdump = await effects.postHandler(process.env.REACT_APP_GET_ROOMS_FROM_ID, values)
