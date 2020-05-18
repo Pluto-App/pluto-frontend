@@ -110,7 +110,7 @@ const App = () => {
         ToastNotification('error', "App Unmount");
         clearInterval(interval);
       }
-    }
+    }, []
   );
 
   return (

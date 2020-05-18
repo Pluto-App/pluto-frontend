@@ -7,6 +7,8 @@ matrix:
           env:
               - ELECTRON_CACHE=$HOME/.cache/electron
               - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+              - TRAVIS_OS_NAME=linux
+              - GH_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
 
         - os: linux
           services: docker
@@ -19,17 +21,19 @@ cache:
         - $HOME/.cache/electron-builder
 
 script:
+    - npm install
+    - npm run build
     - |
         if [ "$TRAVIS_OS_NAME" == "linux" ]; then
           docker run --rm \
             --env-file <(env | grep -vE '\r|\n' | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS_TAG|TRAVIS|TRAVIS_REPO_|TRAVIS_BUILD_|TRAVIS_BRANCH|TRAVIS_PULL_REQUEST_|APPVEYOR_|CSC_|GH_|GITHUB_|BT_|AWS_|STRIP|BUILD_') \
-            -v ${PWD}:/project \
+            -v ${PWD/build/}:/project \
             -v ~/.cache/electron:/root/.cache/electron \
             -v ~/.cache/electron-builder:/root/.cache/electron-builder \
             electronuserland/builder:wine \
-            /bin/bash -c "yarn --link-duplicates --pure-lockfile && yarn release --linux --win"
+            /bin/bash -c "npm --link-duplicates --pure-lockfile && npm run release"
         else
-          yarn release
+          npm run release
         fi
 before_cache:
     - rm -rf $HOME/.cache/electron-builder/wine

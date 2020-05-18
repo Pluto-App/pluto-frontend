@@ -41,8 +41,13 @@
   "build": {
     "appId": "com.pluto.office",
     "compression": "normal",
-    "productName": "pluto-office",
-    "files": ["./build/**/*", "./node_modules/**/*", "./src/assets/**/*"],
+    "productName": "pluto-office-app",
+    "copyright": "MIT",
+    "files": [
+      "./build/**/*",
+      "./node_modules/**/*",
+      "./src/assets/**/*"
+    ],
     "directories": {
       "buildResources": "assets",
       "output": "dist"
@@ -50,25 +55,77 @@
     "mac": {
       "icon": "./assets/macos/logo.icns",
       "type": "distribution",
-      "target": ["pkg", "tar.gz", "mas", "dmg"],
+      "target": [
+        "pkg",
+        "tar.gz",
+        "mas",
+        "dmg"
+      ],
       "publish": {
         "provider": "github"
       }
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 440,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "artifactName": "pluto-office-mac"
     },
     "mas": {
       "entitlements": "./assets/entitlements.mas.plist"
     },
     "win": {
-      "target": ["nsis", "nsis-web", "portable"],
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "x86"
+          ]
+        },
+        {
+          "target": "nsis-web",
+          "arch": [
+            "x64",
+            "x86"
+          ]
+        },
+        {
+          "target": "portable"
+        }
+      ],
       "icon": "./assets/windows/logo.ico",
+      "artifactName": "pluto-office-windows",
+      "nsis": {
+        "runAfterFinish": true,
+        "installerIcon": "./assets/windows/logo.ico",
+        "artifactName": "pluto-office-windows-nsis"
+      },
+      "portable": {
+        "artifactName": "pluto-office-windows-portable.exe"
+      },
       "publish": {
         "provider": "github"
       }
     },
     "linux": {
       "icon": "./assets/logo.png",
-      "target": ["snap", "deb", "AppImage"],
+      "target": [
+        "snap",
+        "deb",
+        "AppImage"
+      ],
       "description": "pluto-office",
+      "artifactName": "pluto-office-linux",
       "category": "office",
       "publish": {
         "provider": "github"
@@ -82,7 +139,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "concurrently --kill-others \"BROWSER=none npm start\" \"wait-on http://localhost:3000 && electron .\"",
-    "dist": "NODE_ENV=production npm run build && electron-builder build --mac --win --linux --publish=always"
+    "release": "NODE_ENV=production npm run build && electron-builder build --mac --win --linux --publish=always"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -92,7 +149,11 @@
     "npm": ">= 3.0.0"
   },
   "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
@@ -100,10 +161,10 @@
     ]
   },
   "devDependencies": {
-    "autoprefixer": "^9.7.6",
+    "autoprefixer": "^9.8.0",
     "concurrently": "^5.2.0",
     "electron": "^8.3.0",
-    "electron-builder": "^22.6.0",
+    "electron-builder": "^22.6.1",
     "electron-packager": "^14.2.1",
     "electron-react-devtools": "^0.5.3",
     "electron-reload": "^1.5.0",
