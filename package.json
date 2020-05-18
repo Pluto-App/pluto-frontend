@@ -42,11 +42,7 @@
     "appId": "com.pluto.office",
     "compression": "normal",
     "productName": "pluto-office",
-    "files": [
-      "./build/**/*",
-      "./node_modules/**/*",
-      "./src/assets/**/*"
-    ],
+    "files": ["./build/**/*", "./node_modules/**/*", "./src/assets/**/*"],
     "directories": {
       "buildResources": "assets",
       "output": "dist"
@@ -54,12 +50,7 @@
     "mac": {
       "icon": "./assets/macos/logo.icns",
       "type": "distribution",
-      "target": [
-        "pkg",
-        "tar.gz",
-        "mas",
-        "dmg"
-      ],
+      "target": ["pkg", "tar.gz", "mas", "dmg"],
       "publish": {
         "provider": "github"
       }
@@ -68,11 +59,7 @@
       "entitlements": "./assets/entitlements.mas.plist"
     },
     "win": {
-      "target": [
-        "nsis",
-        "nsis-web",
-        "portable"
-      ],
+      "target": ["nsis", "nsis-web", "portable"],
       "icon": "./assets/windows/logo.ico",
       "publish": {
         "provider": "github"
@@ -80,11 +67,7 @@
     },
     "linux": {
       "icon": "./assets/logo.png",
-      "target": [
-        "snap",
-        "deb",
-        "AppImage"
-      ],
+      "target": ["snap", "deb", "AppImage"],
       "description": "pluto-office",
       "category": "office",
       "publish": {
@@ -109,11 +92,7 @@
     "npm": ">= 3.0.0"
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [">0.2%", "not dead", "not op_mini all"],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
