@@ -9,6 +9,7 @@ matrix:
               - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
               - TRAVIS_OS_NAME=linux
               - GH_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
+              - CI=false
 
         - os: linux
           services: docker
