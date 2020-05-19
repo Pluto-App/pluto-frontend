@@ -2,6 +2,7 @@ matrix:
     include:
         - os: osx
           osx_image: xcode10.2
+          services: docker
           language: node_js
           node_js: '10'
           env:
@@ -14,6 +15,12 @@ matrix:
         - os: linux
           services: docker
           language: generic
+          env:
+              - ELECTRON_CACHE=$HOME/.cache/electron
+              - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+              - TRAVIS_OS_NAME=linux
+              - GH_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
+              - CI=false
 
 cache:
     directories:
