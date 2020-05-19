@@ -15,11 +15,11 @@ matrix:
         #       - CI=false
 
         - os: linux
-          sudo: required
+          sudo: required # for docker. 
           services: 
             - docker
           language: node_js
-          node_js: '10'
+          node_js: '12'
           env:
               - ELECTRON_CACHE=$HOME/.cache/electron
               - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
@@ -44,7 +44,7 @@ script:
             -v ~/.cache/electron:/root/.cache/electron \
             -v ~/.cache/electron-builder:/root/.cache/electron-builder \
             electronuserland/builder:wine \
-            /bin/bash -c "npm --link-duplicates --pure-lockfile && npm run release"
+            /bin/bash -c "npm run win-release"
         else
           npm run release
         fi
