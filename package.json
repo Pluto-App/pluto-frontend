@@ -9,6 +9,7 @@
   "private": true,
   "dependencies": {
     "@emotion/core": "^10.0.28",
+    "@reactivex/rxjs": "^6.5.5",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -23,6 +24,7 @@
     "overmind": "^23.1.0",
     "overmind-react": "^24.1.0",
     "qs": "^6.9.4",
+    "query-string": "^6.12.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.21",
@@ -33,6 +35,7 @@
     "react-spinners": "^0.8.3",
     "react-toastify": "^6.0.4",
     "react-transition-group": "^4.4.1",
+    "rxjs": "^6.5.5",
     "socket.io-client": "^2.3.0",
     "tailwindcss": "^1.4.6",
     "url": "^0.11.0"
