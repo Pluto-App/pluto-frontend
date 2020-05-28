@@ -132,8 +132,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "concurrently --kill-others \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
-    "release": "NODE_ENV=production npm run build && electron-builder build --mac --win --linux --publish=always",
-    "win-release": "NODE_ENV=production npm run build && electron-builder build --win --publish=always"
+    "release": "NODE_ENV=production npm run build && electron-builder build --mac --linux --publish=always"
   },
   "eslintConfig": {
     "extends": "react-app"
