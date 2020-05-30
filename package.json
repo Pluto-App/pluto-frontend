@@ -112,8 +112,7 @@
       "icon": "./assets/logo.png",
       "target": [
         "snap",
-        "deb",
-        "AppImage"
+        "deb"
       ],
       "description": "pluto-office",
       "category": "office",
@@ -129,8 +128,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-dev": "concurrently --kill-others \"setx BROWSER \"none\" /M && npm start\" \"wait-on http://localhost:3000 && electron .\"",
-    "release": "npm run build && electron-builder build --win --linux --publish=always",
-    "win-release": "npm run build && electron-builder build --win --publish=always"
+    "release": "npm run build && electron-builder build --win --publish=always"
   },
   "eslintConfig": {
     "extends": "react-app"
