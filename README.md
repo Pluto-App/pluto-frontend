@@ -1,5 +1,8 @@
 ![Node.js CI](https://github.com/Pluto-App/plutoapp-new-frontend/workflows/Node.js%20CI/badge.svg?branch=master)
 
+[![Build Status](https://travis-ci.com/Pluto-App/plutoapp-new-frontend.svg?token=y7dv4AHgKobrxUyj4TGA&branch=master)](https://travis-ci.com/Pluto-App/plutoapp-new-frontend)
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

@@ -49,11 +49,11 @@
     "files": [
       "./build/**/*",
       "./node_modules/**/*",
-      "./src/assets/**/*"
+      "./assets/**/*"
     ],
     "directories": {
       "buildResources": "assets",
-      "output": "dist"
+      "output": "non-windows-dist"
     },
     "mac": {
       "icon": "./assets/macos/logo.icns",
@@ -115,7 +115,6 @@
       "icon": "./assets/logo.png",
       "target": [
         "snap",
-        "deb",
         "AppImage"
       ],
       "description": "pluto-office",

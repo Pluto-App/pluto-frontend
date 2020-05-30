@@ -1,7 +1,5 @@
 cp .prod .env
 git add .
-export GH_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
-export GITHUB_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
 npm install 
 npm run build 
         docker run --rm \
@@ -11,4 +9,6 @@ npm run build
             -v ~/.cache/electron-builder:/root/.cache/electron-builder \
             electronuserland/builder:wine \
             /bin/bash -c "npm run win-release"
-        npm run release
+rm -rf ./build ./dist 
+npm run build
+npm run release
