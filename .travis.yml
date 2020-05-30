@@ -25,6 +25,7 @@ matrix:
               - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
               - TRAVIS_OS_NAME=linux
               - GH_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
+              - GITHUB_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
               - CI=false
 
 cache:
@@ -40,7 +41,9 @@ script:
         if [ "$TRAVIS_OS_NAME" == "linux" ]; then
           docker run --rm \
             --env-file <(env | grep -vE '\r|\n' | grep -iE 'DEBUG|NODE_|ELECTRON_|YARN_|NPM_|CI|CIRCLE|TRAVIS_TAG|TRAVIS|TRAVIS_REPO_|TRAVIS_BUILD_|TRAVIS_BRANCH|TRAVIS_PULL_REQUEST_|APPVEYOR_|CSC_|GH_|GITHUB_|BT_|AWS_|STRIP|BUILD_') \
-            -v ${PWD/build/}:/project \
+            -v ./build/:/build \
+            -v ./assets/:/assets \
+            -v ./dist/:/dist \
             -v ~/.cache/electron:/root/.cache/electron \
             -v ~/.cache/electron-builder:/root/.cache/electron-builder \
             electronuserland/builder:wine \
