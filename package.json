@@ -19,6 +19,7 @@
     "electron-disable-minimize": "^2.0.2",
     "electron-is-dev": "^1.2.0",
     "electron-titlebar": "0.0.3",
+    "env-cmd": "^10.1.0",
     "firebase": "^7.14.4",
     "lodash": "^4.17.15",
     "overmind": "^23.1.0",
@@ -53,11 +54,13 @@
     ],
     "directories": {
       "buildResources": "assets",
-      "output": "non-windows-dist"
+      "output": "dist"
     },
     "mac": {
       "icon": "./assets/macos/logo.icns",
-      "type": "distribution",
+      "category": "public.app-category.business",
+      "entitlements": "./assets/entitlements.mac.plist",
+      "type": "development",
       "target": [
         "pkg",
         "tar.gz",
@@ -126,13 +129,14 @@
   },
   "scripts": {
     "build:style": "tailwind build src/styles/index.css -o src/styles/tailwind.css",
-    "start": "npm run build:style && react-scripts start",
-    "build": "npm run build:style && react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "env-cmd -f .env npm run build:style && react-scripts start",
+    "build": "NODE_ENV=production && npm run build:style && env-cmd -f .env react-scripts build",
+    "test": "env-cmd -f .env react-scripts test",
+    "eject": "env-cmd -f .env react-scripts eject",
     "electron-dev": "concurrently --kill-others \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
-    "release": "NODE_ENV=production npm run build && electron-builder build --mac --linux --publish=always",
-    "win-release": "NODE_ENV=production npm run build && electron-builder build --win --publish=always"
+    "mac-release": "electron-builder build --mac --publish=always",
+    "linux-release": "electron-builder build --linux --publish=always",
+    "win-release": "electron-builder build --win --publish=always"
   },
   "eslintConfig": {
     "extends": "react-app"
