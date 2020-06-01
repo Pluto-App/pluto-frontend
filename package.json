@@ -49,11 +49,10 @@
     "copyright": "MIT",
     "files": [
       "./build/**/*",
-      "./node_modules/**/*",
-      "./assets/**/*"
+      "./node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "assets",
+      "buildResources": "./assets/**/*",
       "output": "dist"
     },
     "mac": {
@@ -63,7 +62,6 @@
       "type": "development",
       "target": [
         "pkg",
-        "tar.gz",
         "mas",
         "dmg"
       ],
@@ -118,9 +116,9 @@
       "icon": "./assets/logo.png",
       "target": [
         "snap",
-        "AppImage"
+        "deb"
       ],
-      "description": "pluto-office",
+      "description": "pluto-office app",
       "category": "office",
       "publish": {
         "provider": "github"
@@ -129,11 +127,11 @@
   },
   "scripts": {
     "build:style": "tailwind build src/styles/index.css -o src/styles/tailwind.css",
-    "start": "env-cmd -f .env npm run build:style && react-scripts start",
+    "step": "env-cmd -f .env npm run build:style && react-scripts start",
     "build": "NODE_ENV=production && npm run build:style && env-cmd -f .env react-scripts build",
     "test": "env-cmd -f .env react-scripts test",
     "eject": "env-cmd -f .env react-scripts eject",
-    "electron-dev": "concurrently --kill-others \"npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "start": "concurrently --kill-others \"npm run step\" \"wait-on http://localhost:3000 && electron .\"",
     "mac-release": "electron-builder build --mac --publish=always",
     "linux-release": "electron-builder build --linux --publish=always",
     "win-release": "electron-builder build --win --publish=always"
