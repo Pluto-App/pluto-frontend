@@ -7,6 +7,7 @@ npm run build
 docker run --rm \
     --env ELECTRON_CACHE="/root/.cache/electron" \
     --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
+    --env GH_TOKEN="d10414f80a2c6f26b471a4c7a2de6d18f8f578b0" \
     -v ${PWD}:/project \
     -v ~/.cache/electron:/root/.cache/electron \
     -v ~/.cache/electron-builder:/root/.cache/electron-builder \
@@ -16,6 +17,7 @@ docker run --rm \
 docker run --rm -it \
     --env ELECTRON_CACHE="/root/.cache/electron" \
     --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
+    --env GH_TOKEN="d10414f80a2c6f26b471a4c7a2de6d18f8f578b0" \
     -v ${PWD}:/project \
     -v ~/.cache/electron:/root/.cache/electron \
     -v ~/.cache/electron-builder:/root/.cache/electron-builder \
@@ -25,6 +27,7 @@ docker run --rm -it \
 docker run --rm \
     --env ELECTRON_CACHE="/root/.cache/electron" \
     --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
+    --env GH_TOKEN="d10414f80a2c6f26b471a4c7a2de6d18f8f578b0" \
     -v ${PWD}:/project \
     -v ~/.cache/electron:/root/.cache/electron \
     -v ~/.cache/electron-builder:/root/.cache/electron-builder \

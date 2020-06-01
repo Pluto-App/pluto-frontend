@@ -41,12 +41,6 @@ script:
     - npm install
     - npm run build
     - |
-        if [ "$TRAVIS_OS_NAME" == "macosx" ]; then
-            npm run mac-release
-        else
-          npm run mac-release 
-        fi
-    - |
         if [ "$TRAVIS_OS_NAME" == "linux" ]; then
             docker run --rm \
                 --env ELECTRON_CACHE="/root/.cache/electron" \
@@ -66,6 +60,12 @@ script:
                 /bin/bash -c "npm run win-release"
         else
           npm run linux-release 
+        fi
+    - |
+        if [ "$TRAVIS_OS_NAME" == "macosx" ]; then
+            npm run mac-release
+        else
+          npm run mac-release 
         fi
 
 before_cache:
