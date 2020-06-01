@@ -6,26 +6,29 @@ matrix:
           language: node_js
           node_js: '12'
           env:
-              - ELECTRON_CACHE=$HOME/.cache/electron
-              - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-              - TRAVIS_OS_NAME=macosx
-              - GITHUB_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
-              - GH_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
-              - CI=false
+                - ELECTRON_CACHE=$HOME/.cache/electron
+                - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+                - TRAVIS_OS_NAME=macosx
+                - GITHUB_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
+                - GH_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
+                - CI=false
 
-        # - os: linux
-        #   sudo: required # for docker. 
-        #   services: 
-        #     - docker
-        #   language: node_js
-        #   node_js: '12'
-        #   env:
-        #       - ELECTRON_CACHE=$HOME/.cache/electron
-        #       - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
-        #       - TRAVIS_OS_NAME=linux
-        #       - GH_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
-        #       - GITHUB_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
-        #       - CI=false
+        - os: linux
+          sudo: required
+          services: 
+            - docker
+          language: node_js
+          node_js: '12'
+          env:
+                - ELECTRON_CACHE=$HOME/.cache/electron
+                - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+                - TRAVIS_OS_NAME=linux
+                - GH_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
+                - GITHUB_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
+                - CI=false
+compiler:
+    - gcc
+    - clang
 
 cache:
     directories:
@@ -34,7 +37,6 @@ cache:
         - $HOME/.cache/electron
         - $HOME/.cache/electron-builder
 
-# Update this later. 
 script:
     - npm install
     - npm run build
@@ -44,8 +46,34 @@ script:
         else
           npm run mac-release 
         fi
+    - |
+        if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+            docker run --rm \
+                --env ELECTRON_CACHE="/root/.cache/electron" \
+                --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
+                -v ${PWD}:/project \
+                -v ~/.cache/electron:/root/.cache/electron \
+                -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+                electronuserland/builder \
+                /bin/bash -c "npm run linux-release"
+            docker run --rm \
+                --env ELECTRON_CACHE="/root/.cache/electron" \
+                --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
+                -v ${PWD}:/project \
+                -v ~/.cache/electron:/root/.cache/electron \
+                -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+                electronuserland/builder:wine \
+                /bin/bash -c "npm run win-release"
+        else
+          npm run linux-release 
+        fi
+
 before_cache:
     - rm -rf $HOME/.cache/electron-builder/wine
+
+notifications:
+  email:
+    - lahiri.devs@gmail.com
 
 branches:
     except:
