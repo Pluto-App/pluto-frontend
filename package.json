@@ -132,9 +132,9 @@
     "test": "env-cmd -f .env react-scripts test",
     "eject": "env-cmd -f .env react-scripts eject",
     "start": "concurrently --kill-others \"npm run step\" \"wait-on http://localhost:3000 && electron .\"",
-    "mac-release": "electron-builder build --mac --publish=always",
-    "linux-release": "electron-builder build --linux --publish=always",
-    "win-release": "electron-builder build --win --publish=always"
+    "mac-release": "electron-builder build --mac -c.extraMetadata.main=build/electron.js --publish=always",
+    "linux-release": "electron-builder build --linux -c.extraMetadata.main=build/electron.js --publish=always",
+    "win-release": "electron-builder build --win -c.extraMetadata.main=build/electron.js --publish=always"
   },
   "eslintConfig": {
     "extends": "react-app"
