@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"

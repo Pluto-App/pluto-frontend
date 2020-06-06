@@ -1,12 +1,22 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { hot } from 'react-hot-loader/root';
+import * as React from 'react'
+import { render } from 'react-dom'
+import { createOvermind } from 'overmind'
+import { Provider } from 'overmind-react'
+import { config } from './overmind'
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import './styles/tailwind.css';
+import './assets/fonts/css/icons.css'
+import App from './components/App';
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const overmind = createOvermind(config)
+
+const NewOverMind = hot(overmind)
+const NewApp = hot(App)
+
+render(
+  <Provider value={NewOverMind}>
+    <NewApp />
+  </Provider>,
+  document.getElementById('root')
+);

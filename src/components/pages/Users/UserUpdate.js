@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
@@ -19,10 +20,10 @@ export default function UserUpdate() {
 
     return (
         <div className="w-full flex">
-            <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{height: "calc(100vh - 30px)"}}>
+            <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)" }}>
                 <BackButton url={'/home'}></BackButton>
             </div>
         </div>
     )
-    
+
 }

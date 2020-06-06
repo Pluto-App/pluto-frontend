@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
@@ -12,7 +13,7 @@ export default function RoomProfile() {
 
     useEffect(() => {
         // FIXME Load Room Members oon room change by activeRoomId and activeTeamId
-    }, []) 
+    }, [])
 
     return (
         <div className="w-full flex">

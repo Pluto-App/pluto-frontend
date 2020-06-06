@@ -13,7 +13,7 @@ import { socket_live, events } from './sockets'
 import { useOvermind } from '../overmind'
 
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Switch,
   Route
 } from "react-router-dom";
@@ -110,6 +110,7 @@ const App = () => {
         ToastNotification('error', "App Unmount");
         clearInterval(interval);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []
   );
 
