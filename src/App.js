@@ -14,9 +14,6 @@ class App extends Component {
           <p>
             Virtual Office App for Teams.
           </p>
-          <div>
-            Made with 💚 using <code>Electron</code>
-          </div>
         </header>
       </div>
     );

@@ -9,8 +9,8 @@ matrix:
                 - ELECTRON_CACHE=$HOME/.cache/electron
                 - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
                 - TRAVIS_OS_NAME=macosx
-                - GITHUB_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
-                - GH_TOKEN=d10414f80a2c6f26b471a4c7a2de6d18f8f578b0
+                - GITHUB_TOKEN=f85513d588f289a498b77d2b2f850cdad99e661f
+                - GH_TOKEN=f85513d588f289a498b77d2b2f850cdad99e661f
                 - CI=false
 compiler:
     - gcc
