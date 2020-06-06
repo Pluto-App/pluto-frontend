@@ -1,4 +1,4 @@
-name: Build/release Mac OSX
+name: Build/release Mac OSX Latest
 
 on: push
 

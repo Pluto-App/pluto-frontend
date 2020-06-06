@@ -63,8 +63,6 @@
       "entitlements": "./assets/entitlements.mac.plist",
       "type": "development",
       "target": [
-        "pkg",
-        "mas",
         "dmg"
       ],
       "publish": {
@@ -72,6 +70,9 @@
       }
     },
     "dmg": {
+      "internetEnabled": "true",
+      "sign": "false",
+      "title": "${productName}_mac_${version}",
       "contents": [
         {
           "x": 110,
@@ -85,19 +86,10 @@
         }
       ]
     },
-    "mas": {
-      "entitlements": "./assets/entitlements.mas.plist"
-    },
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "nsis-web",
           "arch": [
             "x64"
           ]
@@ -117,7 +109,6 @@
     "linux": {
       "icon": "./assets/logo.png",
       "target": [
-        "snap",
         "deb"
       ],
       "description": "Virtual Office App for Teams",
@@ -138,7 +129,7 @@
     "mac-release": "cross-env NODE_ENV=production electron-builder build --mac -c.extraMetadata.main=build/electron.js --publish=always",
     "linux-release": "cross-env NODE_ENV=production electron-builder build --linux -c.extraMetadata.main=build/electron.js --publish=always",
     "win-release": "cross-env NODE_ENV=production electron-builder build --win -c.extraMetadata.main=build/electron.js --publish=always",
-    "release": "cross-env NODE_ENV=production electron-builder build --win --linux --mac -c.extraMetadata.main=build/electron.js --publish=always"
+    "release": "cross-env NODE_ENV=production electron-builder build --mac --linux -c.extraMetadata.main=build/electron.js --publish=always"
   },
   "eslintConfig": {
     "extends": "react-app"

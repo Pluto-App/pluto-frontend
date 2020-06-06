@@ -1,4 +1,4 @@
-name: Build/release Ubuntu
+name: Build/release Ubuntu Latest
 
 on: push
 
@@ -23,4 +23,3 @@ jobs:
         uses: samuelmeuli/action-electron-builder@v1
         with:
           github_token: ${{ secrets.github_token }}
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
