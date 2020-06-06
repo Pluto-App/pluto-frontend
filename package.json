@@ -138,14 +138,14 @@
     "mac-release": "cross-env NODE_ENV=production electron-builder build --mac -c.extraMetadata.main=build/electron.js --publish=always",
     "linux-release": "cross-env NODE_ENV=production electron-builder build --linux -c.extraMetadata.main=build/electron.js --publish=always",
     "win-release": "cross-env NODE_ENV=production electron-builder build --win -c.extraMetadata.main=build/electron.js --publish=always",
-    "release": "cross-env NODE_ENV=production electron-builder build --win --mac --linux -c.extraMetadata.main=build/electron.js --publish=always"
+    "release": "cross-env NODE_ENV=production electron-builder build --win --linux --mac -c.extraMetadata.main=build/electron.js --publish=always"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
   "engines": {
-    "node": ">= 8.0.0",
-    "npm": ">= 3.0.0"
+    "node": ">= 10.0.0",
+    "npm": ">= 6.0.0"
   },
   "browserslist": {
     "production": [

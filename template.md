@@ -1,9 +1,8 @@
-# Release 1.0.0-Travis
+# Release 1.0.0-GitHub-Travis
 
 ## Mac
 
 Use ```.dmg``` to install and run on ```Mac```.
-
 
 ## Windows
 
@@ -11,4 +10,10 @@ Use ```pluto-office-app 1.0.0.exe``` or other ```.exe``` files for installing an
 
 ## Linux
 
-Use ```.snap```, ```.deb``` or ```.AppImage``` to install.
+Use ```.snap```or ```.deb``` to install.
+
+## Build Flow 
+
+```bash
+This was built automatically using GitHub Actions Workflow
+```
