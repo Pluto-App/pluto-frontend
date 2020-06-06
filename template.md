@@ -1,5 +1,7 @@
 # Release 1.0.0 [via GitHub]
 
+Pluto Office Application for ```Windows```, ```MacOSX```, ```Linux (CentOS/RHEL, Ubuntu, Fedora & RPM)```.
+
 ## Mac
 
 Use ```.dmg``` to install and run on ```Mac```.
@@ -10,10 +12,16 @@ Use ```pluto-office-app 1.0.0.exe``` or other ```.exe``` files for installing an
 
 ## Linux/Ubuntu
 
-Use ```.snap```or ```.deb``` to install and run on Ubuntu.
+Use ```.snap```or ```.deb``` to install and run on Ubuntu. 
 
-## Build Flow 
+Use ```.rpm``` for ```CenttOS``` or ```Fedora```. Download ```pluto-office-1.0.0.x86_64.rpm```.
 
 ```bash
-    Built automatically using GitHub Actions Workflow & Travis CI
+$ sudo rpm –i pluto-office-1.0.0.x86_64.rpm
+```
+
+### Build Flow 
+
+```bash
+  Built automatically using GitHub Actions Workflow & Travis CI
 ```
