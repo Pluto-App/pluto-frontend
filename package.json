@@ -50,11 +50,10 @@
     "copyright": "MIT",
     "files": [
       "build/**/*",
-      "node_modules/**/*",
-      "assets/**/*"
+      "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "assets/**/*",
+      "buildResources": "./assets/**/*",
       "output": "dist"
     },
     "mac": {
@@ -133,6 +132,7 @@
     "build": "cross-env NODE_ENV=production && npm run build:style && env-cmd -f .env react-scripts build",
     "test": "env-cmd -f .env react-scripts test",
     "eject": "env-cmd -f .env react-scripts eject",
+    "postinstall": "electron-builder install-app-deps",
     "start": "concurrently --kill-others \"npm run step\" \"wait-on http://localhost:3000 && electron .\"",
     "mac-release": "electron-builder build --mac -c.extraMetadata.main=build/electron.js --publish=always",
     "linux-release": "electron-builder build --linux -c.extraMetadata.main=build/electron.js --publish=always",
@@ -142,8 +142,8 @@
     "extends": "react-app"
   },
   "engines": {
-    "node": ">= 10.0.0",
-    "npm": ">= 6.0.0"
+    "node": ">= 8.0.0",
+    "npm": ">= 3.0.0"
   },
   "browserslist": {
     "production": [
