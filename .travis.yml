@@ -9,7 +9,6 @@ matrix:
               - ELECTRON_CACHE=$HOME/.cache/electron
               - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
               - TRAVIS_OS_NAME=macosx
-              - GH_TOKEN=f85513d588f289a498b77d2b2f850cdad99e661f
               - CI=false
 
 compiler:
@@ -26,7 +25,6 @@ cache:
 script:
     - npm install
     - npm run build
-    - npm run mac-release
 
 before_cache:
     - rm -rf $HOME/.cache/electron-builder/
