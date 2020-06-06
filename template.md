@@ -15,5 +15,5 @@ Use ```.snap```or ```.deb``` to install.
 ## Build Flow 
 
 ```bash
-This was built automatically using GitHub Actions Workflow
+    Built automatically using GitHub Actions Workflow
 ```
