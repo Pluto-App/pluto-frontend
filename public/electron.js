@@ -1,7 +1,10 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const isDev = require('electron-is-dev');
-require('electron-reload')
+
+if (isDev) {
+  require('electron-reload')
+}
 
 let mainWindow
 
