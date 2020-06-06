@@ -7,6 +7,9 @@ sudo rm -rf ./node_modules ./build ./dist
 npm install
 npm run build
 
+## git push origin :refs/tags/v1.0.0
+## git tag -d v1.0.0
+
 docker run --rm \
     --env ELECTRON_CACHE="/root/.cache/electron" \
     --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \

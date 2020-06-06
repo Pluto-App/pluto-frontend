@@ -1,4 +1,4 @@
-name: Build/release Mac OSX Latest
+name: Build/release Ubuntu Latest
 
 on: push
 
@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [ubuntu-latest]
 
     steps:
       - name: Check out Git repository
@@ -23,4 +23,3 @@ jobs:
         uses: samuelmeuli/action-electron-builder@v1
         with:
           github_token: ${{ secrets.github_token }}
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
