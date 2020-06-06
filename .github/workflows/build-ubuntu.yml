@@ -1,6 +1,9 @@
 name: Build/release Ubuntu Latest
 
-on: push
+on:
+  push:
+    branches:
+      - sumit-dev-branch
 
 jobs:
   release:
