@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import { googleSignIn } from '../auth/authhandle'
 import ToastNotification from '../components/widgets/ToastNotification'
 import { socket_live, events } from '../components/sockets'
@@ -145,7 +146,7 @@ export const usersbyteamid = async ({ state, effects }, values) => {
                 username: u.username,
                 usermail: u.email,
                 avatar: u.avatar,
-                statusColor: 'green' 
+                statusColor: 'green'
             }
             state.memberList.push(userObj)
         })

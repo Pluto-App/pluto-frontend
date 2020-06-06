@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
