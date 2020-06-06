@@ -1,6 +1,9 @@
 name: Build/release Mac OSX Latest
 
-on: push
+on:
+  push:
+    branches:
+      - sumit-dev-branch
 
 jobs:
   release:
