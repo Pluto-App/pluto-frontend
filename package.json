@@ -1,7 +1,7 @@
 {
   "name": "pluto-office",
   "productName": "pluto-office",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "main": "public/electron.js",
   "author": "Pluto Dev Team <lahiri.devs@gmail.com>",
   "email": "lahiri.dev@gmail.com",
@@ -50,10 +50,11 @@
     "copyright": "MIT",
     "files": [
       "build/**/*",
-      "node_modules/**/*"
+      "node_modules/**/*",
+      "assets/**/*"
     ],
     "directories": {
-      "buildResources": "./assets/**/*",
+      "buildResources": "assets/**/*",
       "output": "dist"
     },
     "mac": {
