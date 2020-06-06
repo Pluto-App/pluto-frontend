@@ -63,7 +63,6 @@
       "entitlements": "./assets/entitlements.mac.plist",
       "type": "development",
       "target": [
-        "pkg",
         "mas",
         "dmg"
       ],
@@ -97,12 +96,6 @@
           ]
         },
         {
-          "target": "nsis-web",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
           "target": "portable",
           "arch": [
             "x64"
@@ -117,7 +110,6 @@
     "linux": {
       "icon": "./assets/logo.png",
       "target": [
-        "snap",
         "deb"
       ],
       "description": "Virtual Office App for Teams",
