@@ -15,6 +15,7 @@
     "@testing-library/user-event": "^7.2.1",
     "animate.css": "^3.7.0",
     "axios": "^0.19.2",
+    "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "electron-disable-minimize": "^2.0.2",
     "electron-is-dev": "^1.2.0",
@@ -48,11 +49,12 @@
     "productName": "pluto-office-app",
     "copyright": "MIT",
     "files": [
-      "./build/**/*",
-      "./node_modules/**/*"
+      "build/**/*",
+      "node_modules/**/*",
+      "assets/**/*"
     ],
     "directories": {
-      "buildResources": "./assets/**/*",
+      "buildResources": "assets/**/*",
       "output": "dist"
     },
     "mac": {
@@ -127,8 +129,8 @@
   },
   "scripts": {
     "build:style": "tailwind build src/styles/index.css -o src/styles/tailwind.css",
-    "step": "env-cmd -f .env npm run build:style && react-scripts start",
-    "build": "NODE_ENV=production && npm run build:style && env-cmd -f .env react-scripts build",
+    "step": "env-cmd -f .env npm run build:style && cross-env BROWSER=none react-scripts start",
+    "build": "cross-env NODE_ENV=production && npm run build:style && env-cmd -f .env react-scripts build",
     "test": "env-cmd -f .env react-scripts test",
     "eject": "env-cmd -f .env react-scripts eject",
     "start": "concurrently --kill-others \"npm run step\" \"wait-on http://localhost:3000 && electron .\"",
