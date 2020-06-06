@@ -1,6 +1,5 @@
-
-## Install, Build and Release for Linux and Windows. 
-## Don't run on mac. 
+## Install, Build and Release for Linux and Windows.
+## Don't run on mac.
 
 cp .prod .env
 sudo rm -rf ./node_modules ./build ./dist
