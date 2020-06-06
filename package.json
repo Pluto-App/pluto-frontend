@@ -5,7 +5,7 @@
   "main": "public/electron.js",
   "author": "Pluto Dev Team <lahiri.devs@gmail.com>",
   "email": "lahiri.dev@gmail.com",
-  "description": "pluto-office-app",
+  "description": "Virtual Office App for Teams",
   "private": true,
   "dependencies": {
     "@emotion/core": "^10.0.28",
