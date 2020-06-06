@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const isDev = require('electron-is-dev');
+require('electron-reload')
 
 let mainWindow
 
@@ -16,7 +17,6 @@ function createWindow() {
   })
 
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
-  mainWindow.webContents.openDevTools();
 
   if (isDev) {
     // Open the DevTools.
