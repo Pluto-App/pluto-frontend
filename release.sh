@@ -1,8 +1,13 @@
 ## Install, Build and Release for Linux and Windows.
-## Don't run on mac.
+## Don't run on mac. 
+
+## Using Docker Images. 
+## Host to AWS/Heroku Later on Production Level CD/CI.
 
 cp .prod .env
+
 sudo rm -rf ./node_modules ./build ./dist
+
 npm install
 npm run build
 
