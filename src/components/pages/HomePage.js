@@ -135,7 +135,8 @@ export default function HomePage() {
                     {
                         isAddingRoom &&
                         <div className="flex justify-center items-center hover:bg-gray-800">
-                            <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700 leading-tight focus:outline-none"
+                            <input className="shadow appearance-none border rounded w-full py-1 
+                            px-5 text-gray-700 leading-tight focus:outline-none"
                                 style={{ width: "95%" }}
                                 onChange={handleChange}
                                 onKeyPress={(e) => {
@@ -199,7 +200,8 @@ export default function HomePage() {
                 <div className="absolute pin-b pb-4" style={{ width: "calc(95% - 50px)" }}>
                     <div className="mt-4 px-3 w-full">
                         <button
-                            className="bg-purple-700 w-full rounded-full flex justify-center items-center hover:bg-purple-500 text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
+                            className="bg-purple-700 w-full rounded-full flex justify-center items-center hover:bg-purple-500 
+                            text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
                             type="button"
                             onClick={() => {
                                 togglecopySuccess(false);
@@ -223,7 +225,8 @@ export default function HomePage() {
                                 value={'https://pluto.abhishekwani.now.sh/join-team/' + state.teamDataInfo[state.activeTeamId].magiclink}
                                 className="w-full shadow appearance-none border text-purple-700 rounded py-1 px-1 bg-purple-200" />
                             <button
-                                className="bg-purple-900 w-full rounded-sm flex justify-center text-white items-center hover:bg-purple-dark text-white font-bold py-2 px-2 mt-2 focus:outline-none focus:shadow-outline"
+                                className="bg-purple-900 w-full rounded-sm flex justify-center text-white items-center hover:bg-purple-dark 
+                                text-white font-bold py-2 px-2 mt-2 focus:outline-none focus:shadow-outline"
                                 type="button"
                                 onClick={(e) => {
                                     var copyText = document.getElementById("InviteModalLink");
@@ -236,7 +239,7 @@ export default function HomePage() {
                             >{!copySuccess ? "Copy Invite" : "Copied !!"}</button>
                         </div> :
                         <span>
-                        </span>
+                    </span>
                 }
             </div>
         </div>
