@@ -14,8 +14,9 @@ export default function TopBar(props) {
 
   const close = () => {
     // TODO need to close all windows here. 
-    actions.handleLogout()
     var window = remote.getCurrentWindow();
+    if (window.title === "MainWindow") 
+      actions.handleLogout()
     window.close();
   }
 

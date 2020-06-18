@@ -39,8 +39,8 @@ const App = () => {
         ToastNotification('info', data.message)
       })
 
-      // New notification telling that a user joined the room
-      // you are a part of.
+      // New notification telling that a user joined 
+      // the room you are a part of currently.
       socket_live.on(events.user_join, (data) => {
         ToastNotification('success', data.message)
       })
@@ -48,6 +48,12 @@ const App = () => {
       // Others in the team get notified that you switched rooms. 
       // You recieve only a welcome message
       socket_live.on(events.room_switch, (data) => {
+        // TODO Add new User to room as per roomId. 
+        // data.userinfo => Contains user info. 
+        actions.updateRoomOfMember({
+          userid : data.userinfo.userid,
+          roomid : data.userinfo.roomid,
+        })
         ToastNotification('info', data.message)
       })
 
@@ -68,6 +74,11 @@ const App = () => {
       // When a new person joins a team 
       // or switches team, we show who joined in.
       socket_live.on(events.team_switch, (data) => {
+        // TODO Update Online Status of User in the team here. 
+        actions.updateTeamOfMember({
+          userid : data.userinfo.userid,
+          teamid : data.userinfo.teamid,
+        })
         ToastNotification('info', data.message)
       })
 
@@ -79,18 +90,20 @@ const App = () => {
 
       // Some User is Online
       socket_live.on(events.online, (data) => {
-        const newOnlMemSet = new Set(OnlMem)
-        newOnlMemSet.add(data)
-        updateOnlMem(newOnlMemSet)
-        actions.updateOnlineMembersList(OnlMem)
+        // FIXME Update Status of User Online ?
+        actions.updateStatusColor({
+          id : data,
+          statusColor : 'green'
+        })
       })
 
       // Some User is Offline
       socket_live.on(events.offline, (data) => {
-        const newOnlMemSet = new Set(OnlMem)
-        newOnlMemSet.delete(data)
-        updateOnlMem(newOnlMemSet)
-        actions.updateOnlineMembersList(OnlMem)
+        // FIXME Update Status of User Offline ?
+        actions.updateStatusColor({
+          id : data,
+          statusColor : 'red'
+        })
       })
 
       socket_live.on('disconnect', () => {

@@ -5,15 +5,39 @@ import { useHistory } from "react-router-dom"
 import BackButton from '../../widgets/BackButton'
 import UserListItem from '../Users/UserListItem'
 
+function MembersList(props) {
+
+
+    const memberList = props.map((member) =>
+        <UserListItem
+            data-record-id={member.userid}
+            id={member.userid}
+            key={member.userid.toString()}
+            url={member.avatar}
+            name={member.username}
+            email={member.useremail}
+            statusColor={member.statusColor}
+        />
+    )
+
+    return (
+        <div>
+            {memberList}
+        </div>
+    );
+}
+
 export default function RoomProfile() {
 
     let history = useHistory();
 
     const { state, actions } = useOvermind();
+    const [OnlineRoomMemberList, updateOnlineList] = useState([]);
 
     useEffect(() => {
         // FIXME Load Room Members oon room change by activeRoomId and activeTeamId
-    }, [])
+        updateOnlineList(state.memberList.filter(elem => elem.roomid === state.activeRoomId))
+    }, [state.memberList])
 
     return (
         <div className="w-full flex">
@@ -30,8 +54,10 @@ export default function RoomProfile() {
                 </div>
                 <p className="text-grey font-bold text-sm tracking-wide mt-2">Room | {state.activeRoomName}</p>
                 <div className="mt-3 mb-4 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
-                <div className="flex">
-
+                <div className="w-full">
+                    {
+                        MembersList(OnlineRoomMemberList)
+                    }
                 </div>
             </div>
         </div>

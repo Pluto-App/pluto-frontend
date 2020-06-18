@@ -55,12 +55,19 @@ export default function RoomListItem(props) {
         }
     }
 
-    const handleClick = (e) => {
-        history.push("/room-profile")
-        actions.changeActiveRoom({
+    const handleClick = async (e) => {
+        // Change the ActiveRoomId.
+        await actions.changeActiveRoom({
             roomid: props.id,
             roomname: roomName,
         })
+        // Change the Room Id of the current user as well. 
+        // The user switched to this room. 
+        await actions.updateRoomOfMember({
+            userid : state.userProfileData.userid,
+            roomid : props.id
+        })
+        history.push("/room-profile")
     }
 
     return (

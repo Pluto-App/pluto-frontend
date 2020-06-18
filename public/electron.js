@@ -17,6 +17,7 @@ function createWindow() {
     width: 315,
     height: 320,
     titleBarStyle: 'hiddenInset',
+    title : "MainWindow",
     frame: false,
     webPreferences: {
       nodeIntegration: true,
@@ -67,6 +68,7 @@ function createWindow() {
       width: 250,
       height: 150,
       frame: false,
+      title: "VideoWindow",
       x: swidth - 260,
       y: sheight - 200,
       webPreferences: {

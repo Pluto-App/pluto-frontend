@@ -14,6 +14,5 @@ export const state = {
     activeMemberId: '',
     loggedInUserId: '',
     RoomListArray: [],
-    OnlineMembers: [],
     memberList: []
 }

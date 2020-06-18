@@ -22,8 +22,8 @@ export const googlehandleLogin = async ({ state, effects }) => {
     state.loginStarted = true;
     ToastNotification('info', "Logging In...🚀")
     state.userProfileData = await googleSignIn()
-    let googleHandleData = await effects.postHandler(process.env.REACT_APP_LOGIN_URL, state.userProfileData)
-    state.userProfileData.addStatus = googleHandleData.addStatus
+    let LoginData = await effects.postHandler(process.env.REACT_APP_LOGIN_URL, state.userProfileData)
+    state.userProfileData.addStatus = LoginData.addStatus
     state.change["teamowner"] = state.userProfileData.username
     socket_live.emit(events.online, state.userProfileData.userid)
     state.loggedIn = true
@@ -146,7 +146,9 @@ export const usersbyteamid = async ({ state, effects }, values) => {
                 username: u.username,
                 usermail: u.email,
                 avatar: u.avatar,
-                statusColor: 'green'
+                statusColor: 'green', 
+                teamid : "", 
+                roomid : ""
             }
             state.memberList.push(userObj)
         })
@@ -225,7 +227,7 @@ export const addNewRoom = async ({ state, effects }, values) => {
 
 /**
  * Emit Room Deletion event. 
- * TODO Remove all team mates fropm the room. 
+ * TODO Remove all team mates from the room. 
  */
 export const removeRoom = async ({ state, effects }, values) => {
 
@@ -278,6 +280,32 @@ export const roomsbyteamid = async ({ state, effects }, values) => {
     state.loadingRooms = false
 }
 
-export const updateOnlineMembersList = async ({ state, effects }, values) => {
-    state.OnlineMembers = Array.from(values)
+/**
+ * 
+ * @param {values.id} userid from data 
+ * @param {values.statusColor} statusColor from data.
+ * Update the Status Color of the User.  
+ */
+export const updateStatusColor = async ({ state, effects }, values) => {
+    // TODO Update Status of the user at app Level, When users are active or not. 
+    if (Array.isArray(state.memberList) && state.memberList.length) {
+        let updateElem = await state.memberList.find(element => element.userid === values.id)
+        updateElem.statusColor = values.statusColor
+    }
+}
+
+export const updateRoomOfMember = async ({ state, effects }, values) => {
+    // TODO Update room of user. 
+    if (Array.isArray(state.memberList) && state.memberList.length) {
+        let updateElem = await state.memberList.find(element => element.userid === values.userid)
+        updateElem.roomid = values.roomid;
+    }
+}
+
+export const updateTeamOfMember = async ({ state, effects }, values) => {
+    // TODO Update team of user. 
+    if (Array.isArray(state.memberList) && state.memberList.length) {
+        let updateElem = await state.memberList.find(element => element.userid === values.userid)
+        updateElem.teamid = values.teamid;
+    }
 }
