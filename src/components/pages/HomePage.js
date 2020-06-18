@@ -10,6 +10,10 @@ import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import ToastNotification from '../widgets/ToastNotification'
 
+// TODO Move Active Win info to user profile (not necessary?)
+// FIXME Add Active Win Support. The package fails to build. Search Alternatives. 
+// import * as activeWin from 'active-win'
+
 function RoomList(props) {
 
     const roomlist = props.map((rooms) =>
@@ -62,6 +66,7 @@ export default function HomePage() {
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showInviteModal, toggleshowInviteModal] = useState(false);
     const [isAddingRoom, setIsAddingRoom] = useState(false);
+    const [appInfo, updateAppInfo] = useState("");
 
     const addingNewRoom = async (roomname) => {
 
@@ -110,6 +115,35 @@ export default function HomePage() {
         }, [actions, state.activeTeamId]
     )
 
+    /**
+     * Active Win Code. 
+     */
+    // useEffect(
+    //     () => {
+
+    //         let interval = 0;
+    //         if (interval) {
+    //             clearInterval(interval);
+    //         }
+
+    //         // Every 5 Secs, make a query. 
+    //         interval = setInterval(() => {
+    //             activeWin().then((data) => {
+    //                 if (data !== null && data.owner !== null) {
+    //                     updateAppInfo(appInfo => {
+    //                         appInfo = data.owner.name;
+    //                     });
+    //                 }
+    //             })
+    //         }, 5000)
+
+    //         // Clear interval on return . 
+    //         return () => {
+    //             clearInterval(interval);
+    //         }
+    //         // eslint-disable-next-line react-hooks/exhaustive-deps
+    //     }, []
+    // )
 
     const customStyle = {
         "top": "46%",
@@ -120,7 +154,7 @@ export default function HomePage() {
         <div className="w-full flex">
             <Sidebar></Sidebar>
             <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)", marginLeft: "49px" }}>
-                <MainBar />
+                <MainBar appName={appInfo}/>
 
                 <div className="sidebar-icons" style={{ height: "relative" }}>
                     <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">

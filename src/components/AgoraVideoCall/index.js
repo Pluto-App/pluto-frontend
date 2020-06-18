@@ -2,11 +2,12 @@
  * From Agora OpenAgoraWWeb-React GitHub Repo
  */
 
+/* eslint-disable no-unused-vars */
 import React from 'react'
 import { merge } from 'lodash'
 import AgoraRTC from 'agora-rtc-sdk'
-
 import '../../assets/fonts/css/icons.css'
+// TODO Convert to a Video Caller Hook Component later.
 
 const tile_canvas = {
   '1': ['span 12/span 24'],
@@ -17,7 +18,6 @@ const tile_canvas = {
   '6': ['span 3/span 4/13/7', 'span 3/span 4/13/11', 'span 3/span 4/13/15', 'span 3/span 4/13/19', 'span 3/span 4/13/23', 'span 9/span 16/10/21'],
   '7': ['span 3/span 4/13/5', 'span 3/span 4/13/9', 'span 3/span 4/13/13', 'span 3/span 4/13/17', 'span 3/span 4/13/21', 'span 3/span 4/13/25', 'span 9/span 16/10/21'],
 }
-
 
 /**
  * @prop appId uid

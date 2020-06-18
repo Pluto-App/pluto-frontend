@@ -6,6 +6,9 @@ import BackButton from '../../widgets/BackButton'
 import { css } from "@emotion/core";
 import RingLoader from "react-spinners/RingLoader";
 
+// TODO Update User Profile Info.
+// TODO Delete User from Team/Room.
+
 export default function UserUpdate() {
 
     let history = useHistory();

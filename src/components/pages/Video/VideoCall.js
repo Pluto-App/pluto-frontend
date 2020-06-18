@@ -1,10 +1,13 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import * as Cookies from "js-cookie";
 import { css } from "@emotion/core";
-import AgoraVideoCall from "../AgoraVideoCall";
-import { AGORA_APP_ID } from "../../agora.config";
+import AgoraVideoCall from "../../AgoraVideoCall";
+import { AGORA_APP_ID } from "../../../agora.config";
 
-class Meeting extends React.Component {
+// TODO Add Support for Audio Calling. 
+// TODO Add Support for Screen-Share and Whiteboard (MVP Level Decision)
+class VideoCall extends React.Component {
   constructor(props) {
     super(props);
     this.videoProfile = "1080p_5";
@@ -49,4 +52,4 @@ class Meeting extends React.Component {
   }
 }
 
-export default Meeting;
+export default VideoCall;

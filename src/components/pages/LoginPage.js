@@ -7,6 +7,9 @@ import RingLoader from "react-spinners/RingLoader";
 import googleLogo from "../../assets/google.svg";
 import ToastNotification from '../widgets/ToastNotification';
 
+// TODO Clear Login cache or store it in some local storage/file. 
+// TODO Secure the Google Login. 
+
 const LoginPage = () => {
 
   const override = css`

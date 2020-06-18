@@ -5,8 +5,9 @@ import { useHistory } from "react-router-dom"
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 
-export default function MainBar() {
+export default function MainBar(props) {
 
+    // FIXME Remove App name info when we display Active-Win App Icon per user via CDN
     const override = css`
         display: block;
         margin: 0 auto;
@@ -33,6 +34,9 @@ export default function MainBar() {
                                     loading={state.activeTeamId === 0}
                                 />
                         }
+                        <span>
+                            {props.appInfo}
+                        </span>
                     </p>
                     <div className="flex items-center">
                         <button className="text-white hover:bg-grey-darker rounded-lg p-1" onClick={(e) => {

@@ -16087,47 +16087,58 @@ video {
   --transform-skew-y: 0;
   --transform-scale-x: 1;
   --transform-scale-y: 1;
-  transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+  -webkit-transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+          transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
 }
 
 .transform-none {
-  transform: none;
+  -webkit-transform: none;
+          transform: none;
 }
 
 .origin-center {
-  transform-origin: center;
+  -webkit-transform-origin: center;
+          transform-origin: center;
 }
 
 .origin-top {
-  transform-origin: top;
+  -webkit-transform-origin: top;
+          transform-origin: top;
 }
 
 .origin-top-right {
-  transform-origin: top right;
+  -webkit-transform-origin: top right;
+          transform-origin: top right;
 }
 
 .origin-right {
-  transform-origin: right;
+  -webkit-transform-origin: right;
+          transform-origin: right;
 }
 
 .origin-bottom-right {
-  transform-origin: bottom right;
+  -webkit-transform-origin: bottom right;
+          transform-origin: bottom right;
 }
 
 .origin-bottom {
-  transform-origin: bottom;
+  -webkit-transform-origin: bottom;
+          transform-origin: bottom;
 }
 
 .origin-bottom-left {
-  transform-origin: bottom left;
+  -webkit-transform-origin: bottom left;
+          transform-origin: bottom left;
 }
 
 .origin-left {
-  transform-origin: left;
+  -webkit-transform-origin: left;
+          transform-origin: left;
 }
 
 .origin-top-left {
-  transform-origin: top left;
+  -webkit-transform-origin: top left;
+          transform-origin: top left;
 }
 
 .scale-0 {
@@ -17765,7 +17776,9 @@ video {
 }
 
 .transition {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, -webkit-transform;
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, -webkit-transform;
 }
 
 .transition-colors {
@@ -17781,7 +17794,9 @@ video {
 }
 
 .transition-transform {
+  transition-property: -webkit-transform;
   transition-property: transform;
+  transition-property: transform, -webkit-transform;
 }
 
 .ease-linear {
@@ -17888,22 +17903,28 @@ body {
 
 #ag-canvas {
   height: 100%;
+  display: grid;
+  grid-gap: 10px;
+  align-items: center;
+  justify-items: center;
+  grid-template-rows: repeat(12, auto);
+  grid-template-columns: repeat(24, auto);
 }
 
 .ag-item :first-child {
-  border-radius: 6px;
+  border-radius: 0px;
 }
 
 .ag-item {
   border-radius: 6px;
-  border: 2px #00B6ED solid;
-  background: url('../assets/images/avatar.png') center no-repeat;
+  border: 2px #00b6ed solid;
+  background: url("../assets/avatar.png") center no-repeat;
   height: 100%;
   width: 100%;
 }
 
 #ag-resize-container {
-  background-image: none!important;
+  background-image: none !important;
   background-color: black;
   display: flex;
   justify-content: center;
@@ -17911,17 +17932,17 @@ body {
 }
 
 #ag-resize-container .ag-item {
-  border: none!important;
+  border: none !important;
 }
 
 /* button group */
 
 .ag-btn-group {
-  height: 70px;
-  width: calc(100% - 60px);
+  height: 45px;
+  width: 100%;
   margin: 0 auto;
   position: absolute;
-  bottom: 0;
+  bottom: 0px;
   background: transparent;
   z-index: 11;
   display: flex;
@@ -17931,13 +17952,15 @@ body {
 
 .ag-btn-group:hover,
 .ag-btn-group.active {
-  background: rgba(18, 74, 99, .8);
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .ag-btn {
   z-index: 12;
   opacity: 0;
   color: white;
+  /* width: 35px;
+    height: 35px; */
   cursor: pointer;
   font-size: 60px;
   display: inline-flex;
@@ -17946,12 +17969,12 @@ body {
 }
 
 .ag-btn:hover {
-  color: #00B6ED;
+  color: #00b6ed;
 }
 
 .ag-btn.disabled,
 .ag-btn.disabled:hover {
-  color: #637C8E;
+  color: #637c8e;
   cursor: not-allowed;
 }
 
@@ -17990,6 +18013,10 @@ body {
 
 .ag-btn.off.audioControlBtn .ag-icon-mic-off {
   display: inline-block;
+}
+
+video {
+  max-width: unset !important;
 }
 
 /*
@@ -33514,47 +33541,58 @@ video {
     --transform-skew-y: 0;
     --transform-scale-x: 1;
     --transform-scale-y: 1;
-    transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+    -webkit-transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+            transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
   }
 
   .sm\:transform-none {
-    transform: none;
+    -webkit-transform: none;
+            transform: none;
   }
 
   .sm\:origin-center {
-    transform-origin: center;
+    -webkit-transform-origin: center;
+            transform-origin: center;
   }
 
   .sm\:origin-top {
-    transform-origin: top;
+    -webkit-transform-origin: top;
+            transform-origin: top;
   }
 
   .sm\:origin-top-right {
-    transform-origin: top right;
+    -webkit-transform-origin: top right;
+            transform-origin: top right;
   }
 
   .sm\:origin-right {
-    transform-origin: right;
+    -webkit-transform-origin: right;
+            transform-origin: right;
   }
 
   .sm\:origin-bottom-right {
-    transform-origin: bottom right;
+    -webkit-transform-origin: bottom right;
+            transform-origin: bottom right;
   }
 
   .sm\:origin-bottom {
-    transform-origin: bottom;
+    -webkit-transform-origin: bottom;
+            transform-origin: bottom;
   }
 
   .sm\:origin-bottom-left {
-    transform-origin: bottom left;
+    -webkit-transform-origin: bottom left;
+            transform-origin: bottom left;
   }
 
   .sm\:origin-left {
-    transform-origin: left;
+    -webkit-transform-origin: left;
+            transform-origin: left;
   }
 
   .sm\:origin-top-left {
-    transform-origin: top left;
+    -webkit-transform-origin: top left;
+            transform-origin: top left;
   }
 
   .sm\:scale-0 {
@@ -35192,7 +35230,9 @@ video {
   }
 
   .sm\:transition {
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, -webkit-transform;
     transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, -webkit-transform;
   }
 
   .sm\:transition-colors {
@@ -35208,7 +35248,9 @@ video {
   }
 
   .sm\:transition-transform {
+    transition-property: -webkit-transform;
     transition-property: transform;
+    transition-property: transform, -webkit-transform;
   }
 
   .sm\:ease-linear {
@@ -50761,47 +50803,58 @@ video {
     --transform-skew-y: 0;
     --transform-scale-x: 1;
     --transform-scale-y: 1;
-    transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+    -webkit-transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+            transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
   }
 
   .md\:transform-none {
-    transform: none;
+    -webkit-transform: none;
+            transform: none;
   }
 
   .md\:origin-center {
-    transform-origin: center;
+    -webkit-transform-origin: center;
+            transform-origin: center;
   }
 
   .md\:origin-top {
-    transform-origin: top;
+    -webkit-transform-origin: top;
+            transform-origin: top;
   }
 
   .md\:origin-top-right {
-    transform-origin: top right;
+    -webkit-transform-origin: top right;
+            transform-origin: top right;
   }
 
   .md\:origin-right {
-    transform-origin: right;
+    -webkit-transform-origin: right;
+            transform-origin: right;
   }
 
   .md\:origin-bottom-right {
-    transform-origin: bottom right;
+    -webkit-transform-origin: bottom right;
+            transform-origin: bottom right;
   }
 
   .md\:origin-bottom {
-    transform-origin: bottom;
+    -webkit-transform-origin: bottom;
+            transform-origin: bottom;
   }
 
   .md\:origin-bottom-left {
-    transform-origin: bottom left;
+    -webkit-transform-origin: bottom left;
+            transform-origin: bottom left;
   }
 
   .md\:origin-left {
-    transform-origin: left;
+    -webkit-transform-origin: left;
+            transform-origin: left;
   }
 
   .md\:origin-top-left {
-    transform-origin: top left;
+    -webkit-transform-origin: top left;
+            transform-origin: top left;
   }
 
   .md\:scale-0 {
@@ -52439,7 +52492,9 @@ video {
   }
 
   .md\:transition {
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, -webkit-transform;
     transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, -webkit-transform;
   }
 
   .md\:transition-colors {
@@ -52455,7 +52510,9 @@ video {
   }
 
   .md\:transition-transform {
+    transition-property: -webkit-transform;
     transition-property: transform;
+    transition-property: transform, -webkit-transform;
   }
 
   .md\:ease-linear {
@@ -68008,47 +68065,58 @@ video {
     --transform-skew-y: 0;
     --transform-scale-x: 1;
     --transform-scale-y: 1;
-    transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+    -webkit-transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+            transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
   }
 
   .lg\:transform-none {
-    transform: none;
+    -webkit-transform: none;
+            transform: none;
   }
 
   .lg\:origin-center {
-    transform-origin: center;
+    -webkit-transform-origin: center;
+            transform-origin: center;
   }
 
   .lg\:origin-top {
-    transform-origin: top;
+    -webkit-transform-origin: top;
+            transform-origin: top;
   }
 
   .lg\:origin-top-right {
-    transform-origin: top right;
+    -webkit-transform-origin: top right;
+            transform-origin: top right;
   }
 
   .lg\:origin-right {
-    transform-origin: right;
+    -webkit-transform-origin: right;
+            transform-origin: right;
   }
 
   .lg\:origin-bottom-right {
-    transform-origin: bottom right;
+    -webkit-transform-origin: bottom right;
+            transform-origin: bottom right;
   }
 
   .lg\:origin-bottom {
-    transform-origin: bottom;
+    -webkit-transform-origin: bottom;
+            transform-origin: bottom;
   }
 
   .lg\:origin-bottom-left {
-    transform-origin: bottom left;
+    -webkit-transform-origin: bottom left;
+            transform-origin: bottom left;
   }
 
   .lg\:origin-left {
-    transform-origin: left;
+    -webkit-transform-origin: left;
+            transform-origin: left;
   }
 
   .lg\:origin-top-left {
-    transform-origin: top left;
+    -webkit-transform-origin: top left;
+            transform-origin: top left;
   }
 
   .lg\:scale-0 {
@@ -69686,7 +69754,9 @@ video {
   }
 
   .lg\:transition {
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, -webkit-transform;
     transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, -webkit-transform;
   }
 
   .lg\:transition-colors {
@@ -69702,7 +69772,9 @@ video {
   }
 
   .lg\:transition-transform {
+    transition-property: -webkit-transform;
     transition-property: transform;
+    transition-property: transform, -webkit-transform;
   }
 
   .lg\:ease-linear {
@@ -85255,47 +85327,58 @@ video {
     --transform-skew-y: 0;
     --transform-scale-x: 1;
     --transform-scale-y: 1;
-    transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+    -webkit-transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
+            transform: translateX(var(--transform-translate-x)) translateY(var(--transform-translate-y)) rotate(var(--transform-rotate)) skewX(var(--transform-skew-x)) skewY(var(--transform-skew-y)) scaleX(var(--transform-scale-x)) scaleY(var(--transform-scale-y));
   }
 
   .xl\:transform-none {
-    transform: none;
+    -webkit-transform: none;
+            transform: none;
   }
 
   .xl\:origin-center {
-    transform-origin: center;
+    -webkit-transform-origin: center;
+            transform-origin: center;
   }
 
   .xl\:origin-top {
-    transform-origin: top;
+    -webkit-transform-origin: top;
+            transform-origin: top;
   }
 
   .xl\:origin-top-right {
-    transform-origin: top right;
+    -webkit-transform-origin: top right;
+            transform-origin: top right;
   }
 
   .xl\:origin-right {
-    transform-origin: right;
+    -webkit-transform-origin: right;
+            transform-origin: right;
   }
 
   .xl\:origin-bottom-right {
-    transform-origin: bottom right;
+    -webkit-transform-origin: bottom right;
+            transform-origin: bottom right;
   }
 
   .xl\:origin-bottom {
-    transform-origin: bottom;
+    -webkit-transform-origin: bottom;
+            transform-origin: bottom;
   }
 
   .xl\:origin-bottom-left {
-    transform-origin: bottom left;
+    -webkit-transform-origin: bottom left;
+            transform-origin: bottom left;
   }
 
   .xl\:origin-left {
-    transform-origin: left;
+    -webkit-transform-origin: left;
+            transform-origin: left;
   }
 
   .xl\:origin-top-left {
-    transform-origin: top left;
+    -webkit-transform-origin: top left;
+            transform-origin: top left;
   }
 
   .xl\:scale-0 {
@@ -86933,7 +87016,9 @@ video {
   }
 
   .xl\:transition {
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, -webkit-transform;
     transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, -webkit-transform;
   }
 
   .xl\:transition-colors {
@@ -86949,7 +87034,9 @@ video {
   }
 
   .xl\:transition-transform {
+    transition-property: -webkit-transform;
     transition-property: transform;
+    transition-property: transform, -webkit-transform;
   }
 
   .xl\:ease-linear {

@@ -1,5 +1,6 @@
 import socketIOClient from "socket.io-client";
 
+// TODO Do we need other events?
 export const socket_live = socketIOClient(process.env.REACT_APP_LIVE_ENDPOINT);
 
 export const events = {

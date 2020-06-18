@@ -7,6 +7,7 @@ import ToastNotification from '../../widgets/ToastNotification';
 
 export default function RoomListItem(props) {
 
+    // TODO Notify when new room created. Add to list room info.  
     let history = useHistory();
 
     const { state, actions } = useOvermind();
@@ -36,9 +37,10 @@ export default function RoomListItem(props) {
         "position": "absolute"
     }
 
-    const handleVideoCall = (e, id) => {
-        // load video call window. 
-        // window.require("electron").ipcRenderer.send('load-video-window', id);
+    const handleVideoCall = (id) => {
+        // TODO load video call window. 
+        // FIXME if Needed.
+        window.require("electron").ipcRenderer.send('load-video-window', id);
     }
 
     const removeRoomHandler = async (e) => {
@@ -109,6 +111,7 @@ export default function RoomListItem(props) {
                         </div>
                         <div className="flex">
                             {
+                                // TODO Add other Room Options if needed. 
                                 showMenu &&
                                 <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customMenuStyle}>
                                     <div className="flex w-full justify-end">
@@ -133,12 +136,14 @@ export default function RoomListItem(props) {
                                                 </button>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
                                         <button className="w-full text-white hover:bg-gray-800 focus:outline-none rounded-lg flex font-bold tracking-wide text-xs items-center" onClick={(e) => {
-                                            handleVideoCall(e)
+                                            toggleShowMenu(showMenu => !showMenu)
+                                            handleVideoCall(props.id)
                                         }}>
                                             <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>video_call</i>Group Call
                                                 </button>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
                                         <button className="w-full text-red-500 hover:bg-red-300 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" onClick={(e) => {
+                                            toggleShowMenu(showMenu => !showMenu)
                                             removeRoomHandler(e)
                                         }}>
                                             <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>delete_forever</i>Remove Room

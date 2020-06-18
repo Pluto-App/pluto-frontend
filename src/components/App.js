@@ -7,7 +7,7 @@ import RoomProfile from './pages/Rooms/RoomProfile'
 import TeamProfile from './pages/Teams/TeamProfile'
 import UserProfile from './pages/Users/UserProfile'
 import UserUpdate from './pages/Users/UserUpdate'
-import Meeting from './pages/Meeting'
+import VideoCall from './pages/Video/VideoCall'
 import { ToastContainer } from 'react-toastify';
 import ToastNotification from './widgets/ToastNotification'
 import { socket_live, events } from './sockets'
@@ -140,8 +140,8 @@ const App = () => {
         <Route exact path="/user-update">
           <UserUpdate />
         </Route>
-        <Route exact path="/meeting">
-          <Meeting />
+        <Route exact path="/videocall">
+          <VideoCall />
         </Route>
       </Switch>
       <ToastContainer />

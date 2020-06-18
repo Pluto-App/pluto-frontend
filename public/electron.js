@@ -9,6 +9,9 @@ if (isDev) {
 let mainWindow
 let video_player
 
+// TODO Now we can add external window for settings.
+// TODO Add support for App Signing.
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 315,
@@ -16,11 +19,13 @@ function createWindow() {
     titleBarStyle: 'hiddenInset',
     frame: false,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      plugins: true
     }
   })
 
-  mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : `file://${path.join(__dirname, '../build/index.html')}`);
+  mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : 
+                        `file://${path.join(__dirname, '../build/index.html')}`);
 
   if (isDev) {
     // Open the DevTools.
@@ -57,12 +62,13 @@ function createWindow() {
     let sheight = display.bounds.height;
     
     // create the window
-    video_player = new BrowserWindow({ show: true,
-      width: 550,
-      height: 375,
+    video_player = new BrowserWindow({ 
+      show: true,
+      width: 250,
+      height: 150,
       frame: false,
-      x: swidth - 600,
-      y: sheight - 500,
+      x: swidth - 260,
+      y: sheight - 200,
       webPreferences: {
         nodeIntegration: true,
         plugins: true
@@ -72,7 +78,8 @@ function createWindow() {
     video_player.setAlwaysOnTop(true, 'screen');
     video_player.setMenu(null);
   
-    video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/meeting' : `file://${path.join(__dirname, '../build/index.html#/meeting')}`);
+    video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/videocall' : 
+                          `file://${path.join(__dirname, '../build/index.html#/videocall')}`);
   
     video_player.on('closed', () => {
       video_player = null
@@ -84,7 +91,7 @@ function createWindow() {
     });
   
     mainWindow.on('closed', () => {
-      if(video_player != null) {
+      if(video_player !== null) {
         video_player.close();
       }
     })
