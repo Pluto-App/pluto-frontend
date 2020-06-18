@@ -7,6 +7,7 @@ import RoomProfile from './pages/Rooms/RoomProfile'
 import TeamProfile from './pages/Teams/TeamProfile'
 import UserProfile from './pages/Users/UserProfile'
 import UserUpdate from './pages/Users/UserUpdate'
+import Meeting from './pages/Meeting'
 import { ToastContainer } from 'react-toastify';
 import ToastNotification from './widgets/ToastNotification'
 import { socket_live, events } from './sockets'
@@ -138,6 +139,9 @@ const App = () => {
         </Route>
         <Route exact path="/user-update">
           <UserUpdate />
+        </Route>
+        <Route exact path="/meeting">
+          <Meeting />
         </Route>
       </Switch>
       <ToastContainer />

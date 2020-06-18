@@ -48,13 +48,14 @@ export default function UserListItem(props) {
         }
     }
 
-    const clickFunc = (e) => {
-
+    const startVideo = (id) => {
+        window.require("electron").ipcRenderer.send('load-video-window', id);
     }
 
     return (
         <div className="flex py-0 justify-between p-1 pl-1 hover:bg-gray-800" id={props.id} onClick={(e) => {
-            clickFunc()
+            e.preventDefault();
+            startVideo(props.id);
         }}>
             <div className="flex justify-start p-2 pl-1">
                 <div className="bg-white h-4 w-4 flex text-black text-2xl font-semibold rounded-lg overflow-hidden">
