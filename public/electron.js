@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, protocol, screen } = require('electron')
 const path = require('path')
 const isDev = require('electron-is-dev');
 
@@ -7,6 +7,7 @@ if (isDev) {
 }
 
 let mainWindow
+let video_player
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -39,6 +40,56 @@ function createWindow() {
     mainWindow.setSize(315, 606)
   })
 
+  ipcMain.on('close-video', (event, arg) => {
+    if(video_player !== null) {
+      video_player = null
+    }
+  })
+
+  ipcMain.on('load-video-window', (event, data) => {
+
+    if(video_player !== null) {
+        video_player = null;
+    }
+  
+    let display = screen.getPrimaryDisplay();
+    let swidth = display.bounds.width;
+    let sheight = display.bounds.height;
+    
+    // create the window
+    video_player = new BrowserWindow({ show: true,
+      width: 550,
+      height: 375,
+      frame: false,
+      x: swidth - 600,
+      y: sheight - 500,
+      webPreferences: {
+        nodeIntegration: true,
+        plugins: true
+      } 
+    })
+  
+    video_player.setAlwaysOnTop(true, 'screen');
+    video_player.setMenu(null);
+  
+    video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/meeting' : `file://${path.join(__dirname, '../build/index.html#/meeting')}`);
+  
+    video_player.on('closed', () => {
+      video_player = null
+    })
+  
+    // here we can send the data to the new window
+    video_player.webContents.on('did-finish-load', () => {
+        video_player.webContents.send('data', data);
+    });
+  
+    mainWindow.on('closed', () => {
+      if(video_player != null) {
+        video_player.close();
+      }
+    })
+    
+  });
 }
 
 app.on('ready', createWindow)
@@ -54,3 +105,18 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+// Exit cleanly on request from parent process in development mode.
+if (isDev) {
+  if (process.platform === 'win32') {
+    process.on('message', data => {
+      if (data === 'graceful-exit') {
+        app.quit()
+      }
+    })
+  } else {
+    process.on('SIGTERM', () => {
+      app.quit()
+    })
+  }
+}
