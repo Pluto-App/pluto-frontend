@@ -47,8 +47,12 @@ export default function Sidebar(props) {
                                     </div>
                                 </a> :
                                 <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer hover:bg-gray-800" id={id} key={id}
-                                    onClick={(e) => {
+                                    onClick={async (e) => {
                                         e.preventDefault()
+                                        await actions.updateTeamOfMember({
+                                            userid : state.userProfileData.userid,
+                                            teamid : id
+                                        })
                                         actions.changeActiveTeam(id).then(() => {
                                             history.push('/home')
                                         })
