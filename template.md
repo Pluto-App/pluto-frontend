@@ -1,6 +1,14 @@
-# Release 1.0.0 [via GitHub]
+# Draft Release v1.0.0 
 
 Pluto Office Application for ```Windows```, ```MacOSX```, ```Linux (CentOS/RHEL, Ubuntu, Fedora & RPM)```.
+
+## Updates : 
+
+```markdown
+1. Agora Video Call Added. 
+2. Oneline Users tracking at Room/Team Level. 
+3. Status Color Update on Online/Offline.
+```
 
 ## Mac
 
