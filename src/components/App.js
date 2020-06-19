@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react'
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
@@ -22,7 +23,6 @@ import {
 const App = () => {
 
   const { state, actions } = useOvermind();
-  const [OnlMem, updateOnlMem] = useState(new Set())
 
   useEffect(
     () => {

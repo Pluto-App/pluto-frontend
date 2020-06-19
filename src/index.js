@@ -9,18 +9,18 @@ import './styles/tailwind.css';
 import './assets/fonts/css/icons.css'
 import App from './components/App';
 
-const polyfill = (() => {
-  if (!Object.entries)
-  Object.entries = function( obj ){
-    var ownProps = Object.keys( obj ),
-        i = ownProps.length,
-        resArray = new Array(i);
-    while (i--)
-      resArray[i] = [ownProps[i], obj[ownProps[i]]];
+// const polyfill = (() => {
+//   if (!Object.entries)
+//   Object.entries = function( obj ){
+//     var ownProps = Object.keys( obj ),
+//         i = ownProps.length,
+//         resArray = new Array(i);
+//     while (i--)
+//       resArray[i] = [ownProps[i], obj[ownProps[i]]];
     
-    return resArray;
-  }
-})();
+//     return resArray;
+//   }
+// })();
 
 const overmind = createOvermind(config)
 

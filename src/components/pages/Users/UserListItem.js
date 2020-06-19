@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
+import * as Cookies from "js-cookie";
 import ToastNotification from '../../widgets/ToastNotification';
+import * as md5 from "md5";
 
 export default function UserListItem(props) {
 
@@ -48,14 +50,16 @@ export default function UserListItem(props) {
         }
     }
 
-    const startVideo = (id) => {
+    const startVideo = () => {
+        // TODO User Video Call ID. Check Needed.
+        let id = md5(state.activeTeamId + state.userProfileData.userid);
+        Cookies.set("channel", id);
         window.require("electron").ipcRenderer.send('load-video-window', id);
     }
 
     return (
         <div className="flex py-0 justify-between p-1 pl-1 hover:bg-gray-800" id={props.id} onClick={(e) => {
             e.preventDefault();
-            startVideo(props.id);
         }}>
             <div className="flex justify-start p-2 pl-1">
                 <div className="bg-white h-4 w-4 flex text-black text-2xl font-semibold rounded-lg overflow-hidden">
@@ -65,7 +69,9 @@ export default function UserListItem(props) {
                     <circle cx="4" cy="4" r="4" fill={props.statusColor} />
                                 Sorry, your browser does not support inline SVG.
                         </svg>
-                <div className="text-white px-1 font-bold tracking-wide text-xs">
+                <div className="text-white px-1 font-bold tracking-wide text-xs" onClick={(e) => {
+                    startVideo();
+                }}>
                     {props.name}
                 </div>
             </div>
@@ -103,7 +109,9 @@ export default function UserListItem(props) {
                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>question_answer</i>Instant Chat
                                             </button>
                             <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
-                            <button className="w-full text-white hover:bg-gray-800 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" onClick="">
+                            <button className="w-full text-white hover:bg-gray-800 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" onClick={() => {
+                                startVideo();
+                            }}>
                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>video_call</i>Video Call
                                             </button>
                             <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>

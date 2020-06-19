@@ -37,7 +37,7 @@ export default function RoomProfile() {
     useEffect(() => {
         // FIXME Load Room Members oon room change by activeRoomId and activeTeamId
         updateOnlineList(state.memberList.filter(elem => elem.roomid === state.activeRoomId))
-    }, [state.memberList])
+    }, [state.memberList, state.activeRoomId])
 
     return (
         <div className="w-full flex">

@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import ToastNotification from '../../widgets/ToastNotification';
+import * as Cookies from "js-cookie";
+import * as md5 from "md5";
 
 export default function RoomListItem(props) {
 
@@ -37,10 +39,11 @@ export default function RoomListItem(props) {
         "position": "absolute"
     }
 
-    const handleVideoCall = (id) => {
-        // TODO load video call window. 
-        // FIXME if Needed.
-        window.require("electron").ipcRenderer.send('load-video-window', id);
+    const handleVideoCall = () => {
+        // TODO Room Video Call ID. Check Needed.
+        let new_id = md5(props.id + roomName + state.activeTeamId);
+        Cookies.set("channel", new_id);
+        window.require("electron").ipcRenderer.send('load-video-window', new_id);
     }
 
     const removeRoomHandler = async (e) => {
@@ -144,7 +147,7 @@ export default function RoomListItem(props) {
                                         <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
                                         <button className="w-full text-white hover:bg-gray-800 focus:outline-none rounded-lg flex font-bold tracking-wide text-xs items-center" onClick={(e) => {
                                             toggleShowMenu(showMenu => !showMenu)
-                                            handleVideoCall(props.id)
+                                            handleVideoCall()
                                         }}>
                                             <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>video_call</i>Group Call
                                                 </button>
