@@ -290,7 +290,7 @@ export const updateStatusColor = async ({ state, effects }, values) => {
     // TODO Update Status of the user at app Level, When users are active or not. 
     if (Array.isArray(state.memberList) && state.memberList.length) {
         let updateElem = await state.memberList.find(element => element.userid === values.id)
-        updateElem.statusColor = values.statusColor
+        if (updateElem !== undefined) updateElem.statusColor = values.statusColor
     }
 }
 
@@ -298,7 +298,7 @@ export const updateRoomOfMember = async ({ state, effects }, values) => {
     // TODO Update room of user. 
     if (Array.isArray(state.memberList) && state.memberList.length) {
         let updateElem = await state.memberList.find(element => element.userid === values.userid)
-        updateElem.roomid = values.roomid;
+        if (updateElem !== undefined) updateElem.roomid = values.roomid;
     }
 }
 
@@ -306,6 +306,6 @@ export const updateTeamOfMember = async ({ state, effects }, values) => {
     // TODO Update team of user. 
     if (Array.isArray(state.memberList) && state.memberList.length) {
         let updateElem = await state.memberList.find(element => element.userid === values.userid)
-        updateElem.teamid = values.teamid;
+        if (updateElem !== undefined) updateElem.teamid = values.teamid;
     }
 }
