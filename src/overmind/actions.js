@@ -227,8 +227,8 @@ export const addNewRoom = async ({ state, effects }, values) => {
 
 /**
  * Emit Room Deletion event. 
- * TODO Remove all team mates from the room. 
  */
+// TODO Remove all team mates from the room. 
 export const removeRoom = async ({ state, effects }, values) => {
 
     state.loadingRooms = true
@@ -266,6 +266,7 @@ export const removeTeamMember = async ({ state, effects }, values) => {
 /**
  * Load all rooms in the team by teamid. 
  */
+// TODO What to do with joined team mates?
 export const roomsbyteamid = async ({ state, effects }, values) => {
     state.loadingRooms = true
     let roomdump = await effects.postHandler(process.env.REACT_APP_GET_ROOMS_FROM_ID, values)
@@ -290,7 +291,8 @@ export const updateStatusColor = async ({ state, effects }, values) => {
     // TODO Update Status of the user at app Level, When users are active or not. 
     if (Array.isArray(state.memberList) && state.memberList.length) {
         let updateElem = await state.memberList.find(element => element.userid === values.id)
-        if (updateElem !== undefined) updateElem.statusColor = values.statusColor
+        if (typeof updateElem !== 'undefined') 
+            updateElem.statusColor = values.statusColor
     }
 }
 
@@ -298,7 +300,8 @@ export const updateRoomOfMember = async ({ state, effects }, values) => {
     // TODO Update room of user. 
     if (Array.isArray(state.memberList) && state.memberList.length) {
         let updateElem = await state.memberList.find(element => element.userid === values.userid)
-        if (updateElem !== undefined) updateElem.roomid = values.roomid;
+        if (typeof updateElem !== 'undefined')  
+            updateElem.roomid = values.roomid;
     }
 }
 
@@ -306,6 +309,7 @@ export const updateTeamOfMember = async ({ state, effects }, values) => {
     // TODO Update team of user. 
     if (Array.isArray(state.memberList) && state.memberList.length) {
         let updateElem = await state.memberList.find(element => element.userid === values.userid)
-        if (updateElem !== undefined) updateElem.teamid = values.teamid;
+        if (typeof updateElem !== 'undefined') 
+            updateElem.teamid = values.teamid;
     }
 }
