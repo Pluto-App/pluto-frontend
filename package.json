@@ -26,7 +26,7 @@
     "electron-is-dev": "^1.2.0",
     "electron-titlebar": "0.0.3",
     "env-cmd": "^10.1.0",
-    "firebase": "^7.14.4",
+    "firebase": "^7.15.4",
     "iconv": "^3.0.0",
     "js-cookie": "^2.2.1",
     "loadash": "^1.0.0",
@@ -35,7 +35,7 @@
     "overmind": "^23.1.0",
     "overmind-react": "^24.1.0",
     "qs": "^6.9.4",
-    "query-string": "^6.12.1",
+    "query-string": "^6.13.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hot-loader": "^4.12.21",
@@ -44,7 +44,7 @@
     "react-scripts": "3.4.1",
     "react-show-more-list": "^0.5.2",
     "react-spinners": "^0.8.3",
-    "react-toastify": "^6.0.4",
+    "react-toastify": "^6.0.6",
     "react-transition-group": "^4.4.1",
     "rxjs": "^6.5.5",
     "socket.io-client": "^2.3.0",
@@ -131,30 +131,23 @@
   },
   "scripts": {
     "build:style": "tailwind build src/styles/index.css -o src/styles/tailwind.css",
-
     "production": "npm run build:style && cross-env BROWSER=none env-cmd -f .env react-scripts start",
     "local": "npm run build:style && cross-env BROWSER=none env-cmd -f .env.local react-scripts start",
     "production-local": "npm run build:style && cross-env BROWSER=none env-cmd -f .env.production.local react-scripts start",
-    
     "build": "cross-env NODE_ENV=production && npm run build:style && cross-env BROWSER=none env-cmd -f .env react-scripts build",
     "test": "env-cmd -f .env react-scripts test",
     "eject": "env-cmd -f .env react-scripts eject",
-    
     "postinstall": "electron-builder install-app-deps",
     "setup": "npm install && npm run build",
-    
     "electron-prod": "cross-env NODE_ENV=production env-cmd -f .env nodemon --exec electron .",
     "electron-local": "cross-env NODE_ENV=dev env-cmd -f .env.local nodemon --exec electron .",
     "electron-local-prod": "cross-env NODE_ENV=production env-cmd -f .env.production.local nodemon --exec electron .",
-    
     "prod": "concurrently --kill-others \"npm run production\" \"cross-env NODE_ENV=production dotenv -e .env -- cross-var wait-on %ELECTRON_START_URL% && npm run electron-prod \"",
     "start": "concurrently --kill-others \"npm run local\" \"cross-env NODE_ENV=dev dotenv -e .env.local -- cross-var wait-on %ELECTRON_START_URL% && npm run electron-local \"",
     "start-prod": "concurrently --kill-others \"npm run production-local\" \"cross-env NODE_ENV=production dotenv -e .env.production.local -- cross-var wait-on %ELECTRON_START_URL% && npm run electron-local-prod \"",
-    
     "mac-release": "cross-env NODE_ENV=production electron-builder build --mac -c.extraMetadata.main=build/electron.js --publish=always",
     "linux-release": "cross-env NODE_ENV=production electron-builder build --linux -c.extraMetadata.main=build/electron.js --publish=always",
     "win-release": "cross-env NODE_ENV=production electron-builder build --win -c.extraMetadata.main=build/electron.js --publish=always",
-    
     "del-build": "rm -f ./build/",
     "del-modules": "rm -f ./node_modules/"
   },
@@ -178,9 +171,9 @@
     ]
   },
   "devDependencies": {
-    "autoprefixer": "^9.8.0",
+    "autoprefixer": "^9.8.4",
     "concurrently": "^5.2.0",
-    "electron": "^8.3.0",
+    "electron": "^8.3.4",
     "electron-builder": "^22.6.1",
     "electron-packager": "^14.2.1",
     "electron-react-devtools": "^0.5.3",
