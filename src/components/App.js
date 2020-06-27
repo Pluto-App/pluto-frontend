@@ -31,7 +31,7 @@ const App = () => {
 
       // Check and emit liveness
       socket_live.on(events.ping, (data) => {
-        ToastNotification('success', data.message)
+        ToastNotification('success', data)
       });
 
       // Welcome Message when you join a new room. 
