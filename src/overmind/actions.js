@@ -160,13 +160,6 @@ export const usersbyteamid = async ({ state, effects }, values) => {
     state.loadingMembers = false
 }
 
-/** 
- * Handle Form Input value mutations. 
-*/
-export const handleChangeMutations = async ({ state }, values) => {
-    state.change[values.target] = values.value
-}
-
 /**
  * Emit Team Switch Event
  */

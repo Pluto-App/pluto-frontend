@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import BackButton from '../../widgets/BackButton'
@@ -9,6 +9,7 @@ import ToastNotification from '../../widgets/ToastNotification';
 
 export default function TeamRegisterPage() {
 
+    const [newTeamName, updateTeamName] = useState("");
     let history = useHistory();
 
     const override = css`
@@ -21,18 +22,16 @@ export default function TeamRegisterPage() {
 
     const createTeam = async (e) => {
         e.preventDefault();
-        await actions.createTeam({
-            userid: state.userProfileData.userid,
-            teamname: state.change["teamname"]
-        })
-        history.push('/home')
-    }
-
-    const handleChange = async (e) => {
-        await actions.handleChangeMutations({
-            target: e.target.name,
-            value: e.target.value
-        })
+        if (newTeamName !== "" && newTeamName.length >= 4) {
+            await actions.createTeam({
+                userid: state.userProfileData.userid, // ownerid of team.
+                teamname: newTeamName // new team name.
+            })
+            history.push('/home')
+        }
+        else {
+            ToastNotification('error', "Must be 4 letters or more.")
+        }
     }
 
     return (
@@ -40,17 +39,29 @@ export default function TeamRegisterPage() {
             <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)" }}>
                 <BackButton url={'/home'}></BackButton>
                 <p className="font-bold px-4 text-white">Create New Team</p>
-                <p className="text-gray-700 px-4">You will be set as Team Owner</p>
+                <p className="text-gray-500 px-4">You will be set as Team Owner</p>
                 <form className="px-4 pt-6 pb-8 mb-4">
                     <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2" for="username">
-                            Unquie Team Name
+                        <label className="block text-gray-600 text-sm font-bold mb-2" for="teamname">
+                            Unique Team Name
                         </label>
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             onChange={(e) => {
-                                if (e.target.value === "") {
-                                    ToastNotification('error', "Team Name can't be empty")
-                                } else handleChange(e)
+                                e.target.value === "" ? 
+                                ToastNotification('error', "Team Name can't be empty") : 
+                                updateTeamName(e.target.value)
+                            }}
+                            onPaste={(e) => {
+                                e.target.value === "" ? 
+                                ToastNotification('error', "Team Name can't be empty") : 
+                                updateTeamName(e.target.value)
+                            }}
+                            onKeyPress={(e) => {
+                                if (e.keyCode === 13 || e.which === 13) {
+                                    e.target.value === "" ? 
+                                        ToastNotification('error', "Team Name can't be empty") : 
+                                        updateTeamName(e.target.value)
+                                }
                             }}
                             name="teamname"
                             id="teamname"

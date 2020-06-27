@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, protocol, screen } = require('electron')
 const path = require('path')
 const isDev = require('electron-is-dev');
+const url = require('url')
 
 if (isDev) {
   require('electron-reload')
@@ -24,6 +25,11 @@ function createWindow() {
       plugins: true
     }
   })
+
+  mainWindow.setMenu(null);
+  
+  // FIXME Maximize/Minimize Issue.
+  mainWindow.setAlwaysOnTop(true, 'screen');
 
   mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : 
                         `file://${path.join(__dirname, '../build/index.html')}`);
@@ -80,8 +86,16 @@ function createWindow() {
     video_player.setAlwaysOnTop(true, 'screen');
     video_player.setMenu(null);
   
-    video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/videocall' : 
-                          `file://${path.join(__dirname, '../build/index.html#/videocall')}`);
+    // FIXME this fails during packaging. Is the routing working?
+    const video_url = url.format({
+      pathname: path.join(__dirname, '../build/index.html' + '#/videocall'),
+      hash: 'baz',
+      protocol: 'file',
+      slashes: true
+    })
+
+    // video_player.loadURL(video_url);
+    video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/videocall' : video_url);
   
     video_player.on('closed', () => {
       video_player = null

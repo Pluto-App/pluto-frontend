@@ -93,7 +93,7 @@ export default function RoomListItem(props) {
                             }
                             onKeyPress={(e) => {
                                 if (e.keyCode === 13 || e.which === 13) {
-                                    e.target.value === '' ? alert("Text Cant be Empty !") : updateEditStatus(false)
+                                    e.target.value === '' ? ToastNotification('error', "Room Name Empty !") : updateEditStatus(false)
                                     updateRoomName(e.target.value)
                                     // TODO Trigger Name Edit to database via backend
                                 }
