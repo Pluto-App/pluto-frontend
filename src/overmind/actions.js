@@ -182,6 +182,7 @@ export const changeActiveRoom = async ({ state }, values) => {
     socket_live.emit(events.room_switch, {
         username: state.userProfileData.username,
         userid: state.userProfileData.userid,
+        teamname: state.teamDataInfo[state.activeTeamId].teamname,
         teamid: state.activeTeamId,
         roomid: values.roomid,
         roomname: values.roomname
