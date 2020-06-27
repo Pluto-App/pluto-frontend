@@ -103,7 +103,7 @@ const App = () => {
         // FIXME Update Status of User Offline ?
         actions.updateStatusColor({
           id : data,
-          statusColor : 'red'
+          statusColor : 'gray'
         })
       })
 

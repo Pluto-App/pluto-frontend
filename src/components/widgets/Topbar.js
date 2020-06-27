@@ -9,6 +9,7 @@ export default function TopBar(props) {
 
   const minimize = () => {
     var window = remote.getCurrentWindow();
+    // TODO Emit user is away/sleeping mode. 
     window.minimize();
   }
 
