@@ -30,7 +30,7 @@ const App = () => {
       let interval = 0;
 
       // Check and emit liveness
-      socket_live.on(events.ping, () => {
+      socket_live.on(events.ping, (data) => {
         ToastNotification('success', data.message)
       });
 
