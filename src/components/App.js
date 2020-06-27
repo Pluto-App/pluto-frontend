@@ -42,6 +42,7 @@ const App = () => {
       // New notification telling that a user joined 
       // the room you are a part of currently.
       socket_live.on(events.user_join, (data) => {
+        // TODO Handle new user join. Add user to list.
         ToastNotification('success', data.message)
       })
 
@@ -74,7 +75,7 @@ const App = () => {
       // When a new person joins a team 
       // or switches team, we show who joined in.
       socket_live.on(events.team_switch, (data) => {
-        // TODO Update Online Status of User in the team here. 
+        // TODO Update Status of User in the team here. User switched team. 
         actions.updateTeamOfMember({
           userid : data.userinfo.userid,
           teamid : data.userinfo.teamid,
