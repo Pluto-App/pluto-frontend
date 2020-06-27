@@ -9,7 +9,7 @@ import { socket_live, events } from '../components/sockets'
  * Emit User went Offline.
  */
 export const handleLogout = async ({ state }) => {
-    // socket_live.emit(events.offline, state.userProfileData.userid)
+    socket_live.emit(events.offline, state.userProfileData.userid)
     state.loggedIn = false;
 }
 
@@ -25,7 +25,7 @@ export const googlehandleLogin = async ({ state, effects }) => {
     let LoginData = await effects.postHandler(process.env.REACT_APP_LOGIN_URL, state.userProfileData)
     state.userProfileData.addStatus = LoginData.addStatus
     state.change["teamowner"] = state.userProfileData.username
-    // socket_live.emit(events.online, state.userProfileData.userid)
+    socket_live.emit(events.online, state.userProfileData.userid)
     state.loggedIn = true
     state.signedIn = true;
     state.loginStarted = false;
@@ -60,17 +60,17 @@ export const createTeam = async ({ state, effects }, values) => {
             isActive: true,
             plan: 'Regular'
         }
-        // socket_live.emit(events.new_team, {
-        //     teamid: state.activeTeamId,
-        //     userid: state.userProfileData.userid,
-        //     teamname: state.teamDataInfo[state.activeTeamId].teamname
-        // })
-        // socket_live.emit(events.team_switch, {
-        //     teamid: state.activeTeamId,
-        //     userid: state.userProfileData.userid,
-        //     teamname: state.teamDataInfo[state.activeTeamId].teamname,
-        //     username: state.userProfileData.username
-        // })
+        socket_live.emit(events.new_team, {
+            teamid: state.activeTeamId,
+            userid: state.userProfileData.userid,
+            teamname: state.teamDataInfo[state.activeTeamId].teamname
+        })
+        socket_live.emit(events.team_switch, {
+            teamid: state.activeTeamId,
+            userid: state.userProfileData.userid,
+            teamname: state.teamDataInfo[state.activeTeamId].teamname,
+            username: state.userProfileData.username
+        })
     } else if (newTeamData.addStatus === 0) {
         ToastNotification('error', "Team already exists")
     } else {
@@ -108,12 +108,12 @@ export const teamsbyuserid = async ({ state, effects }, values) => {
         })
         if (state.activeTeamId === 0) {
             state.activeTeamId = dump.teams[0].teamid
-            // socket_live.emit(events.team_switch, {
-            //     teamid: state.activeTeamId,
-            //     userid: state.userProfileData.userid,
-            //     teamname: state.teamDataInfo[state.activeTeamId].teamname,
-            //     username: state.userProfileData.username
-            // })
+            socket_live.emit(events.team_switch, {
+                teamid: state.activeTeamId,
+                userid: state.userProfileData.userid,
+                teamname: state.teamDataInfo[state.activeTeamId].teamname,
+                username: state.userProfileData.username
+            })
         }
         state.teamDataInfo[state.activeTeamId].isActive = true
     } else {
@@ -171,12 +171,12 @@ export const handleChangeMutations = async ({ state }, values) => {
  * Emit Team Switch Event
  */
 export const changeActiveTeam = async ({ state }, values) => {
-    // socket_live.emit(events.team_switch, {
-    //     teamid: state.activeTeamId,
-    //     userid: state.userProfileData.userid,
-    //     teamname: state.teamDataInfo[state.activeTeamId].teamname,
-    //     username: state.userProfileData.username
-    // })
+    socket_live.emit(events.team_switch, {
+        teamid: state.activeTeamId,
+        userid: state.userProfileData.userid,
+        teamname: state.teamDataInfo[state.activeTeamId].teamname,
+        username: state.userProfileData.username
+    })
     state.teamDataInfo[state.activeTeamId].isActive = false
     state.activeTeamId = values
     state.teamDataInfo[values].isActive = true
@@ -186,13 +186,13 @@ export const changeActiveTeam = async ({ state }, values) => {
  * Emit Room Switch Event
  */
 export const changeActiveRoom = async ({ state }, values) => {
-    // socket_live.emit(events.room_switch, {
-    //     username: state.userProfileData.username,
-    //     userid: state.userProfileData.userid,
-    //     teamid: state.activeTeamId,
-    //     roomid: values.roomid,
-    //     roomname: values.roomname
-    // })
+    socket_live.emit(events.room_switch, {
+        username: state.userProfileData.username,
+        userid: state.userProfileData.userid,
+        teamid: state.activeTeamId,
+        roomid: values.roomid,
+        roomname: values.roomname
+    })
     state.activeRoomName = values.roomname
     state.activeRoomId = values.roomid
 }
@@ -209,10 +209,10 @@ export const addNewRoom = async ({ state, effects }, values) => {
 
     state.loadingRooms = true
 
-    // socket_live.emit(events.new_room, {
-    //     teamid: values.teamid,
-    //     roomname: values.roomname
-    // })
+    socket_live.emit(events.new_room, {
+        teamid: values.teamid,
+        roomname: values.roomname
+    })
 
     let roomdump = await effects.postHandler(process.env.REACT_APP_ADD_ROOM_TO_TEAM, values)
 
@@ -233,10 +233,10 @@ export const removeRoom = async ({ state, effects }, values) => {
 
     state.loadingRooms = true
 
-    // socket_live.emit(events.remove_room, {
-    //     teamid: values.teamid,
-    //     roomname: values.roomname
-    // })
+    socket_live.emit(events.remove_room, {
+        teamid: values.teamid,
+        roomname: values.roomname
+    })
 
     await effects.postHandler(process.env.REACT_APP_DELETE_ROOM_FROM_TEAM, values)
     let arr = await state.RoomListArray.filter((rooms) => {
@@ -253,8 +253,7 @@ export const removeRoom = async ({ state, effects }, values) => {
 export const removeTeamMember = async ({ state, effects }, values) => {
     state.loadingMembers = true;
 
-    // socket_live.emit(events.remove_member, values)
-    
+    socket_live.emit(events.remove_member, values)
     let arr = state.memberList.filter((member) => {
         return member.userid !== values.userid
     })

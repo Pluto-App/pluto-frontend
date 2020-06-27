@@ -30,8 +30,8 @@ const App = () => {
       let interval = 0;
 
       // Check and emit liveness
-      socket_live.on(events.ping, (data) => {
-        ToastNotification('success', data)
+      socket_live.on(events.ping, () => {
+        socket_live.emit(events.pong, state.userProfileData.userid)
       });
 
       // Welcome Message when you join a new room. 
@@ -50,6 +50,10 @@ const App = () => {
       socket_live.on(events.room_switch, (data) => {
         // TODO Add new User to room as per roomId. 
         // data.userinfo => Contains user info. 
+        actions.updateRoomOfMember({
+          userid : data.userinfo.userid,
+          roomid : data.userinfo.roomid,
+        })
         ToastNotification('info', data.message)
       })
 
@@ -71,6 +75,10 @@ const App = () => {
       // or switches team, we show who joined in.
       socket_live.on(events.team_switch, (data) => {
         // TODO Update Online Status of User in the team here. 
+        actions.updateTeamOfMember({
+          userid : data.userinfo.userid,
+          teamid : data.userinfo.teamid,
+        })
         ToastNotification('info', data.message)
       })
 
@@ -83,13 +91,19 @@ const App = () => {
       // Some User is Online
       socket_live.on(events.online, (data) => {
         // FIXME Update Status of User Online ?
-        ToastNotification('success', "User Online")
+        actions.updateStatusColor({
+          id : data,
+          statusColor : 'green'
+        })
       })
 
       // Some User is Offline
       socket_live.on(events.offline, (data) => {
         // FIXME Update Status of User Offline ?
-        ToastNotification('success', "User Online")
+        actions.updateStatusColor({
+          id : data,
+          statusColor : 'red'
+        })
       })
 
       socket_live.on('disconnect', () => {
@@ -104,7 +118,7 @@ const App = () => {
         if (state.loggedIn)
           // Emit User is online.
           socket_live.emit(events.online, state.userProfileData.userid)
-      }, 5000)
+      }, 10000)
 
       return () => {
         ToastNotification('error', "App Unmount");
