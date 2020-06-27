@@ -43,6 +43,10 @@ const App = () => {
       // the room you are a part of currently.
       socket_live.on(events.user_join, (data) => {
         // TODO Handle new user join. Add user to list.
+        actions.updateRoomOfMember({
+          userid : data.userinfo.userid,
+          roomid : data.userinfo.roomid,
+        })
         ToastNotification('success', data.message)
       })
 

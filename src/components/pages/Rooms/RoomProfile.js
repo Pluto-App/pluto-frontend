@@ -35,7 +35,7 @@ export default function RoomProfile() {
     const [OnlineRoomMemberList, updateOnlineList] = useState([]);
 
     useEffect(() => {
-        // FIXME Load Room Members oon room change by activeRoomId and activeTeamId
+        // FIXME Load Room Members on room change by activeRoomId and activeTeamId
         updateOnlineList(state.memberList.filter(elem => elem.roomid === state.activeRoomId))
     }, [state.memberList, state.activeRoomId])
 

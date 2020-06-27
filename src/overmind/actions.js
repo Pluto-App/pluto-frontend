@@ -146,7 +146,7 @@ export const usersbyteamid = async ({ state, effects }, values) => {
                 username: u.username,
                 usermail: u.email,
                 avatar: u.avatar,
-                statusColor: 'green', 
+                statusColor: u.id === state.userProfileData.userid ? 'green' : 'gray', // default offline. 
                 teamid : "", 
                 roomid : ""
             }
