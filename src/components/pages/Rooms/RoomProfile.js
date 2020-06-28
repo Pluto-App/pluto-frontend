@@ -37,6 +37,8 @@ export default function RoomProfile() {
     useEffect(() => {
         // FIXME Load Room Members on room change by activeRoomId and activeTeamId
         updateOnlineList(state.memberList.filter(elem => elem.roomid === state.activeRoomId))
+        console.log(OnlineRoomMemberList);
+
     }, [state.memberList, state.activeRoomId])
 
     return (

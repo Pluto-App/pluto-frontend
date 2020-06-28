@@ -108,7 +108,7 @@ export const teamsbyuserid = async ({ state, effects }, values) => {
         })
         if (state.activeTeamId === 0) {
             state.activeTeamId = dump.teams[0].teamid
-        } 
+        }
         socket_live.emit(events.team_switch, {
             teamid: state.activeTeamId,
             userid: state.userProfileData.userid,
@@ -293,9 +293,12 @@ export const updateStatusColor = async ({ state, effects }, values) => {
 export const updateRoomOfMember = async ({ state, effects }, values) => {
     // TODO Update room of user. 
     if (Array.isArray(state.memberList) && state.memberList.length) {
-        let updateElem = await state.memberList.find(element => element.userid === values.userid)
-        if (typeof updateElem !== 'undefined')  
-            updateElem.roomid = values.roomid;
+        const newList = state.memberList.map(obj => obj.userid === values.userid ? {
+            ...obj, roomid : values.roomid
+        } 
+        : 
+        obj);
+        state.memberList = newList;
     }
 }
 
