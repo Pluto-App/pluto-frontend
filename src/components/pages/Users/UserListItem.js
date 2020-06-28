@@ -34,12 +34,12 @@ export default function UserListItem(props) {
 
     const removeUserHandler = async (e) => {
 
-        if (props.id === state.teamDataInfo[state.activeTeamId].teamownerid) {
+        if (props.id === state.userTeamDataInfo[state.activeTeamId].teamownerid) {
             ToastNotification('error', "Can't remove Owner")
             return;
         }
 
-        if (state.teamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
+        if (state.userTeamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
             await actions.removeTeamMember({
                 userid: props.id,
                 teamid: state.activeTeamId

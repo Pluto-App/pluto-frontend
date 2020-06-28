@@ -1,19 +1,17 @@
 export const state = {
-    change: {},
-    signedIn: false,
+    teamowner : "",
+    signedUp: false,
     loggedIn: false,
     addingTeam: false,
     loginStarted: false,
     loadingTeams: true,
     loadingMembers: true,
     userProfileData: {},
-    teamDataInfo: {},
+    userTeamDataInfo: {},
     activeTeamId: 0,
     activeRoomId: 0,
     activeRoomName: "",
-    activeMemberId: '',
-    loggedInUserId: '',
     RoomListArray: [],
-    roomOnlineList: new Map(),
-    memberList: []
+    userMapping: {},
+    teamMemberList: []
 }

@@ -21,7 +21,7 @@ export default function UserProfile() {
     return (
         <div className="w-full flex">
             <div className="bg-black  flex-1 px-3 text-white pt-2" style={{ height: "calc(100vh - 30px)" }}>
-                <BackButton url={'/home'}></BackButton>
+                <BackButton url={'/user-profile'}></BackButton>
                 <p className="text-grey font-bold text-sm tracking-wide mt-2">STATUS</p>
                 <div className="mt-3 mb-4 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
                 <div className="flex">

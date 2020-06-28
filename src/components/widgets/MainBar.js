@@ -25,7 +25,7 @@ export default function MainBar(props) {
                         onClick="" // listOpen Toggle
                         className="flex p-1 items-center text-grey-dark font-bold rounded-lg hover:text-white cursor-pointer hover:bg-grey-darker">
                         {
-                            state.teamDataInfo !== {} && state.activeTeamId !== 0 ? state.teamDataInfo[state.activeTeamId].teamname
+                            state.userTeamDataInfo !== {} && state.activeTeamId !== 0 ? state.userTeamDataInfo[state.activeTeamId].teamname
                                 :
                                 <BeatLoader
                                     css={override}

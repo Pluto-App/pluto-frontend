@@ -8,7 +8,7 @@ import UserListItem from '../Users/UserListItem'
 function MembersList(props) {
 
 
-    const memberList = props.map((member) =>
+    const teamMemberList = props.map((member) =>
         <UserListItem
             data-record-id={member.userid}
             id={member.userid}
@@ -22,7 +22,7 @@ function MembersList(props) {
 
     return (
         <div>
-            {memberList}
+            {teamMemberList}
         </div>
     );
 }
@@ -32,14 +32,21 @@ export default function RoomProfile() {
     let history = useHistory();
 
     const { state, actions } = useOvermind();
-    const [OnlineRoomMemberList, updateOnlineList] = useState([]);
+    const [OnlineRoomteamMemberList, updateOnlineList] = useState([]);
 
     useEffect(() => {
         // FIXME Load Room Members on room change by activeRoomId and activeTeamId
-        updateOnlineList(state.memberList.filter(elem => elem.roomid === state.activeRoomId))
-        console.log(OnlineRoomMemberList);
+        // TODO Testing this map.
+        let arr = []
+        Object.entries(state.userMapping).map(([key, value]) => {
+            if(value.roomid === state.activeRoomId) {
+                arr.push(value);
+            }
+        })
+        updateOnlineList(arr)
+        console.log(OnlineRoomteamMemberList);
 
-    }, [state.memberList, state.activeRoomId])
+    }, [state.userMapping, state.activeRoomId])
 
     return (
         <div className="w-full flex">
@@ -47,18 +54,18 @@ export default function RoomProfile() {
                 <BackButton url={'/home'}></BackButton>
                 <div className="flex">
                     <div className="bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-full mb-1 overflow-hidden">
-                        <img src={state.teamDataInfo[state.activeTeamId].avatar} alt="" />
+                        <img src={state.userTeamDataInfo[state.activeTeamId].avatar} alt="" />
                     </div>
                     <div className="ml-3">
-                        <p className="font-bold text-white">{state.teamDataInfo[state.activeTeamId].teamname}</p>
-                        <p className="text-gray-500">{state.teamDataInfo[state.activeTeamId].teamowner}</p>
+                        <p className="font-bold text-white">{state.userTeamDataInfo[state.activeTeamId].teamname}</p>
+                        <p className="text-gray-500">{state.userTeamDataInfo[state.activeTeamId].teamowner}</p>
                     </div>
                 </div>
                 <p className="text-grey font-bold text-sm tracking-wide mt-2">Room | {state.activeRoomName}</p>
                 <div className="mt-3 mb-4 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
                 <div className="w-full">
                     {
-                        MembersList(OnlineRoomMemberList)
+                        MembersList(OnlineRoomteamMemberList)
                     }
                 </div>
             </div>

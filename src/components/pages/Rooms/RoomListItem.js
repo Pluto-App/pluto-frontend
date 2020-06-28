@@ -47,7 +47,7 @@ export default function RoomListItem(props) {
     }
 
     const removeRoomHandler = async (e) => {
-        if (state.teamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
+        if (state.userTeamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
             await actions.removeRoom({
                 roomid: props.id,
                 teamid: state.activeTeamId,

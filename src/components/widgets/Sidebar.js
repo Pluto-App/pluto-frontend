@@ -33,9 +33,9 @@ export default function Sidebar(props) {
                 </a>
                 {
                     !state.loadingTeams ?
-                        state.teamDataInfo !== {} &&
-                        Object.entries(state.teamDataInfo).map(([id, value]) =>
-                            state.teamDataInfo[id].isActive ?
+                        state.userTeamDataInfo !== {} &&
+                        Object.entries(state.userTeamDataInfo).map(([id, value]) =>
+                            state.userTeamDataInfo[id].isActive ?
                                 <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer bg-purple-700 hover:bg-gray-800" id={id} key={id}
                                     onClick={(e) => {
                                         e.preventDefault()
@@ -44,7 +44,7 @@ export default function Sidebar(props) {
                                         })
                                     }}>
                                     <div className="bg-white h-8 w-8 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
-                                        <img src={state.teamDataInfo[id].avatar} alt="T" />
+                                        <img src={state.userTeamDataInfo[id].avatar} alt="T" />
                                     </div>
                                 </a> :
                                 <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer hover:bg-gray-800" id={id} key={id}
@@ -55,7 +55,7 @@ export default function Sidebar(props) {
                                         })
                                     }}>
                                     <div className="bg-white h-8 w-8 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
-                                        <img src={state.teamDataInfo[id].avatar} alt="T" />
+                                        <img src={state.userTeamDataInfo[id].avatar} alt="T" />
                                     </div>
                                 </a>
                         ) :

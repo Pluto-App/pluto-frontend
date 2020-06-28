@@ -33,7 +33,7 @@ function RoomList(props) {
 
 function MembersList(props) {
 
-    const memberList = props.map((member) =>
+    const teamMemberList = props.map((member) =>
         <UserListItem
             data-record-id={member.userid}
             id={member.userid}
@@ -47,7 +47,7 @@ function MembersList(props) {
 
     return (
         <div>
-            {memberList}
+            {teamMemberList}
         </div>
     );
 }
@@ -91,6 +91,7 @@ export default function HomePage() {
                 })
             }
             loadTeamsbyUserId(state.userProfileData.userid)
+            actions.removeFromRoom();
         }, [actions, state.userProfileData.userid]
     )
 
@@ -214,7 +215,7 @@ export default function HomePage() {
                     </div>
                     {
                         !state.loadingMembers ?
-                            MembersList(state.memberList) :
+                            MembersList(state.teamMemberList) :
                             <BeatLoader
                                 css={override}
                                 size={15}
@@ -254,7 +255,7 @@ export default function HomePage() {
                         </p>
                             <input
                                 id="InviteModalLink"
-                                value={'https://pluto.abhishekwani.now.sh/join-team/' + state.teamDataInfo[state.activeTeamId].magiclink}
+                                value={'https://pluto.abhishekwani.now.sh/join-team/' + state.userTeamDataInfo[state.activeTeamId].magiclink}
                                 className="w-full shadow appearance-none border text-purple-700 rounded py-1 px-1 bg-purple-200" />
                             <button
                                 className="bg-purple-900 w-full rounded-sm flex justify-center text-white items-center hover:bg-purple-dark 

@@ -22,7 +22,9 @@ import App from './components/App';
 //   }
 // })();
 
-const overmind = createOvermind(config)
+const overmind = createOvermind(config, {
+  devtools: true // defaults to 'localhost:3031'
+})
 
 const NewOverMind = hot(overmind)
 const NewApp = hot(App)

@@ -24,10 +24,10 @@ export const googlehandleLogin = async ({ state, effects }) => {
     state.userProfileData = await googleSignIn()
     let LoginData = await effects.postHandler(process.env.REACT_APP_LOGIN_URL, state.userProfileData)
     state.userProfileData.addStatus = LoginData.addStatus
-    state.change["teamowner"] = state.userProfileData.username
+    state.teamowner = state.userProfileData.username
     socket_live.emit(events.online, state.userProfileData.userid)
     state.loggedIn = true
-    state.signedIn = true;
+    state.signedUp = true;
     state.loginStarted = false;
 }
 
@@ -47,10 +47,10 @@ export const createTeam = async ({ state, effects }, values) => {
     if (newTeamData !== undefined && newTeamData.addStatus !== 0) {
 
         if (!state.userProfileData.addStatus && state.activeTeamId !== 0)
-            state.teamDataInfo[state.activeTeamId].isActive = false
+            state.userTeamDataInfo[state.activeTeamId].isActive = false
 
         state.activeTeamId = newTeamData.teamid
-        state.teamDataInfo[newTeamData.teamid] = {
+        state.userTeamDataInfo[newTeamData.teamid] = {
             teamid: newTeamData.teamid,
             teamowner: newTeamData.teamowner,
             teamname: newTeamData.teamname,
@@ -63,12 +63,12 @@ export const createTeam = async ({ state, effects }, values) => {
         socket_live.emit(events.new_team, {
             teamid: state.activeTeamId,
             userid: state.userProfileData.userid,
-            teamname: state.teamDataInfo[state.activeTeamId].teamname
+            teamname: state.userTeamDataInfo[state.activeTeamId].teamname
         })
         socket_live.emit(events.team_switch, {
             teamid: state.activeTeamId,
             userid: state.userProfileData.userid,
-            teamname: state.teamDataInfo[state.activeTeamId].teamname,
+            teamname: state.userTeamDataInfo[state.activeTeamId].teamname,
             username: state.userProfileData.username
         })
     } else if (newTeamData.addStatus === 0) {
@@ -95,7 +95,7 @@ export const teamsbyuserid = async ({ state, effects }, values) => {
 
     if (Array.isArray(dump.teams) && dump.teams.length) {
         dump.teams.map((t) => {
-            state.teamDataInfo[t.teamid] = {
+            state.userTeamDataInfo[t.teamid] = {
                 teamid: t.teamid,
                 teamowner: t.teamowner,
                 teamname: t.teamname,
@@ -112,15 +112,15 @@ export const teamsbyuserid = async ({ state, effects }, values) => {
         socket_live.emit(events.team_switch, {
             teamid: state.activeTeamId,
             userid: state.userProfileData.userid,
-            teamname: state.teamDataInfo[state.activeTeamId].teamname,
+            teamname: state.userTeamDataInfo[state.activeTeamId].teamname,
             username: state.userProfileData.username
         })
-        state.teamDataInfo[state.activeTeamId].isActive = true
+        state.userTeamDataInfo[state.activeTeamId].isActive = true
     } else {
         state.loadingRooms = false
         state.loadingTeams = false
         state.loadingMembers = false
-        state.teamDataInfo = {}
+        state.userTeamDataInfo = {}
         ToastNotification('error', "You don't belong to any team.")
     }
 
@@ -137,7 +137,8 @@ export const usersbyteamid = async ({ state, effects }, values) => {
     state.loadingMembers = true
 
     let dump = await effects.postHandler(process.env.REACT_APP_GET_TEAM_MEMBERS_URL, values)
-    state.memberList = []
+    state.teamMemberList = []
+    state.userMapping = {}
 
     if (Array.isArray(dump.users) && dump.users.length) {
         dump.users.map((u) => {
@@ -150,7 +151,17 @@ export const usersbyteamid = async ({ state, effects }, values) => {
                 teamid : "", 
                 roomid : ""
             }
-            state.memberList.push(userObj)
+            // TODO Remove the use of teamMemberList, Use userMapping.
+            state.teamMemberList.push(userObj)
+            state.userMapping[u.id] = {
+                userid: u.id,
+                username: u.username,
+                usermail: u.email,
+                avatar: u.avatar,
+                statusColor: u.id === state.userProfileData.userid ? 'green' : 'gray', // default offline. 
+                teamid : "", 
+                roomid : ""
+            }
         })
     } else {
         ToastNotification('error', "Could not load users")
@@ -164,13 +175,13 @@ export const usersbyteamid = async ({ state, effects }, values) => {
  * Emit Team Switch Event
  */
 export const changeActiveTeam = async ({ state }, values) => {
-    state.teamDataInfo[state.activeTeamId].isActive = false
+    state.userTeamDataInfo[state.activeTeamId].isActive = false
     state.activeTeamId = values
-    state.teamDataInfo[values].isActive = true
+    state.userTeamDataInfo[values].isActive = true
     socket_live.emit(events.team_switch, {
         teamid: state.activeTeamId,
         userid: state.userProfileData.userid,
-        teamname: state.teamDataInfo[state.activeTeamId].teamname,
+        teamname: state.userTeamDataInfo[state.activeTeamId].teamname,
         username: state.userProfileData.username
     })
 }
@@ -182,17 +193,17 @@ export const changeActiveRoom = async ({ state }, values) => {
     state.activeRoomName = values.roomname
     state.activeRoomId = values.roomid
     socket_live.emit(events.room_switch, {
+        // Trial
+        avatar : state.userProfileData.avatar,
+        useremail: state.userProfileData.useremail,
         username: state.userProfileData.username,
+        // Trial
         userid: state.userProfileData.userid,
-        teamname: state.teamDataInfo[state.activeTeamId].teamname,
+        teamname: state.userTeamDataInfo[state.activeTeamId].teamname,
         teamid: state.activeTeamId,
         roomid: values.roomid,
         roomname: values.roomname
     })
-}
-
-export const setOwnerName = async ({ state }, values) => {
-    state.change[values.target] = values.value
 }
 
 /**
@@ -248,12 +259,12 @@ export const removeTeamMember = async ({ state, effects }, values) => {
     state.loadingMembers = true;
 
     socket_live.emit(events.remove_member, values)
-    let arr = state.memberList.filter((member) => {
+    let arr = state.teamMemberList.filter((member) => {
         return member.userid !== values.userid
     })
 
     await effects.postHandler(process.env.REACT_APP_DELETE_USER_FROM_TEAM, values)
-    state.memberList = arr
+    state.teamMemberList = arr
     state.loadingMembers = false;
 }
 
@@ -283,30 +294,36 @@ export const roomsbyteamid = async ({ state, effects }, values) => {
  */
 export const updateStatusColor = async ({ state, effects }, values) => {
     // TODO Update Status of the user at app Level, When users are active or not. 
-    if (Array.isArray(state.memberList) && state.memberList.length) {
-        let updateElem = await state.memberList.find(element => element.userid === values.id)
+    if (Array.isArray(state.teamMemberList) && state.teamMemberList.length) {
+        let updateElem = await state.teamMemberList.find(element => element.userid === values.id)
         if (typeof updateElem !== 'undefined') 
             updateElem.statusColor = values.statusColor
     }
+    // TODO Testing this map.
+    if (typeof state.userMapping[values.id] !== 'undefined')
+        state.userMapping[values.id].statusColor = values.statusColor
 }
 
 export const updateRoomOfMember = async ({ state, effects }, values) => {
     // TODO Update room of user. 
-    if (Array.isArray(state.memberList) && state.memberList.length) {
-        const newList = state.memberList.map(obj => obj.userid === values.userid ? {
-            ...obj, roomid : values.roomid
-        } 
-        : 
-        obj);
-        state.memberList = newList;
-    }
+    // TODO Testing this map.
+    if(typeof state.userMapping[values.userid] !== 'undefined')
+        state.userMapping[values.userid].roomid = values.roomid;
 }
 
 export const updateTeamOfMember = async ({ state, effects }, values) => {
     // TODO Update team of user. 
-    if (Array.isArray(state.memberList) && state.memberList.length) {
-        let updateElem = await state.memberList.find(element => element.userid === values.userid)
+    // TODO Testing this map.
+    if (Array.isArray(state.teamMemberList) && state.teamMemberList.length) {
+        let updateElem = await state.teamMemberList.find(element => element.userid === values.userid)
         if (typeof updateElem !== 'undefined') 
             updateElem.teamid = values.teamid;
     }
+    if(typeof state.userMapping[values.userid] !== 'undefined')
+        state.userMapping[values.userid].teamid = values.teamid
+}
+
+export const removeFromRoom = ({ state, effects }, values) => {
+    state.activeRoomId  = 0;
+    state.activeRoomName = "";
 }
