@@ -4,10 +4,7 @@
 ## Using Docker Images. 
 ## Host to AWS/Heroku Later on Production Level CD/CI.
 
-cp .prod .env
-
 sudo rm -rf ./node_modules ./build ./dist
-
 npm install
 npm run build
 
