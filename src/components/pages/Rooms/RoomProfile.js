@@ -44,8 +44,6 @@ export default function RoomProfile() {
             }
         })
         updateOnlineList(arr)
-        console.log(OnlineRoomteamMemberList);
-
     }, [state.userMapping, state.activeRoomId])
 
     return (
