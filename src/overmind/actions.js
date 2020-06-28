@@ -108,13 +108,13 @@ export const teamsbyuserid = async ({ state, effects }, values) => {
         })
         if (state.activeTeamId === 0) {
             state.activeTeamId = dump.teams[0].teamid
-            socket_live.emit(events.team_switch, {
-                teamid: state.activeTeamId,
-                userid: state.userProfileData.userid,
-                teamname: state.teamDataInfo[state.activeTeamId].teamname,
-                username: state.userProfileData.username
-            })
-        }
+        } 
+        socket_live.emit(events.team_switch, {
+            teamid: state.activeTeamId,
+            userid: state.userProfileData.userid,
+            teamname: state.teamDataInfo[state.activeTeamId].teamname,
+            username: state.userProfileData.username
+        })
         state.teamDataInfo[state.activeTeamId].isActive = true
     } else {
         state.loadingRooms = false
@@ -164,21 +164,23 @@ export const usersbyteamid = async ({ state, effects }, values) => {
  * Emit Team Switch Event
  */
 export const changeActiveTeam = async ({ state }, values) => {
+    state.teamDataInfo[state.activeTeamId].isActive = false
+    state.activeTeamId = values
+    state.teamDataInfo[values].isActive = true
     socket_live.emit(events.team_switch, {
         teamid: state.activeTeamId,
         userid: state.userProfileData.userid,
         teamname: state.teamDataInfo[state.activeTeamId].teamname,
         username: state.userProfileData.username
     })
-    state.teamDataInfo[state.activeTeamId].isActive = false
-    state.activeTeamId = values
-    state.teamDataInfo[values].isActive = true
 }
 
 /**
  * Emit Room Switch Event
  */
 export const changeActiveRoom = async ({ state }, values) => {
+    state.activeRoomName = values.roomname
+    state.activeRoomId = values.roomid
     socket_live.emit(events.room_switch, {
         username: state.userProfileData.username,
         userid: state.userProfileData.userid,
@@ -187,8 +189,6 @@ export const changeActiveRoom = async ({ state }, values) => {
         roomid: values.roomid,
         roomname: values.roomname
     })
-    state.activeRoomName = values.roomname
-    state.activeRoomId = values.roomid
 }
 
 export const setOwnerName = async ({ state }, values) => {

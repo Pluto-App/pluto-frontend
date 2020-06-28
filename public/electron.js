@@ -88,14 +88,14 @@ function createWindow() {
   
     // FIXME this fails during packaging. Is the routing working?
     const video_url = url.format({
-      pathname: path.join(__dirname, '../build/index.html' + '#/videocall'),
+      pathname: path.join(__dirname, '../build/index.html/' + '#/videocall'),
       hash: 'baz',
       protocol: 'file',
       slashes: true
     })
 
     // video_player.loadURL(video_url);
-    video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/videocall' : video_url);
+    video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '/#/videocall' : video_url);
   
     video_player.on('closed', () => {
       video_player = null
