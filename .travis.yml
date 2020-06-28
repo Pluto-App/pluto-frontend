@@ -1,0 +1,39 @@
+matrix:
+    include:
+        - os: osx
+          sudo: required
+          osx_image: xcode11.1
+          language: node_js
+          node_js: "12"
+          env:
+              - ELECTRON_CACHE=$HOME/.cache/electron
+              - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+              - TRAVIS_OS_NAME=macosx
+              - GH_TOKEN=f85513d588f289a498b77d2b2f850cdad99e661f
+              - CI=false
+
+compiler:
+    - gcc
+    - clang
+
+cache:
+    directories:
+        - assets
+        - node_modules
+        - $HOME/.cache/electron
+        - $HOME/.cache/electron-builder
+
+script:
+    - npm install
+    - npm run build
+    - npm run mac-release
+before_cache:
+    - rm -rf $HOME/.cache/electron-builder/
+
+notifications:
+    email:
+        - lahiri.devs@gmail.com
+
+branches:
+    except:
+        - "/^v\\d+\\.\\d+\\.\\d+$/"
