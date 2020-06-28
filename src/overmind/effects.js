@@ -93,7 +93,7 @@ export const updateHandler = async (url, payload) => {
         })
         data = await dump.data
     } catch (error) {
-        ToastNotification('error', error)
+        ToastNotification('HTTP UPDATE Error', error)
     }
 
     return data
@@ -106,6 +106,7 @@ export const deleteHandler = async (url, payload) => {
     payload.token = gettoken.data;
 
     try {
+        // FIXME Use correct delete payload. 
         let dump = await axios.delete(url, qs.stringify(
             payload
         ), {
@@ -117,7 +118,7 @@ export const deleteHandler = async (url, payload) => {
         })
         data = await dump.data
     } catch (error) {
-        ToastNotification('error', error)
+        ToastNotification('HTTP DELETE error', error)
     }
 
     return data

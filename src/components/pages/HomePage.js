@@ -67,6 +67,7 @@ export default function HomePage() {
     const [showInviteModal, toggleshowInviteModal] = useState(false);
     const [isAddingRoom, setIsAddingRoom] = useState(false);
     const [appInfo, updateAppInfo] = useState("");
+    const [newRoomName, updateNewRoomName] = useState("");
 
     const addingNewRoom = async (roomname) => {
 
@@ -79,10 +80,7 @@ export default function HomePage() {
     }
 
     const handleChange = async (e) => {
-        await actions.handleChangeMutations({
-            target: e.target.name,
-            value: e.target.value
-        })
+        updateNewRoomName(e.target.value);
     }
 
     useEffect(
