@@ -29,7 +29,7 @@ function createWindow() {
   mainWindow.setMenu(null);
   
   // FIXME Maximize/Minimize Issue.
-  mainWindow.setAlwaysOnTop(true, 'screen');
+  // mainWindow.setAlwaysOnTop(true, 'screen');
 
   mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : 
                         `file://${path.join(__dirname, '../build/index.html')}`);
@@ -85,17 +85,15 @@ function createWindow() {
   
     video_player.setAlwaysOnTop(true, 'screen');
     video_player.setMenu(null);
-  
-    // FIXME this fails during packaging. Is the routing working?
-    const video_url = url.format({
-      pathname: path.join(__dirname, '../build/index.html/' + '#/videocall'),
-      hash: 'baz',
-      protocol: 'file',
+
+    const videoUrl = url.format({
+      pathname: path.join(__dirname, '../build/index.html'),
+      hash: '/videocall',
+      protocol: 'file:',
       slashes: true
     })
 
-    // video_player.loadURL(video_url);
-    video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '/#/videocall' : video_url);
+    video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/videocall' : videoUrl);
   
     video_player.on('closed', () => {
       video_player = null
@@ -106,6 +104,8 @@ function createWindow() {
         video_player.webContents.send('data', data);
     });
   
+    // Close the video player window when we 
+    // close the main window of the app. 
     mainWindow.on('closed', () => {
       if(video_player !== null) {
         video_player.close();
