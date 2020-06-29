@@ -39,6 +39,11 @@ const App = () => {
         ToastNotification('info', data.message)
       })
 
+      // FIXME Hello Broadcast to all in a room (if any)
+      socket_live.on(events.room_broadcast, (data) => {
+        ToastNotification('success', data.message)
+      })
+      
       // New notification telling that a user joined 
       // the room you are a part of currently.
       socket_live.on(events.user_join, (data) => {

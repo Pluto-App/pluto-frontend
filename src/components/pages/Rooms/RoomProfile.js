@@ -4,6 +4,7 @@ import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import BackButton from '../../widgets/BackButton'
 import UserListItem from '../Users/UserListItem'
+import ToastNotification from '../../widgets/ToastNotification'
 
 function MembersList(props) {
 
@@ -33,7 +34,8 @@ export default function RoomProfile() {
 
     const { state, actions } = useOvermind();
     const [OnlineRoomteamMemberList, updateOnlineList] = useState([]);
-
+    const [roomTextAll, setRoomTextAll] = useState("");
+    
     useEffect(() => {
         // FIXME Load Room Members on room change by activeRoomId and activeTeamId
         // TODO Testing this map.
@@ -60,6 +62,35 @@ export default function RoomProfile() {
                     </div>
                 </div>
                 <p className="text-grey font-bold text-sm tracking-wide mt-2">Room | {state.activeRoomName}</p>
+                <div className="mt-3 mb-4 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
+                <div className="flex justify-center items-center hover:bg-gray-800">
+                            <input className="shadow appearance-none border rounded w-full py-2
+                            px-2 text-gray-700 leading-tight focus:outline-none"
+                                style={{ width: "100%" }}
+                                onChange={(e) => {
+                                    setRoomTextAll(e.target.value)
+                                }}
+                                onKeyPress={(e) => {
+                                    if (e.keyCode === 13 || e.which === 13) {
+                                        if (e.target.value === '') {
+                                            ToastNotification('error', "Write Something")
+                                        } else {
+                                            ToastNotification('success', "Sending...📨")
+                                            actions.sendRoomBroadcast({
+                                                message : roomTextAll, 
+                                                sender : state.userProfileData.username
+                                            })
+                                            e.target.value = ""
+                                        }
+                                    }
+                                    
+                                }}
+                                name="roomtextall"
+                                id="roomtextall"
+                                type="text"
+                                placeholder="Send to All...🤟"
+                                autoFocus />
+                        </div>
                 <div className="mt-3 mb-4 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
                 <div className="w-full">
                     {

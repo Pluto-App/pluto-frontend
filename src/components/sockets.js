@@ -18,5 +18,6 @@ export const events = {
   pong: "pong",
   remove_member: "Remove Member",
   room_welcome: "Room Welcome",
-  user_join: "User Joined"
+  user_join: "User Joined",
+  room_broadcast: "Room Broacast"
 }
