@@ -17960,7 +17960,7 @@ body {
   opacity: 0;
   color: white;
   /* width: 35px;
-    height: 35px; */
+	  height: 35px; */
   cursor: pointer;
   font-size: 60px;
   display: inline-flex;
@@ -18068,7 +18068,7 @@ video {
   width: calc(100% - 60px);
   height: 100%;
   margin: 0 auto;
-  background: rgba(255, 255, 255, .1);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
 }
 

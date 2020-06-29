@@ -7,12 +7,12 @@ const electron = window.require('electron')
 export const signInWithPopup = async () => {
   return new Promise((resolve, reject) => {
     const authWindow = new electron.remote.BrowserWindow({
-      width: 650,
-      height: 650,
+      width: 700,
+      height: 700,
       show: true,
       titleBarStyle: 'hiddenInset',
       webPreferences: {
-        nodeIntegration: false,
+        nodeIntegration: true,
         nativeWindowOpen: true
       }
     })
@@ -22,7 +22,10 @@ export const signInWithPopup = async () => {
       response_type: 'code',
       redirect_uri: process.env.REACT_APP_GOOGLE_REDIRECT_URI,
       client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-      scope: 'profile email'
+      include_granted_scopes: 'true',
+      prompt: 'select_account',
+      scope: 'https://www.googleapis.com/auth/drive.metadata.readonly',
+      state: 'pass-through value'
     }
 
     const authUrl = `${process.env.REACT_APP_GOOGLE_AUTHORIZATION_URL}?${qs.stringify(urlParams)}`
