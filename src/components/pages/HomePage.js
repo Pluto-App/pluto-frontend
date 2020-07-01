@@ -245,6 +245,7 @@ export default function HomePage() {
                     </div>
                 </div>
                 {
+                    // Invite Modal HTML
                     showInviteModal ?
                         <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={customStyle}
                             onClick={(e) => {
@@ -271,8 +272,7 @@ export default function HomePage() {
                                 }}
                             >{!copySuccess ? "Copy Invite" : "Copied !!"}</button>
                         </div> :
-                        <span>
-                    </span>
+                        <></>
                 }
             </div>
         </div>
