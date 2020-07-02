@@ -93,7 +93,6 @@ export default function HomePage() {
                 })
             }
             loadTeamsbyUserId(state.userProfileData.userid)
-            roomActions.removeFromRoom();
         }, [actions, state.userProfileData.userid]
     )
 

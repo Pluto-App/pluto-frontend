@@ -39,7 +39,7 @@ export default function TeamRegisterPage() {
     return (
         <div className="w-full flex">
             <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)" }}>
-                <BackButton url={'#/home'}></BackButton>
+                <BackButton url={'/home'}></BackButton>
                 <p className="font-bold px-4 text-white">Create New Team</p>
                 <p className="text-gray-500 px-4">You will be set as Team Owner</p>
                 <form className="px-4 pt-6 pb-8 mb-4">
@@ -49,18 +49,19 @@ export default function TeamRegisterPage() {
                         </label>
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             onChange={(e) => {
-                                e.target.value === "" ?
+                                newTeamName === "" ?
                                     ToastNotification('error', "Team Name can't be empty") :
                                     updateTeamName(e.target.value)
                             }}
                             onPaste={(e) => {
-                                e.target.value === "" ?
+                                newTeamName === "" ?
                                     ToastNotification('error', "Team Name can't be empty") :
                                     updateTeamName(e.target.value)
                             }}
                             onKeyPress={(e) => {
+                                e.preventDefault()
                                 if (e.keyCode === 13 || e.which === 13) {
-                                    e.target.value === "" ?
+                                    newTeamName === "" ?
                                         ToastNotification('error', "Team Name can't be empty") :
                                         updateTeamName(e.target.value)
                                 }

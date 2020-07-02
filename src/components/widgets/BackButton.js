@@ -6,7 +6,6 @@ export default function BackButton(props) {
     let history = useHistory();
 
     const back = (e) => {
-        e.preventDefault()
         history.push(props.url);
     }
 

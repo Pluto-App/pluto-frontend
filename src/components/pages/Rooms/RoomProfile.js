@@ -32,7 +32,7 @@ export default function RoomProfile() {
 
     let history = useHistory();
 
-    const { state, roomActions } = useOvermind();
+    const { state, actions } = useOvermind();
     const [OnlineRoomteamMemberList, updateOnlineList] = useState([]);
     const [roomTextAll, setRoomTextAll] = useState("");
     const [roomId, setRoomId] = useState(state.activeRoomId)
@@ -51,6 +51,7 @@ export default function RoomProfile() {
         // TODO Setup room level Video Call. 
         return () => {
             // TODO Remove User and Emit Room Leave Event. 
+            actions.removeFromRoom()
             setRoomId("")
         }
     }, [state.userMapping, state.activeRoomId])
@@ -82,8 +83,8 @@ export default function RoomProfile() {
                                         if (e.target.value === '') {
                                             ToastNotification('error', "Write Something")
                                         } else {
-                                            ToastNotification('success', "Sending...📨")
-                                            roomActions.sendRoomBroadcast({
+                                            ToastNotification('success', "Sending to all ...📨")
+                                            actions.sendRoomBroadcast({
                                                 message : roomTextAll, 
                                                 sender : state.userProfileData.username
                                             })

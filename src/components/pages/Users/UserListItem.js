@@ -5,6 +5,7 @@ import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import * as Cookies from "js-cookie";
 import ToastNotification from '../../widgets/ToastNotification';
+import { socket_live, events } from '../../sockets';
 import * as md5 from "md5";
 
 export default function UserListItem(props) {
@@ -52,9 +53,19 @@ export default function UserListItem(props) {
 
     const startVideo = () => {
         // TODO User Video Call ID. Check Needed.
-        let id = md5(state.activeTeamId + state.userProfileData.userid);
-        Cookies.set("channel", id);
-        window.require("electron").ipcRenderer.send('load-video-window', id);
+        if(props.id === state.userProfileData.userid) {
+            let id = md5(state.activeTeamId + state.userProfileData.userid);
+            Cookies.set("channel", id);
+            socket_live.emit(events.video_call, {
+                recieverid : props.id,
+                teamid: state.activeTeamId,
+                senderid : state.userProfileData.userid
+            })
+            window.require("electron").ipcRenderer.send('load-video-window', id);
+            ToastNotification('success', `VC with ${props.name} 📷`);
+        } else {
+            ToastNotification('error', "Can't start VC with self 😠")
+        }
     }
 
     return (

@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom"
 import ToastNotification from '../../widgets/ToastNotification';
 import * as Cookies from "js-cookie";
 import * as md5 from "md5";
+import { socket_live, events } from '../../sockets';
 
 export default function RoomListItem(props) {
 
@@ -43,6 +44,13 @@ export default function RoomListItem(props) {
         // TODO Room Video Call ID. Check Needed.
         let new_id = md5(props.id + roomName + state.activeTeamId);
         Cookies.set("channel", new_id);
+        ToastNotification('success', `Group VC with ${roomName} 📷`);
+        socket_live.emit(events.video_call, {
+            roomid : props.id,
+            roomname : roomName, 
+            teamid: state.activeTeamId,
+            userid : state.userProfileData.userid
+        })
         window.require("electron").ipcRenderer.send('load-video-window', new_id);
     }
 

@@ -1,7 +1,7 @@
 import * as axios from 'axios'
 import qs from 'qs'
 import ToastNotification from '../components/widgets/ToastNotification'
-import { v5 as uuidv5 } from 'uuid'; 
+import { v4 as uuidv4 } from 'uuid';
 
 const customHeaders = {
     'Content-Type': 'application/x-www-form-urlencoded',
@@ -32,7 +32,7 @@ export const postHandler = async (url, payload) => {
 
     var data;
     let gettoken = await getAccessToken()
-    payload.requestId = uuidv5()
+    payload.requestId = uuidv4()
 
     try {
         let dump = await axios.post(url, qs.stringify(
@@ -57,7 +57,7 @@ export const getHandler = async (url, payload) => {
 
     var data;
     let gettoken = await getAccessToken()
-    payload.requestId = uuidv5()
+    payload.requestId = uuidv4()
 
     try {
         let dump = await axios.get(url, qs.stringify(
@@ -81,7 +81,7 @@ export const updateHandler = async (url, payload) => {
 
     var data;
     let gettoken = await getAccessToken()
-    payload.requestId = uuidv5()
+    payload.requestId = uuidv4()
 
     try {
         let dump = await axios.update(url, qs.stringify(
@@ -105,7 +105,7 @@ export const deleteHandler = async (url, payload) => {
 
     var data;
     let gettoken = await getAccessToken()
-    payload.requestId = uuidv5()
+    payload.requestId = uuidv4()
     
     try {
         // FIXME Use correct delete payload. 
