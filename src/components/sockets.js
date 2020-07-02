@@ -19,5 +19,6 @@ export const events = {
   remove_member: "Remove Member",
   room_welcome: "Room Welcome",
   user_join: "User Joined",
-  room_broadcast: "Room Broacast"
+  room_broadcast: "Room Broacast",
+  new_team_mate: "New Team Mate"
 }
