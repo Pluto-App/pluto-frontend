@@ -62,7 +62,7 @@ export default function HomePage() {
         border-color: white;
     `;
 
-    const { state, actions } = useOvermind();
+    const { state, actions, roomActions } = useOvermind();
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showInviteModal, toggleshowInviteModal] = useState(false);
     const [isAddingRoom, setIsAddingRoom] = useState(false);
@@ -93,7 +93,7 @@ export default function HomePage() {
                 })
             }
             loadTeamsbyUserId(state.userProfileData.userid)
-            actions.removeFromRoom();
+            roomActions.removeFromRoom();
         }, [actions, state.userProfileData.userid]
     )
 

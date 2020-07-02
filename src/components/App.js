@@ -10,7 +10,9 @@ import UserProfile from './pages/Users/UserProfile'
 import UserUpdate from './pages/Users/UserUpdate'
 import VideoCall from './pages/Video/VideoCall'
 import { ToastContainer } from 'react-toastify';
+import { loadProgressBar } from 'axios-progress-bar'
 import ToastNotification from './widgets/ToastNotification'
+import 'axios-progress-bar/dist/nprogress.css'
 import { socket_live, events } from './sockets'
 import { useOvermind } from '../overmind'
 
@@ -20,15 +22,20 @@ import {
   Route
 } from "react-router-dom";
 
-const App = () => {
+
+const isOnline = require('is-online');
+
+export default function App() {
 
   const { state, actions } = useOvermind();
 
   useEffect(
     () => {
 
-      let interval = 0;
+      loadProgressBar()
 
+      let interval = 0;
+      let onlineInterval = 0;
       // Check and emit liveness
       socket_live.on(events.ping, () => {
         socket_live.emit(events.pong, state.userProfileData.userid)
@@ -122,17 +129,29 @@ const App = () => {
 
       if (interval) {
         clearInterval(interval);
+        clearInterval(onlineInterval)
       }
 
       interval = setInterval(() => {
         if (state.loggedIn)
           // Emit User is online.
           socket_live.emit(events.online, state.userProfileData.userid)
-      }, 10000)
+      }, 6000)
+
+      onlineInterval = setInterval( async () => {
+        if (!(await isOnline())) {
+          ToastNotification('error', 'You are Offline 😢')
+          actions.updateStatusColor({
+            id : state.userProfileData.userid,
+            statusColor : 'yellow'
+          })
+        } 
+      }, 6000)
 
       return () => {
         ToastNotification('error', "App Unmount");
         clearInterval(interval);
+        clearInterval(onlineInterval)
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []
@@ -171,5 +190,3 @@ const App = () => {
     </Router>
   );
 }
-
-export default App;

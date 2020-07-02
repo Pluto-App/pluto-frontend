@@ -32,7 +32,7 @@ export default function RoomProfile() {
 
     let history = useHistory();
 
-    const { state, actions } = useOvermind();
+    const { state, roomActions } = useOvermind();
     const [OnlineRoomteamMemberList, updateOnlineList] = useState([]);
     const [roomTextAll, setRoomTextAll] = useState("");
     const [roomId, setRoomId] = useState(state.activeRoomId)
@@ -83,7 +83,7 @@ export default function RoomProfile() {
                                             ToastNotification('error', "Write Something")
                                         } else {
                                             ToastNotification('success', "Sending...📨")
-                                            actions.sendRoomBroadcast({
+                                            roomActions.sendRoomBroadcast({
                                                 message : roomTextAll, 
                                                 sender : state.userProfileData.username
                                             })

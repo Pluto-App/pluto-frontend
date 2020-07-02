@@ -322,15 +322,3 @@ export const updateTeamOfMember = async ({ state, effects }, values) => {
     if(typeof state.userMapping[values.userid] !== 'undefined')
         state.userMapping[values.userid].teamid = values.teamid
 }
-
-export const removeFromRoom = ({ state, effects }, values) => {
-    state.activeRoomId  = 0;
-    state.activeRoomName = "";
-}
-
-export const sendRoomBroadcast = async ({ state, effects }, values) => {
-    socket_live.emit(events.room_broadcast, {
-        message : values.message,
-        sender : values.sender
-    })
-}
