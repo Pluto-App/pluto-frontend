@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, protocol, screen } = require('electron')
+const { app, BrowserWindow, ipcMain, protocol, screen, Menu } = require('electron')
 const path = require('path')
 const isDev = require('electron-is-dev');
 const url = require('url')
@@ -10,6 +10,9 @@ if (isDev) {
 let mainWindow
 let video_player
 
+const isWindows = process.platform === 'win32'
+const isMac = process.platform === "darwin";
+
 // TODO Now we can add external window for settings.
 // TODO Add support for App Signing.
 
@@ -18,7 +21,7 @@ function createWindow() {
     width: 315,
     height: 320,
     titleBarStyle: 'hiddenInset',
-    title : "MainWindow",
+    title: "MainWindow",
     frame: false,
     webPreferences: {
       nodeIntegration: true,
@@ -27,12 +30,18 @@ function createWindow() {
   })
 
   mainWindow.setMenu(null);
-  
+
   // FIXME Maximize/Minimize Issue.
   // mainWindow.setAlwaysOnTop(true, 'screen');
 
-  mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : 
-                        `file://${path.join(__dirname, '../build/index.html')}`);
+  const startPageUrl = url.format({
+    pathname: path.join(__dirname, '../build/index.html'),
+    hash: '/',
+    protocol: 'file:',
+    slashes: true
+  })
+
+  mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : startPageUrl);
 
   if (isDev) {
     // Open the DevTools.
@@ -53,23 +62,33 @@ function createWindow() {
   })
 
   ipcMain.on('close-video', (event, arg) => {
-    if(video_player !== null) {
+    if (video_player !== null) {
       video_player = null
     }
   })
 
+  ipcMain.on(`display-app-menu`, function(e, args) {
+    if (isWindows && mainWindow) {
+      menu.popup({
+        window: mainWindow,
+        x: args.x,
+        y: args.y
+      });
+    }
+  });
+
   ipcMain.on('load-video-window', (event, data) => {
 
-    if(video_player !== null) {
-        video_player = null;
+    if (video_player !== null) {
+      video_player = null;
     }
-  
+
     let display = screen.getPrimaryDisplay();
     let swidth = display.bounds.width;
     let sheight = display.bounds.height;
-    
+
     // create the window
-    video_player = new BrowserWindow({ 
+    video_player = new BrowserWindow({
       show: true,
       width: 250,
       height: 150,
@@ -80,9 +99,9 @@ function createWindow() {
       webPreferences: {
         nodeIntegration: true,
         plugins: true
-      } 
+      }
     })
-  
+
     video_player.setAlwaysOnTop(true, 'screen');
     video_player.setMenu(null);
 
@@ -94,28 +113,105 @@ function createWindow() {
     })
 
     video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/videocall' : videoUrl);
-  
+
     video_player.on('closed', () => {
       video_player = null
     })
-  
+
     // here we can send the data to the new window
     video_player.webContents.on('did-finish-load', () => {
-        video_player.webContents.send('data', data);
+      video_player.webContents.send('data', data);
     });
-  
+
     // Close the video player window when we 
     // close the main window of the app. 
     mainWindow.on('closed', () => {
-      if(video_player !== null) {
+      if (video_player !== null) {
         video_player.close();
       }
     })
-    
+
   });
+
+  var menu = Menu.buildFromTemplate([
+    {
+      label: 'App ',
+      submenu: [
+        {
+          label: 'Join Team',
+          click () {
+
+          }
+        },
+        {
+          label: 'Join Room',
+          click() {
+          
+          }
+        },
+        { type: 'separator' },
+        {
+          label: 'Exit',
+          click () {
+
+          }
+        }
+      ],
+    }, 
+    {
+      label: 'File 📁',
+      submenu: [
+        {
+          label: 'Share File',
+          click () {
+
+          }
+        },
+        {
+          label: 'Sync With GCloud',
+          click() {
+          
+          }
+        },
+        { type: 'separator' },
+        {
+          label: 'Exit',
+          click () {
+
+          }
+        }
+      ]
+    }, 
+    {
+      label: 'Refersh 🔄',
+      submenu: [
+        {
+          label: 'Reset',
+          click () {
+
+          }
+        },
+        {
+          label: 'Logout',
+          click() {
+          
+          }
+        },
+        { type: 'separator' },
+        {
+          label: 'Exit',
+          click () {
+
+          }
+        }
+      ]
+    }
+  ])
 }
 
-app.on('ready', createWindow)
+app.on('ready', () => {
+  createWindow()
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -125,6 +221,7 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (mainWindow === null) {
+    Menu.setApplicationMenu(menu);
     createWindow()
   }
 })

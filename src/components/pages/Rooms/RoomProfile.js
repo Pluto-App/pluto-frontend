@@ -35,9 +35,9 @@ export default function RoomProfile() {
     const { state, actions } = useOvermind();
     const [OnlineRoomteamMemberList, updateOnlineList] = useState([]);
     const [roomTextAll, setRoomTextAll] = useState("");
+    const [roomId, setRoomId] = useState(state.activeRoomId)
     
     useEffect(() => {
-        // FIXME Load Room Members on room change by activeRoomId and activeTeamId
         // TODO Testing this map.
         let arr = []
         Object.entries(state.userMapping).map(([key, value]) => {
@@ -45,7 +45,14 @@ export default function RoomProfile() {
                 arr.push(value);
             }
         })
+
         updateOnlineList(arr)
+
+        // TODO Setup room level Video Call. 
+        return () => {
+            // TODO Remove User and Emit Room Leave Event. 
+            setRoomId("")
+        }
     }, [state.userMapping, state.activeRoomId])
 
     return (

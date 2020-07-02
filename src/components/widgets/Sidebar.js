@@ -61,8 +61,8 @@ export default function Sidebar(props) {
                         ) :
                         <HashLoader
                             css={override}
-                            size={25}
-                            color={"purple"}
+                            size={20}
+                            color={"white"}
                             loading={state.loadingTeams}
                         />
                 }

@@ -4,7 +4,7 @@ import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import BackButton from '../../widgets/BackButton'
 import { css } from "@emotion/core";
-import RingLoader from "react-spinners/RingLoader";
+import BeatLoader from "react-spinners/BeatLoader";
 import ToastNotification from '../../widgets/ToastNotification';
 
 export default function TeamRegisterPage() {
@@ -21,6 +21,8 @@ export default function TeamRegisterPage() {
     const { state, actions } = useOvermind();
 
     const createTeam = async (e) => {
+        // FIXME preventDefault ?? 
+        // FIXME Team Add press enter issue.
         e.preventDefault();
         if (newTeamName !== "" && newTeamName.length >= 4) {
             await actions.createTeam({
@@ -37,7 +39,7 @@ export default function TeamRegisterPage() {
     return (
         <div className="w-full flex">
             <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)" }}>
-                <BackButton url={'/home'}></BackButton>
+                <BackButton url={'#/home'}></BackButton>
                 <p className="font-bold px-4 text-white">Create New Team</p>
                 <p className="text-gray-500 px-4">You will be set as Team Owner</p>
                 <form className="px-4 pt-6 pb-8 mb-4">
@@ -47,19 +49,19 @@ export default function TeamRegisterPage() {
                         </label>
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             onChange={(e) => {
-                                e.target.value === "" ? 
-                                ToastNotification('error', "Team Name can't be empty") : 
-                                updateTeamName(e.target.value)
+                                e.target.value === "" ?
+                                    ToastNotification('error', "Team Name can't be empty") :
+                                    updateTeamName(e.target.value)
                             }}
                             onPaste={(e) => {
-                                e.target.value === "" ? 
-                                ToastNotification('error', "Team Name can't be empty") : 
-                                updateTeamName(e.target.value)
+                                e.target.value === "" ?
+                                    ToastNotification('error', "Team Name can't be empty") :
+                                    updateTeamName(e.target.value)
                             }}
                             onKeyPress={(e) => {
                                 if (e.keyCode === 13 || e.which === 13) {
-                                    e.target.value === "" ? 
-                                        ToastNotification('error', "Team Name can't be empty") : 
+                                    e.target.value === "" ?
+                                        ToastNotification('error', "Team Name can't be empty") :
                                         updateTeamName(e.target.value)
                                 }
                             }}
@@ -75,10 +77,10 @@ export default function TeamRegisterPage() {
                                 Create Team
                             </button>
                         </div> :
-                        <RingLoader
+                        <BeatLoader
                             css={override}
-                            size={50}
-                            color={"green"}
+                            size={10}
+                            color={"white"}
                             loading={state.addingTeam}
                         />
                     }

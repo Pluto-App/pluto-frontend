@@ -73,7 +73,9 @@ export default function HomePage() {
 
         let newRoom = {
             teamid: state.activeTeamId,
-            roomname: roomname + " 👌"
+            // TODO Remove Emoji Later
+            roomname: roomname + " 🛰️" 
+
         }
 
         actions.addNewRoom(newRoom)
@@ -153,7 +155,7 @@ export default function HomePage() {
         <div className="w-full flex">
             <Sidebar></Sidebar>
             <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)", marginLeft: "49px" }}>
-                <MainBar appName={appInfo}/>
+                <MainBar appName={appInfo} />
 
                 <div className="sidebar-icons" style={{ height: "relative" }}>
                     <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
@@ -195,7 +197,7 @@ export default function HomePage() {
                                 RoomList(state.RoomListArray) :
                                 <BeatLoader
                                     css={override}
-                                    size={15}
+                                    size={10}
                                     color={"white"}
                                     loading={state.loadingRooms}
                                 />
@@ -218,7 +220,7 @@ export default function HomePage() {
                             MembersList(state.teamMemberList) :
                             <BeatLoader
                                 css={override}
-                                size={15}
+                                size={10}
                                 color={"white"}
                                 loading={state.loadingMembers}
                             />
