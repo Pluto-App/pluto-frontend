@@ -78,6 +78,7 @@ export default function App() {
       // Name of the new room notified
       // to all members of the room.
       socket_live.on(events.new_room, (data) => {
+        actions.addNewEmitRoom(data)
         ToastNotification('info', data.message)
       })
 
@@ -158,7 +159,7 @@ export default function App() {
         clearInterval(interval);
         clearInterval(onlineInterval)
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+      
     }, []
   );
 

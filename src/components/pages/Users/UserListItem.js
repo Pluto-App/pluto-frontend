@@ -53,7 +53,7 @@ export default function UserListItem(props) {
 
     const startVideo = () => {
         // TODO User Video Call ID. Check Needed.
-        if(props.id === state.userProfileData.userid) {
+        if(props.id !== state.userProfileData.userid) {
             let id = md5(state.activeTeamId + state.userProfileData.userid);
             Cookies.set("channel", id);
             socket_live.emit(events.video_call, {

@@ -49,21 +49,27 @@ export default function TeamRegisterPage() {
                         </label>
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             onChange={(e) => {
-                                newTeamName === "" ?
-                                    ToastNotification('error', "Team Name can't be empty") :
+                                if(e.target.value === "") {
+                                    ToastNotification('error', "Team Name can't be empty")
+                                } else {
                                     updateTeamName(e.target.value)
+                                }
                             }}
                             onPaste={(e) => {
-                                newTeamName === "" ?
-                                    ToastNotification('error', "Team Name can't be empty") :
+                                if(e.target.value === "" ) {
+                                    ToastNotification('error', "Team Name can't be empty")
+                                } else {
                                     updateTeamName(e.target.value)
+                                }
                             }}
                             onKeyPress={(e) => {
-                                e.preventDefault()
                                 if (e.keyCode === 13 || e.which === 13) {
-                                    newTeamName === "" ?
-                                        ToastNotification('error', "Team Name can't be empty") :
+                                    e.preventDefault()
+                                    if(e.target.value === "" ) {
+                                        ToastNotification('error', "Team Name can't be empty")
+                                    } else {
                                         updateTeamName(e.target.value)
+                                    }
                                 }
                             }}
                             name="teamname"

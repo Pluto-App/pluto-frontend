@@ -36,12 +36,12 @@ export default function RoomProfile() {
     const [OnlineRoomteamMemberList, updateOnlineList] = useState([]);
     const [roomTextAll, setRoomTextAll] = useState("");
     const [roomId, setRoomId] = useState(state.activeRoomId)
-    
+
     useEffect(() => {
         // TODO Testing this map.
         let arr = []
         Object.entries(state.userMapping).map(([key, value]) => {
-            if(value.roomid === state.activeRoomId) {
+            if (value.roomid === state.activeRoomId) {
                 arr.push(value);
             }
         })
@@ -54,7 +54,11 @@ export default function RoomProfile() {
             actions.removeFromRoom()
             setRoomId("")
         }
-    }, [state.userMapping, state.activeRoomId])
+    }, [actions, state.userMapping, state.activeRoomId])
+
+    const getJoinedRoomUsers = (e) => {
+
+    }
 
     return (
         <div className="w-full flex">
@@ -69,36 +73,43 @@ export default function RoomProfile() {
                         <p className="text-gray-500">{state.userTeamDataInfo[state.activeTeamId].teamowner}</p>
                     </div>
                 </div>
-                <p className="text-grey font-bold text-sm tracking-wide mt-2">Room | {state.activeRoomName}</p>
+                <p className="text-grey font-bold text-sm tracking-wide mt-2">Room | {state.activeRoomName}
+                <button className="text-white hover:bg-gray-900 py-1 px-3 focus:outline-none"
+                        onClick={(e) => {
+                            getJoinedRoomUsers(e)
+                        }}
+                    >
+                        <i className="material-icons md-light " style={{ fontSize: "14px", margin: "0" }}>autorenew</i>
+                    </button></p>
                 <div className="mt-3 mb-4 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
                 <div className="flex justify-center items-center hover:bg-gray-800">
-                            <input className="shadow appearance-none border rounded w-full py-2
+                    <input className="shadow appearance-none border rounded w-full py-1 px-5
                             px-2 text-gray-700 leading-tight focus:outline-none"
-                                style={{ width: "100%" }}
-                                onChange={(e) => {
-                                    setRoomTextAll(e.target.value)
-                                }}
-                                onKeyPress={(e) => {
-                                    if (e.keyCode === 13 || e.which === 13) {
-                                        if (e.target.value === '') {
-                                            ToastNotification('error', "Write Something")
-                                        } else {
-                                            ToastNotification('success', "Sending to all ...📨")
-                                            actions.sendRoomBroadcast({
-                                                message : roomTextAll, 
-                                                sender : state.userProfileData.username
-                                            })
-                                            e.target.value = ""
-                                        }
-                                    }
-                                    
-                                }}
-                                name="roomtextall"
-                                id="roomtextall"
-                                type="text"
-                                placeholder="Send to All...🤟"
-                                autoFocus />
-                        </div>
+                        style={{ width: "100%" }}
+                        onChange={(e) => {
+                            setRoomTextAll(e.target.value)
+                        }}
+                        onKeyPress={(e) => {
+                            if (e.keyCode === 13 || e.which === 13) {
+                                if (e.target.value === '') {
+                                    ToastNotification('error', "Write Something")
+                                } else {
+                                    ToastNotification('success', "Sending to all ...📨")
+                                    actions.sendRoomBroadcast({
+                                        message: roomTextAll,
+                                        sender: state.userProfileData.username
+                                    })
+                                    e.target.value = ""
+                                }
+                            }
+
+                        }}
+                        name="roomtextall"
+                        id="roomtextall"
+                        type="text"
+                        placeholder="Send to All...🤟"
+                        autoFocus />
+                </div>
                 <div className="mt-3 mb-4 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
                 <div className="w-full">
                     {

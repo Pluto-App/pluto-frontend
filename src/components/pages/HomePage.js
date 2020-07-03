@@ -9,6 +9,7 @@ import RoomListItem from "./Rooms/RoomListItem"
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import ToastNotification from '../widgets/ToastNotification'
+import { sha224 } from 'js-sha256';
 
 // TODO Move Active Win info to user profile (not necessary?)
 // FIXME Add Active Win Support. The package fails to build. Search Alternatives. 
@@ -66,18 +67,16 @@ export default function HomePage() {
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showInviteModal, toggleshowInviteModal] = useState(false);
     const [isAddingRoom, setIsAddingRoom] = useState(false);
-    const [appInfo, updateAppInfo] = useState("");
+    const [appInfo, updateAppInfo] = useState("No Teams");
     const [newRoomName, updateNewRoomName] = useState("");
 
     const addingNewRoom = async (roomname) => {
 
         let newRoom = {
+            roomid: sha224(state.activeTeamId + roomname),
             teamid: state.activeTeamId,
-            // TODO Remove Emoji Later
             roomname: roomname + " 🛰️" 
-
         }
-
         actions.addNewRoom(newRoom)
     }
 
@@ -87,32 +86,24 @@ export default function HomePage() {
 
     useEffect(
         () => {
-            const loadTeamsbyUserId = async (userid) => {
+            const load1 = async () => {
                 await actions.teamsbyuserid({
-                    userid: userid
+                    userid: state.userProfileData.userid
                 })
             }
-            loadTeamsbyUserId(state.userProfileData.userid)
-        }, [actions, state.userProfileData.userid]
-    )
-
-    useEffect(
-        () => {
-            if (state.activeTeamId !== 0) {
-                const RoomListbyId = async (teamid) => {
+            load1();
+            const load2 = async () => {
+                if (state.activeTeamId !== 0) {
                     await actions.roomsbyteamid({
-                        teamid: teamid
+                        teamid: state.activeTeamId
                     })
-                }
-                RoomListbyId(state.activeTeamId)
-                const MembersData = async (teamid) => {
                     await actions.usersbyteamid({
-                        teamid: teamid
+                        teamid: state.activeTeamId
                     })
                 }
-                MembersData(state.activeTeamId)
             }
-        }, [actions, state.activeTeamId]
+            load2();
+        }, [actions, state.activeTeamId, state.userProfileData.userid]
     )
 
     /**
@@ -154,8 +145,11 @@ export default function HomePage() {
         <div className="w-full flex">
             <Sidebar></Sidebar>
             <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)", marginLeft: "49px" }}>
-                <MainBar appName={appInfo} />
-
+                <MainBar 
+                    userid={state.userProfileData.userid}
+                    teamid={state.activeTeamId}
+                    appName={appInfo} 
+                />
                 <div className="sidebar-icons" style={{ height: "relative" }}>
                     <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
                         <div className="text-gray-500 px-3 font-bold tracking-wide text-xs">Rooms</div>
@@ -175,7 +169,7 @@ export default function HomePage() {
                                 onChange={handleChange}
                                 onKeyPress={(e) => {
                                     if (e.keyCode === 13 || e.which === 13) {
-                                        if (e.target.value === '') {
+                                        if (e.target.value === "") {
                                             ToastNotification('error', "Room name can't be empty")
                                         } else {
                                             setIsAddingRoom(false)

@@ -12,7 +12,7 @@ export default function BackButton(props) {
     return (
         <button
             onClick={back}
-            className="text-white font-bold mb-3 tracking-wide flex items-center py-2 px-2 no-underline text-sm"
+            className="text-white font-bold mb-3 tracking-wide flex items-center py-2 px-2 no-underline text-sm focus:outline-none" 
             type="button"
         >
             <i className="material-icons mr-1">keyboard_backspace</i>

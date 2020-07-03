@@ -17,6 +17,20 @@ export default function MainBar(props) {
     let history = useHistory();
     const { state, actions, effects, reaction } = useOvermind();
 
+    const handleHardReload = async () => {
+        await actions.teamsbyuserid({
+            userid: props.userid
+        })
+        if (state.activeTeamId !== 0) {
+            await actions.roomsbyteamid({
+                teamid: props.teamid
+            })
+            await actions.usersbyteamid({
+                teamid: props.teamid
+            })
+        }
+    }
+
     return (
         <div className="w-full flex">
             <div className="relative" style={{ height: "35px", width: "100%", background: "#000" }}>
@@ -27,26 +41,28 @@ export default function MainBar(props) {
                         {
                             state.userTeamDataInfo !== {} && state.activeTeamId !== 0 ? state.userTeamDataInfo[state.activeTeamId].teamname
                                 :
-                                <BeatLoader
-                                    css={override}
-                                    size={10}
-                                    color={"white"}
-                                    loading={state.activeTeamId === 0}
-                                />
+                               props.appInfo
                         }
                         <span>
                             {props.appInfo}
                         </span>
                     </p>
                     <div className="flex items-center">
-                        <button className="text-white hover:bg-grey-darker rounded-lg p-1" onClick={(e) => {
+                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" onClick={(e) => {
                             e.preventDefault();
                             history.push('/team-profile')
                         }}>
-                            <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}>settings</i>
+                            <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>settings</i>
                         </button>
-                        <button className="text-white hover:bg-grey-darker rounded-lg p-1" >
-                            <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}>center_focus_strong</i>
+                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" >
+                            <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>center_focus_strong</i>
+                        </button>
+                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" 
+                            onClick={(e) => {
+                                handleHardReload()
+                            }}
+                        >
+                            <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>autorenew</i>
                         </button>
                         <a href="/user-profile" onClick={(e) => {
                             e.preventDefault();

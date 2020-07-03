@@ -215,6 +215,7 @@ export const addNewRoom = async ({ state, effects }, values) => {
     state.loadingRooms = true
 
     socket_live.emit(events.new_room, {
+        roomid: values.roomid,
         teamid: values.teamid,
         roomname: values.roomname
     })
@@ -340,4 +341,10 @@ export const addNewTeamMember = async ({ state, effects }, values) => {
     userObj.roomid = ""
     state.teamMemberList.push(userObj)
     state.userMapping[values.userid] = userObj
+}
+
+export const addNewEmitRoom = async ({ state, effects }, values) => {
+    state.loadingRooms = true
+    state.RoomListArray.unshift(values)
+    state.loadingRooms = false
 }
