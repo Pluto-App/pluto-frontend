@@ -105,6 +105,11 @@ export default function App() {
         ToastNotification('success', data.message)
       })
 
+      socket_live.on(events.new_team_mate, async (data) => {
+        await actions.addNewTeamMember(data);
+        ToastNotification('success', data.message)
+      })
+
       // Some User is Online
       socket_live.on(events.online, (data) => {
         // FIXME Update Status of User Online ?

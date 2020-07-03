@@ -148,7 +148,7 @@ export const usersbyteamid = async ({ state, effects }, values) => {
                 usermail: u.email,
                 avatar: u.avatar,
                 statusColor: u.id === state.userProfileData.userid ? 'green' : 'gray', // default offline. 
-                teamid : "", 
+                teamid : values.teamid, 
                 roomid : ""
             }
             // TODO Remove the use of teamMemberList, Use userMapping.
@@ -159,7 +159,7 @@ export const usersbyteamid = async ({ state, effects }, values) => {
                 usermail: u.email,
                 avatar: u.avatar,
                 statusColor: u.id === state.userProfileData.userid ? 'green' : 'gray', // default offline. 
-                teamid : "", 
+                teamid : values.teamid, 
                 roomid : ""
             }
         })
@@ -333,4 +333,11 @@ export const sendRoomBroadcast = async ({ state, effects }, values) => {
         message : values.message,
         sender : values.sender
     })
+}
+
+export const addNewTeamMember = async ({ state, effects }, values) => {
+    var userObj = values
+    userObj.roomid = ""
+    state.teamMemberList.push(userObj)
+    state.userMapping[values.userid] = userObj
 }
