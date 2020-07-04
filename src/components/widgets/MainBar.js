@@ -18,6 +18,7 @@ export default function MainBar(props) {
     const { state, actions, effects, reaction } = useOvermind();
 
     const handleHardReload = async () => {
+        // await actions.googlehandleLogin()
         await actions.teamsbyuserid({
             userid: props.userid
         })

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Sidebar from '../widgets/Sidebar'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
@@ -33,7 +33,7 @@ function RoomList(props) {
 
 function MembersList(props) {
 
-    const teamMemberList = Object.entries(props).map(([id,member]) =>
+    const teamMemberList = Object.entries(props).map(([id, member]) =>
         <UserListItem
             id={member.userid}
             key={member.userid.toString()}
@@ -61,7 +61,7 @@ export default function HomePage() {
         border-color: white;
     `;
 
-    const { state, actions, roomActions } = useOvermind();
+    const { state, actions } = useOvermind();
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showInviteModal, toggleshowInviteModal] = useState(false);
     const [isAddingRoom, setIsAddingRoom] = useState(false);
@@ -82,38 +82,77 @@ export default function HomePage() {
         updateNewRoomName(e.target.value);
     }
 
+    const load1 = async () => {
+        await actions.teamsbyuserid({
+            userid: state.userProfileData.userid
+        })
+    }
+
+    const load2 = async () => {
+        if (state.activeTeamId !== 0) {
+            await actions.roomsbyteamid({
+                teamid: state.activeTeamId
+            })
+            await actions.usersbyteamid({
+                teamid: state.activeTeamId
+            })
+        }
+    }
+
     useEffect(
         () => {
-            const loadHomePageData = async () => {
-                await actions.teamsbyuserid({
-                    userid: state.userProfileData.userid
-                })
-                if (state.activeTeamId !== 0) {
-                    await actions.roomsbyteamid({
-                        teamid: state.activeTeamId
-                    })
-                    await actions.usersbyteamid({
-                        teamid: state.activeTeamId
-                    })
-                }
-            }
-            loadHomePageData();
-        }, [actions, state.activeTeamId, state.userProfileData.userid]
+            load1();
+        }, []
     )
+
+    useEffect(
+        () => {
+            load2();
+        }, [actions, state.activeTeamId]
+    )
+
+    /**
+     * Active Win Code. 
+     */
+    // useEffect(
+    //     () => {
+
+    //         let interval = 0;
+    //         if (interval) {
+    //             clearInterval(interval);
+    //         }
+
+    //         // Every 5 Secs, make a query. 
+    //         interval = setInterval(() => {
+    //             activeWin().then((data) => {
+    //                 if (data !== null && data.owner !== null) {
+    //                     updateAppInfo(appInfo => {
+    //                         appInfo = data.owner.name;
+    //                     });
+    //                 }
+    //             })
+    //         }, 5000)
+
+    //         // Clear interval on return . 
+    //         return () => {
+    //             clearInterval(interval);
+    //         }
+    //         // eslint-disable-next-line react-hooks/exhaustive-deps
+    //     }, []
+    // )
 
     const customStyle = {
         "top": "46%",
         "width": "calc(94% - 50px)"
     }
-
     return (
         <div className="w-full flex">
             <Sidebar></Sidebar>
             <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)", marginLeft: "49px" }}>
-                <MainBar 
+                <MainBar
                     userid={state.userProfileData.userid}
                     teamid={state.activeTeamId}
-                    appName={appInfo} 
+                    appName={appInfo}
                 />
                 <div className="sidebar-icons" style={{ height: "relative" }}>
                     <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
@@ -206,7 +245,7 @@ export default function HomePage() {
                 </div>
                 {
                     // Invite Modal HTML
-                    showInviteModal ?
+                    showInviteModal && state.activeTeamId !== 0 ?
                         <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={customStyle}
                             onClick={(e) => {
                             }}>

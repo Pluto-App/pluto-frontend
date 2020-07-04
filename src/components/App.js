@@ -33,7 +33,6 @@ export default function App() {
     () => {
 
       loadProgressBar()
-
       let interval = 0;
       let onlineInterval = 0;
       // Check and emit liveness
@@ -97,7 +96,7 @@ export default function App() {
           userid : data.userinfo.userid,
           teamid : data.userinfo.teamid,
         })
-        ToastNotification('info', data.message)
+        ToastNotification('success', `${data.message} 🤝`)
       })
 
       // When a new team is created, 
