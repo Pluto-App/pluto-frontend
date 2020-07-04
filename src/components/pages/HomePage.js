@@ -13,30 +13,28 @@ import { sha224 } from 'js-sha256';
 
 // TODO Move Active Win info to user profile (not necessary?)
 // FIXME Add Active Win Support. The package fails to build. Search Alternatives. 
-// import * as activeWin from 'active-win'
 
 function RoomList(props) {
 
     const roomlist = props.map((rooms) =>
         <RoomListItem
-            key={rooms.id.toString()}
             id={rooms.id}
+            key={rooms.id.toString()}
             name={rooms.roomname}
         />
     )
 
     return (
-        <div>
+        <>
             {roomlist}
-        </div>
+        </>
     );
 }
 
 function MembersList(props) {
 
-    const teamMemberList = props.map((member) =>
+    const teamMemberList = Object.entries(props).map(([id,member]) =>
         <UserListItem
-            data-record-id={member.userid}
             id={member.userid}
             key={member.userid.toString()}
             url={member.avatar}
@@ -47,9 +45,9 @@ function MembersList(props) {
     )
 
     return (
-        <div>
+        <>
             {teamMemberList}
-        </div>
+        </>
     );
 }
 
@@ -86,13 +84,10 @@ export default function HomePage() {
 
     useEffect(
         () => {
-            const load1 = async () => {
+            const loadHomePageData = async () => {
                 await actions.teamsbyuserid({
                     userid: state.userProfileData.userid
                 })
-            }
-            load1();
-            const load2 = async () => {
                 if (state.activeTeamId !== 0) {
                     await actions.roomsbyteamid({
                         teamid: state.activeTeamId
@@ -102,39 +97,9 @@ export default function HomePage() {
                     })
                 }
             }
-            load2();
+            loadHomePageData();
         }, [actions, state.activeTeamId, state.userProfileData.userid]
     )
-
-    /**
-     * Active Win Code. 
-     */
-    // useEffect(
-    //     () => {
-
-    //         let interval = 0;
-    //         if (interval) {
-    //             clearInterval(interval);
-    //         }
-
-    //         // Every 5 Secs, make a query. 
-    //         interval = setInterval(() => {
-    //             activeWin().then((data) => {
-    //                 if (data !== null && data.owner !== null) {
-    //                     updateAppInfo(appInfo => {
-    //                         appInfo = data.owner.name;
-    //                     });
-    //                 }
-    //             })
-    //         }, 5000)
-
-    //         // Clear interval on return . 
-    //         return () => {
-    //             clearInterval(interval);
-    //         }
-    //         // eslint-disable-next-line react-hooks/exhaustive-deps
-    //     }, []
-    // )
 
     const customStyle = {
         "top": "46%",
@@ -210,7 +175,7 @@ export default function HomePage() {
                     </div>
                     {
                         !state.loadingMembers ?
-                            MembersList(state.teamMemberList) :
+                            MembersList(state.userMapping) :
                             <BeatLoader
                                 css={override}
                                 size={10}

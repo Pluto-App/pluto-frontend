@@ -36,16 +36,15 @@ export default function MainBar(props) {
             <div className="relative" style={{ height: "35px", width: "100%", background: "#000" }}>
                 <div className="flex justify-between items-center px-2 p-0">
                     <p
-                        onClick="" // listOpen Toggle
                         className="flex p-1 items-center text-grey-dark font-bold rounded-lg hover:text-white cursor-pointer hover:bg-grey-darker">
                         {
                             state.userTeamDataInfo !== {} && state.activeTeamId !== 0 ? state.userTeamDataInfo[state.activeTeamId].teamname
                                 :
                                props.appInfo
                         }
-                        <span>
+                        {/* <span>
                             {props.appInfo}
-                        </span>
+                        </span> */}
                     </p>
                     <div className="flex items-center">
                         <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" onClick={(e) => {

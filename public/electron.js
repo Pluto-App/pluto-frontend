@@ -50,7 +50,10 @@ function createWindow() {
   }
 
   mainWindow.on('closed', () => {
-    mainWindow = null
+    // Close all windows.
+    var windows = BrowserWindow.getAllWindows();
+    windows.forEach(x => x.close());
+
   });
 
   ipcMain.on('resize-login', (event, arg) => {
@@ -90,12 +93,12 @@ function createWindow() {
     // create the window
     video_player = new BrowserWindow({
       show: true,
-      width: 250,
-      height: 150,
+      width: 300,
+      height: 220,
       frame: false,
       title: "VideoWindow",
-      x: swidth - 260,
-      y: sheight - 200,
+      x: swidth - 310,
+      y: sheight - 270,
       webPreferences: {
         nodeIntegration: true,
         plugins: true

@@ -1,4 +1,32 @@
-/* eslint-disable array-callback-return */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: actions.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: actions.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* eslint-disable array-callback-return */
 import { googleSignIn } from '../auth/authhandle'
 import ToastNotification from '../components/widgets/ToastNotification'
 import { socket_live, events } from '../components/sockets'
@@ -44,9 +72,9 @@ export const createTeam = async ({ state, effects }, values) => {
 
     let newTeamData = await effects.postHandler(process.env.REACT_APP_CREATE_TEAM_URL, values)
 
-    if (newTeamData !== undefined && newTeamData.addStatus !== 0) {
+    if (newTeamData !== undefined &amp;&amp; newTeamData.addStatus !== 0) {
 
-        if (!state.userProfileData.addStatus && state.activeTeamId !== 0)
+        if (!state.userProfileData.addStatus &amp;&amp; state.activeTeamId !== 0)
             state.userTeamDataInfo[state.activeTeamId].isActive = false
 
         state.activeTeamId = newTeamData.teamid
@@ -93,7 +121,7 @@ export const teamsbyuserid = async ({ state, effects }, values) => {
 
     let dump = await effects.postHandler(process.env.REACT_APP_GET_TEAMS_URL, values)
 
-    if (Array.isArray(dump.teams) && dump.teams.length) {
+    if (Array.isArray(dump.teams) &amp;&amp; dump.teams.length) {
         dump.teams.map((t) => {
             state.userTeamDataInfo[t.teamid] = {
                 teamid: t.teamid,
@@ -140,8 +168,19 @@ export const usersbyteamid = async ({ state, effects }, values) => {
     state.teamMemberList = []
     state.userMapping = {}
 
-    if (Array.isArray(dump.users) && dump.users.length) {
+    if (Array.isArray(dump.users) &amp;&amp; dump.users.length) {
         dump.users.map((u) => {
+            let userObj = {
+                userid: u.id,
+                username: u.username,
+                usermail: u.email,
+                avatar: u.avatar,
+                statusColor: u.id === state.userProfileData.userid ? 'green' : 'gray', // default offline. 
+                teamid : values.teamid, 
+                roomid : ""
+            }
+            // TODO Remove the use of teamMemberList, Use userMapping.
+            state.teamMemberList.push(userObj)
             state.userMapping[u.id] = {
                 userid: u.id,
                 username: u.username,
@@ -211,7 +250,7 @@ export const addNewRoom = async ({ state, effects }, values) => {
 
     let roomdump = await effects.postHandler(process.env.REACT_APP_ADD_ROOM_TO_TEAM, values)
 
-    if (Array.isArray(roomdump.rooms) && roomdump.rooms.length) {
+    if (Array.isArray(roomdump.rooms) &amp;&amp; roomdump.rooms.length) {
         roomdump.rooms.map((room) => {
             state.RoomListArray.unshift(room)
         })
@@ -267,7 +306,7 @@ export const roomsbyteamid = async ({ state, effects }, values) => {
     let roomdump = await effects.postHandler(process.env.REACT_APP_GET_ROOMS_FROM_ID, values)
 
     state.RoomListArray = [];
-    if (Array.isArray(roomdump.rooms) && roomdump.rooms.length) {
+    if (Array.isArray(roomdump.rooms) &amp;&amp; roomdump.rooms.length) {
         roomdump.rooms.map((room) => {
             state.RoomListArray.push(room)
         })
@@ -284,7 +323,7 @@ export const roomsbyteamid = async ({ state, effects }, values) => {
  */
 export const updateStatusColor = async ({ state, effects }, values) => {
     // TODO Update Status of the user at app Level, When users are active or not. 
-    if (Array.isArray(state.teamMemberList) && state.teamMemberList.length) {
+    if (Array.isArray(state.teamMemberList) &amp;&amp; state.teamMemberList.length) {
         let updateElem = await state.teamMemberList.find(element => element.userid === values.id)
         if (typeof updateElem !== 'undefined') 
             updateElem.statusColor = values.statusColor
@@ -304,7 +343,7 @@ export const updateRoomOfMember = async ({ state, effects }, values) => {
 export const updateTeamOfMember = async ({ state, effects }, values) => {
     // TODO Update team of user. 
     // TODO Testing this map.
-    if (Array.isArray(state.teamMemberList) && state.teamMemberList.length) {
+    if (Array.isArray(state.teamMemberList) &amp;&amp; state.teamMemberList.length) {
         let updateElem = await state.teamMemberList.find(element => element.userid === values.userid)
         if (typeof updateElem !== 'undefined') 
             updateElem.teamid = values.teamid;
@@ -319,7 +358,10 @@ export const removeFromRoom = ({ state, effects }, values) => {
 }
 
 export const sendRoomBroadcast = async ({ state, effects }, values) => {
-    socket_live.emit(events.room_broadcast, values)
+    socket_live.emit(events.room_broadcast, {
+        message : values.message,
+        sender : values.sender
+    })
 }
 
 export const addNewTeamMember = async ({ state, effects }, values) => {
@@ -333,4 +375,26 @@ export const addNewEmitRoom = async ({ state, effects }, values) => {
     state.loadingRooms = true
     state.RoomListArray.unshift(values)
     state.loadingRooms = false
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addNewRoom">addNewRoom</a></li><li><a href="global.html#changeActiveRoom">changeActiveRoom</a></li><li><a href="global.html#changeActiveTeam">changeActiveTeam</a></li><li><a href="global.html#createTeam">createTeam</a></li><li><a href="global.html#googlehandleLogin">googlehandleLogin</a></li><li><a href="global.html#handleLogout">handleLogout</a></li><li><a href="global.html#removeRoom">removeRoom</a></li><li><a href="global.html#removeTeamMember">removeTeamMember</a></li><li><a href="global.html#roomsbyteamid">roomsbyteamid</a></li><li><a href="global.html#teamsbyuserid">teamsbyuserid</a></li><li><a href="global.html#updateStatusColor">updateStatusColor</a></li><li><a href="global.html#usersbyteamid">usersbyteamid</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sat Jul 04 2020 09:03:41 GMT+0530 (India Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -96,6 +96,9 @@ export default function RoomProfile() {
                                 } else {
                                     ToastNotification('success', "Sending to all ...📨")
                                     actions.sendRoomBroadcast({
+                                        roomname: state.activeRoomName,
+                                        teamid: state.activeTeamId,
+                                        roomid: state.activeRoomId,
                                         message: roomTextAll,
                                         sender: state.userProfileData.username
                                     })

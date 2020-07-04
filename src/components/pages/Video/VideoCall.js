@@ -2,7 +2,7 @@
 import React from "react";
 import * as Cookies from "js-cookie";
 import { css } from "@emotion/core";
-import AgoraVideoCall from "../../AgoraVideoCall";
+import AgoraVideoCall from "../../AgoraVideoCall/AgoraCanvas";
 import { AGORA_APP_ID } from "../../../agora.config";
 
 // TODO Add Support for Audio Calling. 
@@ -24,7 +24,7 @@ class VideoCall extends React.Component {
   }
 
   render() {
-    
+
     const display_video = css`
         -webkit-app-region: drag;
         height: 10px; 
@@ -32,22 +32,22 @@ class VideoCall extends React.Component {
     `;
 
     return (
-        <div className="font-sans min-h-screen">
-            <div style={display_video} className="bg-black"></div>
-            <div className="flex" style={{ height: "calc(100vh - 10px)" }}>
-            <div className="bg-black text-white flex-1 p-0 w-100">
-              <AgoraVideoCall
-                videoProfile={this.videoProfile}
-                channel={this.channel}
-                transcode={this.transcode}
-                attendeeMode={this.attendeeMode}
-                baseMode={this.baseMode}
-                appId={this.appId}
-                uid={this.uid}
-              />
-            </div>
-            </div>
+      <div className="font-sans min-h-screen">
+        <div style={display_video} className="bg-black"></div>
+        <div className="flex" style={{ height: "calc(100vh - 10px)" }}>
+          <div className="bg-black text-white flex-1 p-0 w-100">
+            <AgoraVideoCall
+              videoProfile={this.videoProfile}
+              channel={this.channel}
+              transcode={this.transcode}
+              attendeeMode={this.attendeeMode}
+              baseMode={this.baseMode}
+              appId={this.appId}
+              uid={this.uid}
+            />
+          </div>
         </div>
+      </div>
     );
   }
 }

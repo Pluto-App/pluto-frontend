@@ -6,8 +6,7 @@
 import React from 'react'
 import { merge } from 'lodash'
 import AgoraRTC from 'agora-rtc-sdk'
-import '../../assets/fonts/css/icons.css'
-// TODO Convert to a Video Caller Hook Component later.
+const { remote } = window.require('electron');
 
 const tile_canvas = {
   '1': ['span 12/span 24'],
@@ -16,7 +15,7 @@ const tile_canvas = {
   '4': ['span 6/span 12', 'span 6/span 12', 'span 6/span 12', 'span 6/span 12/7/13'],
   '5': ['span 3/span 4/13/9', 'span 3/span 4/13/13', 'span 3/span 4/13/17', 'span 3/span 4/13/21', 'span 9/span 16/10/21'],
   '6': ['span 3/span 4/13/7', 'span 3/span 4/13/11', 'span 3/span 4/13/15', 'span 3/span 4/13/19', 'span 3/span 4/13/23', 'span 9/span 16/10/21'],
-  '7': ['span 3/span 4/13/5', 'span 3/span 4/13/9', 'span 3/span 4/13/13', 'span 3/span 4/13/17', 'span 3/span 4/13/21', 'span 3/span 4/13/25', 'span 9/span 16/10/21'],
+  '7': ['span 3/span 4/10/1', 'span 3/span 4/13/1', 'span 3/span 4/16/1', 'span 3/span 4/19/1', 'span 3/span 4/13/21', 'span 3/span 4/13/25', 'span 9/span 16/10/21'],
 }
 
 /**
@@ -31,7 +30,7 @@ class AgoraCanvas extends React.Component {
     this.shareClient = {}
     this.shareStream = {}
     this.state = {
-      displayMode: 'pip',
+      displayMode: 'tile',
       streamList: [],
       readyState: false
     }
@@ -47,8 +46,6 @@ class AgoraCanvas extends React.Component {
       this.client.join($.appId, $.channel, $.uid, (uid) => {
         console.log("User " + uid + " join channel successfully")
         console.log('At ' + new Date().toLocaleTimeString())
-        // create local stream
-        // It is not recommended to setState in function addStream
         this.localStream = this.streamInit(uid, $.attendeeMode, $.videoProfile)
         this.localStream.init(() => {
           if ($.attendeeMode !== 'audience') {
@@ -78,15 +75,9 @@ class AgoraCanvas extends React.Component {
       btnGroup.classList.add('active')
       global._toolbarToggle = setTimeout(function () {
         btnGroup.classList.remove('active')
-      }, 2000)
+      }, 1000)
     })
   }
-
-  // componentWillUnmount () {
-  //     // remove listener
-  //     let canvas = document.querySelector('#ag-canvas')
-  //     canvas.removeEventListener('mousemove')
-  // }
 
   componentDidUpdate() {
     // rerendering
@@ -258,15 +249,24 @@ class AgoraCanvas extends React.Component {
   }
 
   handleCamera = (e) => {
-    e.currentTarget.classList.toggle('off')
-    this.localStream.isVideoOn() ?
-      this.localStream.disableVideo() : this.localStream.enableVideo()
+    document.getElementById("")
+    if(this.localStream.isVideoOn()) {
+      this.localStream.disableVideo()
+      document.getElementById("video-icon").innerHTML = "videocam_off"
+    } else {
+      this.localStream.enableVideo()
+      document.getElementById("video-icon").innerHTML = "videocam"
+    }
   }
 
   handleMic = (e) => {
-    e.currentTarget.classList.toggle('off')
-    this.localStream.isAudioOn() ?
-      this.localStream.disableAudio() : this.localStream.enableAudio()
+    if (this.localStream.isAudioOn()) {
+      this.localStream.disableAudio()
+      document.getElementById("mic-icon").innerHTML = "mic_off"
+    } else {
+      this.localStream.enableAudio()
+      document.getElementById("mic-icon").innerHTML = "mic"
+    }
   }
 
   switchDisplay = (e) => {
@@ -322,15 +322,15 @@ class AgoraCanvas extends React.Component {
       this.setState({ readyState: false })
       this.client = null
       this.localStream = null
-      // redirect to index
-      window.location.hash = ''
+      var window = remote.getCurrentWindow();
+      window.close();
     }
   }
 
   render() {
     const style = {
       display: 'grid',
-      gridGap: '10px',
+      gridGap: '5px',
       alignItems: 'center',
       justifyItems: 'center',
       gridTemplateRows: 'repeat(12, auto)',
@@ -341,8 +341,7 @@ class AgoraCanvas extends React.Component {
         onClick={this.handleCamera}
         className="ag-btn videoControlBtn"
         title="Enable/Disable Video">
-        <i className="ag-icon ag-icon-camera"></i>
-        <i className="ag-icon ag-icon-camera-off"></i>
+        <i className="material-icons focus:outline-none md-light" style={{ fontSize: "30px" }} id="video-icon">videocam</i>
       </span>) : ''
 
     const audioControlBtn = this.props.attendeeMode !== 'audience' ?
@@ -350,32 +349,15 @@ class AgoraCanvas extends React.Component {
         onClick={this.handleMic}
         className="ag-btn audioControlBtn"
         title="Enable/Disable Audio">
-        <i className="ag-icon ag-icon-mic"></i>
-        <i className="ag-icon ag-icon-mic-off"></i>
+        <i className="material-icons focus:outline-none md-light" style={{ fontSize: "30px" }} id="mic-icon">mic</i>
       </span>) : ''
 
-    const switchDisplayBtn = (
-      <span
-        onClick={this.switchDisplay}
-        className={this.state.streamList.length > 4 ? "ag-btn displayModeBtn disabled" : "ag-btn displayModeBtn"}
-        title="Switch Display Mode">
-        <i className="ag-icon ag-icon-switch-display"></i>
-      </span>
-    )
-    const hideRemoteBtn = (
-      <span
-        className={this.state.streamList.length > 4 || this.state.displayMode !== 'pip' ? "ag-btn disableRemoteBtn disabled" : "ag-btn disableRemoteBtn"}
-        onClick={this.hideRemote}
-        title="Hide Remote Stream">
-        <i className="ag-icon ag-icon-remove-pip"></i>
-      </span>
-    )
     const exitBtn = (
       <span
         onClick={this.handleExit}
         className={this.state.readyState ? 'ag-btn exitBtn' : 'ag-btn exitBtn disabled'}
         title="Exit">
-        <i className="ag-icon ag-icon-leave"></i>
+        <i className="material-icons exit focus:outline-none md-light" style={{ fontSize: "30px" }} >logout</i>
       </span>
     )
 
@@ -385,11 +367,6 @@ class AgoraCanvas extends React.Component {
           {exitBtn}
           {videoControlBtn}
           {audioControlBtn}
-          {/* <span className="ag-btn shareScreenBtn" title="Share Screen">
-                        <i className="ag-icon ag-icon-screen-share"></i>
-                    </span> */}
-          {switchDisplayBtn}
-          {hideRemoteBtn}
         </div>
       </div>
     )
