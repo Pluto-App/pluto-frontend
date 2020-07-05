@@ -41,7 +41,7 @@ export default function RoomProfile() {
         // TODO Testing this map.
         let arr = []
         Object.entries(state.userMapping).map(([key, value]) => {
-            if (value.roomid === roomId) {
+            if (value.roomid === state.activeRoomId) {
                 arr.push(value);
             }
         })

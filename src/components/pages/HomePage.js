@@ -102,7 +102,7 @@ export default function HomePage() {
     useEffect(
         () => {
             load1();
-        }, []
+        }, [actions, state.userProfileData.userid]
     )
 
     useEffect(
