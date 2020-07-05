@@ -22,7 +22,6 @@ import {
   Route
 } from "react-router-dom";
 
-
 const isOnline = require('is-online');
 
 export default function App() {

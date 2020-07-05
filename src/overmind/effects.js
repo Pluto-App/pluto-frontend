@@ -38,6 +38,9 @@ export const postHandler = async (url, payload) => {
         let dump = await axios.post(url, qs.stringify(
             payload
         ), {
+            referrerPolicy: 'no-referrer',
+            redirect: 'follow', 
+            mode: 'cors',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'cache-control': 'no-cache',
@@ -95,7 +98,7 @@ export const updateHandler = async (url, payload) => {
         })
         data = await dump.data
     } catch (error) {
-        ToastNotification('HTTP UPDATE Error', error)
+        ToastNotification('error', error)
     }
 
     return data
@@ -120,7 +123,7 @@ export const deleteHandler = async (url, payload) => {
         })
         data = await dump.data
     } catch (error) {
-        ToastNotification('HTTP DELETE error', error)
+        ToastNotification('error', error)
     }
 
     return data
