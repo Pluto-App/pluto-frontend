@@ -33,7 +33,6 @@ const LoginPage = () => {
   const openSignup = (e) => {
     e.preventDefault();
     window.require("electron").shell.openExternal('https://trumpetstechnologies.in/projects/pluto');
-    state.signedUp = true
   }
 
   return (
