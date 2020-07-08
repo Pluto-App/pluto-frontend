@@ -285,7 +285,7 @@ export const roomsbyteamid = async ({ state, effects }, values) => {
 export const updateStatusColor = async ({ state, effects }, values) => {
     // TODO Update Status of the user at app Level, When users are active or not. 
     if (Array.isArray(state.teamMemberList) && state.teamMemberList.length) {
-        let updateElem = await state.teamMemberList.find(element => element.userid === values.id)
+        let updateElem = await state.teamMemberList.find(element => element.userid === values.userid)
         if (typeof updateElem !== 'undefined') 
             updateElem.statusColor = values.statusColor
     }

@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom"
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 
-export default function MainBar(props) {
+const MainBar = React.memo((props) => {
 
     // FIXME Remove App name info when we display Active-Win App Icon per user via CDN
     const override = css`
@@ -77,4 +77,6 @@ export default function MainBar(props) {
             </div>
         </div>
     )
-}
+})
+
+export default MainBar;

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useCallback } from 'react'
 import Sidebar from '../widgets/Sidebar'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
@@ -14,9 +14,9 @@ import { sha224 } from 'js-sha256';
 // TODO Move Active Win info to user profile (not necessary?)
 // FIXME Add Active Win Support. The package fails to build. Search Alternatives. 
 
-function RoomList(props) {
+const RoomList = React.memo((props) => {
 
-    const roomlist = props.map((rooms) =>
+    const teamRoomlist = props.map((rooms) =>
         <RoomListItem
             id={rooms.id}
             key={rooms.id.toString()}
@@ -26,12 +26,12 @@ function RoomList(props) {
 
     return (
         <>
-            {roomlist}
+            {teamRoomlist}
         </>
     );
-}
+})
 
-function MembersList(props) {
+const MembersList = React.memo((props) => {
 
     const teamMemberList = Object.entries(props).map(([id, member]) =>
         <UserListItem
@@ -49,7 +49,7 @@ function MembersList(props) {
             {teamMemberList}
         </>
     );
-}
+})
 
 export default function HomePage() {
 
@@ -61,6 +61,8 @@ export default function HomePage() {
         border-color: white;
     `;
 
+    
+
     const { state, actions } = useOvermind();
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showInviteModal, toggleshowInviteModal] = useState(false);
@@ -68,12 +70,17 @@ export default function HomePage() {
     const [appInfo, updateAppInfo] = useState("No Teams");
     const [newRoomName, updateNewRoomName] = useState("");
 
+    let local_activeTeamId = useRef("")
+    let local_userid = useRef("")
+    local_activeTeamId.current = state.activeTeamId;
+    local_userid.current = state.userProfileData.userid;
+
     const addingNewRoom = async (roomname) => {
 
         let newRoom = {
             roomid: sha224(state.activeTeamId + roomname),
             teamid: state.activeTeamId,
-            roomname: roomname + " 🛰️" 
+            roomname: roomname + " 🛰️"
         }
         actions.addNewRoom(newRoom)
     }
@@ -82,69 +89,44 @@ export default function HomePage() {
         updateNewRoomName(e.target.value);
     }
 
-    const load1 = async () => {
-        await actions.teamsbyuserid({
-            userid: state.userProfileData.userid
-        })
-    }
+    const load1 = useCallback(
+        async () => {
+            await actions.teamsbyuserid({
+                userid: local_userid.current
+            })
+        }, [local_userid]
+    )
 
-    const load2 = async () => {
-        if (state.activeTeamId !== 0) {
-            await actions.roomsbyteamid({
-                teamid: state.activeTeamId
-            })
-            await actions.usersbyteamid({
-                teamid: state.activeTeamId
-            })
-        }
-    }
+    const load2 = useCallback(
+        async () => {
+            if (state.activeTeamId !== 0) {
+                await actions.roomsbyteamid({
+                    teamid: local_activeTeamId.current
+                })
+                await actions.usersbyteamid({
+                    teamid: local_activeTeamId.current
+                })
+            }
+        }, [local_activeTeamId]
+    )
 
     useEffect(
         () => {
             load1();
-        }, [actions, state.userProfileData.userid]
+        }, [load1]
     )
 
     useEffect(
         () => {
             load2();
-        }, [actions, state.activeTeamId]
+        }, [load2]
     )
-
-    /**
-     * Active Win Code. 
-     */
-    // useEffect(
-    //     () => {
-
-    //         let interval = 0;
-    //         if (interval) {
-    //             clearInterval(interval);
-    //         }
-
-    //         // Every 5 Secs, make a query. 
-    //         interval = setInterval(() => {
-    //             activeWin().then((data) => {
-    //                 if (data !== null && data.owner !== null) {
-    //                     updateAppInfo(appInfo => {
-    //                         appInfo = data.owner.name;
-    //                     });
-    //                 }
-    //             })
-    //         }, 5000)
-
-    //         // Clear interval on return . 
-    //         return () => {
-    //             clearInterval(interval);
-    //         }
-    //         // eslint-disable-next-line react-hooks/exhaustive-deps
-    //     }, []
-    // )
 
     const customStyle = {
         "top": "46%",
         "width": "calc(94% - 50px)"
     }
+
     return (
         <div className="w-full flex">
             <Sidebar></Sidebar>

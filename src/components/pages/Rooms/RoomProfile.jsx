@@ -8,7 +8,6 @@ import ToastNotification from '../../widgets/ToastNotification'
 
 function MembersList(props) {
 
-
     const teamMemberList = props.map((member) =>
         <UserListItem
             data-record-id={member.userid}
@@ -28,7 +27,7 @@ function MembersList(props) {
     );
 }
 
-export default function RoomProfile() {
+const RoomProfile = React.memo(() => {
 
     let history = useHistory();
 
@@ -122,4 +121,6 @@ export default function RoomProfile() {
             </div>
         </div>
     )
-}
+})
+
+export default RoomProfile;
