@@ -8,7 +8,7 @@ import ToastNotification from '../../widgets/ToastNotification';
 import { socket_live, events } from '../../sockets';
 import * as md5 from "md5";
 
-export default function UserListItem(props) {
+const UserListItem = React.memo((props) => {
 
     let history = useHistory();
 
@@ -62,6 +62,11 @@ export default function UserListItem(props) {
                 teamid: state.activeTeamId,
                 senderid : state.userProfileData.userid,
                 username: state.userProfileData.username
+            })
+            // TODO Emit that user is already in call with someone. 
+            actions.updateStatusColor({
+                userid : state.userProfileData.userid,
+                statusColor : "blue"
             })
             window.require("electron").ipcRenderer.send('load-video-window', id);
             ToastNotification('success', `Initiated VC with ${props.name} 📷`);
@@ -172,4 +177,6 @@ export default function UserListItem(props) {
             </div>
         </div>
     )
-}
+})
+
+export default UserListItem;

@@ -6,11 +6,12 @@ import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import googleLogo from "../../assets/google.svg";
 import ToastNotification from '../widgets/ToastNotification';
+import { useEffect } from 'react';
 
 // TODO Clear Login cache or store it in some local storage/file. 
 // TODO Secure the Google Login. 
 
-const LoginPage = () => {
+const LoginPage = React.memo(() => {
 
   const override = css`
     display: block;
@@ -21,6 +22,13 @@ const LoginPage = () => {
   let history = useHistory();
 
   const { state, actions } = useOvermind();
+
+  // TODO Load Teams in Sidebar.
+  useEffect(
+    () => {
+
+    }, []
+  )
 
   const googleSignInAction = (e) => {
     e.preventDefault();
@@ -69,6 +77,6 @@ const LoginPage = () => {
       </div>
     </div>
   );
-}
+})
 
 export default LoginPage;

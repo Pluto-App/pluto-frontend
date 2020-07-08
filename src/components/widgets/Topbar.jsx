@@ -3,7 +3,7 @@ import { useOvermind } from '../../overmind'
 const { remote } = window.require('electron');
 
 // TODO Need to show some tooltip using Tailwind CSS ToolTip
-export default function TopBar(props) {
+const TopBar = React.memo((props) => {
 
   const { actions } = useOvermind();
 
@@ -46,4 +46,6 @@ export default function TopBar(props) {
       </div>
     </div>
   );
-}
+})
+
+export default TopBar;

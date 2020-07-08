@@ -6,7 +6,7 @@ import { css } from "@emotion/core";
 import HashLoader from "react-spinners/HashLoader";
 import org_logo from "../../assets/logo.png"
 
-export default function Sidebar(props) {
+const Sidebar = React.memo((props) => {
 
     let history = useHistory();
 
@@ -74,4 +74,6 @@ export default function Sidebar(props) {
             </div>
         </div>
     )
-}
+})
+
+export default Sidebar;
