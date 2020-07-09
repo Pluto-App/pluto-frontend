@@ -22,7 +22,6 @@ export default function TeamRegisterPage() {
 
     const createTeam = async (e) => {
         // FIXME Team Add press enter issue.
-        e.preventDefault();
         if (newTeamName !== "" && newTeamName.length >= 4) {
             await actions.createTeam({
                 userid: state.userProfileData.userid, // ownerid of team.
@@ -48,11 +47,9 @@ export default function TeamRegisterPage() {
                         </label>
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             onChange={(e) => {
-                                if(e.target.value === "") {
+                                updateTeamName(e.target.value)
+                                if(newTeamName === "")
                                     ToastNotification('error', "Team Name can't be empty")
-                                } else {
-                                    updateTeamName(e.target.value)
-                                }
                             }}
                             onPaste={(e) => {
                                 if(e.target.value === "" ) {
@@ -64,13 +61,12 @@ export default function TeamRegisterPage() {
                             onKeyPress={(e) => {
                                 if (e.keyCode === 13 || e.which === 13) {
                                     e.preventDefault()
-                                    if(e.target.value === "" ) {
-                                        ToastNotification('error', "Team Name can't be empty")
-                                    } else {
+                                    newTeamName === "" ?
+                                        ToastNotification('error', "Team Name can't be empty") :
                                         updateTeamName(e.target.value)
                                     }
                                 }
-                            }}
+                            }
                             name="teamname"
                             id="teamname"
                             type="text"

@@ -33,14 +33,16 @@ const MainBar = React.memo((props) => {
                         }
                     </p>
                     <div className="flex items-center">
-                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" onClick={(e) => {
-                            e.preventDefault();
+                        <button className="text-white hover:bg-grey-darker rounded-lg p-1" onClick={(e) => {
                             history.push('/team-profile')
                         }}>
-                            <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>settings</i>
+                            <i className="material-icons md-light md-inactive" style={{ fontSize: "15px", margin: "0" }}>settings</i>
                         </button>
-                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" >
-                            <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>center_focus_strong</i>
+                        <button className="text-white hover:bg-grey-darker rounded-lg p-1" onClick={() => {
+                            window.localStorage.setItem("userData", JSON.stringify(state.userProfileData));
+                            window.location.reload()
+                        }}>
+                            <i className="material-icons md-light md-inactive" style={{ fontSize: "15px", margin: "0" }}>autorenew</i>
                         </button>
                         <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1"
                             onClick={(e) => {
