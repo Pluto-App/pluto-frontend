@@ -8,7 +8,7 @@ import ToastNotification from '../../widgets/ToastNotification';
 import { socket_live, events } from '../../sockets';
 import * as md5 from "md5";
 
-export default function UserListItem(props) {
+const UserListItem = React.memo((props) => {
 
     let history = useHistory();
 
@@ -172,4 +172,6 @@ export default function UserListItem(props) {
             </div>
         </div>
     )
-}
+})
+
+export default UserListItem;

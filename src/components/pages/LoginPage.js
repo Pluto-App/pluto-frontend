@@ -5,12 +5,11 @@ import { useHistory } from "react-router-dom";
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import googleLogo from "../../assets/google.svg";
-import ToastNotification from '../widgets/ToastNotification';
 
-// TODO Clear Login cache or store it in some local storage/file. 
+// TODO Clear Login cache or store it in some local storage/file. => window.localStorage in electron.
 // TODO Secure the Google Login. 
 
-const LoginPage = () => {
+const LoginPage = React.memo(() => {
 
   const override = css`
     display: block;
@@ -38,18 +37,19 @@ const LoginPage = () => {
   return (
     <div className="bg-gray-900 text-white flex flex-1 pt-20 px-10 justify-center" style={{ height: "calc(100vh - 30px)" }}>
       <div>
-        <h2 className="text-center mb-2 font-italic font-bold text-xl">Pluto Office</h2>
+        <h2 className="text-center mb-3 font-italic font-bold text-xl">Pluto Office</h2>
         {
           !state.loginStarted ?
             <button
               onClick={googleSignInAction}
-              className="text-white bg-gray-800 border border-solid border-white-900 hover:bg-white shadow hover:shadow-lg inline-flex hover:text-black active:bg-white-600 font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline text-center rounded-full" 
+              className="text-white bg-gray-800 border border-solid border-white-900 hover:bg-white shadow hover:shadow-lg inline-flex 
+              hover:text-black active:bg-white-600 font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline text-center rounded-full" 
               type="button" 
               style={{ transition: "all .50s ease" }}
             >
               <div className="flex">
                 <img className="w-1/6" src={googleLogo} alt="" />
-                <span className="w-5/6 py-1" >
+                <span className="w-5/6 py-1 px-1" >
                   Login With Google
               </span>
               </div>
@@ -64,11 +64,11 @@ const LoginPage = () => {
             </div>
         }
         <p className="text-center mt-6 text-md"> Don't have an account? <br />
-          <a href="" onClick={openSignup} className="text-blue-400 font-bold no-underline hover:text-blue-300"> Sign Up </a>
+          <a href="" onClick={openSignup} className="text-blue-400 font-bold no-underline hover:text-blue-300">Sign Up</a>
         </p>
       </div>
     </div>
   );
-}
+})
 
 export default LoginPage;

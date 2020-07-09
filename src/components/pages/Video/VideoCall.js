@@ -6,7 +6,8 @@ import AgoraVideoCall from "../../AgoraVideoCall/AgoraCanvas";
 import { AGORA_APP_ID } from "../../../agora.config";
 
 // TODO Add Support for Audio Calling. 
-// TODO Add Support for Screen-Share and Whiteboard (MVP Level Decision)
+// TODO Add Support for Screen-Share and Whiteboard. Switch Stream
+
 class VideoCall extends React.Component {
   constructor(props) {
     super(props);

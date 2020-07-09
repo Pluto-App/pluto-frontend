@@ -31,7 +31,7 @@ export default function App() {
   useEffect(
     () => {
 
-      loadProgressBar()
+      // loadProgressBar()
       let interval = 0;
       let onlineInterval = 0;
       // Check and emit liveness

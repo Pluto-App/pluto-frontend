@@ -21,7 +21,6 @@ export default function TeamRegisterPage() {
     const { state, actions } = useOvermind();
 
     const createTeam = async (e) => {
-        // FIXME preventDefault ?? 
         // FIXME Team Add press enter issue.
         e.preventDefault();
         if (newTeamName !== "" && newTeamName.length >= 4) {

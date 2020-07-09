@@ -8,7 +8,7 @@ import * as Cookies from "js-cookie";
 import * as md5 from "md5";
 import { socket_live, events } from '../../sockets';
 
-export default function RoomListItem(props) {
+const RoomListItem = React.memo((props) => {
 
     // TODO Notify when new room created. Add to list room info.  
     let history = useHistory();
@@ -202,4 +202,6 @@ export default function RoomListItem(props) {
             }
         </div>
     )
-}
+})
+
+export default RoomListItem;

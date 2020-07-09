@@ -4,7 +4,7 @@ import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import BackButton from '../../widgets/BackButton'
 
-export default function UserProfile() {
+const UserProfile = React.memo(() => {
 
     let history = useHistory();
 
@@ -59,5 +59,6 @@ export default function UserProfile() {
             </div>
         </div>
     )
+})
 
-}
+export default UserProfile;

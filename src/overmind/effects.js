@@ -38,9 +38,6 @@ export const postHandler = async (url, payload) => {
         let dump = await axios.post(url, qs.stringify(
             payload
         ), {
-            referrerPolicy: 'no-referrer',
-            redirect: 'follow', 
-            mode: 'cors',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'cache-control': 'no-cache',
@@ -48,6 +45,7 @@ export const postHandler = async (url, payload) => {
             },
         })
         data = await dump.data
+        alert("Post")
     } catch (error) {
         ToastNotification('error', error)
     }

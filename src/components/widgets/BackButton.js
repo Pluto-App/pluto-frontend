@@ -1,7 +1,7 @@
 import React from 'react'
 import { useHistory } from "react-router-dom"
 
-export default function BackButton(props) {
+const BackButton = React.memo((props) => {
 
     let history = useHistory();
 
@@ -19,4 +19,6 @@ export default function BackButton(props) {
             Back
         </button>
     )
-}
+});
+
+export default BackButton;

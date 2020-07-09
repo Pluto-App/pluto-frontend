@@ -2,23 +2,13 @@
 import React from 'react'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
-import { css } from "@emotion/core";
-import BeatLoader from "react-spinners/BeatLoader";
 
-export default function MainBar(props) {
-
-    // FIXME Remove App name info when we display Active-Win App Icon per user via CDN
-    const override = css`
-        display: block;
-        margin: 0 auto;
-        border-color: white;
-    `;
+const MainBar = React.memo((props) => {
 
     let history = useHistory();
-    const { state, actions, effects, reaction } = useOvermind();
+    const { state, actions } = useOvermind();
 
     const handleHardReload = async () => {
-        // await actions.googlehandleLogin()
         await actions.teamsbyuserid({
             userid: props.userid
         })
@@ -39,13 +29,8 @@ export default function MainBar(props) {
                     <p
                         className="flex p-1 items-center text-grey-dark font-bold rounded-lg hover:text-white cursor-pointer hover:bg-grey-darker">
                         {
-                            state.userTeamDataInfo !== {} && state.activeTeamId !== 0 ? state.userTeamDataInfo[state.activeTeamId].teamname
-                                :
-                               props.appInfo
+                            state.userTeamDataInfo !== {} && state.activeTeamId !== 0 ? state.userTeamDataInfo[state.activeTeamId].teamname : props.appInfo
                         }
-                        {/* <span>
-                            {props.appInfo}
-                        </span> */}
                     </p>
                     <div className="flex items-center">
                         <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" onClick={(e) => {
@@ -57,7 +42,7 @@ export default function MainBar(props) {
                         <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" >
                             <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>center_focus_strong</i>
                         </button>
-                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" 
+                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1"
                             onClick={(e) => {
                                 handleHardReload()
                             }}
@@ -77,4 +62,6 @@ export default function MainBar(props) {
             </div>
         </div>
     )
-}
+})
+
+export default MainBar;
