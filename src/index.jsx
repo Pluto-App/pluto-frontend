@@ -21,5 +21,5 @@ render(
   <Provider value={NewOverMind}>
     <NewApp />
   </Provider>,
-  document.getElementById('pluto-div')
+  document.getElementById('root')
 );
