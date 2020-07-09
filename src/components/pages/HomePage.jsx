@@ -101,8 +101,19 @@ export default function HomePage() {
 
     useEffect(
         () => {
-            load1();
-        }, [actions, state.userProfileData.userid]
+            const loadTeamsbyUserId = async (userid) => {
+                await actions.teamsbyuserid({
+                    userid: userid
+                })
+            }
+
+            let userData = JSON.parse(window.localStorage.getItem("userData"))
+
+            actions.updateFromLocalStore(userData).then(
+                loadTeamsbyUserId(state.userProfileData.userid)
+            )
+
+        }, [actions, state.userProfileData.userid, window.localStorage]
     )
 
     useEffect(
