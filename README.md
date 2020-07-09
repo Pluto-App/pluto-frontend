@@ -1,10 +1,8 @@
-![Build/release Ubuntu Latest](https://github.com/Pluto-App/plutoapp-new-frontend/workflows/Build/release%20Ubuntu%20Latest/badge.svg?branch=master)
-
 ![Build/release Mac OSX Latest](https://github.com/Pluto-App/plutoapp-new-frontend/workflows/Build/release%20Mac%20OSX%20Latest/badge.svg?branch=master)
 
-![Build/release Windows Latest](https://github.com/Pluto-App/plutoapp-new-frontend/workflows/Build/release%20Mac%20OSX%20Latest/badge.svg?branch=master)
-
 ## Available Scripts
+
+```Yarn``` is also available.
 
 In the project directory, you can run:
 
@@ -19,6 +17,14 @@ Opens as ```electron``` app.
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
+
+### `npm run start-local`
+
+Local electron app starts with backend connection to ```localhost```. 
+
+### `npm run start-prod`
+
+Local electron app starts with backend connection to ```heroku``` backend. 
 
 ### `npm run build`
 
