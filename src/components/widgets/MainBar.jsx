@@ -18,7 +18,7 @@ export default function MainBar(props) {
     const { state, actions, effects, reaction } = useOvermind();
 
     const handleHardReload = async () => {
-        // await actions.googlehandleLogin()
+
         await actions.teamsbyuserid({
             userid: props.userid
         })
@@ -39,13 +39,8 @@ export default function MainBar(props) {
                     <p
                         className="flex p-1 items-center text-grey-dark font-bold rounded-lg hover:text-white cursor-pointer hover:bg-grey-darker">
                         {
-                            state.userTeamDataInfo !== {} && state.activeTeamId !== 0 ? state.userTeamDataInfo[state.activeTeamId].teamname
-                                :
-                               props.appInfo
+                            state.userTeamDataInfo !== {} && state.activeTeamId !== 0 ? state.userTeamDataInfo[state.activeTeamId].teamname : props.appInfo
                         }
-                        {/* <span>
-                            {props.appInfo}
-                        </span> */}
                     </p>
                     <div className="flex items-center">
                         <button className="text-white hover:bg-grey-darker rounded-lg p-1" onClick={(e) => {

@@ -95,7 +95,7 @@ export const updateHandler = async (url, payload) => {
         })
         data = await dump.data
     } catch (error) {
-        ToastNotification('HTTP UPDATE Error', error)
+        ToastNotification('error', error)
     }
 
     return data
@@ -120,7 +120,7 @@ export const deleteHandler = async (url, payload) => {
         })
         data = await dump.data
     } catch (error) {
-        ToastNotification('HTTP DELETE error', error)
+        ToastNotification('error', error)
     }
 
     return data

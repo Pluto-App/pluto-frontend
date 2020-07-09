@@ -122,40 +122,11 @@ export default function HomePage() {
         }, [actions, state.activeTeamId]
     )
 
-    /**
-     * Active Win Code. 
-     */
-    // useEffect(
-    //     () => {
-
-    //         let interval = 0;
-    //         if (interval) {
-    //             clearInterval(interval);
-    //         }
-
-    //         // Every 5 Secs, make a query. 
-    //         interval = setInterval(() => {
-    //             activeWin().then((data) => {
-    //                 if (data !== null && data.owner !== null) {
-    //                     updateAppInfo(appInfo => {
-    //                         appInfo = data.owner.name;
-    //                     });
-    //                 }
-    //             })
-    //         }, 5000)
-
-    //         // Clear interval on return . 
-    //         return () => {
-    //             clearInterval(interval);
-    //         }
-    //         // eslint-disable-next-line react-hooks/exhaustive-deps
-    //     }, []
-    // )
-
     const customStyle = {
         "top": "46%",
         "width": "calc(94% - 50px)"
     }
+
     return (
         <div className="w-full flex">
             <Sidebar></Sidebar>
@@ -178,7 +149,7 @@ export default function HomePage() {
                     {
                         isAddingRoom &&
                         <div className="flex justify-center items-center hover:bg-gray-800">
-                            <input className="shadow appearance-none border rounded w-full py-1 
+                            <input className="shadow appearance-none border rounded w-full py-1
                             px-5 text-gray-700 leading-tight focus:outline-none"
                                 style={{ width: "95%" }}
                                 onChange={handleChange}
