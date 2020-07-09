@@ -122,7 +122,7 @@ export default function App() {
       socket_live.on(events.offline, (data) => {
         // FIXME Update Status of User Offline ?
         actions.updateStatusColor({
-          id : data,
+          userid : data,
           statusColor : 'gray'
         })
       })
