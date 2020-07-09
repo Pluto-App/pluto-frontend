@@ -1,9 +1,9 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
-import BackButton from '../components/widgets/BackButton';
-import HomePage from '../components/pages/HomePage';
+import { render } from '@testing-library/react';
+import App from '../App';
 
-test('BackButton has no render issues', () => {
-  const { getByText } = render(<BackButton />);
-  const linkElement = getByText(/keyboard/i);
+test('renders learn react link', () => {
+  const { getByText } = render(<App />);
+  const linkElement = getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
 });
