@@ -83,27 +83,61 @@ class AgoraCanvas extends React.Component {
     // rerendering
     let canvas = document.querySelector('#ag-canvas')
     // pip mode (can only use when less than 4 people in channel)
-    let no = this.state.streamList.length
-    this.state.streamList.map((item, index) => {
-      let id = item.getId()
-      let dom = document.querySelector('#ag-item-' + id)
-      if (!dom) {
-        dom = document.createElement('section')
-        dom.setAttribute('id', 'ag-item-' + id)
-        dom.setAttribute('class', 'ag-item')
-        canvas.appendChild(dom)
-        item.play('ag-item-' + id)
+    if (this.state.displayMode === 'pip') {
+      let no = this.state.streamList.length
+      if (no > 4) {
+        this.setState({ displayMode: 'tile' })
+        return
       }
-      dom.setAttribute('style', `grid-area: ${tile_canvas[no][index]}`)
-      item.player.resize && item.player.resize()
-    })
+      this.state.streamList.map((item, index) => {
+        let id = item.getId()
+        let dom = document.querySelector('#ag-item-' + id)
+        if (!dom) {
+          dom = document.createElement('section')
+          dom.setAttribute('id', 'ag-item-' + id)
+          dom.setAttribute('class', 'ag-item')
+          canvas.appendChild(dom)
+          item.play('ag-item-' + id)
+        }
+        if (index === no - 1) {
+          dom.setAttribute('style', `grid-area: span 12/span 24/13/25`)
+        }
+        else {
+          dom.setAttribute('style', `grid-area: span 3/span 4/${4 + 3 * index}/25;
+                    z-index:1;width:calc(100% - 20px);height:calc(100% - 20px)`)
+        }
+
+        item.player.resize && item.player.resize()
+
+
+      })
+    }
+    // tile mode
+    else if (this.state.displayMode === 'tile') {
+      let no = this.state.streamList.length
+      this.state.streamList.map((item, index) => {
+        let id = item.getId()
+        let dom = document.querySelector('#ag-item-' + id)
+        if (!dom) {
+          dom = document.createElement('section')
+          dom.setAttribute('id', 'ag-item-' + id)
+          dom.setAttribute('class', 'ag-item')
+          canvas.appendChild(dom)
+          item.play('ag-item-' + id)
+        }
+        dom.setAttribute('style', `grid-area: ${tile_canvas[no][index]}`)
+        item.player.resize && item.player.resize()
+
+
+      })
+    }
     // screen share mode (tbd)
-    if (this.state.displayMode === 'share') {
+    else if (this.state.displayMode === 'share') {
 
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.client && this.client.unpublish(this.localStream)
     this.localStream && this.localStream.close()
     this.client && this.client.leave(() => {
@@ -190,6 +224,7 @@ class AgoraCanvas extends React.Component {
           streamList: tempList
         })
       }
+
     })
   }
 
@@ -215,7 +250,7 @@ class AgoraCanvas extends React.Component {
 
   handleCamera = (e) => {
     document.getElementById("")
-    if (this.localStream.isVideoOn()) {
+    if(this.localStream.isVideoOn()) {
       this.localStream.disableVideo()
       document.getElementById("video-icon").innerHTML = "videocam_off"
     } else {
@@ -232,6 +267,42 @@ class AgoraCanvas extends React.Component {
       this.localStream.enableAudio()
       document.getElementById("mic-icon").innerHTML = "mic"
     }
+  }
+
+  switchDisplay = (e) => {
+    if (e.currentTarget.classList.contains('disabled') || this.state.streamList.length <= 1) {
+      return
+    }
+    if (this.state.displayMode === 'pip') {
+      this.setState({ displayMode: 'tile' })
+    }
+    else if (this.state.displayMode === 'tile') {
+      this.setState({ displayMode: 'pip' })
+    }
+    else if (this.state.displayMode === 'share') {
+      // do nothing or alert, tbd
+    }
+    else {
+      console.error('Display Mode can only be tile/pip/share')
+    }
+  }
+
+  hideRemote = (e) => {
+    if (e.currentTarget.classList.contains('disabled') || this.state.streamList.length <= 1) {
+      return
+    }
+    let list
+    let id = this.state.streamList[this.state.streamList.length - 1].getId()
+    list = Array.from(document.querySelectorAll(`.ag-item:not(#ag-item-${id})`))
+    list.map(item => {
+      if (item.style.display !== 'none') {
+        item.style.display = 'none'
+      }
+      else {
+        item.style.display = 'block'
+      }
+    })
+
   }
 
   handleExit = (e) => {
@@ -262,8 +333,8 @@ class AgoraCanvas extends React.Component {
       gridGap: '5px',
       alignItems: 'center',
       justifyItems: 'center',
-      gridTemplateRows: 'repeat(2, auto)',
-      gridTemplateColumns: 'repeat(7, auto)'
+      gridTemplateRows: 'repeat(12, auto)',
+      gridTemplateColumns: 'repeat(24, auto)'
     }
     const videoControlBtn = this.props.attendeeMode === 'video' ?
       (<span
