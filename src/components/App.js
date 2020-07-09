@@ -113,7 +113,7 @@ export default function App() {
       socket_live.on(events.online, (data) => {
         // FIXME Update Status of User Online ?
         actions.updateStatusColor({
-          userid : data,
+          id : data,
           statusColor : 'green'
         })
       })
@@ -146,7 +146,7 @@ export default function App() {
         if (!(await isOnline())) {
           ToastNotification('error', 'You are Offline 😢')
           actions.updateStatusColor({
-            userid : state.userProfileData.userid,
+            id : state.userProfileData.userid,
             statusColor : 'yellow'
           })
         } 

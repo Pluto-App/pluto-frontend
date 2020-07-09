@@ -7,7 +7,7 @@ import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import ToastNotification from '../../widgets/ToastNotification';
 
-const TeamRegisterPage = React.memo(() => {
+export default function TeamRegisterPage() {
 
     const [newTeamName, updateTeamName] = useState("");
     let history = useHistory();
@@ -95,6 +95,4 @@ const TeamRegisterPage = React.memo(() => {
             </div>
         </div>
     )
-})
-
-export default TeamRegisterPage;
+}

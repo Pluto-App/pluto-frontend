@@ -4,7 +4,7 @@ import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import BackButton from '../../widgets/BackButton'
 
-const TeamProfile = React.memo((props) =>{
+export default function TeamProfile() {
 
     let history = useHistory();
 
@@ -45,6 +45,4 @@ const TeamProfile = React.memo((props) =>{
             </div>
         </div>
     )
-})
-
-export default TeamProfile;
+}
