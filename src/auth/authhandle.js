@@ -1,5 +1,4 @@
 import { signInWithPopup, fetchAccessTokens, fetchGoogleProfile } from "./signInPopup";
-import md5 from 'md5';
 
 /**
  * @param none
@@ -18,7 +17,7 @@ export const googleSignIn = async () => {
   const { id, email, name, picture } = await fetchGoogleProfile(tokens.access_token)
   const providerUser = {
     // Donot send Google ID Directly.
-    userid: md5(id),
+    userid: id,
     useremail: email,
     username: name,
     avatar: picture,
