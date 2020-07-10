@@ -164,39 +164,35 @@ export const usersbyteamid = async ({ state, effects }, values) => {
  * Emit Team Switch Event
  */
 export const changeActiveTeam = async ({ state }, values) => {
-    if(values !== state.activeTeamId) {
-        state.userTeamDataInfo[state.activeTeamId].isActive = false
-        state.activeTeamId = values
-        state.userTeamDataInfo[values].isActive = true
-        socket_live.emit(events.team_switch, {
-            teamid: state.activeTeamId,
-            userid: state.userProfileData.userid,
-            teamname: state.userTeamDataInfo[state.activeTeamId].teamname,
-            username: state.userProfileData.username
-        })
-    }
+    state.userTeamDataInfo[state.activeTeamId].isActive = false
+    state.activeTeamId = values
+    state.userTeamDataInfo[values].isActive = true
+    socket_live.emit(events.team_switch, {
+        teamid: state.activeTeamId,
+        userid: state.userProfileData.userid,
+        teamname: state.userTeamDataInfo[state.activeTeamId].teamname,
+        username: state.userProfileData.username
+    })
 }
 
 /**
  * Emit Room Switch Event
  */
 export const changeActiveRoom = async ({ state }, values) => {
-    if(values.roomid !== state.activeRoomId) {
-        state.activeRoomName = values.roomname
-        state.activeRoomId = values.roomid
-        socket_live.emit(events.room_switch, {
-            // Trial
-            avatar : state.userProfileData.avatar,
-            useremail: state.userProfileData.useremail,
-            username: state.userProfileData.username,
-            // Trial
-            userid: state.userProfileData.userid,
-            teamname: state.userTeamDataInfo[state.activeTeamId].teamname,
-            teamid: state.activeTeamId,
-            roomid: values.roomid,
-            roomname: values.roomname
-        })
-    }
+    state.activeRoomName = values.roomname
+    state.activeRoomId = values.roomid
+    socket_live.emit(events.room_switch, {
+        // Trial
+        avatar : state.userProfileData.avatar,
+        useremail: state.userProfileData.useremail,
+        username: state.userProfileData.username,
+        // Trial
+        userid: state.userProfileData.userid,
+        teamname: state.userTeamDataInfo[state.activeTeamId].teamname,
+        teamid: state.activeTeamId,
+        roomid: values.roomid,
+        roomname: values.roomname
+    })
 }
 
 /**
@@ -323,17 +319,18 @@ export const removeFromRoom = ({ state, effects }, values) => {
 }
 
 export const sendRoomBroadcast = async ({ state, effects }, values) => {
-    socket_live.emit(events.room_broadcast, {
-        message : values.message,
-        sender : values.sender
-    })
+    socket_live.emit(events.room_broadcast, values)
 }
 
-export const updateFromLocalStore = async ({ state, effects }, values) => {
-    state.loggedIn = true
-    state.signedUp = true;
-    if (typeof values !== 'undefined') {
-        state.userProfileData = values;
-        state.teamowner = state.userProfileData.username
-    }
+export const addNewTeamMember = async ({ state, effects }, values) => {
+    var userObj = values
+    userObj.roomid = ""
+    state.teamMemberList.push(userObj)
+    state.userMapping[values.userid] = userObj
+}
+
+export const addNewEmitRoom = async ({ state, effects }, values) => {
+    state.loadingRooms = true
+    state.RoomListArray.unshift(values)
+    state.loadingRooms = false
 }

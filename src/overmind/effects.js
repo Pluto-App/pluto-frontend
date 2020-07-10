@@ -45,7 +45,6 @@ export const postHandler = async (url, payload) => {
             },
         })
         data = await dump.data
-        alert("Post")
     } catch (error) {
         ToastNotification('error', error)
     }
