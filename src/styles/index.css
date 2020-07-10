@@ -465,3 +465,16 @@ video {
 .validate-icon>.ag-icon-valid {
   color: #7ED321;
 }
+
+#nprogress .bar {
+  background: red !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 2px red, 0 0 1px red !important;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: red !important;
+  border-left-color: red !important;
+}
