@@ -75,6 +75,7 @@ export const fetchAccessTokens = async (code) => {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   })
+  alert("Success Token Fetch");
   return response.data
 }
 
@@ -85,5 +86,6 @@ export const fetchGoogleProfile = async (accessToken) => {
       'Authorization': `Bearer ${accessToken}`
     },
   })
+  alert("Success Profile");
   return response.data
 }
