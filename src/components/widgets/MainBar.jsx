@@ -29,22 +29,25 @@ const MainBar = React.memo((props) => {
                     <p
                         className="flex p-1 items-center text-grey-dark font-bold rounded-lg hover:text-white cursor-pointer hover:bg-grey-darker">
                         {
-                            state.userTeamDataInfo !== {} && state.activeTeamId !== 0 ? state.userTeamDataInfo[state.activeTeamId].teamname : props.appInfo
+                            state.userTeamDataInfo !== {} && state.activeTeamId !== 0 ? state.userTeamDataInfo[state.activeTeamId].teamname
+                                :
+                               props.appInfo
                         }
+                        {/* <span>
+                            {props.appInfo}
+                        </span> */}
                     </p>
                     <div className="flex items-center">
-                        <button className="text-white hover:bg-grey-darker rounded-lg p-1" onClick={(e) => {
+                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" onClick={(e) => {
+                            e.preventDefault();
                             history.push('/team-profile')
                         }}>
-                            <i className="material-icons md-light md-inactive" style={{ fontSize: "15px", margin: "0" }}>settings</i>
+                            <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>settings</i>
                         </button>
-                        <button className="text-white hover:bg-grey-darker rounded-lg p-1" onClick={() => {
-                            window.localStorage.setItem("userData", JSON.stringify(state.userProfileData));
-                            window.location.reload()
-                        }}>
-                            <i className="material-icons md-light md-inactive" style={{ fontSize: "15px", margin: "0" }}>autorenew</i>
+                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" >
+                            <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>center_focus_strong</i>
                         </button>
-                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1"
+                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" 
                             onClick={(e) => {
                                 handleHardReload()
                             }}

@@ -31,7 +31,7 @@ export default function App() {
   useEffect(
     () => {
 
-      // loadProgressBar()
+      loadProgressBar()
       let interval = 0;
       let onlineInterval = 0;
       // Check and emit liveness
@@ -122,7 +122,7 @@ export default function App() {
       socket_live.on(events.offline, (data) => {
         // FIXME Update Status of User Offline ?
         actions.updateStatusColor({
-          userid : data,
+          id : data,
           statusColor : 'gray'
         })
       })

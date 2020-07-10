@@ -23,8 +23,8 @@ export const signInWithPopup = async () => {
       redirect_uri: process.env.REACT_APP_GOOGLE_REDIRECT_URI,
       client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
       include_granted_scopes: 'true',
+      scope:  `openid profile email`,
       prompt: 'select_account',
-      scope: 'https://www.googleapis.com/auth/drive.metadata.readonly',
       state: 'pass-through value'
     }
 
@@ -75,7 +75,6 @@ export const fetchAccessTokens = async (code) => {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   })
-  alert("Success Token Fetch");
   return response.data
 }
 
@@ -86,6 +85,5 @@ export const fetchGoogleProfile = async (accessToken) => {
       'Authorization': `Bearer ${accessToken}`
     },
   })
-  alert("Success Profile");
   return response.data
 }
