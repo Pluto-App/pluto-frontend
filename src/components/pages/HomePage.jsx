@@ -14,7 +14,7 @@ import { sha224 } from 'js-sha256';
 // TODO Move Active Win info to user profile (not necessary?)
 // FIXME Add Active Win Support. The package fails to build. Search Alternatives. 
 
-function RoomList(props) {
+const RoomList = React.memo((props) => {
 
     const roomlist = props.map((rooms) =>
         <RoomListItem
@@ -29,9 +29,9 @@ function RoomList(props) {
             {roomlist}
         </>
     );
-}
+})
 
-function MembersList(props) {
+const MembersList = React.memo((props) => {
 
     const teamMemberList = Object.entries(props).map(([id, member]) =>
         <UserListItem
@@ -49,7 +49,7 @@ function MembersList(props) {
             {teamMemberList}
         </>
     );
-}
+});
 
 export default function HomePage() {
 
@@ -111,40 +111,11 @@ export default function HomePage() {
         }, [actions, state.activeTeamId]
     )
 
-    /**
-     * Active Win Code. 
-     */
-    // useEffect(
-    //     () => {
-
-    //         let interval = 0;
-    //         if (interval) {
-    //             clearInterval(interval);
-    //         }
-
-    //         // Every 5 Secs, make a query. 
-    //         interval = setInterval(() => {
-    //             activeWin().then((data) => {
-    //                 if (data !== null && data.owner !== null) {
-    //                     updateAppInfo(appInfo => {
-    //                         appInfo = data.owner.name;
-    //                     });
-    //                 }
-    //             })
-    //         }, 5000)
-
-    //         // Clear interval on return . 
-    //         return () => {
-    //             clearInterval(interval);
-    //         }
-    //         // eslint-disable-next-line react-hooks/exhaustive-deps
-    //     }, []
-    // )
-
     const customStyle = {
         "top": "46%",
         "width": "calc(94% - 50px)"
     }
+    
     return (
         <div className="w-full flex">
             <Sidebar></Sidebar>
