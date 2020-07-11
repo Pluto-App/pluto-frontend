@@ -255,7 +255,7 @@ export default function HomePage() {
                         </p>
                             <input
                                 id="InviteModalLink"
-                                value={'https://joinpluto.herokuapp.com/#/j/' + state.userTeamDataInfo[state.activeTeamId].magiclink}
+                                value={'https://joinpluto.netlify.app/#/j/' + state.userTeamDataInfo[state.activeTeamId].magiclink}
                                 className="w-full shadow appearance-none border text-purple-700 rounded py-1 px-1 bg-purple-200" />
                             <button
                                 className="bg-purple-900 w-full rounded-sm flex justify-center text-white items-center hover:bg-purple-dark 
