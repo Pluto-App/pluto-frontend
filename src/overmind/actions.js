@@ -11,6 +11,20 @@ import { socket_live, events } from '../components/sockets'
 export const handleLogout = async ({ state }) => {
     socket_live.emit(events.offline, state.userProfileData.userid)
     state.loggedIn = false;
+    state.signedUp = true;
+    state.loggedIn = false;
+    state.addingTeam = false;
+    state.loginStarted = false;
+    state.loadingTeams = true;
+    state.loadingMembers = true;
+    state.userProfileData = {};
+    state.userTeamDataInfo = {};
+    state.activeTeamId = 0;
+    state.activeRoomId = 0;
+    state.activeRoomName = "";
+    state.RoomListArray = [];
+    state.userMapping = {};
+    state.teamMemberList = [];
 }
 
 /**
