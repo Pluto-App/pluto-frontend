@@ -6,7 +6,7 @@ import BackButton from '../../widgets/BackButton'
 import UserListItem from '../Users/UserListItem'
 import ToastNotification from '../../widgets/ToastNotification'
 
-const MembersList = React.memo((props) => {
+const MembersList = ((props) => {
 
     const teamMemberList = props.map((member) =>
         <UserListItem

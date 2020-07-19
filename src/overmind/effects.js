@@ -25,7 +25,7 @@ export const getAccessToken = async () => {
         accessId: accessString
     }), customHeaders)
 
-    return token.data.accessToken;
+    return await token.data.accessToken;
 }
 
 export const postHandler = async (url, payload) => {

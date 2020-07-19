@@ -14,7 +14,7 @@ import { sha224 } from 'js-sha256';
 // TODO Move Active Win info to user profile (not necessary?)
 // FIXME Add Active Win Support. The package fails to build. Search Alternatives. 
 
-const RoomList = React.memo((props) => {
+const RoomList = ((props) => {
 
     const roomlist = props.map((rooms) =>
         <RoomListItem
@@ -31,7 +31,7 @@ const RoomList = React.memo((props) => {
     );
 })
 
-const MembersList = React.memo((props) => {
+const MembersList = ((props) => {
 
     const teamMemberList = Object.entries(props).map(([id, member]) =>
         <UserListItem
