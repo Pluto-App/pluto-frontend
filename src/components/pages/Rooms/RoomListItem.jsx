@@ -153,11 +153,11 @@ const RoomListItem = React.memo((props) => {
                                             <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>question_answer</i>Group Chat
                                                 </button>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
-                                        <button className="w-full text-white hover:bg-gray-800 focus:outline-none rounded-lg flex font-bold tracking-wide text-xs items-center" onClick={(e) => {
+                                        <button className="w-full text-white text-green-700 hover:bg-gray-800 focus:outline-none rounded-lg flex font-bold tracking-wide text-xs items-center" onClick={(e) => {
                                             toggleShowMenu(showMenu => !showMenu)
                                             handleVideoCall()
                                         }}>
-                                            <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>video_call</i>Group Call
+                                            <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>video_call</i>Video Call
                                                 </button>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
                                         <button className="w-full text-red-500 hover:bg-red-300 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" onClick={(e) => {

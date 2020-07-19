@@ -11,6 +11,20 @@ import { socket_live, events } from '../components/sockets'
 export const handleLogout = async ({ state }) => {
     socket_live.emit(events.offline, state.userProfileData.userid)
     state.loggedIn = false;
+    state.signedUp = true;
+    state.loggedIn = false;
+    state.addingTeam = false;
+    state.loginStarted = false;
+    state.loadingTeams = true;
+    state.loadingMembers = true;
+    state.userProfileData = {};
+    state.userTeamDataInfo = {};
+    state.activeTeamId = 0;
+    state.activeRoomId = 0;
+    state.activeRoomName = "";
+    state.RoomListArray = [];
+    state.userMapping = {};
+    state.teamMemberList = [];
 }
 
 /**
@@ -285,7 +299,7 @@ export const roomsbyteamid = async ({ state, effects }, values) => {
 export const updateStatusColor = async ({ state, effects }, values) => {
     // TODO Update Status of the user at app Level, When users are active or not. 
     if (Array.isArray(state.teamMemberList) && state.teamMemberList.length) {
-        let updateElem = await state.teamMemberList.find(element => element.userid === values.id)
+        let updateElem = await state.teamMemberList.find(element => element.userid === values.userid)
         if (typeof updateElem !== 'undefined') 
             updateElem.statusColor = values.statusColor
     }

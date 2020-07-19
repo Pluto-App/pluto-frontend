@@ -6,8 +6,7 @@ import BackButton from '../../widgets/BackButton'
 import UserListItem from '../Users/UserListItem'
 import ToastNotification from '../../widgets/ToastNotification'
 
-function MembersList(props) {
-
+const MembersList = ((props) => {
 
     const teamMemberList = props.map((member) =>
         <UserListItem
@@ -26,7 +25,7 @@ function MembersList(props) {
             {teamMemberList}
         </div>
     );
-}
+});
 
 export default function RoomProfile() {
 
@@ -102,7 +101,8 @@ export default function RoomProfile() {
                                         message: roomTextAll,
                                         sender: state.userProfileData.username
                                     })
-                                    e.target.value = ""
+                                    e.target.value = '';
+                                    setRoomTextAll('');
                                 }
                             }
 

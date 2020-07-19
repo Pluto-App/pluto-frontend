@@ -80,61 +80,21 @@ class AgoraCanvas extends React.Component {
   }
 
   componentDidUpdate() {
-    // rerendering
     let canvas = document.querySelector('#ag-canvas')
-    // pip mode (can only use when less than 4 people in channel)
-    if (this.state.displayMode === 'pip') {
-      let no = this.state.streamList.length
-      if (no > 4) {
-        this.setState({ displayMode: 'tile' })
-        return
+    let no = this.state.streamList.length
+    this.state.streamList.map((item, index) => {
+      let id = item.getId()
+      let dom = document.querySelector('#ag-item-' + id)
+      if (!dom) {
+        dom = document.createElement('section')
+        dom.setAttribute('id', 'ag-item-' + id)
+        dom.setAttribute('class', 'ag-item')
+        canvas.appendChild(dom)
+        item.play('ag-item-' + id)
       }
-      this.state.streamList.map((item, index) => {
-        let id = item.getId()
-        let dom = document.querySelector('#ag-item-' + id)
-        if (!dom) {
-          dom = document.createElement('section')
-          dom.setAttribute('id', 'ag-item-' + id)
-          dom.setAttribute('class', 'ag-item')
-          canvas.appendChild(dom)
-          item.play('ag-item-' + id)
-        }
-        if (index === no - 1) {
-          dom.setAttribute('style', `grid-area: span 12/span 24/13/25`)
-        }
-        else {
-          dom.setAttribute('style', `grid-area: span 3/span 4/${4 + 3 * index}/25;
-                    z-index:1;width:calc(100% - 20px);height:calc(100% - 20px)`)
-        }
-
-        item.player.resize && item.player.resize()
-
-
-      })
-    }
-    // tile mode
-    else if (this.state.displayMode === 'tile') {
-      let no = this.state.streamList.length
-      this.state.streamList.map((item, index) => {
-        let id = item.getId()
-        let dom = document.querySelector('#ag-item-' + id)
-        if (!dom) {
-          dom = document.createElement('section')
-          dom.setAttribute('id', 'ag-item-' + id)
-          dom.setAttribute('class', 'ag-item')
-          canvas.appendChild(dom)
-          item.play('ag-item-' + id)
-        }
-        dom.setAttribute('style', `grid-area: ${tile_canvas[no][index]}`)
-        item.player.resize && item.player.resize()
-
-
-      })
-    }
-    // screen share mode (tbd)
-    else if (this.state.displayMode === 'share') {
-
-    }
+      dom.setAttribute('style', `grid-area: ${tile_canvas[no][index]}`)
+      item.player.resize && item.player.resize()
+    })
   }
 
   componentWillUnmount () {
