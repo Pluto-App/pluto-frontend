@@ -51,8 +51,8 @@
 .env.development.local
 .env.test.local
 .env.production.local
+.env.production
 .locals
-.env copy
 .prod
 
 start.sh
