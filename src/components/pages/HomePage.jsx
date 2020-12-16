@@ -9,7 +9,7 @@ import RoomListItem from "./Rooms/RoomListItem"
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import ToastNotification from '../widgets/ToastNotification'
-import { sha224 } from 'js-sha256';
+import { sha224 } from 'js-sha256'
 
 // TODO Move Active Win info to user profile (not necessary?)
 // FIXME Add Active Win Support. The package fails to build. Search Alternatives. 
@@ -73,7 +73,7 @@ export default function HomePage() {
         let newRoom = {
             roomid: sha224(state.activeTeamId + roomname),
             teamid: state.activeTeamId,
-            roomname: roomname + " 🛰️" 
+            roomname: roomname + " 🛰️"
         }
         actions.addNewRoom(newRoom)
     }
@@ -115,7 +115,7 @@ export default function HomePage() {
         "top": "46%",
         "width": "calc(94% - 50px)"
     }
-    
+
     return (
         <div className="w-full flex">
             <Sidebar></Sidebar>

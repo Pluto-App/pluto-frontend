@@ -54,19 +54,29 @@ const UserListItem = React.memo((props) => {
     const startVideo = () => {
         // TODO User Video Call ID. Check Needed.
         // Cannot start a VC Call with oneself.
-        if(props.id !== state.userProfileData.userid) {
+        if (props.id !== state.userProfileData.userid) {
             let id = md5(state.activeTeamId + state.userProfileData.userid);
             Cookies.set("channel", id);
             socket_live.emit(events.video_call, {
-                recieverid : props.id,
+                recieverid: props.id,
                 teamid: state.activeTeamId,
-                senderid : state.userProfileData.userid,
+                senderid: state.userProfileData.userid,
                 username: state.userProfileData.username
             })
             window.require("electron").ipcRenderer.send('load-video-window', id);
             ToastNotification('success', `Initiated VC with ${props.name} 📷`);
         } else {
             ToastNotification('error', "Can't start VC with self 😠")
+            let id = md5(state.activeTeamId + state.userProfileData.userid);
+            Cookies.set("channel", id);
+            socket_live.emit(events.video_call, {
+                recieverid: props.id,
+                teamid: state.activeTeamId,
+                senderid: state.userProfileData.userid,
+                username: state.userProfileData.username
+            })
+            window.require("electron").ipcRenderer.send('load-video-window', id);
+            ToastNotification('success', `Initiated VC with ${props.name} 📷`);
         }
     }
 

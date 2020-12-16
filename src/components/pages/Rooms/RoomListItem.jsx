@@ -46,10 +46,10 @@ const RoomListItem = React.memo((props) => {
         Cookies.set("channel", new_id);
         ToastNotification('success', `Group VC with ${roomName} 📷`);
         socket_live.emit(events.video_call, {
-            roomid : props.id,
-            roomname : roomName, 
+            roomid: props.id,
+            roomname: roomName,
             teamid: state.activeTeamId,
-            userid : state.userProfileData.userid
+            userid: state.userProfileData.userid
         })
         window.require("electron").ipcRenderer.send('load-video-window', new_id);
     }
@@ -75,8 +75,8 @@ const RoomListItem = React.memo((props) => {
         // Change the Room Id of the current user as well. 
         // The user switched to this room. 
         await actions.updateRoomOfMember({
-            userid : state.userProfileData.userid,
-            roomid : props.id
+            userid: state.userProfileData.userid,
+            roomid: props.id
         })
         history.push("/room-profile")
     }

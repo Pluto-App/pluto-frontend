@@ -12,6 +12,7 @@ let video_player
 
 const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
+const activeWin = require('active-win');
 
 // TODO Now we can add external window for settings.
 // TODO Add support for App Signing.
@@ -47,6 +48,9 @@ function createWindow() {
     // Open the DevTools.
     // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
     mainWindow.webContents.openDevTools();
+    (async () => {
+      console.log(await activeWin());
+    })();
   }
 
   mainWindow.on('closed', () => {
@@ -70,7 +74,7 @@ function createWindow() {
     }
   })
 
-  ipcMain.on(`display-app-menu`, function(e, args) {
+  ipcMain.on(`display-app-menu`, function (e, args) {
     if (isWindows && mainWindow) {
       menu.popup({
         window: mainWindow,
@@ -142,68 +146,68 @@ function createWindow() {
       submenu: [
         {
           label: 'Join Team',
-          click () {
+          click() {
 
           }
         },
         {
           label: 'Join Room',
           click() {
-          
+
           }
         },
         { type: 'separator' },
         {
           label: 'Exit',
-          click () {
+          click() {
 
           }
         }
       ],
-    }, 
+    },
     {
       label: 'File 📁',
       submenu: [
         {
           label: 'Share File',
-          click () {
+          click() {
 
           }
         },
         {
           label: 'Sync With GCloud',
           click() {
-          
+
           }
         },
         { type: 'separator' },
         {
           label: 'Exit',
-          click () {
+          click() {
 
           }
         }
       ]
-    }, 
+    },
     {
       label: 'Refersh 🔄',
       submenu: [
         {
           label: 'Reset',
-          click () {
+          click() {
 
           }
         },
         {
           label: 'Logout',
           click() {
-          
+
           }
         },
         { type: 'separator' },
         {
           label: 'Exit',
-          click () {
+          click() {
 
           }
         }

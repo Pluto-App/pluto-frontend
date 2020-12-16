@@ -73,7 +73,7 @@ export default function RoomProfile() {
                     </div>
                 </div>
                 <p className="text-grey font-bold text-sm tracking-wide mt-2">Room | {state.activeRoomName}
-                <button className="text-white hover:bg-gray-900 py-1 px-3 focus:outline-none"
+                    <button className="text-white hover:bg-gray-900 py-1 px-3 focus:outline-none"
                         onClick={(e) => {
                             getJoinedRoomUsers(e)
                         }}
