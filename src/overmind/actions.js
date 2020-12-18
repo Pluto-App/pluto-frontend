@@ -162,8 +162,8 @@ export const usersbyteamid = async ({ state, effects }, values) => {
                 usermail: u.email,
                 avatar: u.avatar,
                 statusColor: u.id === state.userProfileData.userid ? 'green' : 'gray', // default offline. 
-                teamid : values.teamid, 
-                roomid : ""
+                teamid: values.teamid,
+                roomid: ""
             }
         })
     } else {
@@ -197,7 +197,7 @@ export const changeActiveRoom = async ({ state }, values) => {
     state.activeRoomId = values.roomid
     socket_live.emit(events.room_switch, {
         // Trial
-        avatar : state.userProfileData.avatar,
+        avatar: state.userProfileData.avatar,
         useremail: state.userProfileData.useremail,
         username: state.userProfileData.username,
         // Trial
@@ -300,7 +300,7 @@ export const updateStatusColor = async ({ state, effects }, values) => {
     // TODO Update Status of the user at app Level, When users are active or not. 
     if (Array.isArray(state.teamMemberList) && state.teamMemberList.length) {
         let updateElem = await state.teamMemberList.find(element => element.userid === values.userid)
-        if (typeof updateElem !== 'undefined') 
+        if (typeof updateElem !== 'undefined')
             updateElem.statusColor = values.statusColor
     }
     // TODO Testing this map.
@@ -311,7 +311,7 @@ export const updateStatusColor = async ({ state, effects }, values) => {
 export const updateRoomOfMember = async ({ state, effects }, values) => {
     // TODO Update room of user. 
     // TODO Testing this map.
-    if(typeof state.userMapping[values.userid] !== 'undefined')
+    if (typeof state.userMapping[values.userid] !== 'undefined')
         state.userMapping[values.userid].roomid = values.roomid;
 }
 
@@ -320,15 +320,15 @@ export const updateTeamOfMember = async ({ state, effects }, values) => {
     // TODO Testing this map.
     if (Array.isArray(state.teamMemberList) && state.teamMemberList.length) {
         let updateElem = await state.teamMemberList.find(element => element.userid === values.userid)
-        if (typeof updateElem !== 'undefined') 
+        if (typeof updateElem !== 'undefined')
             updateElem.teamid = values.teamid;
     }
-    if(typeof state.userMapping[values.userid] !== 'undefined')
+    if (typeof state.userMapping[values.userid] !== 'undefined')
         state.userMapping[values.userid].teamid = values.teamid
 }
 
 export const removeFromRoom = ({ state, effects }, values) => {
-    state.activeRoomId  = 0;
+    state.activeRoomId = 0;
     state.activeRoomName = "";
 }
 
@@ -347,4 +347,8 @@ export const addNewEmitRoom = async ({ state, effects }, values) => {
     state.loadingRooms = true
     state.RoomListArray.unshift(values)
     state.loadingRooms = false
+}
+
+export const createOrg = async ({ state, effects }, values) => {
+
 }

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
 import TopBar from './widgets/Topbar'
+import OrgRegisterPage from './pages/Organization/OrgRegisterPage'
 import TeamRegisterPage from './pages/Teams/TeamRegisterPage'
 import RoomProfile from './pages/Rooms/RoomProfile'
 import TeamProfile from './pages/Teams/TeamProfile'
@@ -188,6 +189,9 @@ export default function App() {
         </Route>
         <Route exact path="/videocall">
           <VideoCall />
+        </Route>
+        <Route exact path="/add-org">
+          <OrgRegisterPage />
         </Route>
       </Switch>
       <ToastContainer />

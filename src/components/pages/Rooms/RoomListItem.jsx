@@ -86,11 +86,13 @@ const RoomListItem = React.memo((props) => {
             {
                 startedEditing ?
                     <div className="flex justify-center items-center hover:bg-gray-800"
+                        style={{ transition: "all .60s ease" }}
                         onContextMenu={(e) => {
                             e.preventDefault();
                             clickFunc()
                         }}>
-                        <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700 leading-tight focus:outline-none 
+                        focus:shadow-outline"
                             style={{ width: "80%" }}
                             onMouseOver={(e) => {
                                 e.preventDefault()

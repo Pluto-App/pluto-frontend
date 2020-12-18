@@ -66,7 +66,16 @@ const UserListItem = React.memo((props) => {
             window.require("electron").ipcRenderer.send('load-video-window', id);
             ToastNotification('success', `Initiated VC with ${props.name} 📷`);
         } else {
-            ToastNotification('error', "Can't start VC with self 😠")
+            let id = md5(state.activeTeamId + state.userProfileData.userid);
+            Cookies.set("channel", id);
+            socket_live.emit(events.video_call, {
+                recieverid: props.id,
+                teamid: state.activeTeamId,
+                senderid: state.userProfileData.userid,
+                username: state.userProfileData.username
+            })
+            window.require("electron").ipcRenderer.send('load-video-window', id);
+            // ToastNotification('error', "Can't start VC with self 😠")
         }
     }
 
