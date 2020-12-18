@@ -37,7 +37,7 @@ export const googlehandleLogin = async ({ state, effects }) => {
     ToastNotification('info', "Logging In...🚀")
     state.userProfileData = await googleSignIn()
     let LoginData = await effects.postHandler(process.env.REACT_APP_LOGIN_URL, state.userProfileData)
-    state.userProfileData.addStatus = LoginData.addStatus
+    state.userProfileData.addStatus = LoginData.addStatus || 0
     state.teamowner = state.userProfileData.username
     socket_live.emit(events.online, state.userProfileData.userid)
     state.loggedIn = true
