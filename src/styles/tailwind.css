@@ -23277,16 +23277,16 @@ video {
 }
 
 #nprogress .bar {
-  background: red !important;
+  background: #7354d6 !important;
 }
 
 #nprogress .peg {
-  box-shadow: 0 0 2px red, 0 0 1px red !important;
+  box-shadow: 0 0 0px white, 0 0 0px white !important;
 }
 
 #nprogress .spinner-icon {
-  border-top-color: red !important;
-  border-left-color: red !important;
+  border-top-color:transparent !important;
+  border-left-color:transparent !important;
 }
 
 @media (min-width: 640px) {

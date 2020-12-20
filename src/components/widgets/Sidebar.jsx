@@ -39,7 +39,7 @@ export default function Sidebar(props) {
                         Object.entries(state.userTeamDataInfo).map(([id, value]) =>
                             state.userTeamDataInfo[id].isActive ?
                                 <a href="/home" className="sidebar-icon flex items-center text-grey px-2 py-2 no-underline cursor-pointer 
-                                bg-gray-900 hover:bg-green-900" style={{ transition: "all .60s ease" }} id={id} key={id}
+                                bg-gray-900 hover:bg-indigo-900" style={{ transition: "all .60s ease" }} id={id} key={id}
                                     onClick={(e) => {
                                         e.preventDefault()
                                         actions.changeActiveTeam(id).then(() => {

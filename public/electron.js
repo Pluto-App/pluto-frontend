@@ -19,8 +19,8 @@ const activeWin = require('active-win');
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 315,
-    height: 320,
+    width: 300,
+    height: 350,
     titleBarStyle: 'hiddenInset',
     title: "MainWindow",
     frame: false,
@@ -34,6 +34,13 @@ function createWindow() {
 
   // FIXME Maximize/Minimize Issue.
   // mainWindow.setAlwaysOnTop(true, 'screen');
+
+  const settingsUrl = url.format({
+    pathname: path.join(__dirname, '../build/index.html'),
+    hash: '/user-profile',
+    protocol: 'file:',
+    slashes: true
+  })
 
   const startPageUrl = url.format({
     pathname: path.join(__dirname, '../build/index.html'),
@@ -75,7 +82,7 @@ function createWindow() {
   })
 
   ipcMain.on('resize-normal', (event, arg) => {
-    mainWindow.setSize(315, 606)
+    mainWindow.setSize(300, 700)
   })
 
   ipcMain.on('close-video', (event, arg) => {
@@ -107,8 +114,8 @@ function createWindow() {
     // create the window
     video_player = new BrowserWindow({
       show: true,
-      width: 300,
-      height: 220,
+      width: 250,
+      height: 150,
       frame: false,
       title: "VideoWindow",
       x: swidth - 310,
@@ -149,6 +156,15 @@ function createWindow() {
     })
 
   });
+
+  ipcMain.on('video-resize-normal', (event, arg) => {
+    video_player.setSize(250, 150)
+  })
+
+  ipcMain.on('screen-share-options', (event, arg) => {
+    video_player.setSize(675, 675)
+  })
+
 
   var menu = Menu.buildFromTemplate([
     {
