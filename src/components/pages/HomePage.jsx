@@ -68,6 +68,15 @@ export default function HomePage() {
     const [appInfo, updateAppInfo] = useState("No Teams");
     const [newRoomName, updateNewRoomName] = useState("");
 
+    useEffect(() => {
+        const setActiveWin = setTimeout(async () => {
+            const AppName = await window.require("electron").ipcRenderer.sendSync('active-win');
+            actions.setActiveWinInfo(AppName)
+            console.log(AppName)
+        }, 2000)
+        return () => clearTimeout(setActiveWin);
+    }, [])
+
     const addingNewRoom = async (roomname) => {
 
         let newRoom = {

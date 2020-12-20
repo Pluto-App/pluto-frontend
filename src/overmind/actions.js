@@ -352,3 +352,6 @@ export const addNewEmitRoom = async ({ state, effects }, values) => {
 export const createOrg = async ({ state, effects }, values) => {
 
 }
+export const setActiveWinInfo = async ({ state, effect }, values) => {
+    state.activeWindowApp = values
+}

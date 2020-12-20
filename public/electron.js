@@ -49,7 +49,8 @@ function createWindow() {
     // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
     mainWindow.webContents.openDevTools();
     (async () => {
-      console.log(await activeWin());
+      data = await activeWin()
+      console.log(data.owner.name)
     })();
   }
 
@@ -59,6 +60,11 @@ function createWindow() {
     windows.forEach(x => x.close());
 
   });
+
+  ipcMain.on('active-win', async (event, arg) => {
+    const activeWinInfo = await activeWin()
+    event.returnValue = activeWinInfo.owner.name
+  })
 
   ipcMain.on('resize-login', (event, arg) => {
     mainWindow.setSize(315, 320)

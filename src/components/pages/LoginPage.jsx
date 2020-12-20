@@ -26,7 +26,7 @@ const LoginPage = React.memo(() => {
   const googleSignInAction = (e) => {
     e.preventDefault();
     actions.googlehandleLogin().then(() => {
-      window.require("electron").ipcRenderer.send('resize-normal');
+      window.require("electron").ipcRenderer.send('active-win');
       state.userProfileData.addStatus ? history.push('/add-team') : history.push('/home')
     })
   }
