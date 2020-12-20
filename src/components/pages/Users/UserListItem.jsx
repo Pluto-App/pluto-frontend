@@ -6,6 +6,12 @@ import { useHistory } from "react-router-dom"
 import * as Cookies from "js-cookie";
 import ToastNotification from '../../widgets/ToastNotification';
 import { socket_live, events } from '../../sockets';
+import microsoftvisualstudiocode_logo from "../../../assets/logos/microsoftvisualstudiocode_logo.png"
+import microsoftpowerpoint_logo from "../../../assets/logos/microsoftpowerpoint_logo.png"
+import zoom_logo from "../../../assets/logos/zoom_logo.png"
+import electron_logo from "../../../assets/logos/electron_logo.png"
+import slack_logo from "../../../assets/logos/slack_logo.png"
+import githubdesktop_logo from "../../../assets/logos/githubdesktop_logo.png"
 import * as md5 from "md5";
 
 const UserListItem = React.memo((props) => {
@@ -16,7 +22,6 @@ const UserListItem = React.memo((props) => {
 
     const [showChatModal, toggleshowChatModal] = useState(false);
     const [showMenu, toggleShowMenu] = useState(false);
-    const [activeWinInfo, updateActiveWinInfo] = useState("");
 
     const customMenuStyle = {
         "top": "75px",
@@ -32,6 +37,20 @@ const UserListItem = React.memo((props) => {
         "width": "230px",
         "left": "55px",
         "position": "absolute"
+    }
+
+    const getAppName = (e) => {
+        if (state.activeWindowApp === "Code.exe")
+            return microsoftvisualstudiocode_logo
+        else if (state.activeWindowApp === "Zoom.exe")
+            return zoom_logo
+        else if (state.activeWindowApp === "slack.exe")
+            return slack_logo
+        else if (state.activeWindowApp === "electron.exe")
+            return electron_logo
+        else {
+            return "https://ui-avatars.com/api/?background=random&name=" + state.activeWindowApp
+        }
     }
 
     const removeUserHandler = async (e) => {
@@ -67,7 +86,17 @@ const UserListItem = React.memo((props) => {
             window.require("electron").ipcRenderer.send('load-video-window', id);
             ToastNotification('success', `Initiated VC with ${props.name} 📷`);
         } else {
-            ToastNotification('error', "Can't start VC with self 😠")
+            // ToastNotification('error', "Can't start VC with self 😠")
+            let id = md5(state.activeTeamId + state.userProfileData.userid);
+            Cookies.set("channel", id);
+            socket_live.emit(events.video_call, {
+                recieverid: props.id,
+                teamid: state.activeTeamId,
+                senderid: state.userProfileData.userid,
+                username: state.userProfileData.username
+            })
+            window.require("electron").ipcRenderer.send('load-video-window', id);
+            ToastNotification('success', `Initiated VC with ${props.name} 📷`);
         }
     }
 
@@ -92,7 +121,7 @@ const UserListItem = React.memo((props) => {
             </div>
             <div className="items-center flex">
                 <div className="items-center bg-white h-6 w-6 flex text-black text-2xl font-semibold overflow-hidden">
-                    <img src={"https://ui-avatars.com/api/?background=random&name=" + state.activeWindowApp} alt="T" />
+                    <img src={getAppName()} alt="T" />
                 </div>
                 {
                     showMenu &&

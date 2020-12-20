@@ -63,7 +63,11 @@ function createWindow() {
 
   ipcMain.on('active-win', async (event, arg) => {
     const activeWinInfo = await activeWin()
-    event.returnValue = activeWinInfo.owner.name
+    console.log(activeWinInfo.owner.name)
+    if (activeWinInfo.owner !== undefined && activeWinInfo.owner.name !== undefined)
+      event.returnValue = activeWinInfo.owner.name
+    else
+      event.returnValue = "None"
   })
 
   ipcMain.on('resize-login', (event, arg) => {

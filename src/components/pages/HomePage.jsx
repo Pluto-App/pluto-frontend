@@ -69,12 +69,12 @@ export default function HomePage() {
     const [newRoomName, updateNewRoomName] = useState("");
 
     useEffect(() => {
-        const setActiveWin = setTimeout(async () => {
+        const setActiveWin = setInterval(async () => {
             const AppName = await window.require("electron").ipcRenderer.sendSync('active-win');
             actions.setActiveWinInfo(AppName)
             console.log(AppName)
-        }, 2000)
-        return () => clearTimeout(setActiveWin);
+        }, 4000)
+        return () => clearInterval(setActiveWin);
     }, [])
 
     const addingNewRoom = async (roomname) => {

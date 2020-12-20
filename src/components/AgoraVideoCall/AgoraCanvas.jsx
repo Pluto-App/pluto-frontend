@@ -97,7 +97,7 @@ class AgoraCanvas extends React.Component {
     })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.client && this.client.unpublish(this.localStream)
     this.localStream && this.localStream.close()
     this.client && this.client.leave(() => {
@@ -110,7 +110,7 @@ class AgoraCanvas extends React.Component {
   streamInit = (uid, attendeeMode, videoProfile, config) => {
     let defaultConfig = {
       streamID: uid,
-      audio: true,
+      audio: false,
       video: true,
       screen: false
     }
@@ -210,7 +210,7 @@ class AgoraCanvas extends React.Component {
 
   handleCamera = (e) => {
     document.getElementById("")
-    if(this.localStream.isVideoOn()) {
+    if (this.localStream.isVideoOn()) {
       this.localStream.disableVideo()
       document.getElementById("video-icon").innerHTML = "videocam_off"
     } else {
@@ -323,6 +323,11 @@ class AgoraCanvas extends React.Component {
 
     return (
       <div id="ag-canvas" style={style}>
+        <div className="ag-btn-group">
+          {exitBtn}
+          {videoControlBtn}
+          {audioControlBtn}
+        </div>
         <div className="ag-btn-group">
           {exitBtn}
           {videoControlBtn}
