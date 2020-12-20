@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import LoginPage from './pages/LoginPage'
 import HomePage from './pages/HomePage'
 import TopBar from './widgets/Topbar'
+import OrgRegisterPage from './pages/Organization/OrgRegisterPage'
 import TeamRegisterPage from './pages/Teams/TeamRegisterPage'
 import RoomProfile from './pages/Rooms/RoomProfile'
 import TeamProfile from './pages/Teams/TeamProfile'
@@ -48,14 +49,14 @@ export default function App() {
       socket_live.on(events.room_broadcast, (data) => {
         ToastNotification('success', data.message)
       })
-      
+
       // New notification telling that a user joined 
       // the room you are a part of currently.
       socket_live.on(events.user_join, (data) => {
         // TODO Handle new user join. Add user to list.
         actions.updateRoomOfMember({
-          userid : data.userinfo.userid,
-          roomid : data.userinfo.roomid,
+          userid: data.userinfo.userid,
+          roomid: data.userinfo.roomid,
         })
         ToastNotification('success', data.message)
       })
@@ -66,8 +67,8 @@ export default function App() {
         // TODO Add new User to room as per roomId. 
         // data.userinfo => Contains user info. 
         actions.updateRoomOfMember({
-          userid : data.userinfo.userid,
-          roomid : data.userinfo.roomid,
+          userid: data.userinfo.userid,
+          roomid: data.userinfo.roomid,
         })
         ToastNotification('info', data.message)
       })
@@ -92,8 +93,8 @@ export default function App() {
       socket_live.on(events.team_switch, (data) => {
         // TODO Update Status of User in the team here. User switched team. 
         actions.updateTeamOfMember({
-          userid : data.userinfo.userid,
-          teamid : data.userinfo.teamid,
+          userid: data.userinfo.userid,
+          teamid: data.userinfo.teamid,
         })
         ToastNotification('success', `${data.message} 🤝`)
       })
@@ -113,8 +114,8 @@ export default function App() {
       socket_live.on(events.online, (data) => {
         // FIXME Update Status of User Online ?
         actions.updateStatusColor({
-          userid : data,
-          statusColor : 'green'
+          userid: data,
+          statusColor: 'green'
         })
       })
 
@@ -122,8 +123,8 @@ export default function App() {
       socket_live.on(events.offline, (data) => {
         // FIXME Update Status of User Offline ?
         actions.updateStatusColor({
-          userid : data,
-          statusColor : 'gray'
+          userid: data,
+          statusColor: 'gray'
         })
       })
 
@@ -142,14 +143,14 @@ export default function App() {
           socket_live.emit(events.online, state.userProfileData.userid)
       }, 6000)
 
-      onlineInterval = setInterval( async () => {
+      onlineInterval = setInterval(async () => {
         if (!(await isOnline())) {
           ToastNotification('error', 'You are Offline 😢')
           actions.updateStatusColor({
-            userid : state.userProfileData.userid,
-            statusColor : 'yellow'
+            userid: state.userProfileData.userid,
+            statusColor: 'yellow'
           })
-        } 
+        }
       }, 6000)
 
       return () => {
@@ -157,7 +158,7 @@ export default function App() {
         clearInterval(interval);
         clearInterval(onlineInterval)
       }
-      
+
     }, []
   );
 
@@ -188,6 +189,9 @@ export default function App() {
         </Route>
         <Route exact path="/videocall">
           <VideoCall />
+        </Route>
+        <Route exact path="/add-org">
+          <OrgRegisterPage />
         </Route>
       </Switch>
       <ToastContainer />

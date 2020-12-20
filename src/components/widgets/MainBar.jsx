@@ -22,6 +22,11 @@ const MainBar = React.memo((props) => {
         }
     }
 
+    const addTeam = (e) => {
+        e.preventDefault()
+        history.push('/add-team');
+    }
+
     return (
         <div className="w-full flex">
             <div className="relative" style={{ height: "35px", width: "100%", background: "#000" }}>
@@ -31,7 +36,7 @@ const MainBar = React.memo((props) => {
                         {
                             state.userTeamDataInfo !== {} && state.activeTeamId !== 0 ? state.userTeamDataInfo[state.activeTeamId].teamname
                                 :
-                               props.appInfo
+                                props.appInfo
                         }
                         {/* <span>
                             {props.appInfo}
@@ -44,10 +49,12 @@ const MainBar = React.memo((props) => {
                         }}>
                             <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>settings</i>
                         </button>
-                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" >
-                            <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>center_focus_strong</i>
+                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1"
+                            onClick={addTeam}
+                        >
+                            <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>add</i>
                         </button>
-                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" 
+                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1"
                             onClick={(e) => {
                                 handleHardReload()
                             }}
@@ -58,7 +65,8 @@ const MainBar = React.memo((props) => {
                             e.preventDefault();
                             history.push('/user-profile')
                         }} className="flex items-center text-grey rounded-lg  px-1 py-1  no-underline cursor-pointer hover:bg-grey-darker">
-                            <div className="bg-white h-6 w-6 flex items-center justify-center text-black text-2xl font-semibold rounded-lg mb-1 overflow-hidden">
+                            <div className="bg-white h-6 w-6 flex items-center justify-center text-black text-2xl font-semibold 
+                            rounded-lg mb-1 overflow-hidden">
                                 <img src={state.userProfileData.avatar} alt="T" />
                             </div>
                         </a>

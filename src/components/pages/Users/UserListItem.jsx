@@ -6,6 +6,12 @@ import { useHistory } from "react-router-dom"
 import * as Cookies from "js-cookie";
 import ToastNotification from '../../widgets/ToastNotification';
 import { socket_live, events } from '../../sockets';
+import microsoftvisualstudiocode_logo from "../../../assets/logos/microsoftvisualstudiocode_logo.png"
+import microsoftpowerpoint_logo from "../../../assets/logos/microsoftpowerpoint_logo.png"
+import zoom_logo from "../../../assets/logos/zoom_logo.png"
+import electron_logo from "../../../assets/logos/electron_logo.png"
+import slack_logo from "../../../assets/logos/slack_logo.png"
+import githubdesktop_logo from "../../../assets/logos/githubdesktop_logo.png"
 import * as md5 from "md5";
 
 const UserListItem = React.memo((props) => {
@@ -33,6 +39,20 @@ const UserListItem = React.memo((props) => {
         "position": "absolute"
     }
 
+    const getAppName = (e) => {
+        if (state.activeWindowApp === "Code.exe")
+            return microsoftvisualstudiocode_logo
+        else if (state.activeWindowApp === "Zoom.exe")
+            return zoom_logo
+        else if (state.activeWindowApp === "slack.exe")
+            return slack_logo
+        else if (state.activeWindowApp === "electron.exe")
+            return electron_logo
+        else {
+            return "https://ui-avatars.com/api/?background=random&name=" + state.activeWindowApp
+        }
+    }
+
     const removeUserHandler = async (e) => {
 
         if (props.id === state.userTeamDataInfo[state.activeTeamId].teamownerid) {
@@ -54,19 +74,29 @@ const UserListItem = React.memo((props) => {
     const startVideo = () => {
         // TODO User Video Call ID. Check Needed.
         // Cannot start a VC Call with oneself.
-        if(props.id !== state.userProfileData.userid) {
+        if (props.id !== state.userProfileData.userid) {
             let id = md5(state.activeTeamId + state.userProfileData.userid);
             Cookies.set("channel", id);
             socket_live.emit(events.video_call, {
-                recieverid : props.id,
+                recieverid: props.id,
                 teamid: state.activeTeamId,
-                senderid : state.userProfileData.userid,
+                senderid: state.userProfileData.userid,
                 username: state.userProfileData.username
             })
             window.require("electron").ipcRenderer.send('load-video-window', id);
             ToastNotification('success', `Initiated VC with ${props.name} 📷`);
         } else {
-            ToastNotification('error', "Can't start VC with self 😠")
+            // ToastNotification('error', "Can't start VC with self 😠")
+            let id = md5(state.activeTeamId + state.userProfileData.userid);
+            Cookies.set("channel", id);
+            socket_live.emit(events.video_call, {
+                recieverid: props.id,
+                teamid: state.activeTeamId,
+                senderid: state.userProfileData.userid,
+                username: state.userProfileData.username
+            })
+            window.require("electron").ipcRenderer.send('load-video-window', id);
+            ToastNotification('success', `Initiated VC with ${props.name} 📷`);
         }
     }
 
@@ -75,20 +105,24 @@ const UserListItem = React.memo((props) => {
             e.preventDefault();
         }}>
             <div className="flex justify-start p-2 pl-1">
-                <div className="bg-white h-4 w-4 flex text-black text-2xl font-semibold rounded-lg overflow-hidden">
+                <div className="bg-white h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden">
                     <img src={props.url} alt="T" />
                 </div>
-                <svg height="8" width="8">
-                    <circle cx="4" cy="4" r="4" fill={props.statusColor} />
-                                Sorry, your browser does not support inline SVG.
-                        </svg>
                 <div className="text-white px-1 font-bold tracking-wide text-xs" onClick={(e) => {
                     startVideo();
                 }}>
                     {props.name}
                 </div>
+                <svg viewBox="0 0 6 6" height="8" width="8">
+                    <circle cx="3" cy="3" r="2.5" fill={props.statusColor} />
+                        Sorry, your browser does not support inline SVG.
+                </svg>
+                <span></span>
             </div>
-            <div className="flex">
+            <div className="items-center flex">
+                <div className="items-center bg-black h-6 w-6 flex text-black text-2xl font-semibold overflow-hidden">
+                    <img src={getAppName()} alt="T" />
+                </div>
                 {
                     showMenu &&
                     <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customMenuStyle}>

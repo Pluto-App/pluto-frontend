@@ -1,5 +1,5 @@
 export const state = {
-    teamowner : "",
+    teamowner: "",
     signedUp: false,
     loggedIn: false,
     addingTeam: false,
@@ -13,5 +13,6 @@ export const state = {
     activeRoomName: "",
     RoomListArray: [],
     userMapping: {},
-    teamMemberList: []
+    teamMemberList: [],
+    activeWindowApp: ""
 }

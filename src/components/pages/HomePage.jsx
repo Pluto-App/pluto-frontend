@@ -9,7 +9,7 @@ import RoomListItem from "./Rooms/RoomListItem"
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import ToastNotification from '../widgets/ToastNotification'
-import { sha224 } from 'js-sha256';
+import { sha224 } from 'js-sha256'
 
 // TODO Move Active Win info to user profile (not necessary?)
 // FIXME Add Active Win Support. The package fails to build. Search Alternatives. 
@@ -68,12 +68,21 @@ export default function HomePage() {
     const [appInfo, updateAppInfo] = useState("No Teams");
     const [newRoomName, updateNewRoomName] = useState("");
 
+    useEffect(() => {
+        const setActiveWin = setInterval(async () => {
+            const AppName = await window.require("electron").ipcRenderer.sendSync('active-win');
+            actions.setActiveWinInfo(AppName)
+            console.log(AppName)
+        }, 4000)
+        return () => clearInterval(setActiveWin);
+    }, [])
+
     const addingNewRoom = async (roomname) => {
 
         let newRoom = {
             roomid: sha224(state.activeTeamId + roomname),
             teamid: state.activeTeamId,
-            roomname: roomname + " 🛰️" 
+            roomname: roomname + " 🛰️"
         }
         actions.addNewRoom(newRoom)
     }
@@ -115,18 +124,20 @@ export default function HomePage() {
         "top": "46%",
         "width": "calc(94% - 50px)"
     }
-    
+
     return (
         <div className="w-full flex">
             <Sidebar></Sidebar>
-            <div className="w-full bg-gray-900 ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)", marginLeft: "49px" }}>
+            <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)", marginLeft: "49px" }}>
                 <MainBar
                     userid={state.userProfileData.userid}
                     teamid={state.activeTeamId}
                     appName={appInfo}
                 />
                 <div className="sidebar-icons" style={{ height: "relative" }}>
-                    <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800">
+                    <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800"
+                        style={{ transition: "all .60s ease" }}
+                    >
                         <div className="text-gray-500 px-3 font-bold tracking-wide text-xs">Rooms</div>
                         <button className="text-white focus:outline-none hover:bg-gray-800">
                             <i className="material-icons md-light md-inactive" onClick={(e) => {
@@ -174,13 +185,17 @@ export default function HomePage() {
                     <div className="flex justify-center items-center" style={{ height: "15px" }}>
                         <div className="text-gray-500"></div>
                         <button className="text-white focus:outline-none">
-                            <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}>keyboard_arrow_down</i>
+                            <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}
+                                style={{ transition: "all .60s ease" }}
+                            >keyboard_arrow_down</i>
                         </button>
                     </div>
                 </div>
 
                 <div className="sidebar-icons" style={{ height: "relative" }}>
-                    <div className="flex justify-between items-center p-2 pl-2 hover:bg-gray-800">
+                    <div className="flex justify-between items-center p-2 pl-2 hover:bg-gray-800"
+                        style={{ transition: "all .60s ease" }}
+                    >
                         <div className="text-gray-500 px-3 font-bold tracking-wide text-xs">Team Mates</div>
                     </div>
                     {
@@ -197,15 +212,18 @@ export default function HomePage() {
                 <div className="flex justify-center items-center" style={{ height: "15px" }}>
                     <div className="text-gray-500"></div>
                     <button className="text-white focus:outline-none">
-                        <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}>keyboard_arrow_down</i>
+                        <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}
+                            style={{ transition: "all .60s ease" }}
+                        >keyboard_arrow_down</i>
                     </button>
                 </div>
                 <div className="absolute pin-b pb-4" style={{ width: "calc(95% - 50px)" }}>
                     <div className="mt-4 px-3 w-full">
                         <button
-                            className="bg-purple-700 w-full rounded-full flex justify-center items-center hover:bg-purple-500 
+                            className="bg-indigo-800 w-full rounded-full flex justify-center items-center hover:bg-indigo-400 
                             text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
                             type="button"
+                            style={{ transition: "all .60s ease" }}
                             onClick={() => {
                                 togglecopySuccess(false);
                                 toggleshowInviteModal(showInviteModal => !showInviteModal)
@@ -229,9 +247,10 @@ export default function HomePage() {
                                 value={'https://joinpluto.netlify.app/#/j/' + state.userTeamDataInfo[state.activeTeamId].magiclink}
                                 className="w-full shadow appearance-none border text-purple-700 rounded py-1 px-1 bg-purple-200" />
                             <button
-                                className="bg-purple-900 w-full rounded-sm flex justify-center text-white items-center hover:bg-purple-dark 
+                                className="bg-purple-700 w-full rounded-sm flex justify-center text-white items-center hover:bg-purple-500
                                 text-white font-bold py-2 px-2 mt-2 focus:outline-none focus:shadow-outline"
                                 type="button"
+                                style={{ transition: "all .60s ease" }}
                                 onClick={(e) => {
                                     var copyText = document.getElementById("InviteModalLink");
                                     copyText.select();

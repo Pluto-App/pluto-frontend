@@ -32,14 +32,18 @@ class AgoraCanvas extends React.Component {
     this.state = {
       displayMode: 'tile',
       streamList: [],
-      readyState: false
+      readyState: false,
+      screeStream: false,
+      audio: true,
+      video: false,
+      screen: false
     }
   }
 
   componentWillMount() {
     let $ = this.props
     // init AgoraRTC local client
-    this.client = AgoraRTC.createClient({ mode: $.transcode })
+    this.client = AgoraRTC.createClient({ mode: $.transcode, codec: "vp8" })
     this.client.init($.appId, () => {
       console.log("AgoraRTC client initialized")
       this.subscribeStreamEvents()
@@ -57,7 +61,7 @@ class AgoraCanvas extends React.Component {
           this.setState({ readyState: true })
         },
           err => {
-            console.log("getUserMedia failed", err)
+            alert("No Access to media stream", err)
             this.setState({ readyState: true })
           })
       })
@@ -97,7 +101,7 @@ class AgoraCanvas extends React.Component {
     })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.client && this.client.unpublish(this.localStream)
     this.localStream && this.localStream.close()
     this.client && this.client.leave(() => {
@@ -110,9 +114,9 @@ class AgoraCanvas extends React.Component {
   streamInit = (uid, attendeeMode, videoProfile, config) => {
     let defaultConfig = {
       streamID: uid,
-      audio: true,
-      video: true,
-      screen: false
+      audio: this.state.audio,
+      video: this.state.video,
+      screen: this.state.screen,
     }
 
     switch (attendeeMode) {
@@ -123,9 +127,16 @@ class AgoraCanvas extends React.Component {
         defaultConfig.video = false
         defaultConfig.audio = false
         break;
-      default:
       case 'video':
+        defaultConfig.video = true
         break;
+      case 'screen':
+        defaultConfig.audio = false
+        defaultConfig.video = false
+        defaultConfig.screen = true
+        break;
+      default:
+        break
     }
 
     let stream = AgoraRTC.createStream(merge(defaultConfig, config))
@@ -209,8 +220,7 @@ class AgoraCanvas extends React.Component {
   }
 
   handleCamera = (e) => {
-    document.getElementById("")
-    if(this.localStream.isVideoOn()) {
+    if (this.localStream.isVideoOn()) {
       this.localStream.disableVideo()
       document.getElementById("video-icon").innerHTML = "videocam_off"
     } else {
@@ -263,6 +273,41 @@ class AgoraCanvas extends React.Component {
       }
     })
 
+  }
+
+  handleScreenShare = async (e) => {
+    this.localStream && this.localStream.close()
+    if (this.state.screeStream === true) {
+      this.setState({ screeStream: false })
+      document.getElementById("screen-share").innerHTML = "stop_screen_share"
+      window.require("electron").ipcRenderer.send('video-resize-normal');
+    } else {
+      window.require("electron").ipcRenderer.send('screen-share-options');
+      this.setState({ screeStream: true })
+      let $ = this.props
+      // init AgoraRTC local client
+      this.client = AgoraRTC.createClient({ mode: $.transcode, codec: "vp8" })
+      this.client.init($.appId, () => {
+        this.subscribeStreamEvents()
+        this.client.join($.appId, $.channel, $.uid, (uid) => {
+          this.localStream = this.streamInit(uid, "screen", $.videoProfile)
+          this.localStream.init(() => {
+            if ($.attendeeMode !== 'audience') {
+              this.addStream(this.localStream, true)
+              this.client.publish(this.localStream, err => {
+                console.log("Publish local stream error: " + err);
+              })
+            }
+            this.setState({ readyState: true })
+          },
+            err => {
+              alert("No Access to screen media", err)
+              this.setState({ readyState: true })
+            })
+        })
+      })
+      document.getElementById("screen-share").innerHTML = "screen_share"
+    }
   }
 
   handleExit = (e) => {
@@ -320,6 +365,14 @@ class AgoraCanvas extends React.Component {
         <i className="material-icons exit focus:outline-none md-light" style={{ fontSize: "30px" }} >logout</i>
       </span>
     )
+    const screenShareBtn = (
+      <span
+        onClick={this.handleScreenShare}
+        className={this.state.readyState ? 'ag-btn exitBtn' : 'ag-btn exitBtn disabled'}
+        title="Enable/Disable Screen Share">
+        <i className="material-icons focus:outline-none md-light" id="screen-share" style={{ fontSize: "30px" }} >screen_share</i>
+      </span>
+    )
 
     return (
       <div id="ag-canvas" style={style}>
@@ -327,6 +380,7 @@ class AgoraCanvas extends React.Component {
           {exitBtn}
           {videoControlBtn}
           {audioControlBtn}
+          {screenShareBtn}
         </div>
       </div>
     )

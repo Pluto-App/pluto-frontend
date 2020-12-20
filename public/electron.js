@@ -12,14 +12,15 @@ let video_player
 
 const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
+const activeWin = require('active-win');
 
 // TODO Now we can add external window for settings.
 // TODO Add support for App Signing.
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 315,
-    height: 320,
+    width: 300,
+    height: 350,
     titleBarStyle: 'hiddenInset',
     title: "MainWindow",
     frame: false,
@@ -34,6 +35,13 @@ function createWindow() {
   // FIXME Maximize/Minimize Issue.
   // mainWindow.setAlwaysOnTop(true, 'screen');
 
+  const settingsUrl = url.format({
+    pathname: path.join(__dirname, '../build/index.html'),
+    hash: '/user-profile',
+    protocol: 'file:',
+    slashes: true
+  })
+
   const startPageUrl = url.format({
     pathname: path.join(__dirname, '../build/index.html'),
     hash: '/',
@@ -47,6 +55,10 @@ function createWindow() {
     // Open the DevTools.
     // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
     mainWindow.webContents.openDevTools();
+    (async () => {
+      data = await activeWin()
+      console.log(data.owner.name)
+    })();
   }
 
   mainWindow.on('closed', () => {
@@ -56,12 +68,21 @@ function createWindow() {
 
   });
 
+  ipcMain.on('active-win', async (event, arg) => {
+    const activeWinInfo = await activeWin()
+    console.log(activeWinInfo.owner.name)
+    if (activeWinInfo.owner !== undefined && activeWinInfo.owner.name !== undefined)
+      event.returnValue = activeWinInfo.owner.name
+    else
+      event.returnValue = "None"
+  })
+
   ipcMain.on('resize-login', (event, arg) => {
     mainWindow.setSize(315, 320)
   })
 
   ipcMain.on('resize-normal', (event, arg) => {
-    mainWindow.setSize(315, 606)
+    mainWindow.setSize(300, 700)
   })
 
   ipcMain.on('close-video', (event, arg) => {
@@ -70,7 +91,7 @@ function createWindow() {
     }
   })
 
-  ipcMain.on(`display-app-menu`, function(e, args) {
+  ipcMain.on(`display-app-menu`, function (e, args) {
     if (isWindows && mainWindow) {
       menu.popup({
         window: mainWindow,
@@ -93,8 +114,8 @@ function createWindow() {
     // create the window
     video_player = new BrowserWindow({
       show: true,
-      width: 300,
-      height: 220,
+      width: 250,
+      height: 150,
       frame: false,
       title: "VideoWindow",
       x: swidth - 310,
@@ -136,74 +157,83 @@ function createWindow() {
 
   });
 
+  ipcMain.on('video-resize-normal', (event, arg) => {
+    video_player.setSize(250, 150)
+  })
+
+  ipcMain.on('screen-share-options', (event, arg) => {
+    video_player.setSize(675, 675)
+  })
+
+
   var menu = Menu.buildFromTemplate([
     {
       label: 'App ',
       submenu: [
         {
           label: 'Join Team',
-          click () {
+          click() {
 
           }
         },
         {
           label: 'Join Room',
           click() {
-          
+
           }
         },
         { type: 'separator' },
         {
           label: 'Exit',
-          click () {
+          click() {
 
           }
         }
       ],
-    }, 
+    },
     {
       label: 'File 📁',
       submenu: [
         {
           label: 'Share File',
-          click () {
+          click() {
 
           }
         },
         {
           label: 'Sync With GCloud',
           click() {
-          
+
           }
         },
         { type: 'separator' },
         {
           label: 'Exit',
-          click () {
+          click() {
 
           }
         }
       ]
-    }, 
+    },
     {
       label: 'Refersh 🔄',
       submenu: [
         {
           label: 'Reset',
-          click () {
+          click() {
 
           }
         },
         {
           label: 'Logout',
           click() {
-          
+
           }
         },
         { type: 'separator' },
         {
           label: 'Exit',
-          click () {
+          click() {
 
           }
         }

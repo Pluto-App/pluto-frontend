@@ -48,14 +48,14 @@ export default function TeamRegisterPage() {
                         </label>
                         <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                             onChange={(e) => {
-                                if(e.target.value === "") {
+                                if (e.target.value === "") {
                                     ToastNotification('error', "Team Name can't be empty")
                                 } else {
                                     updateTeamName(e.target.value)
                                 }
                             }}
                             onPaste={(e) => {
-                                if(e.target.value === "" ) {
+                                if (e.target.value === "") {
                                     ToastNotification('error', "Team Name can't be empty")
                                 } else {
                                     updateTeamName(e.target.value)
@@ -64,7 +64,7 @@ export default function TeamRegisterPage() {
                             onKeyPress={(e) => {
                                 if (e.keyCode === 13 || e.which === 13) {
                                     e.preventDefault()
-                                    if(e.target.value === "" ) {
+                                    if (e.target.value === "") {
                                         ToastNotification('error', "Team Name can't be empty")
                                     } else {
                                         updateTeamName(e.target.value)
