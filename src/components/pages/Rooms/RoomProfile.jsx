@@ -45,6 +45,7 @@ export default function RoomProfile() {
             }
         })
 
+        // TODO : Call to get updated Online List of users. 
         updateOnlineList(arr)
 
         // TODO Setup room level Video Call. 
@@ -55,9 +56,24 @@ export default function RoomProfile() {
         }
     }, [actions, state.userMapping, state.activeRoomId])
 
-    const getJoinedRoomUsers = (e) => {
+    useEffect(() => {
+        const updateRoomList = setInterval(async () => {
+            let arr = []
+            Object.entries(state.userMapping).map(([key, value]) => {
+                if (value.roomid === state.activeRoomId) {
+                    arr.push(value);
+                }
+            })
 
-    }
+            // TODO : Call to get updated Online List of users. 
+            updateOnlineList(arr)
+
+        }, 3000)
+
+        return () => {
+            clearInterval(updateRoomList)
+        }
+    }, [])
 
     return (
         <div className="w-full flex">
@@ -72,14 +88,7 @@ export default function RoomProfile() {
                         <p className="text-gray-500">{state.userTeamDataInfo[state.activeTeamId].teamowner}</p>
                     </div>
                 </div>
-                <p className="text-grey font-bold text-sm tracking-wide mt-2">Room | {state.activeRoomName}
-                    <button className="text-white hover:bg-gray-900 py-1 px-3 focus:outline-none"
-                        onClick={(e) => {
-                            getJoinedRoomUsers(e)
-                        }}
-                    >
-                        <i className="material-icons md-light " style={{ fontSize: "14px", margin: "0" }}>autorenew</i>
-                    </button></p>
+                <p className="text-grey font-bold text-sm tracking-wide mt-2">Room | {state.activeRoomName}</p>
                 <div className="mt-3 mb-4 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
                 <div className="flex justify-center items-center hover:bg-gray-800">
                     <input className="shadow appearance-none border rounded w-full py-1 px-5

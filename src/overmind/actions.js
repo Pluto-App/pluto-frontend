@@ -330,6 +330,18 @@ export const updateTeamOfMember = async ({ state, effects }, values) => {
 export const removeFromRoom = ({ state, effects }, values) => {
     state.activeRoomId = 0;
     state.activeRoomName = "";
+    socket_live.emit(events.room_switch, {
+        // Trial
+        avatar: state.userProfileData.avatar,
+        useremail: state.userProfileData.useremail,
+        username: state.userProfileData.username,
+        // Trial
+        userid: state.userProfileData.userid,
+        teamname: state.userTeamDataInfo[state.activeTeamId].teamname,
+        teamid: state.activeTeamId,
+        roomid: state.activeRoomId,
+        roomname: state.activeRoomName
+    })
 }
 
 export const sendRoomBroadcast = async ({ state, effects }, values) => {

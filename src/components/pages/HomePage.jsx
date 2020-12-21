@@ -68,6 +68,7 @@ export default function HomePage() {
     const [appInfo, updateAppInfo] = useState("No Teams");
     const [newRoomName, updateNewRoomName] = useState("");
 
+    // TODO : Shift to App Level stuff 
     useEffect(() => {
         const setActiveWin = setInterval(async () => {
             const AppName = await window.require("electron").ipcRenderer.sendSync('active-win');
