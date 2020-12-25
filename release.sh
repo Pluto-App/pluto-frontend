@@ -12,19 +12,23 @@ npm run build
 ## git tag -d v1.0.0
 
 docker run --rm \
+    --env GH_TOKEN="5400f5b75df37dfde7d3c5dd1dced206ede00bdd" \
+    --env GITHUB_TOKEN="5400f5b75df37dfde7d3c5dd1dced206ede00bdd" \
     --env ELECTRON_CACHE="/root/.cache/electron" \
     --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
     -v ${PWD}:/project \
     -v ~/.cache/electron:/root/.cache/electron \
     -v ~/.cache/electron-builder:/root/.cache/electron-builder \
     electronuserland/builder:wine \
-    /bin/bash -c "npm run win-release"
+    /bin/bash -c "npm run win"
 
 docker run --rm \
+    --env GH_TOKEN="5400f5b75df37dfde7d3c5dd1dced206ede00bdd" \
+    --env GITHUB_TOKEN="5400f5b75df37dfde7d3c5dd1dced206ede00bdd" \
     --env ELECTRON_CACHE="/root/.cache/electron" \
     --env ELECTRON_BUILDER_CACHE="/root/.cache/electron-builder" \
     -v ${PWD}:/project \
     -v ~/.cache/electron:/root/.cache/electron \
     -v ~/.cache/electron-builder:/root/.cache/electron-builder \
     electronuserland/builder \
-    /bin/bash -c "npm run linux-release"
+    /bin/bash -c "npm run linux"

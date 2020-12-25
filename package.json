@@ -79,7 +79,8 @@
         "dmg"
       ],
       "publish": {
-        "provider": "github"
+        "provider": "github",
+        "releaseType": "release"
       }
     },
     "dmg": {
@@ -116,7 +117,8 @@
       ],
       "icon": "./assets/windows/logo.ico",
       "publish": {
-        "provider": "github"
+        "provider": "github",
+        "releaseType": "release"
       }
     },
     "linux": {
@@ -129,7 +131,8 @@
       "description": "Virtual Office App for Organizations",
       "category": "office",
       "publish": {
-        "provider": "github"
+        "provider": "github",
+        "releaseType": "release"
       }
     }
   },

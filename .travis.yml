@@ -59,7 +59,7 @@ script:
         if [ "$TRAVIS_OS_NAME" == "macosx" ]; then 
             npm run mac
         elif [ "$TRAVIS_OS_NAME" == "windows" ]; then  
-            npm run win
+            npm run windows
         elif [ "$TRAVIS_OS_NAME" == "linux" ]; then 
             npm run linux
         else 
