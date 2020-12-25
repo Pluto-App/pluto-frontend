@@ -1,0 +1,79 @@
+matrix:
+    include:
+        - os: osx
+          sudo: required
+          osx_image: xcode11.1
+          language: node_js
+          node_js: "14"
+          env:
+              - ELECTRON_CACHE=$HOME/.cache/electron
+              - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+              - TRAVIS_OS_NAME=macosx
+              - GH_TOKEN=5400f5b75df37dfde7d3c5dd1dced206ede00bdd
+              - GITHUB_TOKEN=5400f5b75df37dfde7d3c5dd1dced206ede00bdd
+              - CI=false
+
+        - os: linux
+          sudo: required # for docker.
+          services:
+              - docker
+          language: node_js
+          node_js: "14"
+          env:
+              - ELECTRON_CACHE=$HOME/.cache/electron
+              - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+              - TRAVIS_OS_NAME=linux
+              - GH_TOKEN=5400f5b75df37dfde7d3c5dd1dced206ede00bdd
+              - GITHUB_TOKEN=5400f5b75df37dfde7d3c5dd1dced206ede00bdd
+              - CI=false
+        
+        - os: windows
+          sudo: required # for docker.
+          services:
+              - docker
+          language: node_js
+          node_js: "14"
+          env:
+              - ELECTRON_CACHE=$HOME/.cache/electron
+              - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+              - TRAVIS_OS_NAME=windows
+              - GH_TOKEN=5400f5b75df37dfde7d3c5dd1dced206ede00bdd
+              - GITHUB_TOKEN=5400f5b75df37dfde7d3c5dd1dced206ede00bdd
+              - CI=false
+
+compiler:
+    - gcc
+    - clang
+
+cache:
+    directories:
+        - assets
+        - node_modules
+        - $HOME/.cache/electron
+        - $HOME/.cache/electron-builder
+
+script:
+    - npm install
+    - npm run build
+    - |
+        if [ "$TRAVIS_OS_NAME" == "macosx" ]; then 
+            npm run mac
+        elif [ "$TRAVIS_OS_NAME" == "windows" ]; then  
+            npm run win
+        elif [ "$TRAVIS_OS_NAME" == "linux" ]; then 
+            npm run linux
+        else 
+            echo "No Build OS"
+        fi
+before_cache:
+    - rm -rf $HOME/.cache/electron-builder/
+
+notifications:
+    email:
+        - lahiri.devs@gmail.com
+        - puneetpluto@gmail.com
+        - sambhavpluto@gmail.com
+
+branches:
+    except:
+        - "/^v\\d+\\.\\d+\\.\\d+$/"
