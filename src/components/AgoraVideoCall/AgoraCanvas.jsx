@@ -55,7 +55,7 @@ class AgoraCanvas extends React.Component {
           if ($.attendeeMode !== 'audience') {
             this.addStream(this.localStream, true)
             this.client.publish(this.localStream, err => {
-              console.log("Publish local stream error: " + err);
+              alert("Publish local stream error: " + err);
             })
           }
           this.setState({ readyState: true })
@@ -122,6 +122,7 @@ class AgoraCanvas extends React.Component {
     switch (attendeeMode) {
       case 'audio-only':
         defaultConfig.video = false
+        defaultConfig.audio = true
         break;
       case 'audience':
         defaultConfig.video = false
@@ -129,6 +130,7 @@ class AgoraCanvas extends React.Component {
         break;
       case 'video':
         defaultConfig.video = true
+        defaultConfig.audio = true
         break;
       case 'screen':
         defaultConfig.audio = false
@@ -147,6 +149,16 @@ class AgoraCanvas extends React.Component {
   subscribeStreamEvents = () => {
     let rt = this
     rt.client.on('stream-added', function (evt) {
+      let stream = evt.stream
+      console.log("New stream added: " + stream.getId())
+      console.log('At ' + new Date().toLocaleTimeString())
+      console.log("Subscribe ", stream)
+      rt.client.subscribe(stream, function (err) {
+        console.log("Subscribe stream failed", err)
+      })
+    })
+
+    rt.client.on('user-published', function (evt) {
       let stream = evt.stream
       console.log("New stream added: " + stream.getId())
       console.log('At ' + new Date().toLocaleTimeString())

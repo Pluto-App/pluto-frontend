@@ -78,6 +78,15 @@ const RoomListItem = React.memo((props) => {
             userid: state.userProfileData.userid,
             roomid: props.id
         })
+        let id = md5(props.id);
+        Cookies.set("channel", id);
+        socket_live.emit(events.video_call, {
+            recieverid: props.id,
+            teamid: state.activeTeamId,
+            senderid: state.userProfileData.userid,
+            username: state.userProfileData.username
+        })
+        window.require("electron").ipcRenderer.send('load-video-window', id);
         history.push("/room-profile")
     }
 
