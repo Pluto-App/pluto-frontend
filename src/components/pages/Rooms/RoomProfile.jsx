@@ -51,6 +51,7 @@ export default function RoomProfile() {
         // TODO Setup room level Video Call. 
         return () => {
             // TODO Remove User and Emit Room Leave Event. 
+            window.require("electron").ipcRenderer.send('close-video', state.activeRoomId);
             actions.removeFromRoom()
             setRoomId("")
         }

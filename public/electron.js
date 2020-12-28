@@ -9,6 +9,7 @@ if (isDev) {
 
 let mainWindow
 let video_player
+let settings_page
 
 const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
@@ -55,6 +56,7 @@ function createWindow() {
     // Open the DevTools.
     // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
     mainWindow.webContents.openDevTools();
+    console.log(screen.getCursorScreenPoint())
   }
 
   mainWindow.on('closed', () => {
@@ -67,6 +69,7 @@ function createWindow() {
   ipcMain.on('active-win', async (event, arg) => {
     const activeWinInfo = await activeWin()
     console.log(activeWinInfo.owner.name)
+    console.log(screen.getCursorScreenPoint())
     if (activeWinInfo.owner !== undefined && activeWinInfo.owner.name !== undefined)
       event.returnValue = activeWinInfo.owner.name
     else
@@ -83,7 +86,7 @@ function createWindow() {
 
   ipcMain.on('close-video', (event, arg) => {
     if (video_player !== null) {
-      video_player = null
+      video_player.close()
     }
   })
 
@@ -97,10 +100,56 @@ function createWindow() {
     }
   });
 
+  ipcMain.on(`open-settings`, (events, data) => {
+    let display = screen.getPrimaryDisplay();
+    let swidth = display.bounds.width;
+    let sheight = display.bounds.height;
+    settings_page = new BrowserWindow({
+      show: true,
+      width: 400,
+      height: 750,
+      frame: false,
+      title: "VideoWindow",
+      x: swidth / 2,
+      y: sheight / 2,
+      webPreferences: {
+        nodeIntegration: true,
+        plugins: true
+      }
+    })
+    settings_page.setAlwaysOnTop(true, 'screen');
+    settings_page.setMenu(null);
+
+    const settingsUrl = url.format({
+      pathname: path.join(__dirname, '../build/index.html'),
+      hash: '/user-profile',
+      protocol: 'file:',
+      slashes: true
+    })
+
+    settings_page.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/user-profile' : settingsUrl);
+    settings_page.on('closed', () => {
+      settings_page.close()
+    })
+
+    // here we can send the data to the new window
+    settings_page.webContents.on('did-finish-load', () => {
+      settings_page.webContents.send('data', data);
+    });
+
+    // Close the video player window when we 
+    // close the main window of the app. 
+    mainWindow.on('closed', () => {
+      if (settings_page !== null) {
+        settings_page.close();
+      }
+    })
+  });
+
   ipcMain.on('load-video-window', (event, data) => {
 
     if (video_player !== null) {
-      video_player = null;
+      video_player.close();
     }
 
     let display = screen.getPrimaryDisplay();
@@ -110,8 +159,8 @@ function createWindow() {
     // create the window
     video_player = new BrowserWindow({
       show: true,
-      width: 250,
-      height: 150,
+      width: 200,
+      height: 175,
       frame: false,
       title: "VideoWindow",
       x: swidth - 310,
@@ -135,7 +184,7 @@ function createWindow() {
     video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/videocall' : videoUrl);
 
     video_player.on('closed', () => {
-      video_player = null
+      video_player.close()
     })
 
     // here we can send the data to the new window
@@ -154,7 +203,7 @@ function createWindow() {
   });
 
   ipcMain.on('video-resize-normal', (event, arg) => {
-    video_player.setSize(250, 150)
+    video_player.setSize(200, 175)
   })
 
   ipcMain.on('screen-share-options', (event, arg) => {

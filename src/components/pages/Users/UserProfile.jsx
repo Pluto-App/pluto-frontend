@@ -31,13 +31,6 @@ const UserProfile = React.memo(() => {
                     <div className="ml-3">
                         <p className="font-bold text-white">{state.userProfileData.username}</p>
                         <p className="text-gray-500">{state.userProfileData.useremail}</p>
-                        {/* <button className="flex px-1 mt-2 items-center text-gray-500 font-bold rounded-lg hover:text-white cursor-pointer hover:bg-gray-900">
-                            <svg height="10" width="10">
-                                <circle cx="6" cy="6" r="4" stroke="black" stroke-width="0" fill="green" />
-                                Sorry, your browser does not support inline SVG.
-                            </svg><span className="ml-2">Online</span>
-                            <i className="material-icons md-light md-inactive ml-1 mt-1" style={{ fontSize: "15px" }}>unfold_more</i>
-                        </button> */}
                     </div>
                 </div>
                 <p className="text-grey font-bold mb-4 text-sm tracking-wide mt-5">OPTIONS</p>

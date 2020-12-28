@@ -63,7 +63,7 @@ const MainBar = React.memo((props) => {
                         </button>
                         <a href="/user-profile" onClick={(e) => {
                             e.preventDefault();
-                            history.push('/user-profile')
+                            window.require("electron").ipcRenderer.send('open-settings', state.userProfileData.userid);
                         }} className="flex items-center text-grey rounded-lg  px-1 py-1  no-underline cursor-pointer hover:bg-grey-darker">
                             <div className="bg-white h-6 w-6 flex items-center justify-center text-black text-2xl font-semibold 
                             rounded-lg mb-1 overflow-hidden">

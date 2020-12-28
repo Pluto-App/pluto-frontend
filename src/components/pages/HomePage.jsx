@@ -13,7 +13,6 @@ import { sha224 } from 'js-sha256'
 
 // TODO Move Active Win info to user profile (not necessary?)
 // FIXME Add Active Win Support. The package fails to build. Search Alternatives. 
-
 const RoomList = ((props) => {
 
     const roomlist = props.map((rooms) =>
