@@ -1,27 +1,32 @@
 /* eslint-disable no-unused-vars */
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import * as Cookies from "js-cookie";
 import ToastNotification from '../../widgets/ToastNotification';
 import { socket_live, events } from '../../sockets';
+
 import microsoftvisualstudiocode_logo from "../../../assets/logos/microsoftvisualstudiocode_logo.png"
-import microsoftpowerpoint_logo from "../../../assets/logos/microsoftpowerpoint_logo.png"
 import zoom_logo from "../../../assets/logos/zoom_logo.png"
-import electron_logo from "../../../assets/logos/electron_logo.png"
-import slack_logo from "../../../assets/logos/slack_logo.png"
-import githubdesktop_logo from "../../../assets/logos/githubdesktop_logo.png"
+import electron_logo from "../../../assets/logos/electron.png"
+import slack_logo from "../../../assets/logos/slack.png"
+
+import { AuthContext } from '../../../context/AuthContext'
+
 import * as md5 from "md5";
 
 const UserListItem = React.memo((props) => {
 
     let history = useHistory();
+    const { authData } = useContext(AuthContext);
 
     const { state, actions } = useOvermind();
 
     const [showChatModal, toggleshowChatModal] = useState(false);
     const [showMenu, toggleShowMenu] = useState(false);
+
+    const logos = require.context('../../../assets/logos', true);
 
     const customMenuStyle = {
         "top": "75px",
@@ -39,36 +44,36 @@ const UserListItem = React.memo((props) => {
         "position": "absolute"
     }
 
-    const getAppName = (e) => {
-        if (state.activeWindowApp === "Code.exe")
-            return microsoftvisualstudiocode_logo
-        else if (state.activeWindowApp === "Zoom.exe")
-            return zoom_logo
-        else if (state.activeWindowApp === "slack.exe")
-            return slack_logo
-        else if (state.activeWindowApp === "electron.exe")
-            return electron_logo
-        else {
-            return "https://ui-avatars.com/api/?background=random&name=" + state.activeWindowApp
-        }
+    const getAppLogo = (appName) => {
+
+        var showApps = ['slack','tandem','googlechrome','electron'];
+
+        if(appName && showApps.includes(appName)){
+
+            return logos(`./${appName}.png`);
+
+        } else {
+            return "https://ui-avatars.com/api/?background=random&name="
+        }        
     }
 
-    const removeUserHandler = async (e) => {
+    const activeAppClick = (e) => {
+        e.preventDefault();
+        
+        if(state.activeWindowApp.url)
+            window.require("electron").shell.openExternal(state.activeWindowApp.url);
+    }
 
-        if (props.id === state.userTeamDataInfo[state.activeTeamId].teamownerid) {
-            ToastNotification('error', "Can't remove Owner")
-            return;
-        }
+    const removeUser = async (e, user_id) => {
+        e.preventDefault();
+        
+        var reqData = {
+            team_id: state.currentTeamId,
+            user_id: user_id
+        };
 
-        if (state.userTeamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
-            await actions.removeTeamMember({
-                userid: props.id,
-                teamid: state.activeTeamId
-            })
-            ToastNotification('error', props.name + " removed")
-        } else {
-            ToastNotification('error', "Only Owners can remove")
-        }
+        await actions.team.removeUser({ authData: authData, reqData: reqData});
+        history.push('/');
     }
 
     const startVideo = () => {
@@ -111,7 +116,16 @@ const UserListItem = React.memo((props) => {
             </div>
             <div className="items-center flex">
                 <div className="items-center bg-black h-6 w-6 flex text-black text-2xl font-semibold overflow-hidden">
-                    <img src={getAppName()} alt="T" />
+                    <a onClick={(e) => {
+                        activeAppClick(e)
+                    }}>
+                        <img src={   
+                             state.activeWindowApp.owner ? 
+                                getAppLogo(state.activeWindowApp.owner.name.toLowerCase().replace(/ /g,''))
+                                :
+                                getAppLogo('')
+                        } alt="T"/>
+                    </a>
                 </div>
                 {
                     showMenu &&
@@ -152,11 +166,13 @@ const UserListItem = React.memo((props) => {
                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>video_call</i>Video Call
                                             </button>
                             <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
-                            <button className="w-full text-red-500 hover:bg-red-300 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" onClick={(e) => {
-                                removeUserHandler(e)
+                            
+                            <button className="w-full text-red-500 hover:bg-red-300 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" 
+                            onClick={(e) => {
+                                removeUser(e, props.id)
                             }}>
                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>delete_forever</i>Remove Member
-                                            </button>
+                            </button>
                         </div>
                     </div>
                 }

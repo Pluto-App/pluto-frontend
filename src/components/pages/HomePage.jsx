@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import Sidebar from '../widgets/Sidebar'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
@@ -11,22 +11,24 @@ import BeatLoader from "react-spinners/BeatLoader";
 import ToastNotification from '../widgets/ToastNotification'
 import { sha224 } from 'js-sha256'
 
+import { AuthContext } from '../../context/AuthContext'
+
 // TODO Move Active Win info to user profile (not necessary?)
 // FIXME Add Active Win Support. The package fails to build. Search Alternatives. 
-const RoomList = ((props) => {
+const RoomList = ((rooms) => {
 
-    const roomlist = props.map((rooms) =>
+    const roomlist = rooms.map((room) =>
         <RoomListItem
-            id={rooms.id}
-            key={rooms.id.toString()}
-            name={rooms.roomname}
+            id={room.id}
+            key={room.id.toString()}
+            name={room.name}
         />
     )
 
     return (
-        <>
+        <div>
             {roomlist}
-        </>
+        </div>
     );
 })
 
@@ -34,25 +36,26 @@ const MembersList = ((props) => {
 
     const teamMemberList = Object.entries(props).map(([id, member]) =>
         <UserListItem
-            id={member.userid}
-            key={member.userid.toString()}
+            id={member.id}
+            key={member.id.toString()}
             url={member.avatar}
-            name={member.username}
-            email={member.useremail}
+            name={member.name}
+            email={member.email}
             statusColor={member.statusColor}
         />
     )
 
     return (
-        <>
+        <div>
             {teamMemberList}
-        </>
+        </div>
     );
 });
 
 export default function HomePage() {
 
     let history = useHistory();
+    const { authData } = useContext(AuthContext);
 
     const override = css`
         display: block;
@@ -63,28 +66,42 @@ export default function HomePage() {
     const { state, actions } = useOvermind();
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showInviteModal, toggleshowInviteModal] = useState(false);
-    const [isAddingRoom, setIsAddingRoom] = useState(false);
     const [appInfo, updateAppInfo] = useState("No Teams");
     const [newRoomName, updateNewRoomName] = useState("");
 
     // TODO : Shift to App Level stuff 
     useEffect(() => {
         const setActiveWin = setInterval(async () => {
-            const AppName = await window.require("electron").ipcRenderer.sendSync('active-win');
-            actions.setActiveWinInfo(AppName)
-            console.log(AppName)
-        }, 4000)
+            const activeWinAppData = await window.require("electron").ipcRenderer.sendSync('active-win');
+            actions.app.setActiveWinInfo({data: activeWinAppData})
+        }, 3000)
         return () => clearInterval(setActiveWin);
-    }, [])
+    }, [state.activeWindowApp])
 
-    const addingNewRoom = async (roomname) => {
+    useEffect(() => {
 
-        let newRoom = {
-            roomid: sha224(state.activeTeamId + roomname),
-            teamid: state.activeTeamId,
-            roomname: roomname + " 🛰️"
+        actions.user.getLoggedInUser({authData: authData})
+
+    }, [actions, authData])
+
+    
+    useEffect(() => {
+
+        if(state.currentTeamId){
+            actions.team.getTeam({authData: authData, team_id: state.currentTeamId})    
         }
-        actions.addNewRoom(newRoom)
+
+    }, [actions, authData, state.currentTeamId, state.teamUpdateReq])
+
+
+    const addRoom = async (roomname) => {
+
+        let roomData = {
+            team_id: state.currentTeamId,
+            name: roomname
+        }
+
+        actions.room.addRoom({authData: authData, roomData: roomData})
     }
 
     const handleChange = async (e) => {
@@ -108,17 +125,17 @@ export default function HomePage() {
         }
     }
 
-    useEffect(
-        () => {
-            load1();
-        }, [actions, state.userProfileData.userid]
-    )
+    // useEffect(
+    //     () => {
+    //         load1();
+    //     }, [actions, state.userProfileData.userid]
+    // )
 
-    useEffect(
-        () => {
-            load2();
-        }, [actions, state.activeTeamId]
-    )
+    // useEffect(
+    //     () => {
+    //         load2();
+    //     }, [actions, state.activeTeamId]
+    // )
 
     const customStyle = {
         "top": "46%",
@@ -142,25 +159,28 @@ export default function HomePage() {
                         <button className="text-white focus:outline-none hover:bg-gray-800">
                             <i className="material-icons md-light md-inactive" onClick={(e) => {
                                 e.preventDefault();
-                                setIsAddingRoom(isAddingRoom => !isAddingRoom)
+                                actions.app.setAddingRoom(true)
                             }} style={{ fontSize: "18px", margin: "0" }}>add</i>
                         </button>
                     </div>
                     {
-                        isAddingRoom &&
+                        state.addingRoom &&
                         <div className="flex justify-center items-center hover:bg-gray-800">
                             <input className="shadow appearance-none border rounded w-full py-1 
                             px-5 text-gray-700 leading-tight focus:outline-none"
                                 style={{ width: "95%" }}
                                 onChange={handleChange}
-                                onKeyPress={(e) => {
+                                onKeyUp={(e) => {
                                     if (e.keyCode === 13 || e.which === 13) {
                                         if (e.target.value === "") {
                                             ToastNotification('error', "Room name can't be empty")
                                         } else {
-                                            setIsAddingRoom(false)
-                                            addingNewRoom(e.target.value)
+                                            actions.app.setAddingRoom(false);
+                                            addRoom(e.target.value)
                                         }
+                                    } else if(e.keyCode === 27 || e.which === 27) {
+
+                                        actions.app.setAddingRoom(false)
                                     }
                                 }}
                                 name="roomname"
@@ -172,13 +192,13 @@ export default function HomePage() {
                     }
                     <div className="" style={{ height: "115px", overflowY: "scroll" }}>
                         {
-                            !state.loadingRooms ?
-                                RoomList(state.RoomListArray) :
+                            !state.loadingCurrentTeam ?
+                                RoomList(state.currentTeam.rooms) :
                                 <BeatLoader
                                     css={override}
                                     size={10}
                                     color={"white"}
-                                    loading={state.loadingRooms}
+                                    loading={state.loadingCurrentTeam}
                                 />
                         }
                     </div>
@@ -199,13 +219,13 @@ export default function HomePage() {
                         <div className="text-gray-500 px-3 font-bold tracking-wide text-xs">Team Mates</div>
                     </div>
                     {
-                        !state.loadingMembers ?
-                            MembersList(state.userMapping) :
+                        !state.loadingCurrentTeam ?
+                            MembersList(state.currentTeam.users) :
                             <BeatLoader
                                 css={override}
                                 size={10}
                                 color={"white"}
-                                loading={state.loadingMembers}
+                                loading={state.loadingCurrentTeam}
                             />
                     }
                 </div>
@@ -228,13 +248,13 @@ export default function HomePage() {
                                 togglecopySuccess(false);
                                 toggleshowInviteModal(showInviteModal => !showInviteModal)
                             }}>
-                            <i class="material-icons md-light md-inactive mr-2">person_add</i>Invite Teammates
+                            <i className="material-icons md-light md-inactive mr-2">person_add</i>Invite Teammates
                         </button>
                     </div>
                 </div>
                 {
                     // Invite Modal HTML
-                    showInviteModal && state.activeTeamId !== 0 ?
+                    showInviteModal && state.currentTeamId ?
                         <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={customStyle}
                             onClick={(e) => {
                             }}>
@@ -244,7 +264,7 @@ export default function HomePage() {
                         </p>
                             <input
                                 id="InviteModalLink"
-                                value={'https://joinpluto.netlify.app/#/j/' + state.userTeamDataInfo[state.activeTeamId].magiclink}
+                                value={'https://joinpluto.netlify.app/#/j/' + state.currentTeam.tid}
                                 className="w-full shadow appearance-none border text-purple-700 rounded py-1 px-1 bg-purple-200" />
                             <button
                                 className="bg-purple-700 w-full rounded-sm flex justify-center text-white items-center hover:bg-purple-500
@@ -261,7 +281,7 @@ export default function HomePage() {
                                 }}
                             >{!copySuccess ? "Copy Invite" : "Copied !!"}</button>
                         </div> :
-                        <></>
+                        <div></div>
                 }
             </div>
         </div>

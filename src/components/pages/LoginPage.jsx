@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import * as React from 'react'
+import React, { useContext } from 'react'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom";
 import Image from 'react-image-resizer';
@@ -7,6 +7,8 @@ import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import googleLogo from "../../assets/google.svg";
 import main from "../../assets/main.png";
+
+import {AuthContext} from '../../context/AuthContext'
 
 // TODO Clear Login cache or store it in some local storage/file. => window.localStorage in electron.
 // TODO Secure the Google Login. 
@@ -21,13 +23,15 @@ const LoginPage = React.memo(() => {
 
   let history = useHistory();
 
+  const { authData, setAuthData } = useContext(AuthContext);
   const { state, actions } = useOvermind();
 
   const googleSignInAction = (e) => {
     e.preventDefault();
-    actions.googlehandleLogin().then(() => {
+
+    actions.auth.googleLogin({setAuthData: setAuthData}).then(() => {
       window.require("electron").ipcRenderer.send('resize-normal');
-      state.userProfileData.addStatus ? history.push('/add-team') : history.push('/home')
+      //state.userProfileData.addStatus ? history.push('/add-team') : history.push('/home')
     })
   }
 

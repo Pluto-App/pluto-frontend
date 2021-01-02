@@ -7,7 +7,9 @@ import { config } from './overmind'
 
 import './styles/tailwind.css';
 import './assets/fonts/css/icons.css'
-import App from './components/App';
+import App from './App';
+
+import {AppProviders} from './context'
 
 const overmind = createOvermind(config, {
   devtools: true 
@@ -15,11 +17,10 @@ const overmind = createOvermind(config, {
 })
 
 const NewOverMind = hot(overmind)
-const NewApp = hot(App)
 
 render(
-  <Provider value={NewOverMind}>
-    <NewApp />
-  </Provider>,
-  document.getElementById('root')
+	<AppProviders>
+		<App />
+	</AppProviders>,
+  	document.getElementById('root')
 );

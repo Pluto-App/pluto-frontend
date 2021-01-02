@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import ToastNotification from '../../widgets/ToastNotification';
@@ -8,10 +8,13 @@ import * as Cookies from "js-cookie";
 import * as md5 from "md5";
 import { socket_live, events } from '../../sockets';
 
+import { AuthContext } from '../../../context/AuthContext'
+
 const RoomListItem = React.memo((props) => {
 
     // TODO Notify when new room created. Add to list room info.  
     let history = useHistory();
+    const { authData } = useContext(AuthContext);
 
     const { state, actions } = useOvermind();
 
@@ -55,15 +58,11 @@ const RoomListItem = React.memo((props) => {
     }
 
     const removeRoomHandler = async (e) => {
-        if (state.userTeamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
-            await actions.removeRoom({
-                roomid: props.id,
-                teamid: state.activeTeamId,
-                roomname: roomName
-            })
-        } else {
-            ToastNotification('error', "Only Owners can remove")
-        }
+        
+        var roomData = {id: props.id}
+        await actions.room.deleteRoom({ authData: authData, roomData: roomData})
+
+        //ToastNotification('error', "Only Owners can remove")
     }
 
     const handleClick = async (e) => {

@@ -68,12 +68,16 @@ function createWindow() {
 
   ipcMain.on('active-win', async (event, arg) => {
     const activeWinInfo = await activeWin()
-    console.log(activeWinInfo.owner.name)
-    console.log(screen.getCursorScreenPoint())
+
     if (activeWinInfo.owner !== undefined && activeWinInfo.owner.name !== undefined)
-      event.returnValue = activeWinInfo.owner.name
+      event.returnValue = activeWinInfo
     else
       event.returnValue = "None"
+  })
+
+  ipcMain.on('logout', (event, arg) => {
+    mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : startPageUrl);
+    mainWindow.setSize(315, 320)
   })
 
   ipcMain.on('resize-login', (event, arg) => {
@@ -137,8 +141,6 @@ function createWindow() {
       settings_page.webContents.send('data', data);
     });
 
-    // Close the video player window when we 
-    // close the main window of the app. 
     mainWindow.on('closed', () => {
       if (settings_page !== null) {
         settings_page.close();
@@ -148,9 +150,9 @@ function createWindow() {
 
   ipcMain.on('load-video-window', (event, data) => {
 
-    if (video_player !== null) {
-      video_player.close();
-    }
+    // if (video_player) {
+    //   video_player.close();
+    // }
 
     let display = screen.getPrimaryDisplay();
     let swidth = display.bounds.width;

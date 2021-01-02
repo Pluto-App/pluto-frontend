@@ -34,13 +34,8 @@ const MainBar = React.memo((props) => {
                     <p
                         className="flex p-1 items-center text-grey-dark font-bold rounded-lg hover:text-white cursor-pointer hover:bg-grey-darker">
                         {
-                            state.userTeamDataInfo !== {} && state.activeTeamId !== 0 ? state.userTeamDataInfo[state.activeTeamId].teamname
-                                :
-                                props.appInfo
+                            state.currentTeam.name
                         }
-                        {/* <span>
-                            {props.appInfo}
-                        </span> */}
                     </p>
                     <div className="flex items-center">
                         <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" onClick={(e) => {

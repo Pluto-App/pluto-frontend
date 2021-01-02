@@ -1,27 +1,39 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import BackButton from '../../widgets/BackButton'
 
+import {AuthContext} from '../../../context/AuthContext'
+
 const UserProfile = React.memo(() => {
 
     let history = useHistory();
+    const { authData, setAuthData } = useContext(AuthContext);
 
     const { state, actions } = useOvermind();
 
     const logout = (e) => {
         e.preventDefault();
-        actions.handleLogout().then(() => {
-            window.require("electron").ipcRenderer.send('resize-login');
-            history.push('/');
+        actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+            window.require("electron").ipcRenderer.send('logout');
+            //history.push('/');
+
+            var curentWindow = window.require("electron").remote.getCurrentWindow();
+            curentWindow.close(); 
         });
     }
+
+    useEffect(() => {
+
+        actions.user.getLoggedInUser({authData: authData})
+
+    }, [actions, authData])
 
     return (
         <div className="w-full flex">
             <div className="bg-black  flex-1 px-3 text-white pt-2" style={{ height: "calc(100vh - 30px)" }}>
-                <BackButton url={'/home'}></BackButton>
+                <BackButton></BackButton>
                 <p className="text-grey font-bold text-sm tracking-wide mt-2">STATUS</p>
                 <div className="mt-3 mb-4 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
                 <div className="flex">
