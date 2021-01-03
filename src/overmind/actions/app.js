@@ -28,8 +28,6 @@ export const updateUserActiveWindowData = async ({ state, effect }, {user_id, ac
 
 export const userVideoCall = async ({ state, effect }, {user_id, active_window_data}) => {
 
-	console.log('Initiating Video Call!');
-
 	let id = md5(state.currentTeam.id + state.userProfileData.id);
 
     Cookies.set("channel", id);
