@@ -55,6 +55,7 @@ export default function App() {
       });
 
       socket_live.on(events.userVideoCall, (data) => {
+        console.log('Initiating userVideoCall Call!');
         actions.app.userVideoCall(data);
       });
    

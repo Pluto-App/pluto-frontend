@@ -1,5 +1,9 @@
 
 import { socket_live, events } from '../../components/sockets'
+import * as md5 from "md5";
+import * as Cookies from "js-cookie";
+
+import ToastNotification from '../../components/widgets/ToastNotification'
 
 export const setActiveWinInfo = async ({ state, effect }, {data}) => {
 	    
@@ -23,6 +27,8 @@ export const updateUserActiveWindowData = async ({ state, effect }, {user_id, ac
 }
 
 export const userVideoCall = async ({ state, effect }, {user_id, active_window_data}) => {
+
+	console.log('Initiating Video Call!');
 
 	let id = md5(state.currentTeam.id + state.userProfileData.id);
 
