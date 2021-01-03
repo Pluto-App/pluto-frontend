@@ -55,7 +55,7 @@ export default function App() {
       });
 
       socket_live.on(events.userVideoCall, (data) => {
-        //actions.app.userVideoCall(data);
+        actions.app.userVideoCall(data);
       });
    
       interval = setInterval(() => {
