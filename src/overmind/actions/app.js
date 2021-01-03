@@ -31,7 +31,7 @@ export const userVideoCall = async ({ state, effect }, data) => {
 	console.log('Incoming video call');
 	console.log(data);
 
-	// let id = md5(state.currentTeam.id + state.userProfileData.id);
+	let id = md5(state.currentTeam.id + state.userProfileData.id);
 
  //    Cookies.set("channel", id);
 
