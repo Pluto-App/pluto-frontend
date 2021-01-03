@@ -62,8 +62,9 @@ const UserListItem = React.memo((user) => {
     const activeAppClick = (e, usersActiveWindow) => {
         e.preventDefault();
         
-        if(usersActiveWindow)
+        if(usersActiveWindow && usersActiveWindow.url){
             window.require("electron").shell.openExternal(usersActiveWindow.url);
+        }
     }
 
     const removeUser = async (e, user_id) => {

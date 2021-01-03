@@ -150,9 +150,14 @@ function createWindow() {
 
   ipcMain.on('load-video-window', (event, data) => {
 
-    // if (video_player) {
-    //   video_player.close();
-    // }
+    if (video_player !== null && video_player) {
+      try{
+        video_player.close();
+      } catch (error) {
+        console.error(error);
+      }
+      
+    }
 
     let display = screen.getPrimaryDisplay();
     let swidth = display.bounds.width;
