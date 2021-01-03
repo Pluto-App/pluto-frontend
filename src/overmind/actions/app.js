@@ -21,5 +21,16 @@ export const addOnlineUser = async ({ state, effect }, user_id) => {
 export const updateUserActiveWindowData = async ({ state, effect }, {user_id, active_window_data}) => {
 	state.usersActiveWindows[user_id] = active_window_data;
 }
+
+export const userVideoCall = async ({ state, effect }, {user_id, active_window_data}) => {
+
+	let id = md5(state.currentTeam.id + state.userProfileData.id);
+
+    Cookies.set("channel", id);
+
+    window.require("electron").ipcRenderer.send('load-video-window', id);
+    ToastNotification('success', `Incoming VC`);
+}
+
           
 

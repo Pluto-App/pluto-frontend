@@ -53,6 +53,10 @@ export default function App() {
       socket_live.on(events.activeWindowUpdate, (data) => {
         actions.app.updateUserActiveWindowData(data);
       });
+
+      socket_live.on(events.userVideoCall, (data) => {
+        actions.app.userVideoCall(data);
+      });
    
       interval = setInterval(() => {
           // Emit User is online.
