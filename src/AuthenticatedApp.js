@@ -54,7 +54,6 @@ export default function App() {
       });
 
       socket_live.on(events.activeWindowUpdate, (data) => {
-
         actions.app.updateUserActiveWindowData(data);
       });
    

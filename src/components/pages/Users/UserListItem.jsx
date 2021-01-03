@@ -47,7 +47,8 @@ const UserListItem = React.memo((user) => {
     const getAppLogo = (appName) => {
 
         appName = appName.replace('.exe','');
-        var showApps = ['slack','tandem','googlechrome','electron'];
+
+        var showApps = ['slack','tandem','googlechrome','electron', 'chrome'];
 
         if(appName && showApps.includes(appName)){
 
@@ -58,11 +59,11 @@ const UserListItem = React.memo((user) => {
         }        
     }
 
-    const activeAppClick = (e) => {
+    const activeAppClick = (e, usersActiveWindow) => {
         e.preventDefault();
         
         if(state.activeWindowApp.url)
-            window.require("electron").shell.openExternal(state.activeWindowApp.url);
+            window.require("electron").shell.openExternal(usersActiveWindow.url);
     }
 
     const removeUser = async (e, user_id) => {
@@ -118,7 +119,7 @@ const UserListItem = React.memo((user) => {
             <div className="items-center flex">
                 <div className="items-center bg-black h-6 w-6 flex text-black text-2xl font-semibold overflow-hidden">
                     <a onClick={(e) => {
-                        activeAppClick(e)
+                        activeAppClick( e, state.usersActiveWindows[user.id] )
                     }}>
                        { state.usersActiveWindows[user.id] ? 
 
