@@ -1,11 +1,15 @@
 
+import { socket_live, events } from '../../components/sockets'
+
 export const getTeam = async ({state, effects}, {authData, team_id}) => {
 
 	state.loadingTeam = true
 
 	var teamData = await effects.team.getTeam(authData, team_id)
 	state.currentTeam = teamData;
-	
+
+  socket_live.emit('join_room', state.currentTeam.tid);
+
 	state.loadingTeam = false
   state.teamUpdateReq = false
 }

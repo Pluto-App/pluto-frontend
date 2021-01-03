@@ -1,12 +1,14 @@
 import socketIOClient from "socket.io-client";
 
 // TODO Do we need other events?
-export const socket_live = socketIOClient(process.env.REACT_APP_LIVE_ENDPOINT);
-export const backend_live = socketIOClient(process.env.REACT_APP_BACKEND_LIVE_ENDPOINT);
+export const socket_live = socketIOClient(process.env.REACT_APP_BACKEND_URL);
+//export const backend_live = socketIOClient(process.env.REACT_APP_BACKEND_URL);
 
 export const events = {
+  online: 'online',
+  activeWindowUpdate: 'activeWindowUpdate',
+
   offline: "Offline",
-  online: "Online",
   sleeping: "Sleeping",
   new_team: "New Team",
   new_room: "New Room",

@@ -26,5 +26,7 @@ export const state = {
     // App Data
     activeWindowApp: {},
     userData: {teams: []},
-    currentTeam: {rooms: [], users: []}
+    currentTeam: {rooms: [], users: []},
+    onlineUsers: [],
+    usersActiveWindows: {}
 }

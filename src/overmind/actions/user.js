@@ -1,5 +1,4 @@
 
-
 export const getLoggedInUser = async ({state, effects}, {authData: authData, params: params}) => {
 
   	state.loadingUser = true

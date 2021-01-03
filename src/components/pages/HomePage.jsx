@@ -13,6 +13,11 @@ import { sha224 } from 'js-sha256'
 
 import { AuthContext } from '../../context/AuthContext'
 
+import { socket_live, events } from '../../components/sockets'
+
+import socketIOClient from "socket.io-client";
+const ENDPOINT = "http://127.0.0.1:3000";
+
 // TODO Move Active Win info to user profile (not necessary?)
 // FIXME Add Active Win Support. The package fails to build. Search Alternatives. 
 const RoomList = ((rooms) => {
@@ -32,16 +37,16 @@ const RoomList = ((rooms) => {
     );
 })
 
-const MembersList = ((props) => {
+const MembersList = (({users, onlineUsers}) => {
 
-    const teamMemberList = Object.entries(props).map(([id, member]) =>
+    const teamMemberList = Object.entries(users).map(([id, member]) =>
         <UserListItem
             id={member.id}
             key={member.id.toString()}
             url={member.avatar}
             name={member.name}
             email={member.email}
-            statusColor={member.statusColor}
+            statusColor={onlineUsers.includes(member.id) ? 'green' : member.statusColor}
         />
     )
 
@@ -69,6 +74,10 @@ export default function HomePage() {
     const [appInfo, updateAppInfo] = useState("No Teams");
     const [newRoomName, updateNewRoomName] = useState("");
 
+    const [response, setResponse] = useState("");
+
+
+
     // TODO : Shift to App Level stuff 
     useEffect(() => {
         const setActiveWin = setInterval(async () => {
@@ -77,6 +86,7 @@ export default function HomePage() {
         }, 3000)
         return () => clearInterval(setActiveWin);
     }, [state.activeWindowApp])
+
 
     useEffect(() => {
 
@@ -108,35 +118,6 @@ export default function HomePage() {
         updateNewRoomName(e.target.value);
     }
 
-    const load1 = async () => {
-        await actions.teamsbyuserid({
-            userid: state.userProfileData.userid
-        })
-    }
-
-    const load2 = async () => {
-        if (state.activeTeamId !== 0) {
-            await actions.roomsbyteamid({
-                teamid: state.activeTeamId
-            })
-            await actions.usersbyteamid({
-                teamid: state.activeTeamId
-            })
-        }
-    }
-
-    // useEffect(
-    //     () => {
-    //         load1();
-    //     }, [actions, state.userProfileData.userid]
-    // )
-
-    // useEffect(
-    //     () => {
-    //         load2();
-    //     }, [actions, state.activeTeamId]
-    // )
-
     const customStyle = {
         "top": "46%",
         "width": "calc(94% - 50px)"
@@ -147,8 +128,8 @@ export default function HomePage() {
             <Sidebar></Sidebar>
             <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)", marginLeft: "49px" }}>
                 <MainBar
-                    userid={state.userProfileData.userid}
-                    teamid={state.activeTeamId}
+                    userid={state.userProfileData.id}
+                    teamid={state.currentTeam.id}
                     appName={appInfo}
                 />
                 <div className="sidebar-icons" style={{ height: "relative" }}>
@@ -220,7 +201,7 @@ export default function HomePage() {
                     </div>
                     {
                         !state.loadingCurrentTeam ?
-                            MembersList(state.currentTeam.users) :
+                            MembersList({users: state.currentTeam.users, onlineUsers: state.onlineUsers}) :
                             <BeatLoader
                                 css={override}
                                 size={10}

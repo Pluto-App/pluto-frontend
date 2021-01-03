@@ -16,7 +16,7 @@ import { AuthContext } from '../../../context/AuthContext'
 
 import * as md5 from "md5";
 
-const UserListItem = React.memo((props) => {
+const UserListItem = React.memo((user) => {
 
     let history = useHistory();
     const { authData } = useContext(AuthContext);
@@ -46,6 +46,7 @@ const UserListItem = React.memo((props) => {
 
     const getAppLogo = (appName) => {
 
+        appName = appName.replace('.exe','');
         var showApps = ['slack','tandem','googlechrome','electron'];
 
         if(appName && showApps.includes(appName)){
@@ -53,7 +54,7 @@ const UserListItem = React.memo((props) => {
             return logos(`./${appName}.png`);
 
         } else {
-            return "https://ui-avatars.com/api/?background=random&name="
+            return "https://ui-avatars.com/api/?background=black&name="
         }        
     }
 
@@ -79,37 +80,37 @@ const UserListItem = React.memo((props) => {
     const startVideo = () => {
         // TODO User Video Call ID. Check Needed.
         // Cannot start a VC Call with oneself.
-        if (props.id !== state.userProfileData.userid) {
+        if (user.id !== state.userProfileData.userid) {
             let id = md5(state.activeTeamId + state.userProfileData.userid);
             Cookies.set("channel", id);
             socket_live.emit(events.video_call, {
-                recieverid: props.id,
+                recieverid: user.id,
                 teamid: state.activeTeamId,
                 senderid: state.userProfileData.userid,
                 username: state.userProfileData.username
             })
             window.require("electron").ipcRenderer.send('load-video-window', id);
-            ToastNotification('success', `Initiated VC with ${props.name} 📷`);
+            ToastNotification('success', `Initiated VC with ${user.name} 📷`);
         } else {
             ToastNotification('error', "Can't start VC with self 😠")
         }
     }
 
     return (
-        <div className="flex py-0 justify-between p-1 pl-1 hover:bg-gray-800" id={props.id} onClick={(e) => {
+        <div className="flex py-0 justify-between p-1 pl-1 hover:bg-gray-800" id={user.id} onClick={(e) => {
             e.preventDefault();
         }}>
             <div className="flex justify-start p-2 pl-1">
                 <div className="bg-white h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden">
-                    <img src={props.url} alt="T" />
+                    <img src={user.url} alt="T" />
                 </div>
                 <div className="text-white px-1 font-bold tracking-wide text-xs" onClick={(e) => {
                     startVideo();
                 }}>
-                    {props.name}
+                    {user.name}
                 </div>
                 <svg viewBox="0 0 6 6" height="8" width="8">
-                    <circle cx="3" cy="3" r="2.5" fill={props.statusColor} />
+                    <circle cx="3" cy="3" r="2.5" fill={user.statusColor} />
                         Sorry, your browser does not support inline SVG.
                 </svg>
                 <span></span>
@@ -119,12 +120,14 @@ const UserListItem = React.memo((props) => {
                     <a onClick={(e) => {
                         activeAppClick(e)
                     }}>
-                        <img src={   
-                             state.activeWindowApp.owner ? 
-                                getAppLogo(state.activeWindowApp.owner.name.toLowerCase().replace(/ /g,''))
-                                :
-                                getAppLogo('')
-                        } alt="T"/>
+                       { state.usersActiveWindows[user.id] ? 
+
+                            <img src={
+                                    getAppLogo(state.usersActiveWindows[user.id].owner.name.toLowerCase().replace(/ /g,''))
+                            } alt=""/>
+                            :
+                            <div></div>
+                        }
                     </a>
                 </div>
                 {
@@ -138,14 +141,14 @@ const UserListItem = React.memo((props) => {
                         <div className="items-center px-2">
                             <div className="flex justify-start">
                                 <div className="bg-white h-4 w-4 flex text-black text-2xl font-semibold rounded-lg overflow-hidden">
-                                    <img src={props.url} alt="T" />
+                                    <img src={user.url} alt="" />
                                 </div>
                                 <svg height="8" width="8">
-                                    <circle cx="4" cy="4" r="4" fill={props.statusColor} />
+                                    <circle cx="4" cy="4" r="4" fill={user.statusColor} />
                                                     Sorry, your browser does not support inline SVG.
                                             </svg>
                                 <div className="text-white px-1 font-bold tracking-wide text-xs">
-                                    {props.name}
+                                    {user.name}
                                 </div>
                             </div>
                             <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
@@ -169,7 +172,7 @@ const UserListItem = React.memo((props) => {
                             
                             <button className="w-full text-red-500 hover:bg-red-300 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" 
                             onClick={(e) => {
-                                removeUser(e, props.id)
+                                removeUser(e, user.id)
                             }}>
                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>delete_forever</i>Remove Member
                             </button>
@@ -193,14 +196,14 @@ const UserListItem = React.memo((props) => {
                         <h4 className="font-bold text-xl text-gray-600 text-center mb-1"> Messenger </h4>
                         <div className="flex justify-start bg-black p-2 pl-1">
                             <div className="bg-white h-4 w-4 flex text-black text-2xl font-semibold rounded-lg overflow-hidden">
-                                <img src={props.url} alt="T" />
+                                <img src={user.url} alt="T" />
                             </div>
                             <svg height="8" width="8">
-                                <circle cx="4" cy="4" r="4" fill={props.statusColor} />
+                                <circle cx="4" cy="4" r="4" fill={user.statusColor} />
                                             Sorry, your browser does not support inline SVG.
                                     </svg>
                             <div className="text-white px-1 font-bold tracking-wide text-xs">
-                                {props.name}
+                                {user.name}
                             </div>
                         </div>
                         <input
