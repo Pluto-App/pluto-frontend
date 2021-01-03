@@ -43,7 +43,6 @@ export default function App() {
       let interval = 0;
       let onlineInterval = 0;
 
-
       // Some User is Online
       socket_live.on(events.online, (user_id) => {
 

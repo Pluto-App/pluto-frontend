@@ -28,15 +28,11 @@ export const updateUserActiveWindowData = async ({ state, effect }, {user_id, ac
 
 export const userVideoCall = async ({ state, effect }, data) => {
 
-	console.log('Incoming video call');
-	console.log(data);
+	let id = md5(state.activeTeamId + state.userProfileData.userid);
 
-	let id = md5(state.currentTeam.id + state.userProfileData.id);
-
- //    Cookies.set("channel", id);
-
-    // window.require("electron").ipcRenderer.send('load-video-window', id);
-    // ToastNotification('success', `Incoming VC`);
+ 	Cookies.set("channel", id);
+    window.require("electron").ipcRenderer.send('load-video-window', id);
+    ToastNotification('success', `Incoming VC`);
 }
 
           

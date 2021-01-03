@@ -103,15 +103,6 @@ const UserListItem = React.memo((user) => {
             window.require("electron").ipcRenderer.send('load-video-window', id);
             ToastNotification('success', `Initiated VC with ${user.name} 📷`);
 
-
-            // Cookies.set("channel", id);
-            // socket_live.emit(events.userVideoCall, {
-            //     receiver: user.uid,
-            //     sender: state.userProfileData.uid
-            // })
-
-            // window.require("electron").ipcRenderer.send('load-video-window', id);
-            // ToastNotification('success', `Initiated VC with ${user.name} 📷`);
         } else {
             ToastNotification('error', "Can't start VC with self 😠")
         }
