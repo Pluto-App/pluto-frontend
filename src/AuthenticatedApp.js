@@ -29,9 +29,6 @@ import {
 import {AuthContext} from './context/AuthContext'
 
 
-
-// const isOnline = require('is-online');
-
 export default function App() {
 
   window.require("electron").ipcRenderer.send('resize-normal');

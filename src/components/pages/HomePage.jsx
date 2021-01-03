@@ -42,6 +42,7 @@ const MembersList = (({users, onlineUsers}) => {
     const teamMemberList = Object.entries(users).map(([id, member]) =>
         <UserListItem
             id={member.id}
+            uid={member.uid}
             key={member.id.toString()}
             url={member.avatar}
             name={member.name}
