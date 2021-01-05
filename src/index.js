@@ -1,3 +1,5 @@
+// process.env['NODE_' + 'ENV'] = process.env.NODE_ENV
+
 import { hot } from 'react-hot-loader/root';
 import * as React from 'react'
 import { render } from 'react-dom'
@@ -11,10 +13,7 @@ import App from './App';
 
 import {AppProviders} from './context'
 
-const overmind = createOvermind(config, {
-  devtools: true 
-  // defaults to 'localhost:3031'
-})
+const overmind = createOvermind(config)
 
 const NewOverMind = hot(overmind)
 

@@ -1,7 +1,7 @@
 {
   "name": "pluto-office",
   "productName": "pluto-office",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "public/electron.js",
   "author": "Pluto Dev Team <plutoapp.devs@gmail.com>",
   "email": "plutoapp.devs@gmail.com",
@@ -138,7 +138,7 @@
     }
   },
   "scripts": {
-    "build:style": "tailwind build src/styles/index.css -o src/styles/tailwind.css",
+    "build:style": "tailwind build src/styles/index.css -c tailwind.config.js -o src/styles/tailwind.css",
     "test": "env-cmd -f .env react-scripts test",
     "eject": "env-cmd -f .env react-scripts eject",
     "postinstall": "electron-builder install-app-deps",
@@ -151,9 +151,11 @@
     "prod": "concurrently --kill-others \"npm run production\" \"cross-env NODE_ENV=production dotenv -e .env -- cross-var wait-on tcp:3500 && npm run electron-production \"",
     "build": "cross-env NODE_ENV=production && npm run build:style && cross-env BROWSER=none env-cmd -f .env react-scripts build",
     "clean": "rm -rf build/ node_modules/",
-    "mac": "cross-env NODE_ENV=production electron-builder build --mac -c.extraMetadata.main=build/electron.js --publish=always",
-    "linux": "cross-env NODE_ENV=production electron-builder build --linux -c.extraMetadata.main=build/electron.js --publish=always",
-    "windows": "cross-env NODE_ENV=production electron-builder build --win -c.extraMetadata.main=build/electron.js --publish=always",
+    
+    "mac": "cross-env NODE_ENV=production electron-builder build --mac -c.extraMetadata.main=build/electron.js --publish=never",
+    "linux": "cross-env NODE_ENV=production electron-builder build --linux -c.extraMetadata.main=build/electron.js --publish=never",
+    "windows": "cross-env NODE_ENV=production electron-builder build --win -c.extraMetadata.main=build/electron.js --publish=never",
+    
     "activewin": "node src/activeWinTest.js"
   },
   "eslintConfig": {

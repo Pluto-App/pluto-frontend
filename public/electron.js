@@ -108,6 +108,7 @@ function createWindow() {
     let display = screen.getPrimaryDisplay();
     let swidth = display.bounds.width;
     let sheight = display.bounds.height;
+
     settings_page = new BrowserWindow({
       show: true,
       width: 400,
@@ -121,6 +122,7 @@ function createWindow() {
         plugins: true
       }
     })
+    
     settings_page.setAlwaysOnTop(true, 'screen');
     settings_page.setMenu(null);
 

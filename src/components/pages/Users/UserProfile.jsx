@@ -14,11 +14,12 @@ const UserProfile = React.memo(() => {
     const { state, actions } = useOvermind();
 
     const logout = (e) => {
+        
         e.preventDefault();
+        
         actions.auth.logOut({setAuthData: setAuthData}).then(() => {
-            window.require("electron").ipcRenderer.send('logout');
-            //history.push('/');
 
+            window.require("electron").ipcRenderer.send('logout');
             var curentWindow = window.require("electron").remote.getCurrentWindow();
             curentWindow.close(); 
         });

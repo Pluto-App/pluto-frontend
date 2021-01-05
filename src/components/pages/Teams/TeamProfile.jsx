@@ -39,7 +39,7 @@ export default function TeamProfile() {
                         <p className="text-gray-500">{}</p>
                         <button className="flex px-1 mt-2 items-center text-gray-500 font-bold rounded-lg focus:outline-none hover:text-white cursor-pointer hover:bg-gray-900">
                             <svg height="10" width="10">
-                                <circle cx="6" cy="6" r="4" stroke="black" stroke-width="0" fill="green" />
+                                <circle cx="6" cy="6" r="4" stroke="black" fill="green" />
                                 Sorry, your browser does not support inline SVG.
                             </svg><span className="ml-2">{}</span>
                             <i className="material-icons md-light md-inactive ml-1 mt-1" style={{ fontSize: "15px" }}>chat</i>
@@ -54,7 +54,7 @@ export default function TeamProfile() {
                 </button>
                 
                 <div className="mt-3 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
-                <button className="w-full text-white hover:bg-gray-800 rounded-lg p-1 flex items-center mt-2" onClick="">
+                <button className="w-full text-white hover:bg-gray-800 rounded-lg p-1 flex items-center mt-2">
                     <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>settings</i>Update Team
                 </button>
                 

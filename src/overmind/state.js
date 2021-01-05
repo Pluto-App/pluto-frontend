@@ -22,6 +22,7 @@ export const state = {
     teamUpdateReq: true,
     addingRoom: false,
     loadingTeam: false,
+    error: {},
 
     // App Data
     activeWindowApp: {},

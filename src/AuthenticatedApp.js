@@ -21,7 +21,7 @@ import { socket_live, events } from './components/sockets'
 import { useOvermind } from './overmind'
 
 import {
-  HashRouter as Router,
+  HashRouter,
   Switch,
   Route
 } from "react-router-dom";
@@ -34,7 +34,21 @@ export default function App() {
   window.require("electron").ipcRenderer.send('resize-normal');
 
   const { state, actions } = useOvermind();
-  const { authData } = useContext(AuthContext);
+  const { authData, setAuthData } = useContext(AuthContext);
+
+  useEffect(() => {
+      if(state.error && state.error.message){
+        
+        if(process && process.env.NODE_ENV == 'development') {
+          console.log(state.error);
+        }
+
+        actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+            window.require("electron").ipcRenderer.send('logout');
+        });
+      }
+
+    }, [actions, state.error])
 
   useEffect(
     () => {
@@ -66,7 +80,7 @@ export default function App() {
   );
 
   return (
-    <Router>
+    <HashRouter>
       <TopBar />
       <Switch>
         <Route exact path="/">
@@ -95,6 +109,6 @@ export default function App() {
         </Route>
       </Switch>
       <ToastContainer />
-    </Router>
+    </HashRouter>
   );
 }
