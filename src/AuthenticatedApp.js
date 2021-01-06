@@ -40,6 +40,7 @@ export default function App() {
       if(state.error && state.error.message){
         
         if(process && process.env.NODE_ENV == 'development') {
+          alert(state.error);
           console.log(state.error);
         }
 

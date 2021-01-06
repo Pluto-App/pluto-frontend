@@ -18,10 +18,15 @@ const activeWin = require('active-win');
 // TODO Now we can add external window for settings.
 // TODO Add support for App Signing.
 
+const minWidth = 315;
+const minHeight = 320;
+
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 300,
-    height: 350,
+    width: minWidth,
+    height: minHeight,
+    minWidth: minWidth,
+    minHeight: minHeight,
     titleBarStyle: 'hiddenInset',
     title: "MainWindow",
     frame: false,
@@ -77,15 +82,15 @@ function createWindow() {
 
   ipcMain.on('logout', (event, arg) => {
     mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : startPageUrl);
-    mainWindow.setSize(315, 320)
+    mainWindow.setSize(minWidth, minHeight)
   })
 
   ipcMain.on('resize-login', (event, arg) => {
-    mainWindow.setSize(315, 320)
+    mainWindow.setSize(minWidth, minHeight)
   })
 
   ipcMain.on('resize-normal', (event, arg) => {
-    mainWindow.setSize(300, 700)
+    mainWindow.setSize(minWidth, 700)
   })
 
   ipcMain.on('close-video', (event, arg) => {
@@ -122,7 +127,7 @@ function createWindow() {
         plugins: true
       }
     })
-    
+
     settings_page.setAlwaysOnTop(true, 'screen');
     settings_page.setMenu(null);
 

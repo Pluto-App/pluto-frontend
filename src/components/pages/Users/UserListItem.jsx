@@ -61,6 +61,8 @@ const UserListItem = React.memo((user) => {
 
     const activeAppClick = (e, usersActiveWindow) => {
         e.preventDefault();
+
+        console.log(usersActiveWindow);
         
         if(usersActiveWindow && usersActiveWindow.url){
             window.require("electron").shell.openExternal(usersActiveWindow.url);

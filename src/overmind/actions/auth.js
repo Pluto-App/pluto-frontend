@@ -7,23 +7,28 @@ export const googleLogin = async ({state, effects}, {setAuthData}) => {
   	state.loginStarted = true;
     ToastNotification('info', "Logging In...🚀");
 
-    state.userProfileData = await googleSignIn();
+    try {
 
-    var loginData = await effects.auth.googleLogin(state.userProfileData);
+        state.userProfileData = await googleSignIn();
 
-    console.log(loginData);
+        var loginData = await effects.auth.googleLogin(state.userProfileData);
 
-    localStorage.setItem('currentUser', JSON.stringify(loginData));
-    state.userProfileData = loginData.user;
+        localStorage.setItem('currentUser', JSON.stringify(loginData));
+        state.userProfileData = loginData.user;
 
-    state.userProfileData.addStatus = loginData.addStatus || 0
-    state.teamowner = state.userProfileData.username
-    state.loggedIn = true
-    state.signedUp = true;
+        state.userProfileData.addStatus = loginData.addStatus || 0
+        state.teamowner = state.userProfileData.username
+        state.loggedIn = true
+        state.signedUp = true;
+
+        window.require("electron").ipcRenderer.send('resize-normal');
+        setAuthData(loginData);
+
+    } catch (error){
+        state.error = error;
+    }
+
     state.loginStarted = false;
-
-    window.require("electron").ipcRenderer.send('resize-normal');
-    setAuthData(loginData);
 }
 
 export const logOut = async ({state, effects}, {setAuthData}) => {
@@ -36,7 +41,6 @@ export const logOut = async ({state, effects}, {setAuthData}) => {
     state.signedUp = true;
     state.loginStarted = false;
 
-    //window.require("electron").ipcRenderer.send('resize-normal');
     setAuthData({});
 }
 

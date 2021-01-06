@@ -19,6 +19,7 @@ export const state = {
     
 
     // App State
+    online: true,
     teamUpdateReq: true,
     addingRoom: false,
     loadingTeam: false,

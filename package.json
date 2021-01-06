@@ -1,6 +1,6 @@
 {
-  "name": "pluto-office",
-  "productName": "pluto-office",
+  "name": "pluto",
+  "productName": "pluto",
   "version": "0.0.1",
   "main": "public/electron.js",
   "author": "Pluto Dev Team <plutoapp.devs@gmail.com>",
@@ -60,7 +60,7 @@
   "build": {
     "appId": "com.pluto.office",
     "compression": "normal",
-    "productName": "pluto-office-app",
+    "productName": "pluto",
     "copyright": "MIT",
     "files": [
       "build/**/*",
@@ -138,19 +138,29 @@
     }
   },
   "scripts": {
+    
     "build:style": "tailwind build src/styles/index.css -c tailwind.config.js -o src/styles/tailwind.css",
     "test": "env-cmd -f .env react-scripts test",
     "eject": "env-cmd -f .env react-scripts eject",
     "postinstall": "electron-builder install-app-deps",
     "setup": "npm install && npm run build",
-    "production": "npm run build:style && cross-env BROWSER=none env-cmd -f .env react-scripts start",
-    "local": "npm run build:style && cross-env BROWSER=none env-cmd -f .env.local react-scripts start",
+    
+    "build-production": "npm run build:style && cross-env BROWSER=none env-cmd -f .env react-scripts start",
+    "build-development": "npm run build:style && cross-env BROWSER=none env-cmd -f .env.dev react-scripts start",
+    "build-local": "npm run build:style && cross-env BROWSER=none env-cmd -f .env.local react-scripts start",
+    
     "electron-local": "cross-env NODE_ENV=dev env-cmd -f .env.local nodemon --exec electron .",
+    "electron-development": "cross-env NODE_ENV=dev env-cmd -f .env.dev nodemon --exec electron .",
     "electron-production": "cross-env NODE_ENV=dev env-cmd -f .env nodemon --exec electron .",
-    "start": "concurrently --kill-others \"npm run local\" \"cross-env NODE_ENV=production dotenv -e .env -- cross-var wait-on tcp:3500 && npm run electron-local \"",
-    "prod": "concurrently --kill-others \"npm run production\" \"cross-env NODE_ENV=production dotenv -e .env -- cross-var wait-on tcp:3500 && npm run electron-production \"",
+    
+    "local": "concurrently --kill-others \"npm run build-local\" \"cross-env NODE_ENV=production dotenv -e .env -- cross-var wait-on tcp:%PORT% && npm run electron-local \"",
+    "dev": "concurrently --kill-others \"npm run build-development\" \"cross-env NODE_ENV=production dotenv -e .env.dev -- cross-var wait-on tcp:%PORT% && npm run electron-development \"",
+    "prod": "concurrently --kill-others \"npm run build-production\" \"cross-env NODE_ENV=production dotenv -e .env -- cross-var wait-on tcp:%PORT% && npm run electron-production \"",
+    
+    "dev-build": "cross-env NODE_ENV=production && npm run build:style && cross-env BROWSER=none env-cmd -f .env.dev react-scripts build",
     "build": "cross-env NODE_ENV=production && npm run build:style && cross-env BROWSER=none env-cmd -f .env react-scripts build",
-    "clean": "rm -rf build/ node_modules/",
+
+    "clean": "rm -rf build/ dist/",
     
     "mac": "cross-env NODE_ENV=production electron-builder build --mac -c.extraMetadata.main=build/electron.js --publish=never",
     "linux": "cross-env NODE_ENV=production electron-builder build --linux -c.extraMetadata.main=build/electron.js --publish=never",

@@ -3,6 +3,7 @@ import { socket_live, events } from '../../components/sockets'
 import * as md5 from "md5";
 import * as Cookies from "js-cookie";
 
+import { toast } from 'react-toastify';
 import ToastNotification from '../../components/widgets/ToastNotification'
 
 export const setActiveWinInfo = async ({ state, effect }, {data}) => {
@@ -35,5 +36,14 @@ export const userVideoCall = async ({ state, effect }, data) => {
     ToastNotification('success', `Incoming VC`);
 }
 
-          
+export const setAppOnlineStatus = async ({ state, effect }, status) => {
+	state.online = status;
+}
 
+export const addNotification = async ({ state, effect }, data) => {
+
+}
+
+export const clearNotifications = async ({ state, effect }, data) => {
+	toast.dismiss();
+}

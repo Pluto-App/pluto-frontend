@@ -30,8 +30,7 @@ const LoginPage = React.memo(() => {
     e.preventDefault();
 
     actions.auth.googleLogin({setAuthData: setAuthData}).then(() => {
-      window.require("electron").ipcRenderer.send('resize-normal');
-      //state.userProfileData.addStatus ? history.push('/add-team') : history.push('/home')
+      // No action required as of now.
     })
   }
 

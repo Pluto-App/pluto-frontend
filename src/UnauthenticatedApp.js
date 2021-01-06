@@ -18,11 +18,30 @@ import {
   Route
 } from "react-router-dom";
 
-// const isOnline = require('is-online');
+const isOnline = require('is-online');
 
 export default function App() {
 
   const { state, actions } = useOvermind();
+
+  useEffect(() => {
+
+    if(state.error && state.error.message){
+
+      if(process.env.NODE_ENV == 'development') {
+        console.log(state.error);
+      } 
+
+      if(process.env.REACT_APP_DEV_BUILD == 'true') {
+        console.log('alert!');
+        alert(state.error.stack);
+      }
+
+      actions.app.clearNotifications();
+      ToastNotification('error', 'Something Went Wrong! Try again or Contact Support.',{autoClose: false});
+    }
+
+  }, [actions, state.error])
 
   useEffect(
     () => {
@@ -138,15 +157,20 @@ export default function App() {
       //     // socket_live.emit(events.online, state.userProfileData.userid)
       // }, 6000)
 
-      // onlineInterval = setInterval(async () => {
-      //   if (!(await isOnline())) {
-      //     ToastNotification('error', 'You are Offline 😢')
-      //     actions.updateStatusColor({
-      //       userid: state.userProfileData.userid,
-      //       statusColor: 'yellow'
-      //     })
-      //   }
-      // }, 6000)
+      onlineInterval = setInterval(async () => {
+
+        var isAppConnected = await isOnline();
+
+        if (!isAppConnected && state.online) {
+          actions.app.setAppOnlineStatus(false);
+          ToastNotification('error', 'You are Offline 😢',{autoClose: false});
+
+        } else if(isAppConnected && !(state.online)) {
+          actions.app.setAppOnlineStatus(true);
+          actions.app.clearNotifications();
+          ToastNotification('success', 'You are now Online');
+        }
+      }, 2000)
 
       // return () => {
       //   ToastNotification('error', "App Unmount");
