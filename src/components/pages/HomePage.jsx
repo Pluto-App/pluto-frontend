@@ -84,7 +84,10 @@ export default function HomePage() {
         const setActiveWin = setInterval(async () => {
             try {
                 const activeWinAppData = await window.require("electron").ipcRenderer.sendSync('active-win');
-                actions.app.setActiveWinInfo({data: activeWinAppData})    
+                actions.app.setActiveWinInfo(activeWinAppData)
+                
+                console.log(activeWinAppData);
+                
             
             } catch (error) {
                 if(process.env.REACT_APP_DEV_BUILD)

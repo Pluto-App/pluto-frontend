@@ -43,14 +43,18 @@ const UserListItem = React.memo((user) => {
 
     const getAppLogo = (appData) => {
 
-        console.log(appData);
-        
-        var appName = appData.owner.name.toLowerCase().replace(/ /g,'').replace('.exe','');
-
-        var showApps = ['slack', 'googlechrome', 'chrome', 'electron', 'terminal', 'sublimetext'];
-
         try {
-            var logo = appLogo(appName);
+            if(appData.owner && appData.owner.name) {
+
+                var logo = appLogo(
+                    appData.owner.name.toLowerCase().replace(/ /g,'').replace('.exe','')
+                ); 
+
+                return logo;   
+            } else {
+                
+                throw new Error('App Data Incorrect');
+            }
 
         } catch (error) {
 
@@ -59,8 +63,6 @@ const UserListItem = React.memo((user) => {
 
             return "https://ui-avatars.com/api/?background=black&name="   
         }
-
-        return appLogo(appName);
     }
 
     const activeAppClick = (e, usersActiveWindow) => {

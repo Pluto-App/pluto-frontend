@@ -13,7 +13,9 @@ let settings_page
 
 const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
+
 const activeWin = require('active-win');
+const runApplescript = require('run-applescript');
 
 // TODO Now we can add external window for settings.
 // TODO Add support for App Signing.
@@ -73,11 +75,21 @@ function createWindow() {
 
   ipcMain.on('active-win', async (event, arg) => {
     const activeWinInfo = await activeWin()
+    
+    if(activeWinInfo && activeWinInfo.platform == 'macos' && 
+      activeWinInfo.owner && activeWinInfo.owner.bundleId == 'com.google.Chrome'){
+
+      if(!activeWinInfo.url) {
+        const url = await runApplescript('tell application "Google Chrome" to return URL of active tab of front window');
+        activeWinInfo.url = url;
+      }
+    }
 
     if (activeWinInfo.owner !== undefined && activeWinInfo.owner.name !== undefined)
       event.returnValue = activeWinInfo
     else
       event.returnValue = "None"
+
   })
 
   ipcMain.on('logout', (event, arg) => {

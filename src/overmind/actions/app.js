@@ -6,10 +6,10 @@ import * as Cookies from "js-cookie";
 import { toast } from 'react-toastify';
 import ToastNotification from '../../components/widgets/ToastNotification'
 
-export const setActiveWinInfo = async ({ state, effect }, {data}) => {
-	    
-    state.activeWindowApp = data;
-	socket_live.emit(events.activeWindowUpdate, {user_id: state.userProfileData.id, active_window_data: data});
+export const setActiveWinInfo = async ({ state, effect }, activeWindowApp) => {
+	
+    state.activeWindowApp = activeWindowApp;
+	socket_live.emit(events.activeWindowUpdate, {user_id: state.userProfileData.id, active_window_data: activeWindowApp});
 }
 
 export const setAddingRoom = async ({ state, effect }, value) => {
