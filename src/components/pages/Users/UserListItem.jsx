@@ -7,10 +7,7 @@ import * as Cookies from "js-cookie";
 import ToastNotification from '../../widgets/ToastNotification';
 import { socket_live, events } from '../../sockets';
 
-import microsoftvisualstudiocode_logo from "../../../assets/logos/microsoftvisualstudiocode_logo.png"
-import zoom_logo from "../../../assets/logos/zoom_logo.png"
-import electron_logo from "../../../assets/logos/electron.png"
-import slack_logo from "../../../assets/logos/slack.png"
+import { appLogo } from '../../../utils/AppLogo';
 
 import { AuthContext } from '../../../context/AuthContext'
 
@@ -44,25 +41,30 @@ const UserListItem = React.memo((user) => {
         "position": "absolute"
     }
 
-    const getAppLogo = (appName) => {
+    const getAppLogo = (appData) => {
 
-        appName = appName.replace('.exe','');
+        console.log(appData);
+        
+        var appName = appData.owner.name.toLowerCase().replace(/ /g,'').replace('.exe','');
 
-        var showApps = ['slack','tandem','googlechrome','electron', 'chrome'];
+        var showApps = ['slack', 'googlechrome', 'chrome', 'electron', 'terminal', 'sublimetext'];
 
-        if(appName && showApps.includes(appName)){
+        try {
+            var logo = appLogo(appName);
 
-            return logos(`./${appName}.png`);
+        } catch (error) {
 
-        } else {
-            return "https://ui-avatars.com/api/?background=black&name="
-        }        
+            if(process.env.REACT_APP_DEV_BUILD)
+                 console.log(error)
+
+            return "https://ui-avatars.com/api/?background=black&name="   
+        }
+
+        return appLogo(appName);
     }
 
     const activeAppClick = (e, usersActiveWindow) => {
         e.preventDefault();
-
-        console.log(usersActiveWindow);
         
         if(usersActiveWindow && usersActiveWindow.url){
             window.require("electron").shell.openExternal(usersActiveWindow.url);
@@ -138,7 +140,7 @@ const UserListItem = React.memo((user) => {
                        { state.usersActiveWindows[user.id] ? 
 
                             <img src={
-                                    getAppLogo(state.usersActiveWindows[user.id].owner.name.toLowerCase().replace(/ /g,''))
+                                    getAppLogo(state.usersActiveWindows[user.id])
                             } alt=""/>
                             :
                             <div></div>

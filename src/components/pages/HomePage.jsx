@@ -82,8 +82,15 @@ export default function HomePage() {
     // TODO : Shift to App Level stuff 
     useEffect(() => {
         const setActiveWin = setInterval(async () => {
-            const activeWinAppData = await window.require("electron").ipcRenderer.sendSync('active-win');
-            actions.app.setActiveWinInfo({data: activeWinAppData})
+            try {
+                const activeWinAppData = await window.require("electron").ipcRenderer.sendSync('active-win');
+                actions.app.setActiveWinInfo({data: activeWinAppData})    
+            
+            } catch (error) {
+                if(process.env.REACT_APP_DEV_BUILD)
+                    console.log(error);
+            }
+            
         }, 3000)
         return () => clearInterval(setActiveWin);
     }, [state.activeWindowApp])

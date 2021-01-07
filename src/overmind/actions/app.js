@@ -23,6 +23,13 @@ export const addOnlineUser = async ({ state, effect }, user_id) => {
     	state.onlineUsers.push(user_id)
 }
 
+export const removeOnlineUser = async ({ state, effect }, user_id) => {
+	    
+    if(state.onlineUsers.indexOf(user_id) != -1)
+    	state.onlineUsers.splice(state.onlineUsers.indexOf(user_id),1)
+}
+
+
 export const updateUserActiveWindowData = async ({ state, effect }, {user_id, active_window_data}) => {
 	state.usersActiveWindows[user_id] = active_window_data;
 }
@@ -40,10 +47,12 @@ export const setAppOnlineStatus = async ({ state, effect }, status) => {
 	state.online = status;
 }
 
-export const addNotification = async ({ state, effect }, data) => {
-
+export const clearNotifications = async ({ state, effect }) => {
+	toast.dismiss();
 }
 
-export const clearNotifications = async ({ state, effect }, data) => {
-	toast.dismiss();
+export const setError = async ({ state, effect }, error) => {
+
+	if(error.message != state.error.message)
+		state.error = error
 }

@@ -25,6 +25,7 @@ export const googleLogin = async ({state, effects}, {setAuthData}) => {
         setAuthData(loginData);
 
     } catch (error){
+        
         state.error = error;
     }
 

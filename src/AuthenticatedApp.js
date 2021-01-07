@@ -64,6 +64,12 @@ export default function App() {
         actions.app.addOnlineUser(user_id);
       });
 
+      // Some User went Offline
+      socket_live.on(events.offline, (user_id) => {
+
+        actions.app.removeOnlineUser(user_id);
+      });
+
       socket_live.on(events.activeWindowUpdate, (data) => {
         actions.app.updateUserActiveWindowData(data);
       });
