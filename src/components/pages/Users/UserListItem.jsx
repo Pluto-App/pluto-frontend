@@ -47,7 +47,8 @@ const UserListItem = React.memo((user) => {
             if(appData.owner && appData.owner.name) {
 
                 var logo = appLogo(
-                    appData.owner.name.toLowerCase().replace(/ /g,'').replace('.exe','')
+                    appData.owner.name.toLowerCase().replace(/ /g,'').replace('.exe',''),
+                    appData.url
                 ); 
 
                 return logo;   

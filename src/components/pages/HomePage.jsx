@@ -75,30 +75,24 @@ export default function HomePage() {
     const [appInfo, updateAppInfo] = useState("No Teams");
     const [newRoomName, updateNewRoomName] = useState("");
 
-    const [response, setResponse] = useState("");
-
-
 
     // TODO : Shift to App Level stuff 
     useEffect(() => {
         const setActiveWin = setInterval(async () => {
             try {
+            
                 const activeWinAppData = await window.require("electron").ipcRenderer.sendSync('active-win');
                 actions.app.setActiveWinInfo(activeWinAppData)
-                
-                console.log(activeWinAppData);
-                
-            
+
             } catch (error) {
                 if(process.env.REACT_APP_DEV_BUILD)
                     console.log(error);
             }
-            
         }, 3000)
         return () => clearInterval(setActiveWin);
     }, [state.activeWindowApp])
 
-
+    
     useEffect(() => {
 
         actions.user.getLoggedInUser({authData: authData})
