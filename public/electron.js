@@ -76,13 +76,22 @@ function createWindow() {
   ipcMain.on('active-win', async (event, arg) => {
     const activeWinInfo = await activeWin()
     
-    if(activeWinInfo && activeWinInfo.platform == 'macos' && 
-      activeWinInfo.owner && activeWinInfo.owner.bundleId == 'com.google.Chrome'){
+    activeWinInfo.url = undefined;
 
-      if(!activeWinInfo.url) {
-        const url = await runApplescript('tell application "Google Chrome" to return URL of active tab of front window');
-        activeWinInfo.url = url;
+    if(activeWinInfo && activeWinInfo.platform == 'macos' && activeWinInfo.owner && !activeWinInfo.url) {
+     
+      var url;
+
+      if(activeWinInfo.owner.bundleId == 'com.google.Chrome') {
+        
+        url = await runApplescript('tell application "Google Chrome" to return URL of active tab of front window');
+     
+      } else if(activeWinInfo.owner.bundleId == 'com.apple.Safari') {
+        
+        url = await runApplescript('tell app "Safari" to get URL of front document');
       }
+
+      activeWinInfo.url = url;
     }
 
     if (activeWinInfo.owner !== undefined && activeWinInfo.owner.name !== undefined)
