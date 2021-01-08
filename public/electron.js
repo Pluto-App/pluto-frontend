@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, protocol, screen, Menu } = require('electro
 const path = require('path')
 const isDev = require('electron-is-dev');
 const url = require('url')
+const { PythonShell } = require( 'python-shell');
 
 if (isDev) {
   require('electron-reload')
@@ -22,6 +23,45 @@ const runApplescript = require('run-applescript');
 
 const minWidth = 315;
 const minHeight = 320;
+
+async function runPythonScript(py_script){
+
+   return new Promise(function (resolve, reject) {
+    PythonShell.run(py_script, null, function (err, results) {
+
+      if (err) throw err;
+      resolve(results[0]);
+    });
+  })
+}
+
+async function getTabUrl (activeWinInfo){
+
+  var url = activeWinInfo ? activeWinInfo.url : undefined;
+
+  if(activeWinInfo.owner && !url) {
+    
+    if(activeWinInfo.platform == 'macos') {
+
+      if(activeWinInfo.owner.bundleId == 'com.google.Chrome') {
+      
+        url = await runApplescript('tell application "Google Chrome" to return URL of active tab of front window');
+     
+      } else if(activeWinInfo.owner.bundleId == 'com.apple.Safari') {
+        
+        url = await runApplescript('tell app "Safari" to get URL of front document');
+      }
+
+    } else if (activeWinInfo.platform == 'windows') {
+
+      var py_script = './src/scripts/windows_chrome_active_tab_url.py';
+      url = await runPythonScript(py_script);
+      url = url == 'null' ? undefined : url;
+    }
+  }
+
+  return url;
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -74,31 +114,14 @@ function createWindow() {
   });
 
   ipcMain.on('active-win', async (event, arg) => {
+
     const activeWinInfo = await activeWin()
-    
-    activeWinInfo.url = undefined;
-
-    if(activeWinInfo && activeWinInfo.platform == 'macos' && activeWinInfo.owner && !activeWinInfo.url) {
-     
-      var url;
-
-      if(activeWinInfo.owner.bundleId == 'com.google.Chrome') {
-        
-        url = await runApplescript('tell application "Google Chrome" to return URL of active tab of front window');
-     
-      } else if(activeWinInfo.owner.bundleId == 'com.apple.Safari') {
-        
-        url = await runApplescript('tell app "Safari" to get URL of front document');
-      }
-
-      activeWinInfo.url = url;
-    }
+    activeWinInfo.url = await getTabUrl(activeWinInfo);
 
     if (activeWinInfo.owner !== undefined && activeWinInfo.owner.name !== undefined)
       event.returnValue = activeWinInfo
     else
       event.returnValue = "None"
-
   })
 
   ipcMain.on('logout', (event, arg) => {

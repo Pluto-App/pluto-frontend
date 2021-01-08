@@ -12,6 +12,7 @@ const appLogos = {
   'googledocs':     'googledocs.png',
   'googlesheets':   'googlesheets.png',
   'googlechrome':   'chrome.png',
+  'sublime_text':   'sublimetext.png',
   'sublimetext':    'sublimetext.png',
   'stackoverflow':  'stackoverflow.png',
   'slack':          'slack.png',
@@ -31,6 +32,8 @@ const hostApp = {
 }
   
 export const appLogo = function(appName, url) {
+
+  console.log(appName);
 
   var logo = "https://ui-avatars.com/api/?background=black&name=";
 
