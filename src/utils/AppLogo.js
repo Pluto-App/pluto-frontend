@@ -33,8 +33,6 @@ const hostApp = {
   
 export const appLogo = function(appName, url) {
 
-  console.log(appName);
-
   var logo = "https://ui-avatars.com/api/?background=black&name=";
 
   if(url) {
