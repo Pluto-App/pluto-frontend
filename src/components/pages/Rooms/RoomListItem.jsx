@@ -44,17 +44,18 @@ const RoomListItem = React.memo((props) => {
     }
 
     const handleVideoCall = () => {
+        
         // TODO Room Video Call ID. Check Needed.
-        let new_id = md5(props.id + roomName + state.activeTeamId);
-        Cookies.set("channel", new_id);
+        let channel_id = md5(props.id + state.activeTeamId);
         ToastNotification('success', `Group VC with ${roomName} 📷`);
-        socket_live.emit(events.video_call, {
-            roomid: props.id,
-            roomname: roomName,
-            teamid: state.activeTeamId,
-            userid: state.userProfileData.userid
+
+        socket_live.emit(events.roomVideoCall, {
+            channel_id: channel_id,
+            room_id: props.id,
+            user: state.userProfileData.uid
         })
-        window.require("electron").ipcRenderer.send('load-video-window', new_id);
+
+        window.require("electron").ipcRenderer.send('load-video-window', channel_id);
     }
 
     const removeRoomHandler = async (e) => {
