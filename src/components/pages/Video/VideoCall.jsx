@@ -13,7 +13,7 @@ class VideoCall extends React.Component {
     super(props);
     this.videoProfile = "1080p_5";
     this.mode = "live";
-    this.channel = Cookies.get("channel") || "test";
+    this.channel = localStorage.getItem('call_channel_id') || "test";
     this.transcode = Cookies.get("transcode") || "rtc";
     this.attendeeMode = Cookies.get("attendeeMode") || "video";
     this.baseMode = Cookies.get("baseMode") || "avc";
@@ -34,6 +34,7 @@ class VideoCall extends React.Component {
 
     return (
       <div className="font-sans min-h-screen">
+        <div id="screenshare-container" className="bg-black"></div>
         <div style={display_video} className="bg-black"></div>
         <div className="flex" style={{ height: "calc(100vh - 10px)" }}>
           <div className="bg-black text-white flex-1 p-0 w-100">

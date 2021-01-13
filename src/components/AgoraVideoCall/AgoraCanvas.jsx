@@ -35,7 +35,7 @@ class AgoraCanvas extends React.Component {
       readyState: false,
       screeStream: false,
       audio: true,
-      video: true,
+      video: false,
       screen: false
     }
   }
@@ -309,45 +309,69 @@ class AgoraCanvas extends React.Component {
 
   handleScreenShare = async (e) => {
 
-    this.client && this.client.unpublish(this.localStream)
-    this.localStream && this.localStream.close()
-    this.client && this.client.leave(() => {
-      console.log('Client succeed to leave.')
-    }, () => {
-      console.log('Client failed to leave.')
-    })
-
     if (this.state.screeStream === true) {
-      this.setState({ screeStream: false })
-      document.getElementById("screen-share").innerHTML = "screen_share"
-      window.require("electron").ipcRenderer.send('video-resize-normal');
+
+      window.require("electron").ipcRenderer.send('stop-screenshare');
+      this.setState({ screeStream: false });
+      
     } else {
-      window.require("electron").ipcRenderer.send('screen-share-options');
-      this.setState({ screeStream: true })
-      let $ = this.props
-      // init AgoraRTC local client
-      this.client = AgoraRTC.createClient({ mode: $.transcode, codec: "vp8" })
-      this.client.init($.appId, () => {
-        this.subscribeStreamEvents()
-        this.client.join($.appId, $.channel, $.uid, (uid) => {
-          this.localStream = this.screeninit(uid, "screen", $.videoProfile)
-          this.localStream.init(() => {
-            if ($.attendeeMode !== 'audience') {
-              this.addStream(this.localStream, true)
-              this.client.publish(this.localStream, err => {
-                console.log("Publish local stream error: " + err);
-              })
-            }
-            this.setState({ readyState: true })
-          },
-            err => {
-              alert("No Access to screen media", err)
-              this.setState({ readyState: true })
-            })
-        })
-      })
-      document.getElementById("screen-share").innerHTML = "stop_screen_share"
+      
+      window.require("electron").ipcRenderer.send('start-screenshare');
+      this.setState({ screeStream: true });  
     }
+
+    
+
+    // this.client && this.client.unpublish(this.localStream);
+    // this.localStream && this.localStream.close();
+    
+    // this.client && this.client.leave(() => {
+    //   console.log('Client succeed to leave.')
+    // }, () => {
+    //   console.log('Client failed to leave.')
+    // })
+
+    // if (this.state.screeStream === true) {
+
+    //   this.setState({ screeStream: false })
+    //   document.getElementById("screen-share").innerHTML = "screen_share"
+    //   window.require("electron").ipcRenderer.send('video-resize-normal');
+    //   window.require("electron").ipcRenderer.send('close-screenshare-container');
+
+    // } else {
+
+    //   window.require("electron").ipcRenderer.send('screen-share-options');
+    //   this.setState({ screeStream: true })
+    //   let $ = this.props
+
+    //   // init AgoraRTC local client
+    //   this.client = AgoraRTC.createClient({ mode: $.transcode, codec: "vp8" })
+    //   this.client.init($.appId, () => {
+    //     this.subscribeStreamEvents()
+    //     this.client.join($.appId, $.channel, $.uid, (uid) => {
+    //       this.localStream = this.screeninit(uid, "screen", $.videoProfile)
+    //       this.localStream.init(() => {
+
+    //         if ($.attendeeMode !== 'audience') {
+
+    //           this.addStream(this.localStream, true)
+    //           this.client.publish(this.localStream, err => {
+    //             console.log("Publish local stream error: " + err);
+    //           });
+    //         }
+
+    //         this.setState({ readyState: true })
+    //       },
+    //         err => {
+    //           alert("No Access to screen media", err)
+    //           this.setState({ readyState: true })
+    //         })
+    //     })
+    //   });
+
+
+    //   document.getElementById("screen-share").innerHTML = "stop_screen_share"
+    // }
   }
 
   handleExit = (e) => {
@@ -364,6 +388,11 @@ class AgoraCanvas extends React.Component {
       })
     }
     finally {
+
+      localStorage.removeItem('attendeeMode');
+      localStorage.removeItem('call_channel_id');
+      localStorage.removeItem('screenshare_channel_id');
+
       this.setState({ readyState: false })
       this.client = null
       this.localStream = null
@@ -380,6 +409,7 @@ class AgoraCanvas extends React.Component {
       gridTemplateRows: 'repeat(1, auto)',
       gridTemplateColumns: 'repeat(1, auto)'
     }
+
     const videoControlBtn = this.props.attendeeMode === 'video' ?
       (<span
         onClick={this.handleCamera}
@@ -404,6 +434,7 @@ class AgoraCanvas extends React.Component {
         <i className="material-icons exit focus:outline-none md-light" style={{ fontSize: "30px" }} >logout</i>
       </span>
     )
+
     const screenShareBtn = (
       <span
         onClick={this.handleScreenShare}

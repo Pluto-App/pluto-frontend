@@ -10,6 +10,9 @@ import UserProfile from './components/pages/Users/UserProfile'
 import UserUpdate from './components/pages/Users/UserUpdate'
 import VideoCall from './components/pages/Video/VideoCall'
 
+import ScreenShare from './components/pages/Media/ScreenShare'
+import ScreenShareContainer from './components/widgets/ScreenShareContainer'
+
 import TopBar from './components/widgets/Topbar'
 import ToastNotification from './components/widgets/ToastNotification'
 
@@ -77,6 +80,10 @@ export default function App() {
       socket_live.on(events.userVideoCall, (data) => {
         actions.app.userVideoCall(data);
       });
+
+      socket_live.on(events.userScreenShare, (data) => {
+        actions.app.userScreenShare(data);
+      });
    
       interval = setInterval(() => {
           // Emit User is online.
@@ -88,34 +95,49 @@ export default function App() {
 
   return (
     <HashRouter>
-      <TopBar />
+
       <Switch>
-        <Route exact path="/">
-          <HomePage />
+        
+        <Route exact path="/screenshare">
+          <ScreenShare />
         </Route>
-        <Route exact path="/add-team">
-          <TeamRegisterPage />
+
+        <Route exact path="/screenshare-container">
+          <ScreenShareContainer />
         </Route>
-        <Route exact path="/team-profile">
-          <TeamProfile />
-        </Route>
-        <Route exact path="/user-profile">
-          <UserProfile />
-        </Route>
-        <Route exact path="/room-profile">
-          <RoomProfile />
-        </Route>
-        <Route exact path="/user-update">
-          <UserUpdate />
-        </Route>
-        <Route exact path="/videocall">
-          <VideoCall />
-        </Route>
-        <Route exact path="/add-org">
-          <OrgRegisterPage />
+
+        <Route path="*">
+          <TopBar />
+        <Switch>
+          <Route exact path="/">
+            <HomePage />
+          </Route>
+          <Route exact path="/add-team">
+            <TeamRegisterPage />
+          </Route>
+          <Route exact path="/team-profile">
+            <TeamProfile />
+          </Route>
+          <Route exact path="/user-profile">
+            <UserProfile />
+          </Route>
+          <Route exact path="/room-profile">
+            <RoomProfile />
+          </Route>
+          <Route exact path="/user-update">
+            <UserUpdate />
+          </Route>
+          <Route exact path="/videocall">
+            <VideoCall />
+          </Route>
+          <Route exact path="/add-org">
+            <OrgRegisterPage />
+          </Route>
+        </Switch>
+      <ToastContainer />
         </Route>
       </Switch>
-      <ToastContainer />
     </HashRouter>
+
   );
 }

@@ -49,6 +49,8 @@ const RoomListItem = React.memo((props) => {
         let channel_id = md5(props.id + state.activeTeamId);
         ToastNotification('success', `Group VC with ${roomName} 📷`);
 
+        localStorage.setItem('call_channel_id', channel_id);
+
         socket_live.emit(events.roomVideoCall, {
             channel_id: channel_id,
             room_id: props.id,

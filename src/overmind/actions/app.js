@@ -31,16 +31,36 @@ export const removeOnlineUser = async ({ state, effect }, user_id) => {
 
 
 export const updateUserActiveWindowData = async ({ state, effect }, {user_id, active_window_data}) => {
+
 	state.usersActiveWindows[user_id] = active_window_data;
+
+	// HACK to pass data to other electron windows.
+	localStorage.setItem('usersActiveWindows', JSON.stringify(state.usersActiveWindows));
+}
+
+export const setElectronWindowActiveWinInfo = async ({ state, effect }, usersActiveWindows) => {
+
+	state.usersActiveWindows = usersActiveWindows;
 }
 
 export const userVideoCall = async ({ state, effect }, data) => {
 
-	let id = md5(state.activeTeamId + state.userProfileData.userid);
+ 	localStorage.setItem("call_channel_id", data.channel_id);
+ 	socket_live.emit('join_room', data.channel_id);
 
- 	Cookies.set("channel", id);
-    window.require("electron").ipcRenderer.send('load-video-window', id);
+    window.require("electron").ipcRenderer.send('load-video-window', data.channel_id);
+
     ToastNotification('success', `Incoming VC`);
+}
+
+export const userScreenShare = async ({ state, effect }, data) => {
+
+	if(data.sender_id != state.userProfileData.uid){
+		localStorage.setItem("attendeeMode", 'audience');
+	 	localStorage.setItem("screenshare_channel_id", data.channel_id);
+
+	 	window.require("electron").ipcRenderer.send('start-screenshare', data.channel_id);	
+	}
 }
 
 export const setAppOnlineStatus = async ({ state, effect }, status) => {

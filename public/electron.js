@@ -10,6 +10,8 @@ if (isDev) {
 
 let mainWindow
 let video_player
+let screenShareWindow
+let screenShareContainerWindow
 let settings_page
 
 const isWindows = process.platform === 'win32'
@@ -62,6 +64,22 @@ async function getTabUrl (activeWinInfo){
 
   return url;
 }
+
+// function clearCallData(){
+
+//   console.log('CLOSING!!!: '+  localStorage.getItem('attendeeMode'));
+
+//   localStorage.removeItem('attendeeMode');
+//   localStorage.removeItem('call_channel_id');
+//   clearScreenShareData();
+
+//   console.log(localStorage.getItem('attendeeMode'))
+
+// }
+
+// function clearScreenShareData(){
+//   localStorage.removeItem('screenshare_channel_id');
+// }
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -117,6 +135,7 @@ function createWindow() {
 
     const activeWinInfo = await activeWin()
     activeWinInfo.url = await getTabUrl(activeWinInfo);
+    activeWinInfo.cursor = screen.getCursorScreenPoint();
 
     if (activeWinInfo.owner !== undefined && activeWinInfo.owner.name !== undefined)
       event.returnValue = activeWinInfo
@@ -242,7 +261,9 @@ function createWindow() {
     video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/videocall' : videoUrl);
 
     video_player.on('closed', () => {
-      video_player.close()
+
+      if(screenShareWindow)
+        screenShareWindow.close();
     })
 
     // here we can send the data to the new window
@@ -264,10 +285,94 @@ function createWindow() {
     video_player.setSize(200, 175)
   })
 
+  ipcMain.on('start-screenshare', (event, arg) => {
+
+    // if(screenShareWindow){
+    //   try{
+    //     screenShareWindow.close();
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // }
+
+    screenShareWindow = new BrowserWindow({
+        width: 675,
+        height: 675,
+        frame: false,
+        title: "ScreenShareWindow",
+        webPreferences: {
+          nodeIntegration: true,
+          plugins: true
+        }
+    });
+
+    const screenShareWindowUrl = url.format({
+      pathname: path.join(__dirname, '../build/index.html'),
+      hash: '/screenshare',
+      protocol: 'file:',
+      slashes: true
+    });
+
+    screenShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare' : screenShareWindowUrl);
+
+    screenShareWindow.on('closed', () => {
+
+      if(screenShareContainerWindow)
+        screenShareContainerWindow.close();
+    })
+
+  })
+
+  ipcMain.on('sharing-screen', (event, arg) => {
+    
+    if(screenShareWindow) {
+      const mainScreen = screen.getPrimaryDisplay();
+      screenShareWindow.hide();
+      
+      screenShareContainerWindow = new BrowserWindow({
+        width: mainScreen.size.width,
+        height: mainScreen.size.height,
+        transparent: true,
+        frame: false,
+        alwaysOnTop: true,
+        webPreferences: {
+          nodeIntegration: true,
+          plugins: true
+        }
+      });
+
+      const screenshareContainerUrl = url.format({
+        pathname: path.join(__dirname, '../build/index.html'),
+        hash: '/screenshare-conatiner',
+        protocol: 'file:',
+        slashes: true
+      })
+
+      screenShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare-container' : screenshareContainerUrl);
+      screenShareContainerWindow.maximize();
+      screenShareContainerWindow.setIgnoreMouseEvents(true);
+      screenShareContainerWindow.setFocusable(false);
+
+    }
+  })
+
+  ipcMain.on('stop-screenshare', (event, arg) => {
+
+    try{
+        if(screenShareContainerWindow)
+          screenShareContainerWindow.close();
+        
+        if(screenShareWindow)
+          screenShareWindow.close();
+
+      } catch (error) {
+        console.error(error);
+      }
+  })
+
   ipcMain.on('screen-share-options', (event, arg) => {
     video_player.setSize(675, 675)
   })
-
 
   var menu = Menu.buildFromTemplate([
     {

@@ -75,20 +75,19 @@ export default function HomePage() {
     const [appInfo, updateAppInfo] = useState("No Teams");
     const [newRoomName, updateNewRoomName] = useState("");
 
-
-    // TODO : Shift to App Level stuff 
     useEffect(() => {
+
         const setActiveWin = setInterval(async () => {
             try {
             
                 const activeWinAppData = await window.require("electron").ipcRenderer.sendSync('active-win');
-                actions.app.setActiveWinInfo(activeWinAppData)
+                actions.app.setActiveWinInfo(activeWinAppData);
 
             } catch (error) {
                 if(process.env.REACT_APP_DEV_BUILD)
                     console.log(error);
             }
-        }, 3000)
+        }, 100)
         return () => clearInterval(setActiveWin);
     }, [state.activeWindowApp])
 
@@ -131,8 +130,9 @@ export default function HomePage() {
     return (
         <div className="w-full flex">
             <Sidebar></Sidebar>
+            
             <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)", marginLeft: "49px" }}>
-                <MainBar
+            <MainBar
                     userid={state.userProfileData.id}
                     teamid={state.currentTeam.id}
                     appName={appInfo}

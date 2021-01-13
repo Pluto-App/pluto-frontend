@@ -94,13 +94,14 @@ const UserListItem = React.memo((user) => {
 
             let channel_id = md5(receiver_uid + state.userProfileData.uid);
 
-            Cookies.set("channel", channel_id);
+            localStorage.setItem('call_channel_id', channel_id);
 
             socket_live.emit(events.userVideoCall, {
                 channel_id: channel_id,
                 receiver: user.uid,
                 sender: state.userProfileData.uid
-            })
+            });
+            socket_live.emit('join_room',channel_id);
 
             window.require("electron").ipcRenderer.send('load-video-window', channel_id);
             ToastNotification('success', `Initiated VC with ${user.name} 📷`);

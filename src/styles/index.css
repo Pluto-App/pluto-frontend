@@ -45,6 +45,12 @@ body {
   height: 100%;
   width: 100%;
 }
+
+#ag-screenshare-canvas {
+   height: 100%;
+   width: 100%;
+}
+
 #ag-resize-container {
   background-image: none !important;
   background-color: black;

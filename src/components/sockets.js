@@ -5,11 +5,14 @@ export const socket_live = socketIOClient(process.env.REACT_APP_BACKEND_URL);
 //export const backend_live = socketIOClient(process.env.REACT_APP_BACKEND_URL);
 
 export const events = {
-  online: 'online',
-  offline: 'offline',
+
+  online:             'online',
+  offline:            'offline',
   activeWindowUpdate: 'activeWindowUpdate',
-  userVideoCall: 'userVideoCall',
-  roomVideoCall: 'roomVideoCall',
+
+  userVideoCall:    'userVideoCall',
+  roomVideoCall:    'roomVideoCall',
+  userScreenShare:  'userScreenShare',
 
   offline: "Offline",
   sleeping: "Sleeping",
