@@ -13,23 +13,26 @@ const ScreenShareContainer = React.memo((props) => {
         const setUsersActiveWindows = setInterval(async () => {
 
             let usersActiveWindows = JSON.parse(localStorage.getItem("usersActiveWindows")) || {}
+            let screenShareViewers = JSON.parse(localStorage.getItem("screenShareViewers")) || []
         
             actions.app.setElectronWindowActiveWinInfo(usersActiveWindows);
+            actions.app.setElectronWindowScreenShareViewers(screenShareViewers);
+
         }, 100)
 
     }, [])
 
+
+
     return (
         <div className="w-full flex" style={{ border: 'blue 1px solid', position: 'absolute', top: 0, bottom: 0}}>
 
-            { 
-                state.screenshareUsers ? 
-                    Object.entries(state.screenshareUsers).map(([id, user]) =>
-                        <Cursor user="2"></Cursor>
-                    )
-                    :
-                    ''
+            {
+                Object.keys(state.screenShareViewers).map(key => 
+                    <Cursor user={state.screenShareViewers[key]}></Cursor>
+                )
             }
+            
         </div>
     )
 })

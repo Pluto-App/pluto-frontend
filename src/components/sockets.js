@@ -8,11 +8,13 @@ export const events = {
 
   online:             'online',
   offline:            'offline',
+  joinRoom:           'joinRoom',
   activeWindowUpdate: 'activeWindowUpdate',
 
   userVideoCall:    'userVideoCall',
   roomVideoCall:    'roomVideoCall',
   userScreenShare:  'userScreenShare',
+  viewScreenShare:  'viewScreenShare',
 
   offline: "Offline",
   sleeping: "Sleeping",

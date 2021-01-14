@@ -35,7 +35,7 @@ class VideoCall extends React.Component {
     return (
       <div className="font-sans min-h-screen">
         <div id="screenshare-container" className="bg-black"></div>
-        <div style={display_video} className="bg-black"></div>
+        
         <div className="flex" style={{ height: "calc(100vh - 10px)" }}>
           <div className="bg-black text-white flex-1 p-0 w-100">
             <AgoraVideoCall

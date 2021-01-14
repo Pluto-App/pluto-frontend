@@ -20,10 +20,11 @@ const Cursor = React.memo((props) => {
     return (
         <span className="w-full flex" style={{ 'background-color': 'blue', 'border-radius': '50%', position: 'absolute', 
         	width: '25px', 'height': '25px',
-        	left: state.usersActiveWindows[props.user] ? state.usersActiveWindows[props.user].cursor['x'] : 0, 
+        	left: state.usersActiveWindows[props.user.id] ? state.usersActiveWindows[props.user.id].cursor['x'] : 0, 
 
-        	top: state.usersActiveWindows[props.user] ? state.usersActiveWindows[props.user].cursor['y'] : 0
+        	top: state.usersActiveWindows[props.user.id] ? state.usersActiveWindows[props.user.id].cursor['y'] : 0
     	}}>
+    	{props.user.name}
         </span>
     )
 })

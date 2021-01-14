@@ -41,7 +41,7 @@ async function getTabUrl (activeWinInfo){
 
   var url = activeWinInfo ? activeWinInfo.url : undefined;
 
-  if(activeWinInfo.owner && !url) {
+  if(activeWinInfo && !url) {
     
     if(activeWinInfo.platform == 'macos') {
 
@@ -65,22 +65,6 @@ async function getTabUrl (activeWinInfo){
   return url;
 }
 
-// function clearCallData(){
-
-//   console.log('CLOSING!!!: '+  localStorage.getItem('attendeeMode'));
-
-//   localStorage.removeItem('attendeeMode');
-//   localStorage.removeItem('call_channel_id');
-//   clearScreenShareData();
-
-//   console.log(localStorage.getItem('attendeeMode'))
-
-// }
-
-// function clearScreenShareData(){
-//   localStorage.removeItem('screenshare_channel_id');
-// }
-
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: minWidth,
@@ -97,9 +81,6 @@ function createWindow() {
   })
 
   mainWindow.setMenu(null);
-
-  // FIXME Maximize/Minimize Issue.
-  // mainWindow.setAlwaysOnTop(true, 'screen');
 
   const settingsUrl = url.format({
     pathname: path.join(__dirname, '../build/index.html'),

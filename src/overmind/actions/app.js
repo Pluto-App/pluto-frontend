@@ -43,6 +43,11 @@ export const setElectronWindowActiveWinInfo = async ({ state, effect }, usersAct
 	state.usersActiveWindows = usersActiveWindows;
 }
 
+export const setElectronWindowScreenShareViewers = async ({ state, effect }, screenShareViewers) => {
+
+	state.screenShareViewers = screenShareViewers;
+}
+
 export const userVideoCall = async ({ state, effect }, data) => {
 
  	localStorage.setItem("call_channel_id", data.channel_id);
@@ -63,6 +68,15 @@ export const userScreenShare = async ({ state, effect }, data) => {
 	}
 }
 
+export const updateScreenShareViewers = async ({ state, effect }, data) => {
+
+	if(data.user)
+		state.screenShareViewers[data.user.uid] = data.user;
+
+	// HACK to pass data to other electron windows.
+	localStorage.setItem('screenShareViewers', JSON.stringify(state.screenShareViewers));
+}
+
 export const setAppOnlineStatus = async ({ state, effect }, status) => {
 	state.online = status;
 }
@@ -76,3 +90,17 @@ export const setError = async ({ state, effect }, error) => {
 	if(error.message != state.error.message)
 		state.error = error
 }
+
+export const clearVideoCallData = async ({ state, effect }) => {
+
+	clearScreenShareData();
+	localStorage.removeItem('call_channel_id');
+}
+
+export const clearScreenShareData = async ({ state, effect }) => {
+
+	localStorage.removeItem('attendeeMode');
+	localStorage.removeItem('screenshare_channel_id');
+	localStorage.removeItem('screenShareViewers');
+}
+

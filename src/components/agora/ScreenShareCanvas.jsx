@@ -168,6 +168,12 @@ const ScreenShareCanvas = React.memo((props) => {
 	    })
   	}
 
+  	const exitScreenShare = () => {
+  		
+  		actions.app.clearScreenShareData();
+  		var window = remote.getCurrentWindow();
+      	window.close();
+  	}
 
     useEffect(() => {
 
@@ -176,6 +182,8 @@ const ScreenShareCanvas = React.memo((props) => {
 	      	subscribeStreamEvents()
 	      	
 	      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
+
+	      		socket_live.emit(events.joinRoom, props.channel);
 
 	        	if (props.attendeeMode !== 'audience') {
 
@@ -188,12 +196,14 @@ const ScreenShareCanvas = React.memo((props) => {
 		              			alert("Publish local stream error: " + err);
 		            		})
 
-		            		socket_live.emit('userScreenShare', {
-			          			call_channel_id: 	localStorage.getItem("call_channel_id"),
-						 		channel_id: 		props.channel,
-						 		sender_id:  		state.userProfileData.uid
+						 	socket_live.emit(events.viewScreenShare, {
+						 		channel_id: props.channel,
+						 		user:  		{
+						 			id: 	state.userProfileData.id,
+						 			uid: 	state.userProfileData.uid,
+						 			name: 	state.userProfileData.name
+					 			}
 						 	});
-						 	socket_live.emit('join_room', props.channel);
 
 			          		window.require("electron").ipcRenderer.send('sharing-screen');
 		          		}
@@ -201,8 +211,16 @@ const ScreenShareCanvas = React.memo((props) => {
 		        	},
 		          	err => {
 		            	alert("No Access to media stream", err)
+		            	exitScreenShare();
 		            	setScreenShareState({ ready: true })
 		          	})
+		          	
+	        	} else {
+	        		socket_live.emit(events.userScreenShare, {
+	          			call_channel_id: 	localStorage.getItem("call_channel_id"),
+				 		channel_id: 		props.channel,
+				 		sender_id:  		state.userProfileData.uid
+				 	});
 	        	}
 	      	})
     	})
