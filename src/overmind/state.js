@@ -31,6 +31,8 @@ export const state = {
     currentTeam: {rooms: [], users: []},
     onlineUsers: [],
     usersActiveWindows: {},
-    screenShareViewers: {}
+    screenShareViewers: {},
+    screenShareCursors: {},
+    screenSize: {}
 
 }

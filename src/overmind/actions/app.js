@@ -48,6 +48,11 @@ export const setElectronWindowScreenShareViewers = async ({ state, effect }, scr
 	state.screenShareViewers = screenShareViewers;
 }
 
+export const setElectronWindowScreenShareCursors = async ({ state, effect }, screenShareCursors) => {
+
+	state.screenShareCursors = screenShareCursors;
+}
+
 export const userVideoCall = async ({ state, effect }, data) => {
 
  	localStorage.setItem("call_channel_id", data.channel_id);
@@ -60,7 +65,7 @@ export const userVideoCall = async ({ state, effect }, data) => {
 
 export const userScreenShare = async ({ state, effect }, data) => {
 
-	if(data.sender_id != state.userProfileData.uid){
+	if(data.sender_id == state.userProfileData.uid){
 		localStorage.setItem("attendeeMode", 'audience');
 	 	localStorage.setItem("screenshare_channel_id", data.channel_id);
 
@@ -75,6 +80,20 @@ export const updateScreenShareViewers = async ({ state, effect }, data) => {
 
 	// HACK to pass data to other electron windows.
 	localStorage.setItem('screenShareViewers', JSON.stringify(state.screenShareViewers));
+}
+
+export const updateScreenShareCursor = async ({ state, effect }, data) => {
+
+	if(data.user)
+		state.screenShareCursors[data.user.id] = data.cursor;
+
+	// HACK to pass data to other electron windows.
+	localStorage.setItem('screenShareCursors', JSON.stringify(state.screenShareCursors));
+}
+
+export const setScreenSize = async ({ state, effect }) => {
+
+	state.screenSize = await window.require("electron").ipcRenderer.sendSync('screen-size');
 }
 
 export const setAppOnlineStatus = async ({ state, effect }, status) => {

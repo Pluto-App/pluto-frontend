@@ -11,10 +11,11 @@ export const events = {
   joinRoom:           'joinRoom',
   activeWindowUpdate: 'activeWindowUpdate',
 
-  userVideoCall:    'userVideoCall',
-  roomVideoCall:    'roomVideoCall',
-  userScreenShare:  'userScreenShare',
-  viewScreenShare:  'viewScreenShare',
+  userVideoCall:      'userVideoCall',
+  roomVideoCall:      'roomVideoCall',
+  userScreenShare:    'userScreenShare',
+  viewScreenShare:    'viewScreenShare',
+  screenShareCursor:  'screenShareCursor',
 
   offline: "Offline",
   sleeping: "Sleeping",

@@ -14,15 +14,19 @@ const ScreenShareContainer = React.memo((props) => {
 
             let usersActiveWindows = JSON.parse(localStorage.getItem("usersActiveWindows")) || {}
             let screenShareViewers = JSON.parse(localStorage.getItem("screenShareViewers")) || []
+            let screenShareCursors = JSON.parse(localStorage.getItem("screenShareCursors")) || []
         
             actions.app.setElectronWindowActiveWinInfo(usersActiveWindows);
             actions.app.setElectronWindowScreenShareViewers(screenShareViewers);
+            actions.app.setElectronWindowScreenShareCursors(screenShareCursors);
 
         }, 100)
 
     }, [])
 
-
+    useEffect(() => {
+        actions.app.setScreenSize();
+    }, [])
 
     return (
         <div className="w-full flex" style={{ border: 'blue 1px solid', position: 'absolute', top: 0, bottom: 0}}>
@@ -32,7 +36,7 @@ const ScreenShareContainer = React.memo((props) => {
                     <Cursor user={state.screenShareViewers[key]}></Cursor>
                 )
             }
-            
+
         </div>
     )
 })

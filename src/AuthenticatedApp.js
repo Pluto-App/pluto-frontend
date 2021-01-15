@@ -88,6 +88,10 @@ export default function App() {
       socket_live.on(events.viewScreenShare, (data) => {
         actions.app.updateScreenShareViewers(data);
       });
+
+      socket_live.on(events.screenShareCursor, (data) => {
+        actions.app.updateScreenShareCursor(data);
+      });
    
       interval = setInterval(() => {
           // Emit User is online.

@@ -102,7 +102,6 @@ function createWindow() {
     // Open the DevTools.
     // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
     mainWindow.webContents.openDevTools();
-    console.log(screen.getCursorScreenPoint())
   }
 
   mainWindow.on('closed', () => {
@@ -277,15 +276,21 @@ function createWindow() {
     // }
 
     screenShareWindow = new BrowserWindow({
-        width: 675,
-        height: 675,
-        frame: false,
-        title: "ScreenShareWindow",
+        width: 700,
+        height: 400,
+        frame: true,
+        title: "ScreenShare",
         webPreferences: {
           nodeIntegration: true,
           plugins: true
         }
     });
+
+    screenShareWindow.on('page-title-updated', function(e) {
+      e.preventDefault()
+    });
+
+    screenShareWindow.setAspectRatio(16/9);
 
     const screenShareWindowUrl = url.format({
       pathname: path.join(__dirname, '../build/index.html'),
@@ -301,6 +306,12 @@ function createWindow() {
       if(screenShareContainerWindow)
         screenShareContainerWindow.close();
     })
+
+    if (isDev) {
+      // Open the DevTools.
+      // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
+      // screenShareWindow.webContents.openDevTools();
+    }
 
   })
 
@@ -334,6 +345,11 @@ function createWindow() {
       screenShareContainerWindow.setIgnoreMouseEvents(true);
       screenShareContainerWindow.setFocusable(false);
 
+      if (isDev) {
+       
+        //screenShareContainerWindow.webContents.openDevTools();
+      }
+
     }
   })
 
@@ -353,6 +369,39 @@ function createWindow() {
 
   ipcMain.on('screen-share-options', (event, arg) => {
     video_player.setSize(675, 675)
+  })
+
+  ipcMain.on('cursor-data', async (event, arg) => {
+
+    if(screenShareWindow) {
+
+      
+      var cursorPosition = screen.getCursorScreenPoint();
+      var winBounds = screenShareWindow.getContentBounds();
+      
+      var xPos = cursorPosition.x < winBounds.x ? 0 : cursorPosition.x - winBounds.x;
+      var yPos = cursorPosition.y < winBounds.y ? 0 : cursorPosition.y - winBounds.y;
+
+      var xPercentage = xPos/winBounds.width;
+      var yPercentage = yPos/winBounds.height;
+
+      event.returnValue = {
+        x:            xPos,
+        y:            yPos,
+        xPercentage:  xPercentage,
+        yPercentage:  yPercentage
+      }  
+
+    } else {
+
+      event.returnValue = undefined;
+    }
+  })
+
+  ipcMain.on('screen-size', async (event, arg) => {
+
+      const mainScreen = screen.getPrimaryDisplay();
+      event.returnValue = mainScreen.size;
   })
 
   var menu = Menu.buildFromTemplate([

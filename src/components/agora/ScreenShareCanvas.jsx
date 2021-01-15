@@ -175,11 +175,42 @@ const ScreenShareCanvas = React.memo((props) => {
       	window.close();
   	}
 
+  	const viewingScreenShare = () => {
+
+  		const userData = {
+        	id: 	state.userProfileData.id,
+ 			uid: 	state.userProfileData.uid,
+ 			name: 	state.userProfileData.name
+        }
+
+  		socket_live.emit(events.viewScreenShare, {
+	 		channel_id: props.channel,
+	 		user:  		userData
+	 	});
+
+	 	const screenShareCursor = setInterval(async () => {
+            try {
+            
+                const cursorData = await window.require("electron").ipcRenderer.sendSync('cursor-data');
+
+                socket_live.emit(events.screenShareCursor, {
+			 		channel_id: props.channel,
+			 		user:  		userData,
+		 			cursor: 	cursorData
+			 	});
+
+            } catch (error) {
+                // Do something here!
+            }
+        }, 100)
+        return () => clearInterval(screenShareCursor);
+  	}
+
     useEffect(() => {
 
         AgoraClient.init(props.appId, () => {
 
-	      	subscribeStreamEvents()
+	      	subscribeStreamEvents();
 	      	
 	      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
 
@@ -202,6 +233,8 @@ const ScreenShareCanvas = React.memo((props) => {
 						 		sender_id:  		state.userProfileData.uid
 						 	});
 
+						 	viewingScreenShare();
+
 			          		window.require("electron").ipcRenderer.send('sharing-screen');
 		          		}
 		          		setScreenShareState({ ready: true })
@@ -214,14 +247,7 @@ const ScreenShareCanvas = React.memo((props) => {
 
 	        	} else {
 
-	        		socket_live.emit(events.viewScreenShare, {
-				 		channel_id: props.channel,
-				 		user:  		{
-				 			id: 	state.userProfileData.id,
-				 			uid: 	state.userProfileData.uid,
-				 			name: 	state.userProfileData.name
-			 			}
-				 	});
+	        		viewingScreenShare();
 	        	}
 	      	})
     	})

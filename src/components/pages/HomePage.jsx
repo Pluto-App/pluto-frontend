@@ -87,8 +87,10 @@ export default function HomePage() {
                 if(process.env.REACT_APP_DEV_BUILD)
                     console.log(error);
             }
-        }, 100)
+        }, 2000)
+        
         return () => clearInterval(setActiveWin);
+
     }, [state.activeWindowApp])
 
     
