@@ -203,6 +203,7 @@ const ScreenShareCanvas = React.memo((props) => {
                 // Do something here!
             }
         }, 100)
+        
         return () => clearInterval(screenShareCursor);
   	}
 
@@ -219,7 +220,9 @@ const ScreenShareCanvas = React.memo((props) => {
 	        	if (props.attendeeMode !== 'audience') {
 
 	        		localStream = streamInit(uid, props.attendeeMode, props.videoProfile);
+
 	        		localStream.init(() => {
+
 		          		if (props.attendeeMode !== 'audience') {
 		            		addStream(localStream, true)
 
@@ -235,9 +238,11 @@ const ScreenShareCanvas = React.memo((props) => {
 
 			          		window.require("electron").ipcRenderer.send('sharing-screen');
 		          		}
+
 		          		setScreenShareState({ ready: true })
 		        	},
 		          	err => {
+
 		            	alert("No Access to media stream", err)
 		            	exitScreenShare();
 		            	setScreenShareState({ ready: true })

@@ -267,13 +267,13 @@ function createWindow() {
 
   ipcMain.on('start-screenshare', (event, arg) => {
 
-    // if(screenShareWindow){
-    //   try{
-    //     screenShareWindow.close();
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // }
+    if(screenShareWindow){
+      try{
+        screenShareWindow.close();
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
     screenShareWindow = new BrowserWindow({
         width: 700,
