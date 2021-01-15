@@ -233,8 +233,6 @@ const ScreenShareCanvas = React.memo((props) => {
 						 		sender_id:  		state.userProfileData.uid
 						 	});
 
-						 	viewingScreenShare();
-
 			          		window.require("electron").ipcRenderer.send('sharing-screen');
 		          		}
 		          		setScreenShareState({ ready: true })
