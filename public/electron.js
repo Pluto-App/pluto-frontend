@@ -10,7 +10,8 @@ if (isDev) {
 
 let mainWindow
 let video_player
-let screenShareWindow
+let initScreenShareWindow
+let streamScreenShareWindow
 let screenShareContainerWindow
 let settings_page
 
@@ -242,8 +243,11 @@ function createWindow() {
 
     video_player.on('closed', () => {
 
-      if(screenShareWindow)
-        screenShareWindow.close();
+      if(initScreenShareWindow)
+        initScreenShareWindow.close();
+
+      if(streamScreenShareWindow)
+        streamScreenShareWindow.close();
     })
 
     // here we can send the data to the new window
@@ -265,19 +269,19 @@ function createWindow() {
     video_player.setSize(200, 175)
   })
 
-  ipcMain.on('start-screenshare', (event, arg) => {
+  ipcMain.on('init-screenshare', (event, arg) => {
 
-    if(screenShareWindow){
+    if(initScreenShareWindow){
       try{
-        screenShareWindow.close();
+        initScreenShareWindow.close();
       } catch (error) {
         console.error(error);
       }
     }
 
-    screenShareWindow = new BrowserWindow({
-        width: 700,
-        height: 400,
+    initScreenShareWindow = new BrowserWindow({
+        width: 650,
+        height: 650,
         frame: true,
         title: "ScreenShare",
         webPreferences: {
@@ -286,44 +290,90 @@ function createWindow() {
         }
     });
 
-    screenShareWindow.on('page-title-updated', function(e) {
+    initScreenShareWindow.on('page-title-updated', function(e) {
       e.preventDefault()
     });
 
-    screenShareWindow.setAspectRatio(16/9);
-
     const screenShareWindowUrl = url.format({
       pathname: path.join(__dirname, '../build/index.html'),
-      hash: '/screenshare',
+      hash: '/init-screenshare',
       protocol: 'file:',
       slashes: true
     });
 
-    screenShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare' : screenShareWindowUrl);
+    initScreenShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/init-screenshare' : screenShareWindowUrl);
 
-    screenShareWindow.on('closed', () => {
+    initScreenShareWindow.on('closed', () => {
 
       if(screenShareContainerWindow)
         screenShareContainerWindow.close();
     })
 
     if (isDev) {
-      // Open the DevTools.
-      // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-      // screenShareWindow.webContents.openDevTools();
+      // initScreenShareWindow.webContents.openDevTools();
+    }
+
+  })
+
+
+  ipcMain.on('stream-screenshare', (event, arg) => {
+
+    if(streamScreenShareWindow){
+      try{
+        streamScreenShareWindow.close();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    streamScreenShareWindow = new BrowserWindow({
+        width: 500,
+        height: 450,
+        frame: true,
+        title: "ScreenShare",
+        webPreferences: {
+          nodeIntegration: true,
+          plugins: true
+        }
+    });
+
+    streamScreenShareWindow.on('page-title-updated', function(e) {
+      e.preventDefault()
+    });
+
+    const screenShareWindowUrl = url.format({
+      pathname: path.join(__dirname, '../build/index.html'),
+      hash: '/stream-screenshare',
+      protocol: 'file:',
+      slashes: true
+    });
+
+    streamScreenShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-screenshare' : screenShareWindowUrl);
+
+    streamScreenShareWindow.on('closed', () => {
+
+      if(screenShareContainerWindow)
+        screenShareContainerWindow.close();
+    })
+
+    if (isDev) {
+      streamScreenShareWindow.webContents.openDevTools();
     }
 
   })
 
   ipcMain.on('sharing-screen', (event, arg) => {
-    
-    if(screenShareWindow) {
+
+    if(initScreenShareWindow) {
       const mainScreen = screen.getPrimaryDisplay();
-      screenShareWindow.hide();
+      initScreenShareWindow.hide();
       
       screenShareContainerWindow = new BrowserWindow({
-        width: mainScreen.size.width,
-        height: mainScreen.size.height,
+        // width: mainScreen.size.width,
+        // height: mainScreen.size.height,
+        //fullscreen: true,
+        simpleFullscreen: true,
+        show: false,
         transparent: true,
         frame: false,
         alwaysOnTop: true,
@@ -344,6 +394,8 @@ function createWindow() {
       screenShareContainerWindow.maximize();
       screenShareContainerWindow.setIgnoreMouseEvents(true);
       screenShareContainerWindow.setFocusable(false);
+      //screenShareContainerWindow.setFullScreen(true);
+      screenShareContainerWindow.show();
 
       if (isDev) {
        
@@ -359,8 +411,11 @@ function createWindow() {
         if(screenShareContainerWindow)
           screenShareContainerWindow.close();
         
-        if(screenShareWindow)
-          screenShareWindow.close();
+        if(initScreenShareWindow)
+          initScreenShareWindow.close();
+
+        if(streamScreenShareWindow)
+          streamScreenShareWindow.close();
 
       } catch (error) {
         console.error(error);
@@ -369,33 +424,6 @@ function createWindow() {
 
   ipcMain.on('screen-share-options', (event, arg) => {
     video_player.setSize(675, 675)
-  })
-
-  ipcMain.on('cursor-data', async (event, arg) => {
-
-    if(screenShareWindow) {
-
-      
-      var cursorPosition = screen.getCursorScreenPoint();
-      var winBounds = screenShareWindow.getContentBounds();
-      
-      var xPos = cursorPosition.x < winBounds.x ? 0 : cursorPosition.x - winBounds.x;
-      var yPos = cursorPosition.y < winBounds.y ? 0 : cursorPosition.y - winBounds.y;
-
-      var xPercentage = xPos/winBounds.width;
-      var yPercentage = yPos/winBounds.height;
-
-      event.returnValue = {
-        x:            xPos,
-        y:            yPos,
-        xPercentage:  xPercentage,
-        yPercentage:  yPercentage
-      }  
-
-    } else {
-
-      event.returnValue = undefined;
-    }
   })
 
   ipcMain.on('screen-size', async (event, arg) => {

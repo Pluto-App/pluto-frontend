@@ -15,7 +15,7 @@ class VideoCall extends React.Component {
     this.mode = "live";
     this.channel = localStorage.getItem('call_channel_id') || "test";
     this.transcode = Cookies.get("transcode") || "rtc";
-    this.attendeeMode = Cookies.get("attendeeMode") || "video";
+    this.attendeeMode = Cookies.get("attendeeMode") || "audio";
     this.baseMode = Cookies.get("baseMode") || "avc";
     this.appId = AGORA_APP_ID;
     if (!this.appId) {
@@ -34,7 +34,7 @@ class VideoCall extends React.Component {
 
     return (
       <div className="font-sans min-h-screen">
-        <div id="screenshare-container" className="bg-black"></div>
+        <div className="bg-black"></div>
         
         <div className="flex" style={{ height: "calc(100vh - 10px)" }}>
           <div className="bg-black text-white flex-1 p-0 w-100">

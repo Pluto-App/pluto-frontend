@@ -12,11 +12,9 @@ const ScreenShareContainer = React.memo((props) => {
 
         const setUsersActiveWindows = setInterval(async () => {
 
-            let usersActiveWindows = JSON.parse(localStorage.getItem("usersActiveWindows")) || {}
             let screenShareViewers = JSON.parse(localStorage.getItem("screenShareViewers")) || []
             let screenShareCursors = JSON.parse(localStorage.getItem("screenShareCursors")) || []
         
-            actions.app.setElectronWindowActiveWinInfo(usersActiveWindows);
             actions.app.setElectronWindowScreenShareViewers(screenShareViewers);
             actions.app.setElectronWindowScreenShareCursors(screenShareCursors);
 

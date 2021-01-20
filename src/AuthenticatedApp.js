@@ -10,7 +10,8 @@ import UserProfile from './components/pages/Users/UserProfile'
 import UserUpdate from './components/pages/Users/UserUpdate'
 import VideoCall from './components/pages/Video/VideoCall'
 
-import ScreenShare from './components/pages/Media/ScreenShare'
+import InitScreenShare from './components/windows/screenshare/InitScreenShare'
+import StreamScreenShare from './components/windows/screenshare/StreamScreenShare'
 import ScreenShareContainer from './components/widgets/ScreenShareContainer'
 
 import TopBar from './components/widgets/Topbar'
@@ -106,8 +107,12 @@ export default function App() {
 
       <Switch>
         
-        <Route exact path="/screenshare">
-          <ScreenShare />
+        <Route exact path="/init-screenshare">
+          <InitScreenShare />
+        </Route>
+
+        <Route exact path="/stream-screenshare">
+          <StreamScreenShare />
         </Route>
 
         <Route exact path="/screenshare-container">

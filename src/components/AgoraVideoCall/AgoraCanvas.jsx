@@ -316,7 +316,7 @@ class AgoraCanvas extends React.Component {
       
     } else {
       
-      window.require("electron").ipcRenderer.send('start-screenshare');
+      window.require("electron").ipcRenderer.send('init-screenshare');
       this.setState({ screeStream: true });  
     }
 

@@ -6,7 +6,6 @@ export const state = {
     loginStarted: false,
     loadingTeams: true,
     loadingMembers: true,
-    userProfileData: {},
     userTeamDataInfo: {},
     activeTeamId: 0,
     activeRoomId: 0,
@@ -27,6 +26,8 @@ export const state = {
 
     // App Data
     activeWindowApp: {},
+    loggedInUser: {},
+    userProfileData: {},
     userData: {teams: []},
     currentTeam: {rooms: [], users: []},
     onlineUsers: [],

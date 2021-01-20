@@ -6,6 +6,12 @@ import * as Cookies from "js-cookie";
 import { toast } from 'react-toastify';
 import ToastNotification from '../../components/widgets/ToastNotification'
 
+export const setLoggedInUser = async ({ state, effect }) => {
+
+	state.loggedInUser = JSON.parse(localStorage.getItem('currentUser')).user
+}
+
+
 export const setActiveWinInfo = async ({ state, effect }, activeWindowApp) => {
 	
     state.activeWindowApp = activeWindowApp;
@@ -65,11 +71,11 @@ export const userVideoCall = async ({ state, effect }, data) => {
 
 export const userScreenShare = async ({ state, effect }, data) => {
 
-	if(data.sender_id != state.userProfileData.uid){
-		localStorage.setItem("attendeeMode", 'audience');
+	if(data.sender_id == state.userProfileData.uid){
 	 	localStorage.setItem("screenshare_channel_id", data.channel_id);
+	 	localStorage.setItem("screenshare_resolution", JSON.stringify(data.resolution));
 
-	 	window.require("electron").ipcRenderer.send('start-screenshare', data.channel_id);	
+	 	window.require("electron").ipcRenderer.send('stream-screenshare', data.channel_id);	
 	}
 }
 
