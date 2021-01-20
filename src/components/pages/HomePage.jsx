@@ -13,7 +13,7 @@ import { sha224 } from 'js-sha256'
 
 import { AuthContext } from '../../context/AuthContext'
 
-import { socket_live, events } from '../../components/sockets'
+import { socket_live, events } from '../sockets'
 
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://127.0.0.1:3000";
@@ -134,11 +134,12 @@ export default function HomePage() {
             <Sidebar></Sidebar>
             
             <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)", marginLeft: "49px" }}>
-            <MainBar
-                    userid={state.userProfileData.id}
-                    teamid={state.currentTeam.id}
-                    appName={appInfo}
+                <MainBar
+                        userid={state.userProfileData.id}
+                        teamid={state.currentTeam.id}
+                        appName={appInfo}
                 />
+
                 <div className="sidebar-icons" style={{ height: "relative" }}>
                     <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800"
                         style={{ transition: "all .60s ease" }}
@@ -217,6 +218,7 @@ export default function HomePage() {
                             />
                     }
                 </div>
+
                 <div className="flex justify-center items-center" style={{ height: "15px" }}>
                     <div className="text-gray-500"></div>
                     <button className="text-white focus:outline-none">
@@ -225,6 +227,7 @@ export default function HomePage() {
                         >keyboard_arrow_down</i>
                     </button>
                 </div>
+
                 <div className="absolute pin-b pb-4" style={{ width: "calc(95% - 50px)" }}>
                     <div className="mt-4 px-3 w-full">
                         <button
@@ -240,6 +243,7 @@ export default function HomePage() {
                         </button>
                     </div>
                 </div>
+
                 {
                     // Invite Modal HTML
                     showInviteModal && state.currentTeamId ?

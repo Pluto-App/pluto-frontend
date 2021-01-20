@@ -26,8 +26,16 @@ const ScreenShareContainer = React.memo((props) => {
         actions.app.setScreenSize();
     }, [])
 
+    const containerStyle = {
+        border: 'blue 2px solid',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        width: '100%'
+    }
+
     return (
-        <div className="w-full flex" style={{ border: 'blue 1px solid', position: 'absolute', top: 0, bottom: 0}}>
+        <div className="screen-share-container" style={containerStyle}>
 
             {
                 Object.keys(state.screenShareViewers).map(key => 

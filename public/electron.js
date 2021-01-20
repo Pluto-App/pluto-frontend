@@ -327,8 +327,7 @@ function createWindow() {
     }
 
     streamScreenShareWindow = new BrowserWindow({
-        width: 500,
-        height: 450,
+        show: false,
         frame: true,
         title: "ScreenShare",
         webPreferences: {
@@ -350,6 +349,13 @@ function createWindow() {
 
     streamScreenShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-screenshare' : screenShareWindowUrl);
 
+    streamScreenShareWindow.maximize();
+    streamScreenShareWindow.show();
+
+    if (isDev) {
+      streamScreenShareWindow.setSize(500,400);
+    }
+
     streamScreenShareWindow.on('closed', () => {
 
       if(screenShareContainerWindow)
@@ -357,23 +363,20 @@ function createWindow() {
     })
 
     if (isDev) {
-      streamScreenShareWindow.webContents.openDevTools();
+      //streamScreenShareWindow.webContents.openDevTools();
     }
 
   })
 
   ipcMain.on('sharing-screen', (event, arg) => {
 
-    if(initScreenShareWindow) {
+    //if(initScreenShareWindow) {
       const mainScreen = screen.getPrimaryDisplay();
-      initScreenShareWindow.hide();
+      //initScreenShareWindow.hide();
       
       screenShareContainerWindow = new BrowserWindow({
-        // width: mainScreen.size.width,
-        // height: mainScreen.size.height,
-        //fullscreen: true,
-        simpleFullscreen: true,
-        show: false,
+        width: mainScreen.size.width,
+        height: mainScreen.size.height,
         transparent: true,
         frame: false,
         alwaysOnTop: true,
@@ -394,15 +397,13 @@ function createWindow() {
       screenShareContainerWindow.maximize();
       screenShareContainerWindow.setIgnoreMouseEvents(true);
       screenShareContainerWindow.setFocusable(false);
-      //screenShareContainerWindow.setFullScreen(true);
-      screenShareContainerWindow.show();
 
       if (isDev) {
        
-        //screenShareContainerWindow.webContents.openDevTools();
+        screenShareContainerWindow.webContents.openDevTools();
       }
 
-    }
+    //}
   })
 
   ipcMain.on('stop-screenshare', (event, arg) => {

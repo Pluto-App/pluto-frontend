@@ -130,7 +130,8 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	 		user:  		{
 	 			id: 	state.loggedInUser.id,
 	 			uid: 	state.loggedInUser.uid,
-	 			name: 	state.loggedInUser.name
+	 			name: 	state.loggedInUser.name,
+	 			color:  '#' + Math.floor(Math.random()*16770000).toString(16)
 	 		}
 	 	});
   	}
