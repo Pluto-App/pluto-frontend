@@ -3,6 +3,7 @@ const path = require('path')
 const isDev = require('electron-is-dev');
 const url = require('url')
 const { PythonShell } = require( 'python-shell');
+const robot = require('robotjs');
 
 if (isDev) {
   require('electron-reload')
@@ -77,7 +78,8 @@ function createWindow() {
     frame: false,
     webPreferences: {
       nodeIntegration: true,
-      plugins: true
+      plugins: true,
+      enableRemoteModule: true
     }
   })
 
@@ -225,7 +227,8 @@ function createWindow() {
       y: sheight - 270,
       webPreferences: {
         nodeIntegration: true,
-        plugins: true
+        plugins: true,
+        enableRemoteModule: true
       }
     })
 
@@ -286,7 +289,8 @@ function createWindow() {
         title: "ScreenShare",
         webPreferences: {
           nodeIntegration: true,
-          plugins: true
+          plugins: true,
+          enableRemoteModule: true
         }
     });
 
@@ -315,7 +319,6 @@ function createWindow() {
 
   })
 
-
   ipcMain.on('stream-screenshare', (event, arg) => {
 
     if(streamScreenShareWindow){
@@ -332,7 +335,8 @@ function createWindow() {
         title: "ScreenShare",
         webPreferences: {
           nodeIntegration: true,
-          plugins: true
+          plugins: true,
+          enableRemoteModule: true
         }
     });
 
@@ -363,16 +367,16 @@ function createWindow() {
     })
 
     if (isDev) {
-      //streamScreenShareWindow.webContents.openDevTools();
+      streamScreenShareWindow.webContents.openDevTools();
     }
 
   })
 
   ipcMain.on('sharing-screen', (event, arg) => {
 
-    //if(initScreenShareWindow) {
+    if(initScreenShareWindow) {
       const mainScreen = screen.getPrimaryDisplay();
-      //initScreenShareWindow.hide();
+      initScreenShareWindow.hide();
       
       screenShareContainerWindow = new BrowserWindow({
         width: mainScreen.size.width,
@@ -400,10 +404,9 @@ function createWindow() {
 
       if (isDev) {
        
-        screenShareContainerWindow.webContents.openDevTools();
+        //screenShareContainerWindow.webContents.openDevTools();
       }
-
-    //}
+    }
   })
 
   ipcMain.on('stop-screenshare', (event, arg) => {
@@ -507,6 +510,19 @@ function createWindow() {
       ]
     }
   ])
+
+
+  ipcMain.on('emit-click', async (event, arg) => {
+
+      originalPos = robot.getMousePos();
+      robot.moveMouse(arg.cursor.x, arg.cursor.y);
+      robot.mouseClick();
+      robot.moveMouse(originalPos.x, originalPos.y);
+  })
+
+  ipcMain.on('emit-keypress', async (event, arg) => {
+      robot.keyTap(arg.event.key);
+  })
 }
 
 app.on('ready', () => {

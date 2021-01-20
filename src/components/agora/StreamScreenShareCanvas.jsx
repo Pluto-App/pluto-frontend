@@ -139,6 +139,9 @@ const StreamScreenShareCanvas = React.memo((props) => {
   	const shareCursorData = async (e) => {
   		e.persist();
 
+  		if(e.type != 'mousemove')
+  			console.log(e);
+
   		try {
 
             var rect = e.target.getBoundingClientRect();
@@ -153,7 +156,8 @@ const StreamScreenShareCanvas = React.memo((props) => {
             	y: yPercentage * screenShareResolution.height
             }
 
-            if(cursorData['x'] > 0 && cursorData['y'] > 0){
+            //if(cursorData['x'] > 0 && cursorData['y'] > 0){
+
             	socket_live.emit(events.screenShareCursor, {
 			 		channel_id: props.channel,
 			 		user:  		{
@@ -161,11 +165,15 @@ const StreamScreenShareCanvas = React.memo((props) => {
 			 			uid: 	state.loggedInUser.uid,
 			 			name: 	state.loggedInUser.name
 			 		},
-		 			cursor: 	cursorData
+		 			cursor: 	cursorData,
+		 			event: 		{
+		 				type: 		e.type,
+		 				key:  		e.key,
+		 				keyCode: 	e.keyCode,
+		 				which: 		e.which  		
+		 			}
 			 	});	
-            }
-            
-		 	//console.log(cursorData);
+            //}
 
         } catch (error) {
             // Do something here!
@@ -202,7 +210,12 @@ const StreamScreenShareCanvas = React.memo((props) => {
     }, [streamList])
 
     return (
-		<div id="ag-screenshare-canvas" style={canvasStyle} onMouseMove={ shareCursorData }>
+		<div id="ag-screenshare-canvas" tabindex="0" style={canvasStyle} 
+			onMouseMove={ shareCursorData }
+			onClick={ shareCursorData }
+			onDblClick={ shareCursorData }
+			onKeyUp={ shareCursorData }
+		>
     		<div id="ag-screen" className="ag-item">
     		</div>
       	</div>
