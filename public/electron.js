@@ -273,6 +273,7 @@ function createWindow() {
         }
 
        try{
+          if(streamScreenShareWindow)
             streamScreenShareWindow.close();
         } catch (error) {
           console.error(error);
@@ -396,17 +397,28 @@ function createWindow() {
 
       // ScreenShare Container
       const mainScreen = screen.getPrimaryDisplay();
-      let displayWidth = mainScreen.bounds.width;
-      let displayHeight = mainScreen.bounds.width;
+      let workArea = mainScreen.bounds;
+      let displayWidth = workArea.width;
+      let displayHeight = workArea.height;
 
       initScreenShareWindow.hide();
-      
+
+      console.log(workArea);
+
       screenShareContainerWindow = new BrowserWindow({
-        width: displayWidth,
-        height: displayHeight,
+        x: 0,
+        y: 0,
+        hasShadow: false,
         transparent: true,
         frame: false,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        closeable: false,
         alwaysOnTop: true,
+        focusable: false,
+        enableLargerThanScreen: true,
+        skipTaskbar: true,
         webPreferences: {
           nodeIntegration: true,
           plugins: true,
@@ -416,21 +428,21 @@ function createWindow() {
 
       const screenshareContainerUrl = url.format({
         pathname: path.join(__dirname, '../build/index.html'),
-        hash: '/screenshare-conatiner',
+        hash: '/screenshare-container',
         protocol: 'file:',
         slashes: true
       })
 
       screenShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare-container' : screenshareContainerUrl);
-      //screenShareContainerWindow.maximize();
       screenShareContainerWindow.setIgnoreMouseEvents(true);
-      screenShareContainerWindow.setFocusable(false);
+      screenShareContainerWindow.setSize(displayWidth, displayHeight);
+      screenShareContainerWindow.setVisibleOnAllWorkspaces(true,{visibleOnFullScreen: true})
+      //screenShareContainerWindow.maximize();
 
       if (isDev) {
        
-        // screenShareContainerWindow.webContents.openDevTools();
+        screenShareContainerWindow.webContents.openDevTools();
       }
-
 
       // ScreenShare Controls
       let windowWidth = 460;
@@ -446,9 +458,10 @@ function createWindow() {
         maximizable: false,
         resizable: false,
         alwaysOnTop: true,
-        titleBarStyle: 'hiddenInset',
+        titleBarStyle: 'hidden',
         title: "ScreenShare Controls",
         frame: false,
+        trafficLightPosition: { x: -100, y: 0 },
         webPreferences: {
           nodeIntegration: true,
           plugins: true,

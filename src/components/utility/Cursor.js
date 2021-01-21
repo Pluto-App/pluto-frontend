@@ -9,7 +9,7 @@ const Cursor = React.memo((props) => {
 
     const cursorPosition = {
         left: props.user && state.screenShareCursors[props.user.id] ? state.screenShareCursors[props.user.id]['x'] : 0,
-        top: props.user && state.screenShareCursors[props.user.id] ? state.screenShareCursors[props.user.id]['y'] - 30 : 0,
+        top: props.user && state.screenShareCursors[props.user.id] ? state.screenShareCursors[props.user.id]['y'] : 0,
     }
 
     const cursorColor = props.user ? props.user.color : 'blue';

@@ -15,7 +15,7 @@ class VideoCall extends React.Component {
     this.mode = "live";
     this.channel = localStorage.getItem('call_channel_id') || "test";
     this.transcode = Cookies.get("transcode") || "rtc";
-    this.attendeeMode = Cookies.get("attendeeMode") || "audio";
+    this.attendeeMode = Cookies.get("attendeeMode") || "video";
     this.baseMode = Cookies.get("baseMode") || "avc";
     this.appId = AGORA_APP_ID;
     if (!this.appId) {

@@ -126,33 +126,33 @@ export default function App() {
 
         <Route path="*">
           <TopBar />
-        <Switch>
-          <Route exact path="/">
-            <HomePage />
-          </Route>
-          <Route exact path="/add-team">
-            <TeamRegisterPage />
-          </Route>
-          <Route exact path="/team-profile">
-            <TeamProfile />
-          </Route>
-          <Route exact path="/user-profile">
-            <UserProfile />
-          </Route>
-          <Route exact path="/room-profile">
-            <RoomProfile />
-          </Route>
-          <Route exact path="/user-update">
-            <UserUpdate />
-          </Route>
-          <Route exact path="/videocall">
-            <VideoCall />
-          </Route>
-          <Route exact path="/add-org">
-            <OrgRegisterPage />
-          </Route>
-        </Switch>
-      <ToastContainer />
+          <Switch>
+            <Route exact path="/">
+              <HomePage />
+            </Route>
+            <Route exact path="/add-team">
+              <TeamRegisterPage />
+            </Route>
+            <Route exact path="/team-profile">
+              <TeamProfile />
+            </Route>
+            <Route exact path="/user-profile">
+              <UserProfile />
+            </Route>
+            <Route exact path="/room-profile">
+              <RoomProfile />
+            </Route>
+            <Route exact path="/user-update">
+              <UserUpdate />
+            </Route>
+            <Route exact path="/videocall">
+              <VideoCall />
+            </Route>
+            <Route exact path="/add-org">
+              <OrgRegisterPage />
+            </Route>
+          </Switch>
+          <ToastContainer />
         </Route>
       </Switch>
     </HashRouter>
