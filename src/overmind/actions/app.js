@@ -94,11 +94,15 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 	if(data.user)
 		state.screenShareCursors[data.user.id] = data.cursor;
 
-	if(data.event.type == 'click')
-		window.require("electron").ipcRenderer.send('emit-click', data);
-	else if(data.event.type == 'keyup')
-		window.require("electron").ipcRenderer.send('emit-keypress', data);
+	var remoteAccessEnabled = localStorage.getItem('remoteAccessEnabled');
+	if(remoteAccessEnabled && remoteAccessEnabled == 'true'){
 
+		if(data.event.type == 'click')
+			window.require("electron").ipcRenderer.send('emit-click', data);
+		else if(data.event.type == 'keyup')
+			window.require("electron").ipcRenderer.send('emit-keypress', data);
+	}
+	
 	// HACK to pass data to other electron windows.
 	localStorage.setItem('screenShareCursors', JSON.stringify(state.screenShareCursors));
 }
@@ -136,5 +140,6 @@ export const clearScreenShareData = async ({ state, effect }) => {
 	localStorage.removeItem('screenshare_resolution');
 	localStorage.removeItem('screenShareViewers');
 	localStorage.removeItem('screenShareCursors');
+	localStorage.removeItem('remoteAccessEnabled');
 }
 

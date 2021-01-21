@@ -13,6 +13,7 @@ import VideoCall from './components/pages/Video/VideoCall'
 import InitScreenShare from './components/windows/screenshare/InitScreenShare'
 import StreamScreenShare from './components/windows/screenshare/StreamScreenShare'
 import ScreenShareContainer from './components/widgets/ScreenShareContainer'
+import ScreenShareControls from './components/windows/screenshare/ScreenShareControls'
 
 import TopBar from './components/widgets/Topbar'
 import ToastNotification from './components/widgets/ToastNotification'
@@ -117,6 +118,10 @@ export default function App() {
 
         <Route exact path="/screenshare-container">
           <ScreenShareContainer />
+        </Route>
+
+        <Route exact path="/screenshare-controls">
+          <ScreenShareControls />
         </Route>
 
         <Route path="*">

@@ -10,10 +10,14 @@ if (isDev) {
 }
 
 let mainWindow
+
 let video_player
+
 let initScreenShareWindow
 let streamScreenShareWindow
 let screenShareContainerWindow
+let screenShareControlsWindow
+
 let settings_page
 
 const isWindows = process.platform === 'win32'
@@ -79,6 +83,7 @@ async function getTabUrl (activeWinInfo){
 
   return url;
 }
+
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -260,11 +265,18 @@ function createWindow() {
 
     video_player.on('closed', () => {
 
-      if(initScreenShareWindow)
-        initScreenShareWindow.close();
+       try{
+          if(screenShareControlsWindow)
+            screenShareControlsWindow.close();
+        } catch (error) {
+          console.error(error);
+        }
 
-      if(streamScreenShareWindow)
-        streamScreenShareWindow.close();
+       try{
+            streamScreenShareWindow.close();
+        } catch (error) {
+          console.error(error);
+        }
     })
 
     // here we can send the data to the new window
@@ -308,10 +320,6 @@ function createWindow() {
         }
     });
 
-    initScreenShareWindow.on('page-title-updated', function(e) {
-      e.preventDefault()
-    });
-
     const screenShareWindowUrl = url.format({
       pathname: path.join(__dirname, '../build/index.html'),
       hash: '/init-screenshare',
@@ -323,8 +331,6 @@ function createWindow() {
 
     initScreenShareWindow.on('closed', () => {
 
-      if(screenShareContainerWindow)
-        screenShareContainerWindow.close();
     })
 
     if (isDev) {
@@ -375,9 +381,7 @@ function createWindow() {
     }
 
     streamScreenShareWindow.on('closed', () => {
-
-      if(screenShareContainerWindow)
-        screenShareContainerWindow.close();
+      streamScreenShareWindow = undefined;
     })
 
     if (isDev) {
@@ -389,12 +393,17 @@ function createWindow() {
   ipcMain.on('sharing-screen', (event, arg) => {
 
     if(initScreenShareWindow) {
+
+      // ScreenShare Container
       const mainScreen = screen.getPrimaryDisplay();
+      let displayWidth = mainScreen.bounds.width;
+      let displayHeight = mainScreen.bounds.width;
+
       initScreenShareWindow.hide();
       
       screenShareContainerWindow = new BrowserWindow({
-        width: mainScreen.size.width,
-        height: mainScreen.size.height,
+        width: displayWidth,
+        height: displayHeight,
         transparent: true,
         frame: false,
         alwaysOnTop: true,
@@ -413,25 +422,76 @@ function createWindow() {
       })
 
       screenShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare-container' : screenshareContainerUrl);
-      screenShareContainerWindow.maximize();
+      //screenShareContainerWindow.maximize();
       screenShareContainerWindow.setIgnoreMouseEvents(true);
       screenShareContainerWindow.setFocusable(false);
 
       if (isDev) {
        
-        screenShareContainerWindow.webContents.openDevTools();
+        // screenShareContainerWindow.webContents.openDevTools();
       }
+
+
+      // ScreenShare Controls
+      let windowWidth = 460;
+      let windowHeight = 80;
+
+      screenShareControlsWindow = new BrowserWindow({
+        width: windowWidth,
+        height: windowHeight,
+        x: displayWidth/2 - windowWidth/2,
+        y: displayHeight - 80,
+        movable: true,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        alwaysOnTop: true,
+        titleBarStyle: 'hiddenInset',
+        title: "ScreenShare Controls",
+        frame: false,
+        webPreferences: {
+          nodeIntegration: true,
+          plugins: true,
+          enableRemoteModule: true
+        }
+      })
+
+      const screenShareControlsUrl = url.format({
+        pathname: path.join(__dirname, '../build/index.html'),
+        hash: '/screenshare-controls',
+        protocol: 'file:',
+        slashes: true
+      })
+
+      screenShareControlsWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare-controls'  : screenShareControlsUrl);
+
+      screenShareControlsWindow.on('closed', () => {
+
+        screenShareControlsWindow = undefined;
+        try{
+
+            screenShareContainerWindow.close();
+            initScreenShareWindow.close();
+
+        } catch (error) {
+          console.error(error);
+        }
+
+      })
+
+      if (isDev) {
+        // screenShareControlsWindow.webContents.openDevTools();
+      }
+
     }
   })
 
   ipcMain.on('stop-screenshare', (event, arg) => {
 
     try{
-        if(screenShareContainerWindow)
-          screenShareContainerWindow.close();
-        
-        if(initScreenShareWindow)
-          initScreenShareWindow.close();
+
+        if(screenShareControlsWindow)
+          screenShareControlsWindow.close();
 
         if(streamScreenShareWindow)
           streamScreenShareWindow.close();
