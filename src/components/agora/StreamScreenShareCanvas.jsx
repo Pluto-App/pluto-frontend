@@ -137,10 +137,8 @@ const StreamScreenShareCanvas = React.memo((props) => {
   	}
 
   	const shareCursorData = async (e) => {
-  		e.persist();
 
-  		if(e.type != 'mousemove')
-  			console.log(e);
+  		e.persist();
 
   		try {
 
@@ -156,17 +154,21 @@ const StreamScreenShareCanvas = React.memo((props) => {
             	y: yPercentage * screenShareResolution.height
             }
 
+            if(e.key)
+            	console.log(e.key);
+
             //if(cursorData['x'] > 0 && cursorData['y'] > 0){
 
             	socket_live.emit(events.screenShareCursor, {
-			 		channel_id: props.channel,
-			 		user:  		{
+			 		channel_id: 		props.channel,
+			 		screenshare_owner: 	localStorage.getItem("screenshare_owner"),
+			 		user:  	{
 			 			id: 	state.loggedInUser.id,
 			 			uid: 	state.loggedInUser.uid,
 			 			name: 	state.loggedInUser.name
 			 		},
 		 			cursor: 	cursorData,
-		 			event: 		{
+		 			event: 	{
 		 				type: 		e.type,
 		 				key:  		e.key,
 		 				keyCode: 	e.keyCode,
