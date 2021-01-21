@@ -28,6 +28,19 @@ const runApplescript = require('run-applescript');
 const minWidth = 315;
 const minHeight = 320;
 
+const robotKeyMap = {
+  'arrowup'     : 'up',
+  'arrowdown'   : 'down',
+  'arrowleft'   : 'left',
+  'arrowright'  : 'right',
+  'backspace'   : 'backspace',
+  'enter'       : 'enter',
+  ' '           : 'space',
+  'control'     : 'control',
+  'tab'         : 'tab',
+  'shift'       : 'shift'
+};
+
 async function runPythonScript(py_script){
 
    return new Promise(function (resolve, reject) {
@@ -170,7 +183,8 @@ function createWindow() {
       y: sheight / 2,
       webPreferences: {
         nodeIntegration: true,
-        plugins: true
+        plugins: true,
+        enableRemoteModule: true
       }
     })
 
@@ -386,7 +400,8 @@ function createWindow() {
         alwaysOnTop: true,
         webPreferences: {
           nodeIntegration: true,
-          plugins: true
+          plugins: true,
+          enableRemoteModule: true
         }
       });
 
@@ -404,7 +419,7 @@ function createWindow() {
 
       if (isDev) {
        
-        //screenShareContainerWindow.webContents.openDevTools();
+        screenShareContainerWindow.webContents.openDevTools();
       }
     }
   })
@@ -521,7 +536,9 @@ function createWindow() {
   })
 
   ipcMain.on('emit-keypress', async (event, arg) => {
-      robot.keyTap(arg.event.key);
+
+      var key = robotKeyMap[arg.event.key.toLowerCase()] || arg.event.key
+      robot.keyTap(key);
   })
 }
 
