@@ -306,13 +306,13 @@ function createWindow() {
 
   ipcMain.on('init-screenshare', (event, arg) => {
 
-    // if(initScreenShareWindow){
-    //   try{
-    //     initScreenShareWindow.close();
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // }
+    if(initScreenShareWindow){
+      try{
+        initScreenShareWindow.close();
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
     initScreenShareWindow = new BrowserWindow({
         width: 650,
@@ -325,6 +325,8 @@ function createWindow() {
           enableRemoteModule: true
         }
     });
+
+    initScreenShareWindow.setMenu(null);
 
     const screenShareWindowUrl = url.format({
       pathname: path.join(__dirname, '../build/index.html'),
@@ -368,9 +370,7 @@ function createWindow() {
         }
     });
 
-    streamScreenShareWindow.on('page-title-updated', function(e) {
-      e.preventDefault()
-    });
+    streamScreenShareWindow.setMenu(null);
 
     const screenShareWindowUrl = url.format({
       pathname: path.join(__dirname, '../build/index.html'),
