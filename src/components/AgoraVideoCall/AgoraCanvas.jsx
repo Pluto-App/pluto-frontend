@@ -338,8 +338,12 @@ class AgoraCanvas extends React.Component {
     finally {
 
       localStorage.removeItem('attendeeMode');
-      localStorage.removeItem('call_channel_id');
       localStorage.removeItem('screenshare_channel_id');
+      localStorage.removeItem('screenshare_owner');
+      localStorage.removeItem('screenshare_resolution');
+      localStorage.removeItem('screenShareViewers');
+      localStorage.removeItem('screenShareCursors');
+      localStorage.removeItem('remoteAccessEnabled');
 
       this.setState({ readyState: false })
       this.client = null

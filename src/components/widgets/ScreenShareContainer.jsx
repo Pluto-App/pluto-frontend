@@ -12,21 +12,21 @@ const ScreenShareContainer = React.memo((props) => {
 
 	useEffect(() => {
 
-        const setUsersActiveWindows = setInterval(async () => {
+        const setScreenShareViewers = setInterval(async () => {
 
             let screenShareViewers = JSON.parse(localStorage.getItem("screenShareViewers")) || []
-            let screenShareCursors = JSON.parse(localStorage.getItem("screenShareCursors")) || []
-        
             actions.app.setElectronWindowScreenShareViewers(screenShareViewers);
-            //actions.app.setElectronWindowScreenShareCursors(screenShareCursors);
 
         }, 100)
 
         socket_live.on(events.viewScreenShare, (data) => {
+            console.log('updateScreenShareViewers');
+            //alert('updateScreenShareViewers')
             actions.app.updateScreenShareViewers(data);
         });
 
         socket_live.on(events.screenShareCursor, (data) => {
+            console.log('updateScreenShareCursor');
             actions.app.updateScreenShareCursor(data);
         });
 

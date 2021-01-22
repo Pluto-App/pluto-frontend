@@ -153,29 +153,23 @@ const StreamScreenShareCanvas = React.memo((props) => {
             	x: xPercentage * screenShareResolution.width,
             	y: yPercentage * screenShareResolution.height
             }
-
-            if(e.key)
-            	console.log(e.key);
-
-            //if(cursorData['x'] > 0 && cursorData['y'] > 0){
-
-            	socket_live.emit(events.screenShareCursor, {
-			 		channel_id: 		props.channel,
-			 		screenshare_owner: 	localStorage.getItem("screenshare_owner"),
-			 		user:  	{
-			 			id: 	state.loggedInUser.id,
-			 			uid: 	state.loggedInUser.uid,
-			 			name: 	state.loggedInUser.name
-			 		},
-		 			cursor: 	cursorData,
-		 			event: 	{
-		 				type: 		e.type,
-		 				key:  		e.key,
-		 				keyCode: 	e.keyCode,
-		 				which: 		e.which  		
-		 			}
-			 	});	
-            //}
+            
+        	socket_live.emit(events.screenShareCursor, {
+		 		channel_id: 		props.channel,
+		 		screenshare_owner: 	localStorage.getItem("screenshare_owner"),
+		 		user:  	{
+		 			id: 	state.loggedInUser.id,
+		 			uid: 	state.loggedInUser.uid,
+		 			name: 	state.loggedInUser.name
+		 		},
+	 			cursor: 	cursorData,
+	 			event: 	{
+	 				type: 		e.type,
+	 				key:  		e.key,
+	 				keyCode: 	e.keyCode,
+	 				which: 		e.which  		
+	 			}
+		 	});	
 
         } catch (error) {
             // Do something here!
@@ -217,6 +211,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
 			onClick={ shareCursorData }
 			onDblClick={ shareCursorData }
 			onKeyUp={ shareCursorData }
+			onKeyDown={ shareCursorData }
 		>
     		<div id="ag-screen" className="ag-item">
     		</div>

@@ -39,9 +39,6 @@ export const removeOnlineUser = async ({ state, effect }, user_id) => {
 export const updateUserActiveWindowData = async ({ state, effect }, {user_id, active_window_data}) => {
 
 	state.usersActiveWindows[user_id] = active_window_data;
-
-	// HACK to pass data to other electron windows.
-	localStorage.setItem('usersActiveWindows', JSON.stringify(state.usersActiveWindows));
 }
 
 // ToDo: This is not NEEDED!
@@ -96,7 +93,9 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 		if(data.event.type == 'click')
 			window.require("electron").ipcRenderer.send('emit-click', data);
 		else if(data.event.type == 'keyup')
-			window.require("electron").ipcRenderer.send('emit-keypress', data);
+			window.require("electron").ipcRenderer.send('emit-keyup', data);
+		else if(data.event.type == 'keydown')
+			window.require("electron").ipcRenderer.send('emit-keydown', data);
 	}
 }
 

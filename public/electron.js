@@ -388,7 +388,7 @@ function createWindow() {
     })
 
     if (isDev) {
-      // streamScreenShareWindow.webContents.openDevTools();
+      //streamScreenShareWindow.webContents.openDevTools();
     }
 
   })
@@ -404,8 +404,6 @@ function createWindow() {
       let displayHeight = workArea.height;
 
       initScreenShareWindow.hide();
-
-      console.log(workArea);
 
       screenShareContainerWindow = new BrowserWindow({
         x: 0,
@@ -437,12 +435,12 @@ function createWindow() {
       screenShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare-container' : screenshareContainerUrl);
       screenShareContainerWindow.setIgnoreMouseEvents(true);
       screenShareContainerWindow.setSize(displayWidth, displayHeight);
-      screenShareContainerWindow.setVisibleOnAllWorkspaces(true,{visibleOnFullScreen: true})
+      //screenShareContainerWindow.setVisibleOnAllWorkspaces(true,{visibleOnFullScreen: true})
       //screenShareContainerWindow.maximize();
 
       if (isDev) {
        
-        // screenShareContainerWindow.webContents.openDevTools();
+        //screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls
@@ -609,10 +607,18 @@ function createWindow() {
     robot.moveMouse(originalPos.x, originalPos.y);
   })
 
-  ipcMain.on('emit-keypress', async (event, arg) => {
+  ipcMain.on('emit-keyup', async (event, arg) => {
 
     var key = robotKeyMap[arg.event.key.toLowerCase()] || arg.event.key
-    robot.keyTap(key);
+    //console.log(key + ' up');
+    robot.keyToggle(key,'up');
+  })
+
+  ipcMain.on('emit-keydown', async (event, arg) => {
+
+    var key = robotKeyMap[arg.event.key.toLowerCase()] || arg.event.key
+    //console.log(key + ' down');
+    robot.keyToggle(key,'down');
   })
 }
 
