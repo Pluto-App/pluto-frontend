@@ -393,7 +393,7 @@ function createWindow() {
     })
 
     if (isDev) {
-      //streamScreenShareWindow.webContents.openDevTools();
+      streamScreenShareWindow.webContents.openDevTools();
     }
 
   })
@@ -445,7 +445,7 @@ function createWindow() {
 
       if (isDev) {
        
-        //screenShareContainerWindow.webContents.openDevTools();
+        screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls
@@ -612,6 +612,23 @@ function createWindow() {
     robot.moveMouse(originalPos.x, originalPos.y);
   })
 
+  ipcMain.on('emit-scroll', async (event, arg) => {
+
+    switch(arg.event.direction) {
+      case 'up':
+        robot.scrollMouse(-1, 0);
+        break;
+      case 'down':
+        robot.scrollMouse(1, 0);
+        break;
+      default:
+        // code block
+    }
+  })
+
+  //////////////////////////////////////////////////////////////////////
+  // Use attributes from javascript keyboard event to fetch robotMods //
+  //////////////////////////////////////////////////////////////////////
   ipcMain.on('emit-key', async (event, arg) => {
 
     var rawKey = arg.event.key.toLowerCase();

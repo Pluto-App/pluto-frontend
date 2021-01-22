@@ -138,7 +138,12 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
   	const shareCursorData = async (e) => {
 
-  		e.persist();
+  		if(e.type != 'wheel')
+  			e.persist();
+
+  		if(e.type != 'mousemove'){
+			//console.log(e.type);
+  		}
 
   		try {
 
@@ -153,7 +158,18 @@ const StreamScreenShareCanvas = React.memo((props) => {
             	x: xPercentage * screenShareResolution.width,
             	y: yPercentage * screenShareResolution.height
             }
-            
+
+            var eventData = {
+ 				type: 		e.type,
+ 				key:  		e.key,
+ 				keyCode: 	e.keyCode,
+ 				which: 		e.which  		
+ 			}
+
+ 			if(e.type == 'wheel')
+ 				eventData['direction'] = e.deltaY > 0 ? 'up' : 'down';
+
+
         	socket_live.emit(events.screenShareCursor, {
 		 		channel_id: 		props.channel,
 		 		screenshare_owner: 	localStorage.getItem("screenshare_owner"),
@@ -162,18 +178,18 @@ const StreamScreenShareCanvas = React.memo((props) => {
 		 			uid: 	state.loggedInUser.uid,
 		 			name: 	state.loggedInUser.name
 		 		},
-	 			cursor: 	cursorData,
-	 			event: 	{
-	 				type: 		e.type,
-	 				key:  		e.key,
-	 				keyCode: 	e.keyCode,
-	 				which: 		e.which  		
-	 			}
+	 			cursor: cursorData,
+	 			event: 	eventData
 		 	});	
 
         } catch (error) {
             // Do something here!
         }
+  	}
+
+  	const handleScroll = (e) => {
+
+  		shareCursorData(e);
   	}
 
     useEffect(() => {
@@ -195,6 +211,12 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	      	})
     	})
 
+    	document.getElementById("root").addEventListener("wheel", handleScroll);
+
+    	return () => {
+      		document.getElementById("root").removeEventListener("wheel", handleScroll);
+    	};
+
     }, [])
 
     useEffect(() => {
@@ -204,6 +226,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	    })
 
     }, [streamList])
+
 
     return (
 		<div id="ag-screenshare-canvas" tabindex="0" style={canvasStyle} 

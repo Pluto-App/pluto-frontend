@@ -61,7 +61,7 @@ export const userVideoCall = async ({ state, effect }, data) => {
 
 export const userScreenShare = async ({ state, effect }, data) => {
 
-	if(data.sender_id != state.userProfileData.uid){
+	if(data.sender_id == state.userProfileData.uid){
 	 	localStorage.setItem("screenshare_channel_id", data.channel_id);
 	 	localStorage.setItem("screenshare_resolution", JSON.stringify(data.resolution));
 	 	localStorage.setItem("screenshare_owner", data.sender_id);
@@ -82,7 +82,7 @@ export const updateScreenShareViewers = async ({ state, effect }, data) => {
 export const updateScreenShareCursor = async ({ state, effect }, data) => {
 
 	if(data.event.type != 'mousemove')
-			console.log(data.event.type);
+		console.log('event fired: ' + data.event.type);
 
 	if(data.user)
 		state.screenShareCursors[data.user.id] = data.cursor;
@@ -93,6 +93,9 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 		if(data.event.type == 'click')
 			window.require("electron").ipcRenderer.send('emit-click', data);
 		
+		else if(data.event.type == 'keyup' || data.event.type == 'keydown')
+			window.require("electron").ipcRenderer.send('emit-scroll', data);
+
 		else if(data.event.type == 'keyup' || data.event.type == 'keydown')
 			window.require("electron").ipcRenderer.send('emit-key', data);
 	}
