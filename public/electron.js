@@ -351,6 +351,8 @@ function createWindow() {
     }
 
     streamScreenShareWindow = new BrowserWindow({
+        width: 1024,
+        height: 680,
         show: false,
         frame: true,
         title: "ScreenShare",
@@ -374,7 +376,7 @@ function createWindow() {
 
     streamScreenShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-screenshare' : screenShareWindowUrl);
 
-    streamScreenShareWindow.maximize();
+    //streamScreenShareWindow.maximize();
     streamScreenShareWindow.show();
 
     if (isDev) {
@@ -418,7 +420,6 @@ function createWindow() {
         alwaysOnTop: true,
         focusable: false,
         enableLargerThanScreen: true,
-        skipTaskbar: true,
         webPreferences: {
           nodeIntegration: true,
           plugins: true,
