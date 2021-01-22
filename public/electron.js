@@ -42,8 +42,13 @@ const robotKeyMap = {
   ' '           : 'space',
   'control'     : 'control',
   'tab'         : 'tab',
-  'shift'       : 'shift'
+  'shift'       : 'shift',
+  'alt'         : 'alt',
+  'command'     : 'command'
 };
+
+const robotMods = ['shift','control','alt'];
+var currentMods = [];
 
 async function runPythonScript(py_script){
 
@@ -607,18 +612,45 @@ function createWindow() {
     robot.moveMouse(originalPos.x, originalPos.y);
   })
 
-  ipcMain.on('emit-keyup', async (event, arg) => {
+  ipcMain.on('emit-key', async (event, arg) => {
 
-    var key = robotKeyMap[arg.event.key.toLowerCase()] || arg.event.key
-    //console.log(key + ' up');
-    robot.keyToggle(key,'up');
-  })
+    var rawKey = arg.event.key.toLowerCase();
+    var key = robotKeyMap[rawKey] || arg.event.key
 
-  ipcMain.on('emit-keydown', async (event, arg) => {
+    if(robotMods.includes(key)){
+      
+      if(arg.event.type == 'keyup'){
 
-    var key = robotKeyMap[arg.event.key.toLowerCase()] || arg.event.key
-    //console.log(key + ' down');
-    robot.keyToggle(key,'down');
+        if(currentMods.indexOf(key) != -1)
+          currentMods.splice(currentMods.indexOf(key), 1);
+
+        robot.keyToggle(key,'up');
+      
+      } else if(arg.event.type == 'keydown'){
+
+        if(currentMods.indexOf(key) == -1)
+          currentMods.push(key)
+
+        robot.keyToggle(key,'down');
+      }
+
+    }  else if(arg.event.type == 'keydown'){
+
+      if(Object.keys(robotKeyMap).includes(rawKey)){
+
+        robot.keyTap(key, currentMods);
+      
+      } else {
+        if(currentMods.includes('control')){
+
+          robot.keyTap(key.toLowerCase(), currentMods);
+
+        } else {
+
+          robot.typeString(key);
+        }
+      }
+    }
   })
 }
 

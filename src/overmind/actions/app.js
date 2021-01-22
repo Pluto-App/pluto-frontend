@@ -92,10 +92,9 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 
 		if(data.event.type == 'click')
 			window.require("electron").ipcRenderer.send('emit-click', data);
-		else if(data.event.type == 'keyup')
-			window.require("electron").ipcRenderer.send('emit-keyup', data);
-		else if(data.event.type == 'keydown')
-			window.require("electron").ipcRenderer.send('emit-keydown', data);
+		
+		else if(data.event.type == 'keyup' || data.event.type == 'keydown')
+			window.require("electron").ipcRenderer.send('emit-key', data);
 	}
 }
 
