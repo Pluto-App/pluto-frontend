@@ -44,19 +44,12 @@ export const updateUserActiveWindowData = async ({ state, effect }, {user_id, ac
 	localStorage.setItem('usersActiveWindows', JSON.stringify(state.usersActiveWindows));
 }
 
-export const setElectronWindowActiveWinInfo = async ({ state, effect }, usersActiveWindows) => {
-
-	state.usersActiveWindows = usersActiveWindows;
-}
-
+// ToDo: This is not NEEDED!
+// This can be fixed by listening to right room on socket in ScreenShareContainer
+// 
 export const setElectronWindowScreenShareViewers = async ({ state, effect }, screenShareViewers) => {
 
 	state.screenShareViewers = screenShareViewers;
-}
-
-export const setElectronWindowScreenShareCursors = async ({ state, effect }, screenShareCursors) => {
-
-	state.screenShareCursors = screenShareCursors;
 }
 
 export const userVideoCall = async ({ state, effect }, data) => {
@@ -91,6 +84,9 @@ export const updateScreenShareViewers = async ({ state, effect }, data) => {
 
 export const updateScreenShareCursor = async ({ state, effect }, data) => {
 
+	if(data.event.type != 'mousemove')
+			console.log(data.event.type);
+
 	if(data.user)
 		state.screenShareCursors[data.user.id] = data.cursor;
 
@@ -102,9 +98,6 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 		else if(data.event.type == 'keyup')
 			window.require("electron").ipcRenderer.send('emit-keypress', data);
 	}
-	
-	// HACK to pass data to other electron windows.
-	localStorage.setItem('screenShareCursors', JSON.stringify(state.screenShareCursors));
 }
 
 export const setScreenSize = async ({ state, effect }) => {

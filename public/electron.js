@@ -301,13 +301,13 @@ function createWindow() {
 
   ipcMain.on('init-screenshare', (event, arg) => {
 
-    if(initScreenShareWindow){
-      try{
-        initScreenShareWindow.close();
-      } catch (error) {
-        console.error(error);
-      }
-    }
+    // if(initScreenShareWindow){
+    //   try{
+    //     initScreenShareWindow.close();
+    //   } catch (error) {
+    //     console.error(error);
+    //   }
+    // }
 
     initScreenShareWindow = new BrowserWindow({
         width: 650,
@@ -386,7 +386,7 @@ function createWindow() {
     })
 
     if (isDev) {
-      streamScreenShareWindow.webContents.openDevTools();
+      // streamScreenShareWindow.webContents.openDevTools();
     }
 
   })
@@ -441,7 +441,7 @@ function createWindow() {
 
       if (isDev) {
        
-        screenShareContainerWindow.webContents.openDevTools();
+        // screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls
@@ -602,16 +602,16 @@ function createWindow() {
 
   ipcMain.on('emit-click', async (event, arg) => {
 
-      originalPos = robot.getMousePos();
-      robot.moveMouse(arg.cursor.x, arg.cursor.y);
-      robot.mouseClick();
-      robot.moveMouse(originalPos.x, originalPos.y);
+    originalPos = robot.getMousePos();
+    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+    robot.mouseClick();
+    robot.moveMouse(originalPos.x, originalPos.y);
   })
 
   ipcMain.on('emit-keypress', async (event, arg) => {
 
-      var key = robotKeyMap[arg.event.key.toLowerCase()] || arg.event.key
-      robot.keyTap(key);
+    var key = robotKeyMap[arg.event.key.toLowerCase()] || arg.event.key
+    robot.keyTap(key);
   })
 }
 

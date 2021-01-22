@@ -3,10 +3,12 @@ import React, { useEffect, useState, useRef, useContext } from 'react'
 import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 import Cursor from '../utility/Cursor'
+import { AuthContext } from '../../context/AuthContext'
 
 const ScreenShareContainer = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
+    const { authData, setAuthData } = useContext(AuthContext);
 
 	useEffect(() => {
 
@@ -16,15 +18,29 @@ const ScreenShareContainer = React.memo((props) => {
             let screenShareCursors = JSON.parse(localStorage.getItem("screenShareCursors")) || []
         
             actions.app.setElectronWindowScreenShareViewers(screenShareViewers);
-            actions.app.setElectronWindowScreenShareCursors(screenShareCursors);
+            //actions.app.setElectronWindowScreenShareCursors(screenShareCursors);
 
         }, 100)
+
+        socket_live.on(events.viewScreenShare, (data) => {
+            actions.app.updateScreenShareViewers(data);
+        });
+
+        socket_live.on(events.screenShareCursor, (data) => {
+            actions.app.updateScreenShareCursor(data);
+        });
 
     }, [])
 
     useEffect(() => {
         actions.app.setScreenSize();
     }, [])
+
+     useEffect(() => {
+
+        actions.user.getLoggedInUser({authData: authData})
+
+    }, [actions, authData])
 
     const containerStyle = {
         border: 'blue 2px solid',
