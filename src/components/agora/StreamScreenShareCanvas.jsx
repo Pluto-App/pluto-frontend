@@ -184,8 +184,9 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
       		} else if (e.type == 'mousemove' && mouseState == 'down'){
 
-      			eventData['start_x'] = orgCursorPos['x'];
-      			eventData['start_y'] = orgCursorPos['y'];
+      			eventData['type'] 		= 'drag';
+      			eventData['start_x'] 	= orgCursorPos['x'];
+      			eventData['start_y'] 	= orgCursorPos['y'];
       		}
 
         	socket_live.emit(events.screenShareCursor, {
