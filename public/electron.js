@@ -644,6 +644,31 @@ function createWindow() {
     robot.moveMouse(originalPos.x, originalPos.y);
   })
 
+  ipcMain.on('emit-mousedown', async (event, arg) => {
+
+    console.log(arg.event.type);
+    originalPos = robot.getMousePos();
+    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+
+    robot.mouseToggle("down");
+
+    //robot.moveMouse(originalPos.x, originalPos.y);
+  })
+
+  ipcMain.on('emit-mouseup', async (event, arg) => {
+
+    console.log(arg.event.type);
+    originalPos = robot.getMousePos();
+    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+
+
+    robot.mouseToggle("up");
+
+    
+    //robot.moveMouse(originalPos.x, originalPos.y);
+  })
+
+
   //////////////////////////////////////////////////////////////////////
   // Use attributes from javascript keyboard event to fetch robotMods //
   //////////////////////////////////////////////////////////////////////

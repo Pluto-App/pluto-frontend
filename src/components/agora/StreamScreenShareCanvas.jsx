@@ -171,23 +171,23 @@ const StreamScreenShareCanvas = React.memo((props) => {
  			if(e.type == 'wheel')
  				eventData['direction'] = e.deltaY > 0 ? 'up' : 'down';
 
- 			if(e.type == 'mousedown'){
+ 			// if(e.type == 'mousedown'){
 
-      			setOrgCursorPos({x: x, y: y});
-      			setMouseState('down');
+    //   			setOrgCursorPos({x: x, y: y});
+    //   			setMouseState('down');
 
-      		} else if(e.type == 'mouseup'){
+    //   		} else if(e.type == 'mouseup'){
 
-      			setMouseState('up');
-      			if(orgCursorPos['x'] == x && orgCursorPos['y'] == y)
-      				eventData['type'] = 'click';
+    //   			setMouseState('up');
+    //   			if(orgCursorPos['x'] == x && orgCursorPos['y'] == y)
+    //   				eventData['type'] = 'click';
 
-      		} else if (e.type == 'mousemove' && mouseState == 'down'){
+    //   		} else if (e.type == 'mousemove' && mouseState == 'down'){
 
-      			eventData['type'] 		= 'drag';
-      			eventData['start_x'] 	= orgCursorPos['x'];
-      			eventData['start_y'] 	= orgCursorPos['y'];
-      		}
+    //   			eventData['type'] 		= 'drag';
+    //   			eventData['start_x'] 	= orgCursorPos['x'];
+    //   			eventData['start_y'] 	= orgCursorPos['y'];
+    //   		}
 
         	socket_live.emit(events.screenShareCursor, {
 		 		channel_id: 		props.channel,
