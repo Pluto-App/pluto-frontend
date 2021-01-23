@@ -20,6 +20,8 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	const [ screenShareState, setScreenShareState ] = useState({ ready: false});
 	const [ streamList, setStreamList ] = useState([]);
 	const [ userData, setUserData ] = useState({});
+	const [ orgCursorPos, setOrgCursorPos ] = useState(undefined);
+	const [ mouseState, setMouseState ] = useState('up');
 
 	// Hack to maintain aspect ratio
 	const [ canvasStyle, setCanvasStyle ] = useState({});
@@ -169,6 +171,22 @@ const StreamScreenShareCanvas = React.memo((props) => {
  			if(e.type == 'wheel')
  				eventData['direction'] = e.deltaY > 0 ? 'up' : 'down';
 
+ 			if(e.type == 'mousedown'){
+
+      			setOrgCursorPos({x: x, y: y});
+      			setMouseState('down');
+
+      		} else if(e.type == 'mouseup'){
+
+      			setMouseState('up');
+      			if(orgCursorPos['x'] == x && orgCursorPos['y'] == y)
+      				eventData['type'] = 'click';
+
+      		} else if (e.type == 'mousemove' && mouseState == 'down'){
+
+      			eventData['start_x'] = orgCursorPos['x'];
+      			eventData['start_y'] = orgCursorPos['y'];
+      		}
 
         	socket_live.emit(events.screenShareCursor, {
 		 		channel_id: 		props.channel,
@@ -231,10 +249,12 @@ const StreamScreenShareCanvas = React.memo((props) => {
     return (
 		<div id="ag-screenshare-canvas" tabindex="0" style={canvasStyle} 
 			onMouseMove={ shareCursorData }
-			onClick={ shareCursorData }
 			onDblClick={ shareCursorData }
 			onKeyUp={ shareCursorData }
 			onKeyDown={ shareCursorData }
+			onMouseDown={ shareCursorData }
+			onMouseUp={ shareCursorData }
+
 		>
     		<div id="ag-screen" className="ag-item">
     		</div>

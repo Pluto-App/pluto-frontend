@@ -393,7 +393,7 @@ function createWindow() {
     })
 
     if (isDev) {
-      streamScreenShareWindow.webContents.openDevTools();
+       //streamScreenShareWindow.webContents.openDevTools();
     }
 
   })
@@ -603,7 +603,6 @@ function createWindow() {
     }
   ])
 
-
   ipcMain.on('emit-click', async (event, arg) => {
 
     originalPos = robot.getMousePos();
@@ -614,16 +613,35 @@ function createWindow() {
 
   ipcMain.on('emit-scroll', async (event, arg) => {
 
+    originalPos = robot.getMousePos();
+    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+
     switch(arg.event.direction) {
       case 'up':
-        robot.scrollMouse(-1, 0);
+        robot.scrollMouse(0, -5);
         break;
       case 'down':
-        robot.scrollMouse(1, 0);
+        robot.scrollMouse(0, 5);
         break;
       default:
         // code block
     }
+    robot.moveMouse(originalPos.x, originalPos.y);
+  })
+
+  ipcMain.on('emit-drag', async (event, arg) => {
+
+    console.log(arg.event.type);
+    originalPos = robot.getMousePos();
+    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+
+    robot.moveMouse(arg.event.start_x, arg.event.start_y);
+    robot.mouseToggle("down");
+    robot.dragMouse(arg.cursor.x, arg.cursor.y);
+    robot.mouseToggle("up");
+
+    
+    robot.moveMouse(originalPos.x, originalPos.y);
   })
 
   //////////////////////////////////////////////////////////////////////
