@@ -81,9 +81,6 @@ export const updateScreenShareViewers = async ({ state, effect }, data) => {
 
 export const updateScreenShareCursor = async ({ state, effect }, data) => {
 
-	if(data.event.type != 'mousemove')
-		console.log('event fired: ' + data.event.type);
-
 	if(data.user)
 		state.screenShareCursors[data.user.id] = data.cursor;
 
@@ -95,9 +92,6 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 		
 		else if(data.event.type == 'wheel')
 			window.require("electron").ipcRenderer.send('emit-scroll', data);
-
-		else if(data.event.type == 'drag')
-			window.require("electron").ipcRenderer.send('emit-drag', data);
 
 		else if(data.event.type == 'mousedown')
 			window.require("electron").ipcRenderer.send('emit-mousedown', data);

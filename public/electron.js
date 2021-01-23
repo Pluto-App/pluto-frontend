@@ -445,7 +445,7 @@ function createWindow() {
 
       if (isDev) {
        
-        screenShareContainerWindow.webContents.openDevTools();
+        // screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls
@@ -609,6 +609,7 @@ function createWindow() {
     robot.moveMouse(arg.cursor.x, arg.cursor.y);
     robot.mouseClick();
     robot.moveMouse(originalPos.x, originalPos.y);
+
   })
 
   ipcMain.on('emit-scroll', async (event, arg) => {
@@ -631,7 +632,6 @@ function createWindow() {
 
   ipcMain.on('emit-drag', async (event, arg) => {
 
-    console.log(arg.event.type);
     originalPos = robot.getMousePos();
     robot.moveMouse(arg.cursor.x, arg.cursor.y);
 
@@ -639,32 +639,24 @@ function createWindow() {
     robot.mouseToggle("down");
     robot.dragMouse(arg.cursor.x, arg.cursor.y);
     robot.mouseToggle("up");
-
     
     robot.moveMouse(originalPos.x, originalPos.y);
   })
 
   ipcMain.on('emit-mousedown', async (event, arg) => {
 
-    console.log(arg.event.type);
     originalPos = robot.getMousePos();
     robot.moveMouse(arg.cursor.x, arg.cursor.y);
-
     robot.mouseToggle("down");
-
     //robot.moveMouse(originalPos.x, originalPos.y);
+
   })
 
   ipcMain.on('emit-mouseup', async (event, arg) => {
 
-    console.log(arg.event.type);
     originalPos = robot.getMousePos();
     robot.moveMouse(arg.cursor.x, arg.cursor.y);
-
-
-    robot.mouseToggle("up");
-
-    
+    robot.mouseToggle("up"); 
     //robot.moveMouse(originalPos.x, originalPos.y);
   })
 
