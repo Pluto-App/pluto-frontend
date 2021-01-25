@@ -17,8 +17,6 @@ const InitScreenShareCanvas = React.memo((props) => {
 	const AgoraClient = AgoraRTC.createClient({ mode: props.transcode, codec: "vp8" });
 
 	var localStream = {};
-
-	const [ mediaSource, setMediaSource ] = useState({ audio: false, video: false, screen: true});
 	const [ screenShareState, setScreenShareState ] = useState({ ready: false});
 
 	const streamInit = (uid, attendeeMode, videoProfile, config) => {

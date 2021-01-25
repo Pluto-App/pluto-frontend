@@ -8,7 +8,7 @@ import RoomProfile from './components/pages/Rooms/RoomProfile'
 import TeamProfile from './components/pages/Teams/TeamProfile'
 import UserProfile from './components/pages/Users/UserProfile'
 import UserUpdate from './components/pages/Users/UserUpdate'
-import VideoCall from './components/pages/Video/VideoCall'
+import MiniVideoCall from './components/windows/videocall/MiniVideoCall'
 
 import InitScreenShare from './components/windows/screenshare/InitScreenShare'
 import StreamScreenShare from './components/windows/screenshare/StreamScreenShare'
@@ -141,8 +141,8 @@ export default function App() {
             <Route exact path="/user-update">
               <UserUpdate />
             </Route>
-            <Route exact path="/videocall">
-              <VideoCall />
+            <Route exact path="/video-call">
+              <MiniVideoCall />
             </Route>
             <Route exact path="/add-org">
               <OrgRegisterPage />

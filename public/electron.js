@@ -243,12 +243,13 @@ function createWindow() {
     // create the window
     video_player = new BrowserWindow({
       show: true,
-      width: 200,
-      height: 175,
+      width: 175,
+      height: 150,
       frame: false,
+      resizable: false,
       title: "VideoWindow",
-      x: swidth - 310,
-      y: sheight - 270,
+      x: swidth - 270,
+      y: sheight - 870,
       webPreferences: {
         nodeIntegration: true,
         plugins: true,
@@ -261,12 +262,12 @@ function createWindow() {
 
     const videoUrl = url.format({
       pathname: path.join(__dirname, '../build/index.html'),
-      hash: '/videocall',
+      hash: '/video-call',
       protocol: 'file:',
       slashes: true
     })
 
-    video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/videocall' : videoUrl);
+    video_player.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/video-call' : videoUrl);
 
     video_player.on('closed', () => {
 
@@ -298,11 +299,20 @@ function createWindow() {
       }
     })
 
+    if (isDev) {
+       video_player.webContents.openDevTools();
+    }
+
   });
 
   ipcMain.on('video-resize-normal', (event, arg) => {
-    video_player.setSize(200, 175)
+    video_player.setSize(175, 150)
   })
+
+  ipcMain.on('set-video-player-height', (event, height) => {
+    video_player.setSize(video_player.getSize()[0], height);
+  })
+
 
   ipcMain.on('init-screenshare', (event, arg) => {
 

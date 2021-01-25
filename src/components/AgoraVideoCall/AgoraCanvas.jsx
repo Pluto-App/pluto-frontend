@@ -271,42 +271,6 @@ class AgoraCanvas extends React.Component {
     }
   }
 
-  switchDisplay = (e) => {
-    if (e.currentTarget.classList.contains('disabled') || this.state.streamList.length <= 1) {
-      return
-    }
-    if (this.state.displayMode === 'pip') {
-      this.setState({ displayMode: 'tile' })
-    }
-    else if (this.state.displayMode === 'tile') {
-      this.setState({ displayMode: 'pip' })
-    }
-    else if (this.state.displayMode === 'share') {
-      // do nothing or alert, tbd
-    }
-    else {
-      console.error('Display Mode can only be tile/pip/share')
-    }
-  }
-
-  hideRemote = (e) => {
-    if (e.currentTarget.classList.contains('disabled') || this.state.streamList.length <= 1) {
-      return
-    }
-    let list
-    let id = this.state.streamList[this.state.streamList.length - 1].getId()
-    list = Array.from(document.querySelectorAll(`.ag-item:not(#ag-item-${id})`))
-    list.map(item => {
-      if (item.style.display !== 'none') {
-        item.style.display = 'none'
-      }
-      else {
-        item.style.display = 'block'
-      }
-    })
-
-  }
-
   handleScreenShare = async (e) => {
 
     if (this.state.screeStream === true) {
