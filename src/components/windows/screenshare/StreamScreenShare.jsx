@@ -6,12 +6,12 @@ import { AGORA_APP_ID } from "../../../agora.config";
 import { useOvermind } from '../../../overmind'
 import StreamScreenShareCanvas from "../../agora/StreamScreenShareCanvas";
 
-const ScreenShare = React.memo((props) => {
+const StreamScreenShare = React.memo((props) => {
 
   const { state, actions } = useOvermind();
 
     const screenShareChannel = localStorage.getItem('screenshare_channel_id');
-    const screenShareResolution = JSON.parse(localStorage.getItem("screenshare_resolution"));
+    const screenShareResolution = JSON.parse(localStorage.getItem("screenshare_resolution")) || {width: 16, height: 10};
 
     const paddingPercentage = (1/(screenShareResolution.width/screenShareResolution.height))*100 + '%';
     
@@ -19,6 +19,7 @@ const ScreenShare = React.memo((props) => {
     const [ config, setConfig ] = useState({
         videoProfile: "1080p_1",
         mode: "live",
+        backgroundColor: '#2e2c29',
         channel:  screenShareChannel || 'scr-' + localStorage.getItem('call_channel_id'),
         transcode:  Cookies.get("transcode") || "interop",
         attendeeMode: 'audience',
@@ -34,14 +35,14 @@ const ScreenShare = React.memo((props) => {
     `;
 
     const wrapper_style = {
-      padding: '10px',
+      //padding: '10px',
       background: 'white',
       'box-sizing': 'border-box',
       resize: 'horizontal',
       border: '1px dashed',
       overflow: 'auto',
       'max-width': '100%',
-      height: 'calc(100vh - 16px)',
+      //height: 'calc(100vh - 30px)',
     };
 
     const media_style = {
@@ -53,8 +54,8 @@ const ScreenShare = React.memo((props) => {
 
     return (
 
-        <div style={wrapper_style} className='coolWrapper'>
-          <div style={media_style} className='coolMedia'>
+        <div style={wrapper_style} className='screen-share-wrapper'>
+          <div style={media_style} className='screen-share-media'>
 
             <StreamScreenShareCanvas
               videoProfile={config.videoProfile}
@@ -71,4 +72,4 @@ const ScreenShare = React.memo((props) => {
     )
 })
 
-export default ScreenShare;
+export default StreamScreenShare;

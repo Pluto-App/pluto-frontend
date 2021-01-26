@@ -32,9 +32,9 @@ const ScreenShare = React.memo((props) => {
 
     return (
 
-        <div className="font-sans min-h-screen">
+        <div className="font-sans">
             <div style={display_video} className="bg-black"></div>
-            <div className="flex" style={{ height: "calc(100vh - 10px)" }}>
+            <div className="flex" style={{ height: "calc(100vh)" }}>
               <div className="bg-black text-white flex-1 p-0 w-100">
                 <InitScreenShareCanvas
                   videoProfile={config.videoProfile}

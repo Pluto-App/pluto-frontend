@@ -23,10 +23,10 @@ const VideoCall = React.memo((props) => {
 
   return (
 
-    <div className="font-sans min-h-screen">
+    <div className="font-sans">
       <div className="bg-black"></div>
       
-      <div className="flex" style={{ height: "calc(100vh - 10px)" }}>
+      <div className="flex" style={{ height: "calc(100vh - 30px)" }}>
         <div className="bg-black text-white flex-1 p-0 w-100">
           <VideoCallCanvas
             videoProfile={config.videoProfile}

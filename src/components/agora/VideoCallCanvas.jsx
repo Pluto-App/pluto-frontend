@@ -132,7 +132,7 @@ const MiniVideoCallCanvas = React.memo((props) => {
 
     useEffect(() => {
 
-        AgoraClient.init(props.appId, () => {
+      AgoraClient.init(props.appId, () => {
 	      	
 	      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
 
@@ -199,7 +199,7 @@ const MiniVideoCallCanvas = React.memo((props) => {
     }, [streamList])
 
 
-   	const handleCamera = (e) => {
+ 	const handleCamera = (e) => {
 		if (localStream.isVideoOn()) {
       	
       		localStream.disableVideo()
@@ -208,8 +208,8 @@ const MiniVideoCallCanvas = React.memo((props) => {
 		} else {
       		localStream.unmuteVideo()
       		document.getElementById("video-icon").innerHTML = "videocam"
-    	}
   	}
+	}
 
  	const handleMic = (e) => {
     	if (localStream.isAudioOn()) {
@@ -290,7 +290,7 @@ const MiniVideoCallCanvas = React.memo((props) => {
   	)
 
     const exitBtn = (
-      	<span
+    	<span
         	onClick={handleExit}
         	className='ag-btn exitBtn'
         	title="Exit"
@@ -301,7 +301,7 @@ const MiniVideoCallCanvas = React.memo((props) => {
     )
 
     const screenShareBtn = (
-      	<span
+    	<span
         	onClick={handleScreenShare}
        		className='ag-btn exitBtn'
         	title="Enable/Disable Screen Share"
@@ -312,7 +312,7 @@ const MiniVideoCallCanvas = React.memo((props) => {
     )
 
     const collapseBtn = (
-        <span
+      <span
           onClick={handleCollapse}
           className='ag-btn exitBtn'
           title="Collapse Video Call"
@@ -380,18 +380,18 @@ const MiniVideoCallCanvas = React.memo((props) => {
 
 
     return (
-		<div id="ag-canvas" style={style}>
-			<div id="Dish">
-	        </div>
+		  <div id="ag-canvas" style={style}>
+		    <div id="Dish">
+        </div>
 
-	        <div className="ag-btn-group" style={{background: 'rgba(34, 36, 37, 0.8)'}}>
-	          {exitBtn}
-	          {videoControlBtn}
-	          {audioControlBtn}
-	          {screenShareBtn}
-            {collapseBtn}
-	        </div>
-	      </div>
+        <div className="ag-btn-group" style={{background: 'rgba(34, 36, 37, 0.8)'}}>
+          {exitBtn}
+          {videoControlBtn}
+          {audioControlBtn}
+          {screenShareBtn}
+          {collapseBtn}
+        </div>
+      </div>
 	);
 })
 

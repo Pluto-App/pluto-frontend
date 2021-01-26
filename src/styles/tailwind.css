@@ -21733,16 +21733,16 @@ video {
 
 #Dish {
   display: flex;
+  left: 0px;
+  bottom: 0px;
+  top: 0px;
+  right: 0px;
+  position: absolute;
   align-content: center;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   vertical-align: middle;
-  position: absolute;
-  left: 0px;
-  bottom: 0px;
-  top: 0px;
-  right: 0px;
 }
 
 /* Camera */

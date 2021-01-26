@@ -114,8 +114,8 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
 	        setStreamList(tempList)
 	      }
-
 	    })
+	    exitScreenShare();
   	}
 
   	const exitScreenShare = () => {
@@ -226,9 +226,9 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
 
     return (
-		<div id="ag-screenshare-canvas" tabindex="0" style={canvasStyle} 
+		<div id="ag-screenshare-canvas" tabIndex="0" style={canvasStyle} 
 			onMouseMove={ shareCursorData }
-			onDblClick={ shareCursorData }
+			onDoubleClick={ shareCursorData }
 			onKeyUp={ shareCursorData }
 			onKeyDown={ shareCursorData }
 			onMouseDown={ shareCursorData }

@@ -317,7 +317,7 @@ function createWindow() {
     })
 
     if (isDev) {
-       videoCallWindow.webContents.openDevTools();
+       //videoCallWindow.webContents.openDevTools();
     }
 
   });
@@ -352,6 +352,7 @@ function createWindow() {
       frame: false,
       resizable: false,
       title: "VideoWindow",
+      alwaysOnTop: true,
       x: swidth - 270,
       y: sheight - 870,
       webPreferences: {
@@ -361,7 +362,6 @@ function createWindow() {
       }
     })
 
-    miniVideoCallWindow.setAlwaysOnTop(true, 'screen');
     miniVideoCallWindow.setMenu(null);
 
     const videoUrl = url.format({
@@ -442,7 +442,8 @@ function createWindow() {
   })
 
   ipcMain.on('set-video-player-height', (event, height) => {
-    miniVideoCallWindow.setSize(miniVideoCallWindow.getSize()[0], height);
+    if(miniVideoCallWindow)
+      miniVideoCallWindow.setSize(miniVideoCallWindow.getSize()[0], height);
   })
 
 
@@ -480,7 +481,7 @@ function createWindow() {
     initScreenShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/init-screenshare' : screenShareWindowUrl);
 
     initScreenShareWindow.on('closed', () => {
-
+      initScreenShareWindow = undefined;
     })
 
     if (isDev) {
@@ -491,17 +492,30 @@ function createWindow() {
 
   ipcMain.on('stream-screenshare', (event, arg) => {
 
+    let display = screen.getPrimaryDisplay();
+    let swidth = display.bounds.width;
+    let sheight = display.bounds.height;
+
     if(streamScreenShareWindow){
       try{
         streamScreenShareWindow.close();
       } catch (error) {
         console.error(error);
       }
+
+      if(videoCallWindow)
+        videoCallWindow.hide();
+
+      if(miniVideoCallWindow){
+
+        miniVideoCallWindow.show();
+        miniVideoCallWindow.setPosition(swidth - 270, sheight - 870)
+      }
     }
 
     streamScreenShareWindow = new BrowserWindow({
-        width: 1024,
-        height: 680,
+        width: 1088,
+        height: 720,
         show: false,
         frame: true,
         title: "ScreenShare",
@@ -527,7 +541,7 @@ function createWindow() {
     streamScreenShareWindow.show();
 
     if (isDev) {
-      streamScreenShareWindow.setSize(500,400);
+      //streamScreenShareWindow.setSize(500,400);
     }
 
     streamScreenShareWindow.on('closed', () => {
@@ -535,7 +549,7 @@ function createWindow() {
     })
 
     if (isDev) {
-       //streamScreenShareWindow.webContents.openDevTools();
+       // streamScreenShareWindow.webContents.openDevTools();
     }
 
   })
@@ -587,7 +601,7 @@ function createWindow() {
 
       if (isDev) {
        
-        // screenShareContainerWindow.webContents.openDevTools();
+        screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls

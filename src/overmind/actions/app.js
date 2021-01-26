@@ -66,6 +66,8 @@ export const userScreenShare = async ({ state, effect }, data) => {
 	 	localStorage.setItem("screenshare_resolution", JSON.stringify(data.resolution));
 	 	localStorage.setItem("screenshare_owner", data.sender_id);
 
+	 	//console.log('user screenshare');
+	 	state.streamingScreenShare = true;
 	 	window.require("electron").ipcRenderer.send('stream-screenshare', data.channel_id);	
 	}
 }
@@ -80,6 +82,8 @@ export const updateScreenShareViewers = async ({ state, effect }, data) => {
 }
 
 export const updateScreenShareCursor = async ({ state, effect }, data) => {
+
+	console.log(data);
 
 	if(data.user)
 		state.screenShareCursors[data.user.id] = data.cursor;

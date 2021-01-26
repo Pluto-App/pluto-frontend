@@ -7,6 +7,8 @@ import { socket_live, events } from '../sockets'
 
 import {AuthContext} from '../../context/AuthContext'
 
+import StreamScreenShare from '../windows/screenshare/StreamScreenShare'
+
 const { remote } = window.require('electron');
 var localStream = {};
 
@@ -169,27 +171,39 @@ const MiniVideoCallCanvas = React.memo((props) => {
 
     	let canvas = document.querySelector('#ag-canvas')
     	let no = streamList.length
+    	let height = (120 * no) + 75;
 
-	    streamList.map((stream, index) => {	     
+	    streamList.map((stream, index) => {
+
 	     	let id = stream.getId()
-     		let dom = document.querySelector('#ag-item-' + id)
+	     	let elementId = '#ag-item-' + id;
+     		let dom = document.querySelector(elementId)
 	      	
 	      	if (!dom) {
-	        	dom = document.createElement('section')
-	        	dom.setAttribute('id', 'ag-item-' + id)
+	        	dom = document.createElement('div')
+	        	dom.setAttribute('id', elementId)
 	        	dom.setAttribute('class', 'ag-item')
+	        	dom.setAttribute('style', 'height: 120px')
 	        	canvas.appendChild(dom)
-	        	stream.play('ag-item-' + id)
 	     	}
-	      	
-	      	dom.setAttribute('style', 'height: 120px')
-	      	stream.player.resize && stream.player.resize()
+
+	     	if(stream.isPlaying())
+	     		stream.stop();
+
+	     	stream.play(elementId);
 	    })
 
-	    window.require("electron").ipcRenderer.send('set-video-player-height', (120 * no) + 75);
+	    if(state.streamingScreenShare)
+	    	height += 130;
+
+	    window.require("electron").ipcRenderer.send('set-video-player-height', height);
 
     }, [streamList])
 
+    useEffect(() => {
+
+    	// For now we aren't doing anything here. But we know we can!
+    }, [state.streamingScreenShare])
 
    	const handleCamera = (e) => {
 		if (localStream.isVideoOn()) {
@@ -303,7 +317,14 @@ const MiniVideoCallCanvas = React.memo((props) => {
     return (
 		<div>
 			<div id="ag-canvas" style={style}>
-		      
+		      {
+		      	state.streamingScreenShare ?
+		      		<div class="mini-video-screenshare-container" style={{height: '130px'}}>
+		      			<StreamScreenShare/>
+	      			</div>
+	      			:
+	      			''
+		      }
 	      	</div>
 	  	 	<div className="ag-btn-group" style={{background: 'rgba(34, 36, 37, 0.8)'}}>
 	          {exitBtn}

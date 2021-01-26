@@ -24,6 +24,9 @@ export const state = {
     loadingTeam: false,
     error: {},
 
+    // Video Call
+    streamingScreenShare: false,
+
     // App Data
     activeWindowApp: {},
     loggedInUser: {},
