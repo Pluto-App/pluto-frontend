@@ -21241,6 +21241,38 @@ body {
   width: 100%;
 }
 
+.topBar {
+  position: fixed;
+  height: 30px;
+  top: 0;
+  background: #000;
+  width: 100%;
+}
+
+.main-container {
+  position: fixed;
+  top: 30px;
+}
+
+.sidebar-container {
+  height: calc(100vh - 30px);
+}
+
+.sidebar-icons {
+  max-height: calc(100vh - 30px);
+  overflow-y: scroll;
+}
+
+.members-list {
+  max-height: calc(100vh - 500px);
+  min-height: calc(100vh - 400px);
+  overflow-y: scroll;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
 .draggable-elem {
   -webkit-app-region: drag;
 }

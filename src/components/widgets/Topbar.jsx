@@ -37,7 +37,7 @@ const TopBar = React.memo((props) => {
   }
 
   return (
-    <div className="topBar" style={{ height: "30px", width: "100%", background: "#000" }}>
+    <div className="topBar">
       <div className="flex justify-between items-center px-2 p-0">
         {/*
         <button className="text-white cursor-pointer hover:bg-gray-900 focus:outline-none">

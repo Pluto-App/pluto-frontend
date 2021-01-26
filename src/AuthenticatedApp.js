@@ -85,6 +85,10 @@ export default function App() {
         actions.app.userVideoCall(data);
       });
 
+      socket_live.on(events.roomVideoCall, (data) => {
+        actions.app.roomVideoCall(data);
+      });
+
       socket_live.on(events.userScreenShare, (data) => {
         actions.app.userScreenShare(data);
       });

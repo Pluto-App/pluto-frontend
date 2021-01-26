@@ -86,10 +86,11 @@ const UserListItem = React.memo((user) => {
         history.push('/');
     }
 
-    const startVideo = (receiver_uid) => {
+    const startVideo = (e, receiver_uid) => {
 
         // TODO User Video Call ID. Check Needed.
         // Cannot start a VC Call with oneself.
+
         if (receiver_uid !== state.userProfileData.uid) {
 
             let channel_id = md5(receiver_uid + state.userProfileData.uid);
@@ -119,9 +120,11 @@ const UserListItem = React.memo((user) => {
                 <div className="bg-white h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden">
                     <img src={user.url} alt="T" />
                 </div>
-                <div className="text-white px-1 font-bold tracking-wide text-xs" onClick={(e) => {
-                    startVideo(user.uid);
-                }}>
+                <div className="text-white px-1 font-bold tracking-wide text-xs" 
+                    onClick={(e) => {
+                        startVideo(e, user.uid);
+                    }}
+                >
                     {user.name}
                 </div>
                 <svg viewBox="0 0 6 6" height="8" width="8">
@@ -167,24 +170,42 @@ const UserListItem = React.memo((user) => {
                                 </div>
                             </div>
                             <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
+                            
+                            {/*
                             <button className="w-full text-white focus:outline-none hover:bg-gray-800 rounded-lg flex font-bold tracking-wide text-xs items-center" >
                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>publish</i> Share Documents
                                             </button>
                             <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
+                            
+                            
                             <button className="w-full text-white focus:outline-none hover:bg-gray-800 rounded-lg flex font-bold tracking-wide text-xs items-center" onClick={() => {
                                 toggleShowMenu(false)
                                 toggleshowChatModal(showChatModal => !showChatModal)
                             }}>
                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>question_answer</i>Instant Chat
-                                            </button>
-                            <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
-                            <button className="w-full text-white hover:bg-gray-800 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" onClick={() => {
-                                startVideo();
-                            }}>
-                                <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>video_call</i>Video Call
-                                            </button>
-                            <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
+                                            </button> 
+
+                            */}
                             
+                            {
+                                user.uid == state.userProfileData.uid ?
+                                ''
+                                :
+                                <>
+                                    <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
+                                    <button className="w-full text-white hover:bg-gray-800 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" 
+                                        onClick={(e) => {
+                                            toggleShowMenu(showMenu => !showMenu)
+                                            startVideo(e, user.uid);
+                                        }}
+                                    >
+                                        <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>video_call</i>Video Call
+                                    </button>
+                                </>
+                            }
+                            
+                            
+                            <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
                             <button className="w-full text-red-500 hover:bg-red-300 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" 
                             onClick={(e) => {
                                 removeUser(e, user.id)
@@ -194,7 +215,7 @@ const UserListItem = React.memo((user) => {
                         </div>
                     </div>
                 }
-                <button className="text-gray-300 hover:text-indigo-500 px-1 focus:outline-none" onClick={(e) => {
+                <button className="text-gray-300 hover:text-indigo-500 px-1 focus:outline-none pointer" onClick={(e) => {
                     toggleShowMenu(showMenu => !showMenu)
                 }}>
                     <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}>more_vert</i>

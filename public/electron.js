@@ -31,7 +31,7 @@ const runApplescript = require('run-applescript');
 // TODO Add support for App Signing.
 
 const minWidth = 315;
-const minHeight = 320;
+const minHeight = 500;
 
 const robotKeyMap = {
   'arrowup'     : 'up',
@@ -161,6 +161,7 @@ function createWindow() {
 
   ipcMain.on('resize-normal', (event, arg) => {
     mainWindow.setSize(minWidth, 700)
+    mainWindow.center();
   })
 
   ipcMain.on('close-video', (event, arg) => {

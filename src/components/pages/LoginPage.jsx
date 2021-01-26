@@ -40,7 +40,9 @@ const LoginPage = React.memo(() => {
   }
 
   return (
-    <div className="bg-black text-white flex flex-1 pt-20 px-10 justify-center" style={{ height: "calc(100vh - 30px)" }}>
+    <div className="bg-black text-white flex flex-1 pt-20 px-10 justify-center main-container w-full" 
+      style={{ height: "calc(100vh - 30px)" }}
+    >
       {/* <div className="text-center mb-3 font-italic font-bold text-xl">
         <Image
           img src={main} alt="Logo" className="text-center mb-3 font-italic font-bold text-xl"

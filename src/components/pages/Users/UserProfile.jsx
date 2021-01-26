@@ -32,7 +32,7 @@ const UserProfile = React.memo(() => {
     }, [actions, authData])
 
     return (
-        <div className="w-full flex">
+        <div className="w-full flex main-container">
             <div className="bg-black  flex-1 px-3 text-white pt-2" style={{ height: "calc(100vh - 30px)" }}>
                 <BackButton></BackButton>
                 <p className="text-grey font-bold text-sm tracking-wide mt-2">STATUS</p>

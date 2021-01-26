@@ -59,6 +59,19 @@ export const userVideoCall = async ({ state, effect }, data) => {
     ToastNotification('success', `Incoming VC`);
 }
 
+export const roomVideoCall = async ({ state, effect }, data) => {
+
+ 	// localStorage.setItem("call_channel_id", data.channel_id);
+ 	// socket_live.emit('join_room', data.channel_id);
+
+    // window.require("electron").ipcRenderer.send('load-video-window', data.channel_id);
+
+    //ToastNotification('success', `Incoming VC`);
+
+    console.log('someone is in room: ');
+    console.log(data);
+}
+
 export const userScreenShare = async ({ state, effect }, data) => {
 
 	if(data.sender_id != state.userProfileData.uid){

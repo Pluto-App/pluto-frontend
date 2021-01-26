@@ -10,7 +10,7 @@ import { socket_live, events } from '../../sockets';
 
 import { AuthContext } from '../../../context/AuthContext'
 
-const RoomListItem = React.memo((props) => {
+const RoomListItem = React.memo((room) => {
 
     // TODO Notify when new room created. Add to list room info.  
     let history = useHistory();
@@ -21,7 +21,7 @@ const RoomListItem = React.memo((props) => {
     const [showChatModal, toggleshowChatModal] = useState(false);
     const [showMenu, toggleShowMenu] = useState(false);
     const [startedEditing, updateEditStatus] = useState(false);
-    const [roomName, updateRoomName] = useState(props.name);
+    const [roomName, updateRoomName] = useState(room.name);
 
     const clickFunc = (e) => {
         updateEditStatus(startedEditing => !startedEditing)
@@ -43,26 +43,33 @@ const RoomListItem = React.memo((props) => {
         "position": "absolute"
     }
 
-    const handleVideoCall = () => {
-        
-        // TODO Room Video Call ID. Check Needed.
-        let channel_id = md5(props.id + state.activeTeamId);
-        ToastNotification('success', `Group VC with ${roomName} 📷`);
+    const startVideo = (e, room_rid) => {
 
+        // TODO User Video Call ID. Check Needed.
+        // Cannot start a VC Call with oneself.
+
+
+        let channel_id = md5(room_rid);
         localStorage.setItem('call_channel_id', channel_id);
 
         socket_live.emit(events.roomVideoCall, {
-            channel_id: channel_id,
-            room_id: props.id,
+            channel_id: state.currentTeam.tid,
+            call_channel_id: channel_id,
+            room_id: room.id,
+            room_uid: room.uid,
             user: state.userProfileData.uid
         })
 
-        window.require("electron").ipcRenderer.send('load-video-window', channel_id);
+        socket_live.emit('join_room',channel_id);
+
+        window.require("electron").ipcRenderer.send('init-mini-video-call-window', channel_id);
+        //ToastNotification('success', `Initiated VC in room ${room.name} 📷`);
+
     }
 
     const removeRoomHandler = async (e) => {
         
-        var roomData = {id: props.id}
+        var roomData = {id: room.id}
         await actions.room.deleteRoom({ authData: authData, roomData: roomData})
 
         //ToastNotification('error', "Only Owners can remove")
@@ -71,19 +78,19 @@ const RoomListItem = React.memo((props) => {
     const handleClick = async (e) => {
         // Change the ActiveRoomId.
         await actions.changeActiveRoom({
-            roomid: props.id,
+            roomid: room.id,
             roomname: roomName,
         })
         // Change the Room Id of the current user as well. 
         // The user switched to this room. 
         await actions.updateRoomOfMember({
             userid: state.userProfileData.userid,
-            roomid: props.id
+            roomid: room.id
         })
-        let id = md5(props.id);
+        let id = md5(room.id);
         Cookies.set("channel", id);
         socket_live.emit(events.video_call, {
-            recieverid: props.id,
+            recieverid: room.id,
             teamid: state.activeTeamId,
             senderid: state.userProfileData.userid,
             username: state.userProfileData.username
@@ -93,7 +100,7 @@ const RoomListItem = React.memo((props) => {
     }
 
     return (
-        <div id={props.id}>
+        <div id={room.id}>
             {
                 startedEditing ?
                     <div className="flex justify-center items-center hover:bg-gray-800"
@@ -124,7 +131,7 @@ const RoomListItem = React.memo((props) => {
                             autoFocus />
                     </div>
                     :
-                    <div className="flex py-0 justify-between p-1 hover:bg-gray-800" id={props.id} onContextMenu={(e) => {
+                    <div className="flex py-0 justify-between p-1 hover:bg-gray-800" id={room.id} onContextMenu={(e) => {
                         e.preventDefault();
                         clickFunc()
                     }}>
@@ -155,6 +162,7 @@ const RoomListItem = React.memo((props) => {
                                             {roomName}
                                         </p>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
+                                        {/* 
                                         <button className="w-full text-white focus:outline-none hover:bg-gray-800 rounded-lg flex font-bold tracking-wide text-xs items-center" >
                                             <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>publish</i> Share Documents
                                                 </button>
@@ -166,9 +174,10 @@ const RoomListItem = React.memo((props) => {
                                             <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>question_answer</i>Group Chat
                                                 </button>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
+                                        */}
                                         <button className="w-full text-white text-green-700 hover:bg-gray-800 focus:outline-none rounded-lg flex font-bold tracking-wide text-xs items-center" onClick={(e) => {
                                             toggleShowMenu(showMenu => !showMenu)
-                                            handleVideoCall()
+                                            startVideo(e,room.rid)
                                         }}>
                                             <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>video_call</i>Video Call
                                                 </button>

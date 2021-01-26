@@ -25,6 +25,7 @@ const RoomList = ((rooms) => {
     const roomlist = rooms.map((room) =>
         <RoomListItem
             id={room.id}
+            rid={room.rid}
             key={room.id.toString()}
             name={room.name}
         />
@@ -52,7 +53,7 @@ const MembersList = (({users, onlineUsers}) => {
     )
 
     return (
-        <div>
+        <div class='members-list'>
             {teamMemberList}
         </div>
     );
@@ -130,7 +131,7 @@ export default function HomePage() {
     }
 
     return (
-        <div className="w-full flex">
+        <div className="w-full flex main-container">
             <Sidebar></Sidebar>
             
             <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)", marginLeft: "49px" }}>
@@ -140,7 +141,7 @@ export default function HomePage() {
                         appName={appInfo}
                 />
 
-                <div className="sidebar-icons" style={{ height: "relative" }}>
+                <div className="rooms-list-container" style={{ height: "relative" }}>
                     <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800"
                         style={{ transition: "all .60s ease" }}
                     >
@@ -201,7 +202,7 @@ export default function HomePage() {
                     </div>
                 </div>
 
-                <div className="sidebar-icons" style={{ height: "relative" }}>
+                <div className="members-list-container" style={{ height: "relative" }}>
                     <div className="flex justify-between items-center p-2 pl-2 hover:bg-gray-800"
                         style={{ transition: "all .60s ease" }}
                     >

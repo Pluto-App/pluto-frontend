@@ -24,7 +24,7 @@ export default function Sidebar(props) {
     }
 
     return (
-        <div className="w-15 bg-black text-white border-r border-blackblack fixed min-h-screen ">
+        <div className="w-15 bg-black text-white border-r border-blackblack fixed min-h-screen sidebar-container">
             <div className="sidebar-icons">
                 <a className="sidebar-icon flex items-center text-grey  px-2 py-2 no-underline cursor-pointer hover:bg-gray-900"
                     style={{ transition: "all .60s ease" }}>

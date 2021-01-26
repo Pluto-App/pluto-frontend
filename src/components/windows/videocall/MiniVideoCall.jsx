@@ -23,7 +23,7 @@ const MiniVideoCall = React.memo((props) => {
 
   return (
 
-    <div className="font-sans">
+    <div className="font-sans" style={{marginTop: '30px'}}>
       <div className="bg-black"></div>
       
       <div className="flex" style={{ height: "calc(100vh - 30px)" }}>
