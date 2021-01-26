@@ -7,6 +7,7 @@ export const getTeam = async ({state, effects}, {authData, team_id}) => {
 
 	var teamData = await effects.team.getTeam(authData, team_id)
 	state.currentTeam = teamData;
+  localStorage.setItem('current_team',state.currentTeam.tid);
 
   socket_live.emit('join_room', state.currentTeam.tid);
 

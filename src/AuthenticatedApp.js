@@ -56,7 +56,7 @@ export default function App() {
         });
       }
 
-    }, [actions, state.error])
+  }, [actions, state.error])
 
   useEffect(
     () => {
@@ -87,6 +87,10 @@ export default function App() {
 
       socket_live.on(events.roomVideoCall, (data) => {
         actions.app.roomVideoCall(data);
+      });
+
+      socket_live.on(events.exitRoomVideoCall, (data) => {
+        actions.app.exitRoomVideoCall(data);
       });
 
       socket_live.on(events.userScreenShare, (data) => {

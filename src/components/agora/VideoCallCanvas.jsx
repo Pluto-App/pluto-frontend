@@ -36,7 +36,7 @@ const MiniVideoCallCanvas = React.memo((props) => {
     	stream.setVideoProfile(videoProfile)
 
     	return stream
-  	}
+	}
 
 	const subscribeStreamEvents = () => {
 
@@ -93,110 +93,110 @@ const MiniVideoCallCanvas = React.memo((props) => {
 	      
 	      	removeStream(stream.getId())
 	    })
-  	}
+	}
 
-  	const addStream = (stream, push = false) => {
-	    let repeatition = streamList.some(item => {
-	      return item.getId() === stream.getId()
-	    })
-	    if (repeatition) {
-	      return
-	    }
-	    if (push) {
-	    	setStreamList(
-	    		streamList.concat([stream])
-    		)
-	    } else {
-	    	setStreamList(
-	    		[stream].concat(streamList)
-    		)
-	    }
-  	}
+	const addStream = (stream, push = false) => {
+    let repeatition = streamList.some(item => {
+      return item.getId() === stream.getId()
+    })
+    if (repeatition) {
+      return
+    }
+    if (push) {
+    	setStreamList(
+    		streamList.concat([stream])
+  		)
+    } else {
+    	setStreamList(
+    		[stream].concat(streamList)
+  		)
+    }
+	}
 
-  	const removeStream = (uid) => {
-	    streamList.map((item, index) => {
-	      if (item.getId() === uid) {
-	        item.close()
-	        let element = document.querySelector('#ag-item-' + uid)
-	        if (element) {
-	          element.parentNode.removeChild(element)
-	        }
-	        let tempList = [...streamList]
-	        tempList.splice(index, 1)
+	const removeStream = (uid) => {
+    streamList.map((item, index) => {
+      if (item.getId() === uid) {
+        item.close()
+        let element = document.querySelector('#ag-item-' + uid)
+        if (element) {
+          element.parentNode.removeChild(element)
+        }
+        let tempList = [...streamList]
+        tempList.splice(index, 1)
 
-	        setStreamList(tempList)
-	      }
+        setStreamList(tempList)
+      }
 
-	    })
-  	}
+    })
+	}
 
-    useEffect(() => {
+  useEffect(() => {
 
-      AgoraClient.init(props.appId, () => {
-	      	
-	      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
+    AgoraClient.init(props.appId, () => {
+      	
+      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
 
-	      		socket_live.emit(events.joinRoom, props.channel);
-        		localStream = streamInit(uid, props.videoProfile);
+      		socket_live.emit(events.joinRoom, props.channel);
+      		localStream = streamInit(uid, props.videoProfile);
 
-        		localStream.init(() => {
-        			localStream.disableVideo();
-        			localStream.disableAudio();
+      		localStream.init(() => {
+      			localStream.disableVideo();
+      			localStream.disableAudio();
 
-        			addStream(localStream, true)
-            		AgoraClient.publish(localStream, err => {
-              			alert("Publish local stream error: " + err);
-            		})
+      			addStream(localStream, true)
+          		AgoraClient.publish(localStream, err => {
+            			alert("Publish local stream error: " + err);
+          		})
 
-	        	},
-	          	err => {
+        	},
+          	err => {
 
-	            	alert("No Access to media stream", err)
-	          	})
-	      	})
-    	})
+            	alert("No Access to media stream", err)
+          	})
+      	})
+  	})
 
-    	// Load and Resize Event
-	    window.addEventListener("load", function (event) {
-	        Dish();
-	        window.onresize = Dish;
-	    }, false);
+  	// Load and Resize Event
+    window.addEventListener("load", function (event) {
+        Dish();
+        window.onresize = Dish;
+    }, false);
 
-    }, [])
+  }, [])
 
 
-    useEffect(() => {
+  useEffect(() => {
 
-        actions.user.getLoggedInUser({authData: authData})
+      actions.user.getLoggedInUser({authData: authData})
 
-    }, [actions, authData])
+  }, [actions, authData])
 
-    useEffect(() => {
+  useEffect(() => {
 
-	    let canvas = document.querySelector('#Dish')
-    	let no = streamList.length
+    let canvas = document.querySelector('#Dish')
+  	let no = streamList.length
 
-	    streamList.map((stream, index) => {
+    streamList.map((stream, index) => {
 
-	     	let id = stream.getId()
-	     	let elementID = '#ag-item-' + id;
-     		let dom = document.querySelector(elementID)
-	      	
-	      	if (!dom) {
-	        	dom = document.createElement('div')
-	        	dom.setAttribute('id', elementID)
-	        	dom.setAttribute('class', 'ag-item Camera')
+     	let id = stream.getId()
+     	let elementID = '#ag-item-' + id;
+   		let dom = document.querySelector(elementID)
+      	
+      	if (!dom) {
+        	dom = document.createElement('div')
+        	dom.setAttribute('id', elementID)
+        	dom.setAttribute('class', 'ag-item Camera')
 
-	        	canvas.appendChild(dom)
-	        	stream.play(elementID)
-	     	}
-	  
-	      	stream.player.resize && stream.player.resize()
-	    })
+        	canvas.appendChild(dom)
+        	stream.play(elementID)
+     	}
+  
+      	stream.player.resize && stream.player.resize()
+    })
 
-	    Dish();
+    Dish();
 
-    }, [streamList])
+  }, [streamList])
 
 
  	const handleCamera = (e) => {
@@ -219,7 +219,7 @@ const MiniVideoCallCanvas = React.memo((props) => {
       		localStream.unmuteAudio()
       		document.getElementById("mic-icon").innerHTML = "mic"
     	}
-  	}
+	}
 
   	const handleScreenShare = async (e) => {
 

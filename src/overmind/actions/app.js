@@ -52,7 +52,7 @@ export const setElectronWindowScreenShareViewers = async ({ state, effect }, scr
 export const userVideoCall = async ({ state, effect }, data) => {
 
  	localStorage.setItem("call_channel_id", data.channel_id);
- 	socket_live.emit('join_room', data.channel_id);
+ 	socket_live.emit(events.joinRoom, data.channel_id);
 
     window.require("electron").ipcRenderer.send('load-video-window', data.channel_id);
 
@@ -61,15 +61,24 @@ export const userVideoCall = async ({ state, effect }, data) => {
 
 export const roomVideoCall = async ({ state, effect }, data) => {
 
- 	// localStorage.setItem("call_channel_id", data.channel_id);
- 	// socket_live.emit('join_room', data.channel_id);
+    if(data.room_rid){
+    	if(!state.usersInRoom[data.room_rid])
+    		state.usersInRoom[data.room_rid] = []
 
-    // window.require("electron").ipcRenderer.send('load-video-window', data.channel_id);
+    	if(state.usersInRoom[data.room_rid].indexOf(data.user) == -1)
+			state.usersInRoom[data.room_rid].push(data.user);
+    }
+}
 
-    //ToastNotification('success', `Incoming VC`);
+export const exitRoomVideoCall = async ({ state, effect }, data) => {
 
-    console.log('someone is in room: ');
-    console.log(data);
+    if(data.rid && data.uid && state.usersInRoom[data.rid]){
+
+    	var elemIndex = state.usersInRoom[data.rid].indexOf(data.uid);
+
+    	if(elemIndex != -1)
+    		state.usersInRoom[data.rid].splice(elemIndex,1)
+    }
 }
 
 export const userScreenShare = async ({ state, effect }, data) => {
@@ -141,6 +150,17 @@ export const setError = async ({ state, effect }, error) => {
 }
 
 export const clearVideoCallData = async ({ state, effect }) => {
+
+	var call_channel_id = localStorage.getItem('call_channel_id');
+	var curent_team = localStorage.getItem('current_team');
+
+	socket_live.emit(events.exitRoomVideoCall, 
+		{ 
+			tid: curent_team,
+			rid: call_channel_id, 
+			uid: state.userProfileData.uid 
+		}
+	);
 
 	clearScreenShareData();
 	localStorage.removeItem('call_channel_id');

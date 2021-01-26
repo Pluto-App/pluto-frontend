@@ -48,15 +48,14 @@ const RoomListItem = React.memo((room) => {
         // TODO User Video Call ID. Check Needed.
         // Cannot start a VC Call with oneself.
 
-
-        let channel_id = md5(room_rid);
+        let channel_id = room_rid;
         localStorage.setItem('call_channel_id', channel_id);
 
         socket_live.emit(events.roomVideoCall, {
             channel_id: state.currentTeam.tid,
             call_channel_id: channel_id,
             room_id: room.id,
-            room_uid: room.uid,
+            room_rid: room.rid,
             user: state.userProfileData.uid
         })
 
@@ -99,6 +98,12 @@ const RoomListItem = React.memo((room) => {
         history.push("/room-profile")
     }
 
+    const getUserAvatar = (uid) => {
+
+        var user = state.currentTeam.users.find(user => user.uid === uid) || {};
+        return user.avatar;
+    }
+
     return (
         <div id={room.id}>
             {
@@ -133,19 +138,31 @@ const RoomListItem = React.memo((room) => {
                     :
                     <div className="flex py-0 justify-between p-1 hover:bg-gray-800" id={room.id} onContextMenu={(e) => {
                         e.preventDefault();
-                        clickFunc()
+                        //clickFunc()
                     }}>
-                        <div className="flex justify-start p-2">
+                        <div className="flex justify-start p-2" style={{ width: '100%'}}>
                             <div className="flex text-gray-500 font-semibold rounded-lg overflow-hidden">
                                 <i className="material-icons md-light md-inactive hover:text-indigo-400" style={{ fontSize: "20px", margin: "0" }}>volume_up</i>
                             </div>
-                            <div className="text-white px-2 font-bold tracking-wide text-xs"
+                            <div className="text-white px-2 font-bold tracking-wide text-xs" 
+                                style={{width: '50%', 'white-space': 'nowrap'}}
                                 onClick={(e) => {
-                                    handleClick(e)
+                                    //handleClick(e)
                                 }}
                             >
                                 {roomName}
                             </div>
+                            <div className="users-in-room-container" style={{'overflow-x': 'scroll', width: '50%', height: '20px'}} >
+                                {
+                                    Object.keys(state.usersInRoom[room.rid] || []).map((rid, index) => 
+                                        <div className="bg-white h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden"
+                                            style={{marginRight: '5px', float: 'left'}} key={index}>
+                                            <img src={getUserAvatar(rid)} />
+                                        </div>
+                                    )
+                                }
+                            </div>
+                            
                         </div>
                         <div className="flex">
                             {

@@ -37,6 +37,8 @@ export const state = {
     usersActiveWindows: {},
     screenShareViewers: {},
     screenShareCursors: {},
-    screenSize: {}
+    screenSize: {},
+
+    usersInRoom: {},
 
 }
