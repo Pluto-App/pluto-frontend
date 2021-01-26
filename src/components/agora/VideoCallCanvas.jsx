@@ -156,6 +156,12 @@ const MiniVideoCallCanvas = React.memo((props) => {
 	      	})
     	})
 
+    	// Load and Resize Event
+	    window.addEventListener("load", function (event) {
+	        Dish();
+	        window.onresize = Dish;
+	    }, false);
+
     }, [])
 
 
@@ -167,26 +173,28 @@ const MiniVideoCallCanvas = React.memo((props) => {
 
     useEffect(() => {
 
-    	let canvas = document.querySelector('#ag-canvas')
+	    let canvas = document.querySelector('#Dish')
     	let no = streamList.length
 
-	    streamList.map((stream, index) => {	     
+	    streamList.map((stream, index) => {
+
 	     	let id = stream.getId()
-     		let dom = document.querySelector('#ag-item-' + id)
+	     	let elementID = '#ag-item-' + id;
+     		let dom = document.querySelector(elementID)
 	      	
 	      	if (!dom) {
-	        	dom = document.createElement('section')
-	        	dom.setAttribute('id', 'ag-item-' + id)
-	        	dom.setAttribute('class', 'ag-item')
+	        	dom = document.createElement('div')
+	        	dom.setAttribute('id', elementID)
+	        	dom.setAttribute('class', 'ag-item Camera')
+
 	        	canvas.appendChild(dom)
-	        	stream.play('ag-item-' + id)
+	        	stream.play(elementID)
 	     	}
-	      	
-	      	dom.setAttribute('style', 'height: 120px')
+	  
 	      	stream.player.resize && stream.player.resize()
 	    })
 
-	    window.require("electron").ipcRenderer.send('set-video-player-height', (120 * no) + 75);
+	    Dish();
 
     }, [streamList])
 
@@ -226,6 +234,12 @@ const MiniVideoCallCanvas = React.memo((props) => {
       		setSharingScreen(true);
     	}
   	}
+
+    const handleCollapse = async (e) => {
+
+      window.require("electron").ipcRenderer.send('video-call-window-collapse');
+          
+    }
 
   	const handleExit = (e) => {
 	    
@@ -297,21 +311,87 @@ const MiniVideoCallCanvas = React.memo((props) => {
       	</span>
     )
 
+    const collapseBtn = (
+        <span
+          onClick={handleCollapse}
+          className='ag-btn exitBtn'
+          title="Collapse Video Call"
+          style={{opacity: 1}}
+      >
+          <i className="material-icons focus:outline-none md-light" id="screen-share" style={{ fontSize: "30px" }} >fullscreen_exit</i>
+        </span>
+    )
+
     const style = {
     }
 
+
+    function Area(Increment, Count, Width, Height, Margin = 10) {
+        let w = 0;
+        let i = 0;
+        let h = Increment * 0.75 + (Margin * 2);
+        while (i < (Count)) {
+            if ((w + Increment) > Width) {
+                w = 0;
+                h = h + (Increment * 0.75) + (Margin * 2);
+            }
+            w = w + Increment + (Margin * 2);
+            i++;
+        }
+        if (h > Height) return false;
+        else return Increment;
+    }
+
+    function Dish() {
+
+        // variables:
+            let Margin = 2;
+            let Scenary = document.getElementById('Dish');
+            let Width = Scenary.offsetWidth - (Margin * 2);
+            let Height = Scenary.offsetHeight - (Margin * 2);
+            let Cameras = document.getElementsByClassName('Camera');
+            let max = 0;
+        
+        // loop (i recommend you optimize this)
+            let i = 1;
+            while (i < 5000) {
+                let w = Area(i, Cameras.length, Width, Height, Margin);
+                if (w === false) {
+                    max =  i - 1;
+                    break;
+                }
+                i++;
+            }
+        
+        // set styles
+            max = max - (Margin * 2);
+            setWidth(max, Margin);
+    }
+
+
+    function setWidth(width, margin) {
+        let Cameras = document.getElementsByClassName('Camera');
+        for (var s = 0; s < Cameras.length; s++) {
+            Cameras[s].style.width = width + "px";
+            Cameras[s].style.margin = margin + "px";
+            Cameras[s].style.height = (width * 0.75) + "px";
+        }
+    }
+
+
     return (
-		<div>
-			<div id="ag-canvas" style={style}>
-		      
-	      	</div>
-	  	 	<div className="ag-btn-group" style={{background: 'rgba(34, 36, 37, 0.8)'}}>
+		<div id="ag-canvas" style={style}>
+			<div id="Dish">
+	        </div>
+
+	        <div className="ag-btn-group" style={{background: 'rgba(34, 36, 37, 0.8)'}}>
 	          {exitBtn}
 	          {videoControlBtn}
 	          {audioControlBtn}
 	          {screenShareBtn}
+            {collapseBtn}
 	        </div>
-        </div>
+	      </div>
 	);
 })
 

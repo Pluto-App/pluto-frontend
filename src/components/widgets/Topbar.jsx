@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../overmind'
+
+import MiniVideoCallTopBar from './TopBars/MiniVideoCallTopBar'
+import MainTopBar from './TopBars/MainTopBar'
+
 const os = window.require('os');
 const { remote } = window.require('electron');
 
@@ -10,6 +14,8 @@ const TopBar = React.memo((props) => {
 
   const isWindows = os.platform() === 'win32'
   const isMac = os.platform() === "darwin";
+
+  const pageHash = window.location.hash;
 
   const minimize = () => {
     var window = remote.getCurrentWindow();
@@ -42,16 +48,10 @@ const TopBar = React.memo((props) => {
         <div className="flex-1 draggable-elem text-white font-bold" style={{ height: "30px" }}>
         </div>
         {
-          isMac ?
-          ''
-          : 
-          <div className="flex items-center">
-            <button className="text-white hover:bg-gray-900 focus:outline-none" style={{ marginRight: "10px" }}>
-              <i className="material-icons md-light md-inactive" onClick={() => { minimize() }} style={{ fontSize: "16px", margin: "0", marginTop: "-15px" }}> minimize </i></button>
-            <button className="text-white hover:bg-gray-900 focus:outline-none" >
-              <i className="material-icons md-light md-inactive" onClick={() => { close() }} style={{ fontSize: "16px", margin: "0" }}> close </i>
-            </button>
-          </div>  
+          {
+            '#/mini-video-call': <MiniVideoCallTopBar />,
+            '#/': <MainTopBar />
+          }[pageHash]
         }
       </div>
     </div>

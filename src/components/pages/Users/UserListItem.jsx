@@ -103,7 +103,7 @@ const UserListItem = React.memo((user) => {
             });
             socket_live.emit('join_room',channel_id);
 
-            window.require("electron").ipcRenderer.send('load-video-window', channel_id);
+            window.require("electron").ipcRenderer.send('init-mini-video-call-window', channel_id);
             ToastNotification('success', `Initiated VC with ${user.name} 📷`);
 
         } else {
