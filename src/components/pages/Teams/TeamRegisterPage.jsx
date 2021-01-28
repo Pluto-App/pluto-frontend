@@ -43,7 +43,7 @@ export default function TeamRegisterPage() {
     }
 
     return (
-        <div className="w-full flex">
+        <div className="w-full flex main-container">
             <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)" }}>
                 <BackButton url={'/'}></BackButton>
                 <p className="font-bold px-4 text-white">Create New Team</p>

@@ -145,14 +145,14 @@ const RoomListItem = React.memo((room) => {
                                 <i className="material-icons md-light md-inactive hover:text-indigo-400" style={{ fontSize: "20px", margin: "0" }}>volume_up</i>
                             </div>
                             <div className="text-white px-2 font-bold tracking-wide text-xs" 
-                                style={{width: '50%', 'white-space': 'nowrap'}}
+                                style={{width: '50%', whiteSpace: 'nowrap'}}
                                 onClick={(e) => {
                                     //handleClick(e)
                                 }}
                             >
                                 {roomName}
                             </div>
-                            <div className="users-in-room-container" style={{'overflow-x': 'scroll', width: '50%', height: '20px'}} >
+                            <div className="users-in-room-container" style={{overflowX: 'scroll', width: '50%', height: '20px'}} >
                                 {
                                     Object.keys(state.usersInRoom[room.rid] || []).map((rid, index) => 
                                         <div className="bg-white h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden"

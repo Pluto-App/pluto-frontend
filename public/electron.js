@@ -211,7 +211,7 @@ function createWindow() {
 
     settings_page.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/user-profile' : settingsUrl);
     settings_page.on('closed', () => {
-      settings_page.close()
+      settings_page = undefined;
     })
 
     // here we can send the data to the new window

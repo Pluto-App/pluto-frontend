@@ -53,7 +53,7 @@ const MembersList = (({users, onlineUsers}) => {
     )
 
     return (
-        <div class='members-list'>
+        <div className='members-list'>
             {teamMemberList}
         </div>
     );

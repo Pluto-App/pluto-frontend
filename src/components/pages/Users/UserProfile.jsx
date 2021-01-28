@@ -47,15 +47,21 @@ const UserProfile = React.memo(() => {
                     </div>
                 </div>
                 <p className="text-grey font-bold mb-4 text-sm tracking-wide mt-5">OPTIONS</p>
+                
+                {/*
                 <div className="mt-3 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
                 <button className="w-full text-white hover:bg-gray-800 rounded-lg p-1 flex items-center mt-2" >
                     <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>center_focus_strong</i>Focus Mode</button>
+                
                 <div className="mt-3 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
                 <button className="w-full text-white hover:bg-gray-800 rounded-lg p-1 flex items-center mt-2" >
                     <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>favorite</i>Share About Us</button>
+                
                 <div className="mt-3 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
                 <button className="w-full text-white hover:bg-gray-800 rounded-lg p-1 flex items-center mt-2" onClick={() => { history.push('/user-update') }}>
                     <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>settings</i>Update Profile</button>
+                */}
+                
                 <div className="mt-3 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>
                 <div className="mt-3">
                     <button className="w-full text-white hover:bg-gray-800 rounded-lg p-1 flex items-center mt-2" onClick={logout} type="button">
