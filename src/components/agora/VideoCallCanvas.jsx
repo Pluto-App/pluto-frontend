@@ -183,8 +183,6 @@ const VideoCallCanvas = React.memo((props) => {
     var canvasSelector = 'Dish' 
     var canvas = document.getElementById(canvasSelector);
 
-    debugger
-
     streamList.map((stream, index) => {
 
      	let id = stream.getId()
