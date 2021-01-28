@@ -49,6 +49,7 @@ const robotKeyMap = {
 
 const robotMods = ['shift','control','alt'];
 var currentMods = [];
+var primaryDisplay;
 
 async function runPythonScript(py_script){
 
@@ -135,6 +136,8 @@ function createWindow() {
     windows.forEach(x => x.close());
 
   });
+
+  primaryDisplay = screen.getPrimaryDisplay();
 
   ipcMain.on('active-win', async (event, arg) => {
 
@@ -365,9 +368,8 @@ function createWindow() {
 
   ipcMain.on('stream-screenshare', (event, arg) => {
 
-    let display = screen.getPrimaryDisplay();
-    let swidth = display.bounds.width;
-    let sheight = display.bounds.height;
+    let swidth = primaryDisplay.bounds.width;
+    let sheight = primaryDisplay.bounds.height;
 
     if(streamScreenShareWindow){
       try{
@@ -428,8 +430,7 @@ function createWindow() {
     if(initScreenShareWindow) {
 
       // ScreenShare Container
-      const mainScreen = screen.getPrimaryDisplay();
-      let workArea = mainScreen.bounds;
+      let workArea = primaryDisplay.bounds;
       let displayWidth = workArea.width;
       let displayHeight = workArea.height;
 
@@ -543,8 +544,7 @@ function createWindow() {
 
   ipcMain.on('screen-size', async (event, arg) => {
 
-      const mainScreen = screen.getPrimaryDisplay();
-      event.returnValue = mainScreen.size;
+      event.returnValue = primaryDisplay.size;
   })
 
   var menu = Menu.buildFromTemplate([
@@ -625,7 +625,7 @@ function createWindow() {
   ipcMain.on('emit-click', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+    robot.moveMouse(arg.cursor.x * primaryDisplay.scaleFactor, arg.cursor.y * primaryDisplay.scaleFactor);
     robot.mouseClick();
     robot.moveMouse(originalPos.x, originalPos.y);
 
@@ -634,7 +634,7 @@ function createWindow() {
   ipcMain.on('emit-scroll', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+    robot.moveMouse(arg.cursor.x * primaryDisplay.scaleFactor, arg.cursor.y * primaryDisplay.scaleFactor);
 
     switch(arg.event.direction) {
       case 'up':
@@ -652,11 +652,10 @@ function createWindow() {
   ipcMain.on('emit-drag', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x, arg.cursor.y);
 
-    robot.moveMouse(arg.event.start_x, arg.event.start_y);
+    robot.moveMouse(arg.event.start_x * primaryDisplay.scaleFactor, arg.event.start_y * primaryDisplay.scaleFactor);
     robot.mouseToggle("down");
-    robot.dragMouse(arg.cursor.x, arg.cursor.y);
+    robot.dragMouse(arg.cursor.x * primaryDisplay.scaleFactor, arg.cursor.y * primaryDisplay.scaleFactor);
     robot.mouseToggle("up");
     
     robot.moveMouse(originalPos.x, originalPos.y);
@@ -665,7 +664,7 @@ function createWindow() {
   ipcMain.on('emit-mousedown', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+    robot.moveMouse(arg.cursor.x * primaryDisplay.scaleFactor, arg.cursor.y * primaryDisplay.scaleFactor);
     robot.mouseToggle("down");
     //robot.moveMouse(originalPos.x, originalPos.y);
 
@@ -674,7 +673,7 @@ function createWindow() {
   ipcMain.on('emit-mouseup', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+    robot.moveMouse(arg.cursor.x * primaryDisplay.scaleFactor, arg.cursor.y * primaryDisplay.scaleFactor);
     robot.mouseToggle("up"); 
     //robot.moveMouse(originalPos.x, originalPos.y);
   })
