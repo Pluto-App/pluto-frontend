@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useOvermind } from '../../overmind'
 
-import MiniVideoCallTopBar from './TopBars/MiniVideoCallTopBar'
+import VideoCallTopBar from './TopBars/VideoCallTopBar'
 import MainTopBar from './TopBars/MainTopBar'
 
 const os = window.require('os');
@@ -49,8 +49,8 @@ const TopBar = React.memo((props) => {
         </div>
         {
           {
-            '#/mini-video-call': <MiniVideoCallTopBar />,
-            '#/': <MainTopBar />
+            '#/': <MainTopBar />,
+            '#/video-call': <VideoCallTopBar />
           }[pageHash]
         }
       </div>

@@ -11,6 +11,10 @@ export const setLoggedInUser = async ({ state, effect }) => {
 	state.loggedInUser = JSON.parse(localStorage.getItem('currentUser')).user
 }
 
+export const setVideoCallCompactMode = async ({ state, effect }, mode) => {
+	
+    state.videoCallCompactMode = mode;
+}
 
 export const setActiveWinInfo = async ({ state, effect }, activeWindowApp) => {
 	

@@ -4,6 +4,7 @@ import * as Cookies from "js-cookie";
 import { css } from "@emotion/core";
 import { AGORA_APP_ID } from "../../../agora.config";
 import { useOvermind } from '../../../overmind'
+
 import VideoCallCanvas from "../../agora/VideoCallCanvas";
 
 const VideoCall = React.memo((props) => {
@@ -22,26 +23,24 @@ const VideoCall = React.memo((props) => {
 
 
   return (
-
-    <div className="font-sans">
-      <div className="bg-black"></div>
-      
-      <div className="flex" style={{ height: "calc(100vh - 30px)" }}>
-        <div className="bg-black text-white flex-1 p-0 w-100">
-          <VideoCallCanvas
-            videoProfile={config.videoProfile}
-            channel={config.channel}
-            transcode={config.transcode}
-            baseMode={config.baseMode}
-            appId={config.appId}
-            uid={config.uid}
-          />
+    <>
+      <div className="font-sans w-full main-container">
+        
+        <div className="flex" style={{ height: "calc(100vh - 30px)" }}>
+          <div className="bg-black text-white flex-1 p-0 w-100">
+            <VideoCallCanvas
+              videoProfile={config.videoProfile}
+              channel={config.channel}
+              transcode={config.transcode}
+              baseMode={config.baseMode}
+              appId={config.appId}
+              uid={config.uid}
+            />
+          </div>
         </div>
       </div>
-    </div>
-
-
-    )
+    </>
+  )
 })
 
 export default VideoCall;

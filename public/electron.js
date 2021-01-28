@@ -11,7 +11,6 @@ if (isDev) {
 
 let mainWindow
 
-let miniVideoCallWindow
 let videoCallWindow
 
 let initScreenShareWindow
@@ -163,12 +162,6 @@ function createWindow() {
     mainWindow.center();
   })
 
-  ipcMain.on('close-video', (event, arg) => {
-    if (miniVideoCallWindow !== null) {
-      miniVideoCallWindow.close()
-    }
-  })
-
   ipcMain.on(`display-app-menu`, function (e, args) {
     if (isWindows && mainWindow) {
       menu.popup({
@@ -228,14 +221,6 @@ function createWindow() {
 
   ipcMain.on('init-video-call-window', (event, data) => {
 
-    if(miniVideoCallWindow){
-      try{
-        miniVideoCallWindow.hide();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
     if (videoCallWindow) {
       try{
         videoCallWindow.close();
@@ -251,12 +236,14 @@ function createWindow() {
     // create the window
     videoCallWindow = new BrowserWindow({
       show: true,
-      width: swidth,
-      height: sheight,
+      width: 200,
+      height: 150,
+      resizable: false,
       frame: false,
       title: "VideoWindow",
-      x: 0,
-      y: 0,
+      alwaysOnTop: true,
+      x: swidth - 270,
+      y: sheight - 870,
       webPreferences: {
         nodeIntegration: true,
         plugins: true,
@@ -292,159 +279,44 @@ function createWindow() {
           console.error(error);
         }
 
-        if(miniVideoCallWindow){
-          try{
-            miniVideoCallWindow.close();
-          } catch (error) {
-            console.error(error);
-          }
-        }
-
         videoCallWindow = undefined;
     })
 
-    // here we can send the data to the new window
-    videoCallWindow.webContents.on('did-finish-load', () => {
-      videoCallWindow.webContents.send('data', data);
-    });
-
-    // Close the video player window when we 
-    // close the main window of the app. 
-    mainWindow.on('closed', () => {
-      if (videoCallWindow !== null) {
-        videoCallWindow.close();
-      }
-    })
-
     if (isDev) {
-       //videoCallWindow.webContents.openDevTools();
+       videoCallWindow.webContents.openDevTools();
     }
 
   });
 
-  ipcMain.on('init-mini-video-call-window', (event, data) => {
-
+  ipcMain.on('expand-video-call-window', (event, data) => {
     if (videoCallWindow) {
-      try{
-        videoCallWindow.close();
-      } catch (error) {
-        console.error(error);
-      }
+      
+      let display = screen.getPrimaryDisplay();
+      let swidth = display.bounds.width;
+      let sheight = display.bounds.height;
+
+      videoCallWindow.setPosition(0,0);
+      videoCallWindow.setSize(swidth - 100, sheight - 100);
+      videoCallWindow.setResizable(true);
     }
-
-    if (miniVideoCallWindow) {
-      try{
-        miniVideoCallWindow.close();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    let display = screen.getPrimaryDisplay();
-    let swidth = display.bounds.width;
-    let sheight = display.bounds.height;
-
-    // create the window
-    miniVideoCallWindow = new BrowserWindow({
-      show: true,
-      width: 200,
-      height: 150,
-      frame: false,
-      resizable: false,
-      title: "VideoWindow",
-      alwaysOnTop: true,
-      x: swidth - 270,
-      y: sheight - 870,
-      webPreferences: {
-        nodeIntegration: true,
-        plugins: true,
-        enableRemoteModule: true
-      }
-    })
-
-    miniVideoCallWindow.setMenu(null);
-
-    const videoUrl = url.format({
-      pathname: path.join(__dirname, '../build/index.html'),
-      hash: '/mini-video-call',
-      protocol: 'file:',
-      slashes: true
-    })
-
-    miniVideoCallWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/mini-video-call' : videoUrl);
-
-    miniVideoCallWindow.on('closed', () => {
-
-       try{
-          if(screenShareControlsWindow)
-            screenShareControlsWindow.close();
-        } catch (error) {
-          console.error(error);
-        }
-
-       try{
-          if(streamScreenShareWindow)
-            streamScreenShareWindow.close();
-        } catch (error) {
-          console.error(error);
-        }
-
-
-       try{
-          if(videoCallWindow)
-            videoCallWindow.close();
-        } catch (error) {
-          console.error(error);
-        }
-
-        miniVideoCallWindow = undefined;
-    })
-
-    // here we can send the data to the new window
-    miniVideoCallWindow.webContents.on('did-finish-load', () => {
-      miniVideoCallWindow.webContents.send('data', data);
-    });
-
-    // Close the video player window when we 
-    // close the main window of the app. 
-    mainWindow.on('closed', () => {
-      if (miniVideoCallWindow !== null) {
-        miniVideoCallWindow.close();
-      }
-    })
-
-    if (isDev) {
-       miniVideoCallWindow.webContents.openDevTools();
-    }
-
   });
 
-  ipcMain.on('video-resize-normal', (event, arg) => {
-    miniVideoCallWindow.setSize(200, 150)
-  })
-
-  ipcMain.on('video-call-window-collapse', (event, arg) => {
-    if(miniVideoCallWindow){
-      try{
-        miniVideoCallWindow.show();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
+  ipcMain.on('collapse-video-call-window', (event, height) => {
     if (videoCallWindow) {
-      try{
-        videoCallWindow.hide();
-      } catch (error) {
-        console.error(error);
-      }
+
+      let display = screen.getPrimaryDisplay();
+      let swidth = display.bounds.width;
+      let sheight = display.bounds.height;
+
+      videoCallWindow.setPosition(swidth - 270,sheight - 870);
+      videoCallWindow.setResizable(false);
+      videoCallWindow.setSize(200, height);
     }
-  })
+  });
 
   ipcMain.on('set-video-player-height', (event, height) => {
-    console.log('setting height to: ' + height);
-    if(miniVideoCallWindow)
-      miniVideoCallWindow.setSize(miniVideoCallWindow.getSize()[0], height);
+    if(videoCallWindow)
+      videoCallWindow.setSize(videoCallWindow.getSize()[0], height);
   })
 
 
@@ -504,13 +376,9 @@ function createWindow() {
         console.error(error);
       }
 
-      if(videoCallWindow)
-        videoCallWindow.hide();
+      if(videoCallWindow){
 
-      if(miniVideoCallWindow){
-
-        miniVideoCallWindow.show();
-        miniVideoCallWindow.setPosition(swidth - 270, sheight - 870)
+        videoCallWindow.setPosition(swidth - 270, sheight - 870)
       }
     }
 
@@ -671,10 +539,6 @@ function createWindow() {
       } catch (error) {
         console.error(error);
       }
-  })
-
-  ipcMain.on('screen-share-options', (event, arg) => {
-    miniVideoCallWindow.setSize(675, 675)
   })
 
   ipcMain.on('screen-size', async (event, arg) => {

@@ -10,13 +10,13 @@ const MiniVideoCallTopBar = React.memo((props) => {
 
   const expand = () => {
 
-    let channel_id = localStorage.getItem('call_channel_id');
-    window.require("electron").ipcRenderer.send('init-video-call-window', channel_id);
+    actions.app.setVideoCallCompactMode(false);
+    window.require("electron").ipcRenderer.send('expand-video-call-window');
 
   }
 
   return (
-    <div className="flex items-center">
+    <div style={{textAlign: 'right', padding:'3px'}}>
 
       <button className="text-white hover:bg-gray-900 focus:outline-none" style={{cursor: 'pointer'}}>
         <i className="material-icons md-light md-inactive" 

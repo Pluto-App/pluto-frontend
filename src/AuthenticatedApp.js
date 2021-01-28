@@ -151,9 +151,6 @@ export default function App() {
             <Route exact path="/user-update">
               <UserUpdate />
             </Route>
-            <Route exact path="/mini-video-call">
-              <MiniVideoCall />
-            </Route>
             <Route exact path="/video-call">
               <VideoCall />
             </Route>

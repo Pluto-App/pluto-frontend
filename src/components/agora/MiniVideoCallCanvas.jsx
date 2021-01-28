@@ -25,6 +25,8 @@ const MiniVideoCallCanvas = React.memo((props) => {
 	const [ sharingScreen, setSharingScreen ] = useState(false);
 	const [ enabledMedia, setEnabledMedia ] = useState({audio: false, video: false});
 
+	const [ compactView, setCompactView ] = useState(true);
+
 	const streamInit = (uid, videoProfile, config) => {
 
 	    let defaultConfig = {
@@ -314,13 +316,12 @@ const MiniVideoCallCanvas = React.memo((props) => {
       	</span>
     )
 
-    const style = {
-    }
-
     return (
 		<div>
-			<div id="ag-canvas" style={style}>
+
+			<div id="ag-canvas">
 	      	</div>
+
 	  	 	<div className="ag-btn-group" style={{background: 'rgba(34, 36, 37, 0.8)'}}>
 	          {exitBtn}
 	          {videoControlBtn}

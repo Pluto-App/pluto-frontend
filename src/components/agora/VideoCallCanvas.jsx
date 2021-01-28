@@ -175,31 +175,42 @@ const MiniVideoCallCanvas = React.memo((props) => {
 
   useEffect(() => {
 
-    let canvas = document.querySelector('#Dish')
-  	let no = streamList.length
+    var canvasSelector = 'Dish' 
+    var canvas = document.getElementById(canvasSelector);
+
 
     streamList.map((stream, index) => {
 
      	let id = stream.getId()
-     	let elementID = '#ag-item-' + id;
-   		let dom = document.querySelector(elementID)
+     	let elementID = 'ag-item-' + id;
+   		let dom = document.getElementById(elementID)
       	
-      	if (!dom) {
+    	if (!dom) {
         	dom = document.createElement('div')
         	dom.setAttribute('id', elementID)
         	dom.setAttribute('class', 'ag-item Camera')
-
         	canvas.appendChild(dom)
-        	stream.play(elementID)
      	}
-  
-      	stream.player.resize && stream.player.resize()
+      
+      dom.setAttribute('style', state.videoCallCompactMode ? 'height: 120px' : '')
+
+      if(stream.isPlaying())
+          stream.stop();
+
+        stream.play(elementID);
     })
 
-    Dish();
+    if(state.videoCallCompactMode){
+      let no = document.getElementsByClassName('ag-item').length
+      let height = 75 + (no*120);
 
-  }, [streamList])
+      window.require("electron").ipcRenderer.send('set-video-player-height', height);
 
+    } else {
+      Dish();
+    }
+
+  }, [streamList, state.videoCallCompactMode])
 
  	const handleCamera = (e) => {
 		if (localStream.isVideoOn()) {
@@ -223,177 +234,181 @@ const MiniVideoCallCanvas = React.memo((props) => {
     	}
 	}
 
-  	const handleScreenShare = async (e) => {
+	const handleScreenShare = async (e) => {
 
-    	if (sharingScreen) {
+  	if (sharingScreen) {
 
-      		window.require("electron").ipcRenderer.send('stop-screenshare');
-      		setSharingScreen(false);
-      
-    	} else {
-      
-      		window.require("electron").ipcRenderer.send('init-screenshare');
-      		setSharingScreen(true);
-    	}
+    		window.require("electron").ipcRenderer.send('stop-screenshare');
+    		setSharingScreen(false);
+    
+  	} else {
+    
+    		window.require("electron").ipcRenderer.send('init-screenshare');
+    		setSharingScreen(true);
   	}
+	}
 
-    const handleCollapse = async (e) => {
+  const handleCollapse = async (e) => {
+    
+    let no = document.getElementsByClassName('ag-item').length
+    let height = 75 + (no*120);
 
-      window.require("electron").ipcRenderer.send('video-call-window-collapse');
-          
+    window.require("electron").ipcRenderer.send('collapse-video-call-window', height);
+    actions.app.setVideoCallCompactMode(true);
+  }
+
+	const handleExit = (e) => {
+    
+    if (e.currentTarget.classList.contains('disabled')) {
+    		return
     }
 
-  	const handleExit = (e) => {
-	    
-	    if (e.currentTarget.classList.contains('disabled')) {
-      		return
-	    }
+    try {
+    		
+    		AgoraClient && AgoraClient.unpublish(localStream)
+      	localStream && localStream.close()
+      
+      	AgoraClient && AgoraClient.leave(() => {
+        	console.log('Client succeed to leave.')
+      	}, () => {
+        	console.log('Client failed to leave.')
+      	})
+    }
+    
+    finally {
 
-	    try {
-      		
-      		AgoraClient && AgoraClient.unpublish(localStream)
-	      	localStream && localStream.close()
-	      
-	      	AgoraClient && AgoraClient.leave(() => {
-	        	console.log('Client succeed to leave.')
-	      	}, () => {
-	        	console.log('Client failed to leave.')
-	      	})
-	    }
-	    
-	    finally {
+    	actions.app.clearVideoCallData();
+      	var window = remote.getCurrentWindow();
+      	window.close();
+    }
+	}
 
-	    	actions.app.clearVideoCallData();
-	      	var window = remote.getCurrentWindow();
-	      	window.close();
-	    }
-  	}
+  const videoControlBtn = (
+  	<span
+      	onClick={handleCamera}
+      	className="ag-btn videoControlBtn"
+      	title="Enable/Disable Video"
+      	style={{opacity: 1}}
+  	>
+      	<i className="material-icons focus:outline-none md-light" style={{ fontSize: "30px" }} id="video-icon">videocam_off</i>
+    	</span>
+	)
 
-    const videoControlBtn = (
-    	<span
-        	onClick={handleCamera}
-        	className="ag-btn videoControlBtn"
-        	title="Enable/Disable Video"
-        	style={{opacity: 1}}
-    	>
-        	<i className="material-icons focus:outline-none md-light" style={{ fontSize: "30px" }} id="video-icon">videocam_off</i>
-      	</span>
-  	)
+  const audioControlBtn = (
+  	<span
+      	onClick={handleMic}
+      	className="ag-btn audioControlBtn"
+      	title="Enable/Disable Audio"
+      	style={{opacity: 1}}
+  	>
+      	<i className="material-icons focus:outline-none md-light" style={{ fontSize: "30px" }} id="mic-icon">mic_off</i>
+    	</span>
+	)
 
-    const audioControlBtn = (
-    	<span
-        	onClick={handleMic}
-        	className="ag-btn audioControlBtn"
-        	title="Enable/Disable Audio"
-        	style={{opacity: 1}}
-    	>
-        	<i className="material-icons focus:outline-none md-light" style={{ fontSize: "30px" }} id="mic-icon">mic_off</i>
-      	</span>
-  	)
+  const exitBtn = (
+  	<span
+      	onClick={handleExit}
+      	className='ag-btn exitBtn'
+      	title="Exit"
+      	style={{opacity: 1}}
+  	>
+      	<i className="material-icons exit focus:outline-none md-light" style={{ fontSize: "30px" }} >logout</i>
+    	</span>
+  )
 
-    const exitBtn = (
-    	<span
-        	onClick={handleExit}
-        	className='ag-btn exitBtn'
-        	title="Exit"
-        	style={{opacity: 1}}
-    	>
-        	<i className="material-icons exit focus:outline-none md-light" style={{ fontSize: "30px" }} >logout</i>
-      	</span>
-    )
+  const screenShareBtn = (
+  	<span
+      	onClick={handleScreenShare}
+     		className='ag-btn exitBtn'
+      	title="Enable/Disable Screen Share"
+      	style={{opacity: 1}}
+  	>
+    	<i className="material-icons focus:outline-none md-light" id="screen-share" style={{ fontSize: "30px" }} >screen_share</i>
+  	</span>
+  )
 
-    const screenShareBtn = (
-    	<span
-        	onClick={handleScreenShare}
-       		className='ag-btn exitBtn'
-        	title="Enable/Disable Screen Share"
-        	style={{opacity: 1}}
-    	>
-        	<i className="material-icons focus:outline-none md-light" id="screen-share" style={{ fontSize: "30px" }} >screen_share</i>
-      	</span>
-    )
+  const collapseBtn = (
 
-    const collapseBtn = (
-      <span
-          onClick={handleCollapse}
-          className='ag-btn exitBtn'
-          title="Collapse Video Call"
-          style={{opacity: 1}}
+    !state.videoCallCompactMode ?
+       <span
+        onClick={handleCollapse}
+        className='ag-btn exitBtn'
+        title="Collapse Video Call"
+        style={{opacity: 1}}
       >
-          <i className="material-icons focus:outline-none md-light" id="screen-share" style={{ fontSize: "30px" }} >fullscreen_exit</i>
-        </span>
-    )
+        <i className="material-icons focus:outline-none md-light" id="screen-share" style={{ fontSize: "30px" }} >fullscreen_exit</i>
+      </span>
 
-    const style = {
+      : ''
+  )
+
+  function Area(Increment, Count, Width, Height, Margin = 10) {
+      let w = 0;
+      let i = 0;
+      let h = Increment * 0.75 + (Margin * 2);
+      while (i < (Count)) {
+          if ((w + Increment) > Width) {
+              w = 0;
+              h = h + (Increment * 0.75) + (Margin * 2);
+          }
+          w = w + Increment + (Margin * 2);
+          i++;
+      }
+      if (h > Height) return false;
+      else return Increment;
+  }
+
+  function Dish() {
+
+    let Margin = 2;
+    let Scenary = document.getElementById('Dish');
+
+    if(Scenary){
+      let Width = Scenary.offsetWidth - (Margin * 2);
+      let Height = Scenary.offsetHeight - (Margin * 2);
+      let Cameras = document.getElementsByClassName('Camera');
+      let max = 0;
+
+      let i = 1;
+      while (i < 5000) {
+          let w = Area(i, Cameras.length, Width, Height, Margin);
+          if (w === false) {
+              max =  i - 1;
+              break;
+          }
+          i++;
+      }
+
+      max = max - (Margin * 2);
+      setWidth(max, Margin);  
     }
+    
+  }
+
+  function setWidth(width, margin) {
+      let Cameras = document.getElementsByClassName('Camera');
+      for (var s = 0; s < Cameras.length; s++) {
+          Cameras[s].style.width = width + "px";
+          Cameras[s].style.margin = margin + "px";
+          Cameras[s].style.height = (width * 0.75) + "px";
+      }
+  }
 
 
-    function Area(Increment, Count, Width, Height, Margin = 10) {
-        let w = 0;
-        let i = 0;
-        let h = Increment * 0.75 + (Margin * 2);
-        while (i < (Count)) {
-            if ((w + Increment) > Width) {
-                w = 0;
-                h = h + (Increment * 0.75) + (Margin * 2);
-            }
-            w = w + Increment + (Margin * 2);
-            i++;
-        }
-        if (h > Height) return false;
-        else return Increment;
-    }
+  return (
 
-    function Dish() {
-
-        // variables:
-            let Margin = 2;
-            let Scenary = document.getElementById('Dish');
-            let Width = Scenary.offsetWidth - (Margin * 2);
-            let Height = Scenary.offsetHeight - (Margin * 2);
-            let Cameras = document.getElementsByClassName('Camera');
-            let max = 0;
-        
-        // loop (i recommend you optimize this)
-            let i = 1;
-            while (i < 5000) {
-                let w = Area(i, Cameras.length, Width, Height, Margin);
-                if (w === false) {
-                    max =  i - 1;
-                    break;
-                }
-                i++;
-            }
-        
-        // set styles
-            max = max - (Margin * 2);
-            setWidth(max, Margin);
-    }
-
-
-    function setWidth(width, margin) {
-        let Cameras = document.getElementsByClassName('Camera');
-        for (var s = 0; s < Cameras.length; s++) {
-            Cameras[s].style.width = width + "px";
-            Cameras[s].style.margin = margin + "px";
-            Cameras[s].style.height = (width * 0.75) + "px";
-        }
-    }
-
-
-    return (
-		  <div id="ag-canvas" style={style}>
-		    <div id="Dish">
-        </div>
-
-        <div className="ag-btn-group" style={{background: 'rgba(34, 36, 37, 0.8)'}}>
-          {exitBtn}
-          {videoControlBtn}
-          {audioControlBtn}
-          {screenShareBtn}
-          {collapseBtn}
-        </div>
+	  <div id="ag-canvas" style={{background: 'black'}}>
+	    
+      <div id="Dish"></div>
+      
+      <div className="ag-btn-group" style={{background: 'rgba(34, 36, 37, 0.8)'}}>
+        {exitBtn}
+        {videoControlBtn}
+        {audioControlBtn}
+        {screenShareBtn}
+        {collapseBtn}
       </div>
+    </div>
 	);
 })
 
