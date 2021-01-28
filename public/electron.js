@@ -50,10 +50,11 @@ const robotKeyMap = {
 const robotMods = ['shift','control','alt'];
 var currentMods = [];
 var primaryDisplay;
+var scaleFactor = 1;
 
 async function runPythonScript(py_script){
 
-   return new Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     PythonShell.run(py_script, null, function (err, results) {
 
       if (err) throw err;
@@ -138,6 +139,9 @@ function createWindow() {
   });
 
   primaryDisplay = screen.getPrimaryDisplay();
+
+  if(isWindows)
+    scaleFactor = primaryDisplay.scaleFactor;
 
   ipcMain.on('active-win', async (event, arg) => {
 
@@ -625,7 +629,7 @@ function createWindow() {
   ipcMain.on('emit-click', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x * primaryDisplay.scaleFactor, arg.cursor.y * primaryDisplay.scaleFactor);
+    robot.moveMouse(arg.cursor.x * scaleFactor, arg.cursor.y * scaleFactor);
     robot.mouseClick();
     robot.moveMouse(originalPos.x, originalPos.y);
 
@@ -634,7 +638,7 @@ function createWindow() {
   ipcMain.on('emit-scroll', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x * primaryDisplay.scaleFactor, arg.cursor.y * primaryDisplay.scaleFactor);
+    robot.moveMouse(arg.cursor.x * scaleFactor, arg.cursor.y * scaleFactor);
 
     switch(arg.event.direction) {
       case 'up':
@@ -653,9 +657,9 @@ function createWindow() {
 
     originalPos = robot.getMousePos();
 
-    robot.moveMouse(arg.event.start_x * primaryDisplay.scaleFactor, arg.event.start_y * primaryDisplay.scaleFactor);
+    robot.moveMouse(arg.event.start_x * scaleFactor, arg.event.start_y * scaleFactor);
     robot.mouseToggle("down");
-    robot.dragMouse(arg.cursor.x * primaryDisplay.scaleFactor, arg.cursor.y * primaryDisplay.scaleFactor);
+    robot.dragMouse(arg.cursor.x * scaleFactor, arg.cursor.y * scaleFactor);
     robot.mouseToggle("up");
     
     robot.moveMouse(originalPos.x, originalPos.y);
@@ -664,7 +668,7 @@ function createWindow() {
   ipcMain.on('emit-mousedown', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x * primaryDisplay.scaleFactor, arg.cursor.y * primaryDisplay.scaleFactor);
+    robot.moveMouse(arg.cursor.x * scaleFactor, arg.cursor.y * scaleFactor);
     robot.mouseToggle("down");
     //robot.moveMouse(originalPos.x, originalPos.y);
 
@@ -673,7 +677,7 @@ function createWindow() {
   ipcMain.on('emit-mouseup', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x * primaryDisplay.scaleFactor, arg.cursor.y * primaryDisplay.scaleFactor);
+    robot.moveMouse(arg.cursor.x * scaleFactor, arg.cursor.y * scaleFactor);
     robot.mouseToggle("up"); 
     //robot.moveMouse(originalPos.x, originalPos.y);
   })
