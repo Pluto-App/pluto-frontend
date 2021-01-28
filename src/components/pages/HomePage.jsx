@@ -110,7 +110,6 @@ export default function HomePage() {
 
     }, [actions, authData, state.currentTeamId, state.teamUpdateReq])
 
-
     const addRoom = async (roomname) => {
 
         let roomData = {

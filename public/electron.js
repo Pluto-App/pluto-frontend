@@ -596,12 +596,10 @@ function createWindow() {
       screenShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare-container' : screenshareContainerUrl);
       screenShareContainerWindow.setIgnoreMouseEvents(true);
       screenShareContainerWindow.setSize(displayWidth, displayHeight);
-      //screenShareContainerWindow.setVisibleOnAllWorkspaces(true,{visibleOnFullScreen: true})
-      //screenShareContainerWindow.maximize();
 
       if (isDev) {
        
-        screenShareContainerWindow.webContents.openDevTools();
+        // screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls
@@ -629,6 +627,8 @@ function createWindow() {
         }
       })
 
+      screenShareControlsWindow.setMenu(null);
+
       const screenShareControlsUrl = url.format({
         pathname: path.join(__dirname, '../build/index.html'),
         hash: '/screenshare-controls',
@@ -649,13 +649,11 @@ function createWindow() {
         } catch (error) {
           console.error(error);
         }
-
       })
 
       if (isDev) {
-        // screenShareControlsWindow.webContents.openDevTools();
+        screenShareControlsWindow.webContents.openDevTools();
       }
-
     }
   })
 

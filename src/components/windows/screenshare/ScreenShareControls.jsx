@@ -26,8 +26,8 @@ const ScreenShareControls = React.memo((props) => {
   const controlsContainerStyle = {
     'display': 'flex',
     'background-color': 'black',
-    '-webkit-user-select': 'none',
-    '-webkit-app-region': 'drag',
+    // '-webkit-user-select': 'none',
+    // '-webkit-app-region': 'drag',
     'height': '80px'
   }
 
@@ -37,10 +37,22 @@ const ScreenShareControls = React.memo((props) => {
     'white-space': 'nowrap'
   }
 
-  return (
+  const controlsTopBarStyle = {
+    'height': '15px',
+    'text-align': 'right',
+    'color': 'white',
+    'background-color': 'black',
+    '-webkit-user-select': 'none',
+    '-webkit-app-region': 'drag'
+  }
 
-     <div id="controls-container" style={controlsContainerStyle}>
-        <div className="mt-4 px-3 w-full">
+  return (
+    <>
+      <div id="controls-topbar" style={controlsTopBarStyle}>
+        <i className="material-icons md-light md-inactive mr-2" style={{'font-size': '16px'}}>drag_handle</i>
+      </div>
+      <div id="controls-container" style={controlsContainerStyle}>
+        <div className="px-3 w-full">
             <button
                 className="bg-indigo-800 w-full rounded-full flex justify-center items-center hover:bg-indigo-400 
                 text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
@@ -54,7 +66,7 @@ const ScreenShareControls = React.memo((props) => {
                   Stop ScreenShare
             </button>
         </div>
-        <div className="mt-4 px-3 w-full">
+        <div className="px-3 w-full">
 
           {
                 remoteAccess ?
@@ -89,10 +101,10 @@ const ScreenShareControls = React.memo((props) => {
                     Enable Remote Access
                 </button>
 
-          }
-            
+          }    
         </div>
-     </div>
+    </div>
+    </>
   )
 })
 
