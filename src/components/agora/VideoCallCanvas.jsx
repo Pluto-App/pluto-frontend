@@ -134,7 +134,9 @@ const MiniVideoCallCanvas = React.memo((props) => {
 
     AgoraClient.init(props.appId, () => {
       	
-      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
+        subscribeStreamEvents();
+      	
+        AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
 
       		socket_live.emit(events.joinRoom, props.channel);
       		localStream = streamInit(uid, props.videoProfile);

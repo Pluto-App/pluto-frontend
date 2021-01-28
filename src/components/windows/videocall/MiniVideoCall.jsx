@@ -6,6 +6,8 @@ import { AGORA_APP_ID } from "../../../agora.config";
 import { useOvermind } from '../../../overmind'
 import MiniVideoCallCanvas from "../../agora/MiniVideoCallCanvas";
 
+import AgoraVideoCall from "../../AgoraVideoCall/AgoraCanvas";
+
 const MiniVideoCall = React.memo((props) => {
 
   const { state, actions } = useOvermind();

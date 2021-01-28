@@ -414,7 +414,7 @@ function createWindow() {
     })
 
     if (isDev) {
-       // miniVideoCallWindow.webContents.openDevTools();
+       miniVideoCallWindow.webContents.openDevTools();
     }
 
   });
@@ -442,6 +442,7 @@ function createWindow() {
   })
 
   ipcMain.on('set-video-player-height', (event, height) => {
+    console.log('setting height to: ' + height);
     if(miniVideoCallWindow)
       miniVideoCallWindow.setSize(miniVideoCallWindow.getSize()[0], height);
   })

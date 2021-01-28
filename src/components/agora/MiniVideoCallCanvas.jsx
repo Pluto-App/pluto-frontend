@@ -135,6 +135,8 @@ const MiniVideoCallCanvas = React.memo((props) => {
     useEffect(() => {
 
         AgoraClient.init(props.appId, () => {
+
+        	subscribeStreamEvents();
 	      	
 	      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
 
@@ -170,8 +172,6 @@ const MiniVideoCallCanvas = React.memo((props) => {
     useEffect(() => {
 
     	let canvas = document.querySelector('#ag-canvas')
-    	let no = streamList.length
-    	let height = (120 * no) + 75;
 
 	    streamList.map((stream, index) => {
 
@@ -192,6 +192,9 @@ const MiniVideoCallCanvas = React.memo((props) => {
 
 	     	stream.play(elementId);
 	    })
+
+	    let no = document.getElementsByClassName('ag-item').length
+	    let height = 75 + (no*120);
 
 	    if(state.streamingScreenShare)
 	    	height += 130;
