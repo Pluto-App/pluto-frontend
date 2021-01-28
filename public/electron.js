@@ -146,13 +146,15 @@ function createWindow() {
   ipcMain.on('active-win', async (event, arg) => {
 
     const activeWinInfo = await activeWin()
-    activeWinInfo.url = await getTabUrl(activeWinInfo);
-    activeWinInfo.cursor = screen.getCursorScreenPoint();
-
-    if (activeWinInfo.owner !== undefined && activeWinInfo.owner.name !== undefined)
+    
+    if(activeWinInfo && activeWinInfo.owner && activeWinInfo.owner.name){
+      
+      activeWinInfo.url = await getTabUrl(activeWinInfo);
       event.returnValue = activeWinInfo
-    else
+
+    } else {
       event.returnValue = "None"
+    }
   })
 
   ipcMain.on('logout', (event, arg) => {
