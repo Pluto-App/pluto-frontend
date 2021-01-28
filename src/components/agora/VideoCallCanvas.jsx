@@ -10,7 +10,7 @@ import {AuthContext} from '../../context/AuthContext'
 const { remote } = window.require('electron');
 var localStream = {};
 
-const MiniVideoCallCanvas = React.memo((props) => {
+const VideoCallCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
 	const { authData, setAuthData } = useContext(AuthContext);
@@ -75,13 +75,13 @@ const MiniVideoCallCanvas = React.memo((props) => {
 
 	    AgoraClient.on('stream-subscribed', function (evt) {
 
-	      	let stream = evt.stream
-	      	console.log("Got stream-subscribed event")
-	      	console.log(new Date().toLocaleTimeString())
-	      	console.log("Subscribe remote stream successfully: " + stream.getId())
-	      	console.log(evt)
+      	let stream = evt.stream
+      	console.log("Got stream-subscribed event")
+      	console.log(new Date().toLocaleTimeString())
+      	console.log("Subscribe remote stream successfully: " + stream.getId())
+      	console.log(evt)
 
-	     	addStream(stream)
+     	  addStream(stream)
 	    })
 
 	    AgoraClient.on("stream-removed", function (evt) {
@@ -96,6 +96,7 @@ const MiniVideoCallCanvas = React.memo((props) => {
 	}
 
 	const addStream = (stream, push = false) => {
+
     let repeatition = streamList.some(item => {
       return item.getId() === stream.getId()
     })
@@ -114,19 +115,23 @@ const MiniVideoCallCanvas = React.memo((props) => {
 	}
 
 	const removeStream = (uid) => {
+
+    let element = document.getElementById('ag-item-' + uid)
+    if (element) {
+      element.parentNode.removeChild(element)
+    }
+
     streamList.map((item, index) => {
+
       if (item.getId() === uid) {
+
         item.close()
-        let element = document.querySelector('#ag-item-' + uid)
-        if (element) {
-          element.parentNode.removeChild(element)
-        }
+        
         let tempList = [...streamList]
         tempList.splice(index, 1)
 
         setStreamList(tempList)
       }
-
     })
 	}
 
@@ -178,6 +183,7 @@ const MiniVideoCallCanvas = React.memo((props) => {
     var canvasSelector = 'Dish' 
     var canvas = document.getElementById(canvasSelector);
 
+    debugger
 
     streamList.map((stream, index) => {
 
@@ -412,7 +418,7 @@ const MiniVideoCallCanvas = React.memo((props) => {
 	);
 })
 
-export default MiniVideoCallCanvas;
+export default VideoCallCanvas;
 
 
 
