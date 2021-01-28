@@ -35,7 +35,7 @@ class AgoraCanvas extends React.Component {
       readyState: false,
       screeStream: false,
       audio: true,
-      video: true,
+      video: false,
       screen: false
     }
   }
@@ -271,83 +271,19 @@ class AgoraCanvas extends React.Component {
     }
   }
 
-  switchDisplay = (e) => {
-    if (e.currentTarget.classList.contains('disabled') || this.state.streamList.length <= 1) {
-      return
-    }
-    if (this.state.displayMode === 'pip') {
-      this.setState({ displayMode: 'tile' })
-    }
-    else if (this.state.displayMode === 'tile') {
-      this.setState({ displayMode: 'pip' })
-    }
-    else if (this.state.displayMode === 'share') {
-      // do nothing or alert, tbd
-    }
-    else {
-      console.error('Display Mode can only be tile/pip/share')
-    }
-  }
-
-  hideRemote = (e) => {
-    if (e.currentTarget.classList.contains('disabled') || this.state.streamList.length <= 1) {
-      return
-    }
-    let list
-    let id = this.state.streamList[this.state.streamList.length - 1].getId()
-    list = Array.from(document.querySelectorAll(`.ag-item:not(#ag-item-${id})`))
-    list.map(item => {
-      if (item.style.display !== 'none') {
-        item.style.display = 'none'
-      }
-      else {
-        item.style.display = 'block'
-      }
-    })
-
-  }
-
   handleScreenShare = async (e) => {
 
-    this.client && this.client.unpublish(this.localStream)
-    this.localStream && this.localStream.close()
-    this.client && this.client.leave(() => {
-      console.log('Client succeed to leave.')
-    }, () => {
-      console.log('Client failed to leave.')
-    })
-
     if (this.state.screeStream === true) {
-      this.setState({ screeStream: false })
-      document.getElementById("screen-share").innerHTML = "screen_share"
-      window.require("electron").ipcRenderer.send('video-resize-normal');
+
+      window.require("electron").ipcRenderer.send('stop-screenshare');
+      this.setState({ screeStream: false });
+      
     } else {
-      window.require("electron").ipcRenderer.send('screen-share-options');
-      this.setState({ screeStream: true })
-      let $ = this.props
-      // init AgoraRTC local client
-      this.client = AgoraRTC.createClient({ mode: $.transcode, codec: "vp8" })
-      this.client.init($.appId, () => {
-        this.subscribeStreamEvents()
-        this.client.join($.appId, $.channel, $.uid, (uid) => {
-          this.localStream = this.screeninit(uid, "screen", $.videoProfile)
-          this.localStream.init(() => {
-            if ($.attendeeMode !== 'audience') {
-              this.addStream(this.localStream, true)
-              this.client.publish(this.localStream, err => {
-                console.log("Publish local stream error: " + err);
-              })
-            }
-            this.setState({ readyState: true })
-          },
-            err => {
-              alert("No Access to screen media", err)
-              this.setState({ readyState: true })
-            })
-        })
-      })
-      document.getElementById("screen-share").innerHTML = "stop_screen_share"
+      
+      window.require("electron").ipcRenderer.send('init-screenshare');
+      this.setState({ screeStream: true });  
     }
+
   }
 
   handleExit = (e) => {
@@ -364,6 +300,15 @@ class AgoraCanvas extends React.Component {
       })
     }
     finally {
+
+      localStorage.removeItem('attendeeMode');
+      localStorage.removeItem('screenshare_channel_id');
+      localStorage.removeItem('screenshare_owner');
+      localStorage.removeItem('screenshare_resolution');
+      localStorage.removeItem('screenShareViewers');
+      localStorage.removeItem('screenShareCursors');
+      localStorage.removeItem('remoteAccessEnabled');
+
       this.setState({ readyState: false })
       this.client = null
       this.localStream = null
@@ -380,6 +325,7 @@ class AgoraCanvas extends React.Component {
       gridTemplateRows: 'repeat(1, auto)',
       gridTemplateColumns: 'repeat(1, auto)'
     }
+
     const videoControlBtn = this.props.attendeeMode === 'video' ?
       (<span
         onClick={this.handleCamera}
@@ -404,6 +350,7 @@ class AgoraCanvas extends React.Component {
         <i className="material-icons exit focus:outline-none md-light" style={{ fontSize: "30px" }} >logout</i>
       </span>
     )
+
     const screenShareBtn = (
       <span
         onClick={this.handleScreenShare}

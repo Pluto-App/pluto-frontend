@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import ToastNotification from '../../widgets/ToastNotification';
@@ -8,17 +8,20 @@ import * as Cookies from "js-cookie";
 import * as md5 from "md5";
 import { socket_live, events } from '../../sockets';
 
-const RoomListItem = React.memo((props) => {
+import { AuthContext } from '../../../context/AuthContext'
+
+const RoomListItem = React.memo((room) => {
 
     // TODO Notify when new room created. Add to list room info.  
     let history = useHistory();
+    const { authData } = useContext(AuthContext);
 
     const { state, actions } = useOvermind();
 
     const [showChatModal, toggleshowChatModal] = useState(false);
     const [showMenu, toggleShowMenu] = useState(false);
     const [startedEditing, updateEditStatus] = useState(false);
-    const [roomName, updateRoomName] = useState(props.name);
+    const [roomName, updateRoomName] = useState(room.name);
 
     const clickFunc = (e) => {
         updateEditStatus(startedEditing => !startedEditing)
@@ -40,48 +43,53 @@ const RoomListItem = React.memo((props) => {
         "position": "absolute"
     }
 
-    const handleVideoCall = () => {
-        // TODO Room Video Call ID. Check Needed.
-        let new_id = md5(props.id + roomName + state.activeTeamId);
-        Cookies.set("channel", new_id);
-        ToastNotification('success', `Group VC with ${roomName} 📷`);
-        socket_live.emit(events.video_call, {
-            roomid: props.id,
-            roomname: roomName,
-            teamid: state.activeTeamId,
-            userid: state.userProfileData.userid
+    const startVideo = (e, room_rid) => {
+
+        // TODO User Video Call ID. Check Needed.
+        // Cannot start a VC Call with oneself.
+
+        let channel_id = room_rid;
+        localStorage.setItem('call_channel_id', channel_id);
+
+        socket_live.emit(events.roomVideoCall, {
+            channel_id: state.currentTeam.tid,
+            call_channel_id: channel_id,
+            room_id: room.id,
+            room_rid: room.rid,
+            user: state.userProfileData.uid
         })
-        window.require("electron").ipcRenderer.send('load-video-window', new_id);
+
+        socket_live.emit('join_room',channel_id);
+
+        window.require("electron").ipcRenderer.send('init-mini-video-call-window', channel_id);
+        //ToastNotification('success', `Initiated VC in room ${room.name} 📷`);
+
     }
 
     const removeRoomHandler = async (e) => {
-        if (state.userTeamDataInfo[state.activeTeamId].teamownerid === state.userProfileData.userid) {
-            await actions.removeRoom({
-                roomid: props.id,
-                teamid: state.activeTeamId,
-                roomname: roomName
-            })
-        } else {
-            ToastNotification('error', "Only Owners can remove")
-        }
+        
+        var roomData = {id: room.id}
+        await actions.room.deleteRoom({ authData: authData, roomData: roomData})
+
+        //ToastNotification('error', "Only Owners can remove")
     }
 
     const handleClick = async (e) => {
         // Change the ActiveRoomId.
         await actions.changeActiveRoom({
-            roomid: props.id,
+            roomid: room.id,
             roomname: roomName,
         })
         // Change the Room Id of the current user as well. 
         // The user switched to this room. 
         await actions.updateRoomOfMember({
             userid: state.userProfileData.userid,
-            roomid: props.id
+            roomid: room.id
         })
-        let id = md5(props.id);
+        let id = md5(room.id);
         Cookies.set("channel", id);
         socket_live.emit(events.video_call, {
-            recieverid: props.id,
+            recieverid: room.id,
             teamid: state.activeTeamId,
             senderid: state.userProfileData.userid,
             username: state.userProfileData.username
@@ -90,8 +98,14 @@ const RoomListItem = React.memo((props) => {
         history.push("/room-profile")
     }
 
+    const getUserAvatar = (uid) => {
+
+        var user = state.currentTeam.users.find(user => user.uid === uid) || {};
+        return user.avatar;
+    }
+
     return (
-        <div id={props.id}>
+        <div id={room.id}>
             {
                 startedEditing ?
                     <div className="flex justify-center items-center hover:bg-gray-800"
@@ -122,21 +136,33 @@ const RoomListItem = React.memo((props) => {
                             autoFocus />
                     </div>
                     :
-                    <div className="flex py-0 justify-between p-1 hover:bg-gray-800" id={props.id} onContextMenu={(e) => {
+                    <div className="flex py-0 justify-between p-1 hover:bg-gray-800" id={room.id} onContextMenu={(e) => {
                         e.preventDefault();
-                        clickFunc()
+                        //clickFunc()
                     }}>
-                        <div className="flex justify-start p-2">
+                        <div className="flex justify-start p-2" style={{ width: '100%'}}>
                             <div className="flex text-gray-500 font-semibold rounded-lg overflow-hidden">
                                 <i className="material-icons md-light md-inactive hover:text-indigo-400" style={{ fontSize: "20px", margin: "0" }}>volume_up</i>
                             </div>
-                            <div className="text-white px-2 font-bold tracking-wide text-xs"
+                            <div className="text-white px-2 font-bold tracking-wide text-xs" 
+                                style={{width: '50%', whiteSpace: 'nowrap'}}
                                 onClick={(e) => {
-                                    handleClick(e)
+                                    //handleClick(e)
                                 }}
                             >
                                 {roomName}
                             </div>
+                            <div className="users-in-room-container" style={{overflowX: 'scroll', width: '50%', height: '20px'}} >
+                                {
+                                    Object.keys(state.usersInRoom[room.rid] || []).map((rid, index) => 
+                                        <div className="bg-white h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden"
+                                            style={{marginRight: '5px', float: 'left'}} key={index}>
+                                            <img src={getUserAvatar(rid)} />
+                                        </div>
+                                    )
+                                }
+                            </div>
+                            
                         </div>
                         <div className="flex">
                             {
@@ -153,6 +179,7 @@ const RoomListItem = React.memo((props) => {
                                             {roomName}
                                         </p>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
+                                        {/* 
                                         <button className="w-full text-white focus:outline-none hover:bg-gray-800 rounded-lg flex font-bold tracking-wide text-xs items-center" >
                                             <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>publish</i> Share Documents
                                                 </button>
@@ -164,9 +191,10 @@ const RoomListItem = React.memo((props) => {
                                             <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>question_answer</i>Group Chat
                                                 </button>
                                         <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
+                                        */}
                                         <button className="w-full text-white text-green-700 hover:bg-gray-800 focus:outline-none rounded-lg flex font-bold tracking-wide text-xs items-center" onClick={(e) => {
                                             toggleShowMenu(showMenu => !showMenu)
-                                            handleVideoCall()
+                                            startVideo(e,room.rid)
                                         }}>
                                             <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>video_call</i>Video Call
                                                 </button>

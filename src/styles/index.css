@@ -9,6 +9,38 @@ body {
   width: 100%;
 }
 
+.topBar {
+  position: fixed;
+  height: 30px;
+  top: 0;
+  background: #000;
+  width: 100%;
+}
+
+.main-container {
+  position: fixed;
+  top: 30px;
+}
+
+.sidebar-container {
+  height: calc(100vh - 30px);
+}
+
+.sidebar-icons {
+  max-height: calc(100vh - 30px);
+  overflow-y: scroll;
+}
+
+.members-list {
+    max-height: calc(100vh - 500px);
+    min-height: calc(100vh - 400px);
+    overflow-y: scroll;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
 .draggable-elem {
   -webkit-app-region: drag;
 }
@@ -28,12 +60,8 @@ body {
 
 #ag-canvas {
   height: 100%;
-  display: grid;
-  grid-gap: 10px;
   align-items: center;
   justify-items: center;
-  grid-template-rows: repeat(2, auto);
-  grid-template-columns: repeat(2, auto);
 }
 .ag-item :first-child {
   border-radius: 0px;
@@ -45,6 +73,12 @@ body {
   height: 100%;
   width: 100%;
 }
+
+#ag-screenshare-canvas {
+   height: 100%;
+   width: 100%;
+}
+
 #ag-resize-container {
   background-image: none !important;
   background-color: black;
@@ -478,3 +512,72 @@ video {
   border-top-color:transparent !important;
   border-left-color:transparent !important;
 }
+
+/* Container */
+#Dish {
+    display: flex;
+    left: 0px;
+    bottom: 0px;
+    top: 0px;
+    right: 0px; 
+    position: absolute;
+    align-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+   
+   
+}
+/* Camera */
+#Dish div {
+
+    position: relative;
+    vertical-align: middle;
+    align-self: center;
+    border-radius: 10px;
+    overflow: hidden;
+    display: inline-block;
+    box-shadow: 0px 12px 22px rgba(0, 0, 0, 0.4);
+    background: #fff;
+    animation: show 0.4s ease;
+
+}
+/* Details (optional) */
+/* Aspect Ratio Number */
+    #Dish div:after {
+        color: #aaa;
+        font-size: 13px;
+        font-family: Arial, Helvetica, sans-serif;
+        position: absolute;
+        bottom: 20px;
+        right: 23px;
+        font-weight: 100;
+        content: "4:3";
+        display: block;
+    }
+/* Gray Diagonal */
+    #Dish div:before {
+        position: absolute;
+        height: 1px;
+        background: #ddd;
+        width: 100%;
+        transform: rotate(-37deg);
+        top: 50%;
+        font-weight: 100;
+        content: "4:3";
+        display: block;
+        ;
+    }
+/* Animation */
+@keyframes show {
+    0% {
+        opacity: 0;
+        transform: scale(0.4) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+

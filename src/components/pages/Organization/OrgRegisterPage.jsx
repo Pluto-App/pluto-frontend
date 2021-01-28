@@ -28,7 +28,7 @@ export default function OrgRegisterPage() {
                 userid: state.userProfileData.userid, // ownerid of team.
                 orgname: newOrgName // new team name.
             })
-            history.push('/home')
+            history.push('/')
         }
         else {
             ToastNotification('error', "Must be 4 letters or more.")
@@ -38,7 +38,7 @@ export default function OrgRegisterPage() {
     return (
         <div className="w-full flex">
             <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)" }}>
-                <BackButton url={'/home'}></BackButton>
+                <BackButton url={'/'}></BackButton>
                 <p className="font-bold px-4 text-white">Create New Organization</p>
                 <p className="text-gray-500 px-4">You can add Organization Logo later</p>
                 <form className="px-4 pt-6 pb-8 mb-4">

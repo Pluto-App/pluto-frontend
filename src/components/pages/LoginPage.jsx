@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import * as React from 'react'
+import React, { useContext } from 'react'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom";
 import Image from 'react-image-resizer';
@@ -7,6 +7,8 @@ import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import googleLogo from "../../assets/google.svg";
 import main from "../../assets/main.png";
+
+import {AuthContext} from '../../context/AuthContext'
 
 // TODO Clear Login cache or store it in some local storage/file. => window.localStorage in electron.
 // TODO Secure the Google Login. 
@@ -21,13 +23,14 @@ const LoginPage = React.memo(() => {
 
   let history = useHistory();
 
+  const { authData, setAuthData } = useContext(AuthContext);
   const { state, actions } = useOvermind();
 
   const googleSignInAction = (e) => {
     e.preventDefault();
-    actions.googlehandleLogin().then(() => {
-      window.require("electron").ipcRenderer.send('resize-normal');
-      state.userProfileData.addStatus ? history.push('/add-team') : history.push('/home')
+
+    actions.auth.googleLogin({setAuthData: setAuthData}).then(() => {
+      // No action required as of now.
     })
   }
 
@@ -37,7 +40,9 @@ const LoginPage = React.memo(() => {
   }
 
   return (
-    <div className="bg-black text-white flex flex-1 pt-20 px-10 justify-center" style={{ height: "calc(100vh - 30px)" }}>
+    <div className="bg-black text-white flex flex-1 pt-20 px-10 justify-center main-container w-full" 
+      style={{ height: "calc(100vh - 30px)" }}
+    >
       {/* <div className="text-center mb-3 font-italic font-bold text-xl">
         <Image
           img src={main} alt="Logo" className="text-center mb-3 font-italic font-bold text-xl"

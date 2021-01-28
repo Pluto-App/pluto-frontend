@@ -46,7 +46,7 @@ export const signInWithPopup = async () => {
     }
 
     authWindow.on('closed', () => {
-      throw new Error('Auth window was closed by user')
+      electron.ipcRenderer.send('logout');
     })
 
     authWindow.webContents.on('will-navigate', (event, url) => {

@@ -79,7 +79,7 @@ export default function RoomProfile() {
     return (
         <div className="w-full flex">
             <div className="bg-black flex-1 px-3 text-white pt-2" style={{ height: "calc(100vh - 30px)" }}>
-                <BackButton url={'/home'}></BackButton>
+                <BackButton url={'/'}></BackButton>
                 <div className="flex">
                     <div className="bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-full mb-1 overflow-hidden">
                         <img src={state.userTeamDataInfo[state.activeTeamId].avatar} alt="" />

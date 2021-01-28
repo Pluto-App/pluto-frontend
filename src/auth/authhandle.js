@@ -12,16 +12,19 @@ import { signInWithPopup, fetchAccessTokens, fetchGoogleProfile } from "./signIn
  */
 
 export const googleSignIn = async () => {
-  const code = await signInWithPopup()
-  const tokens = await fetchAccessTokens(code)
-  const { id, email, name, picture } = await fetchGoogleProfile(tokens.access_token)
-  const providerUser = {
-    // Donot send Google ID Directly.
-    userid: id,
-    useremail: email,
-    username: name,
-    avatar: picture,
-    idToken: tokens.id_token
-  }
-  return providerUser
+
+    const code = await signInWithPopup()
+    const tokens = await fetchAccessTokens(code)
+    const { id, email, name, picture } = await fetchGoogleProfile(tokens.access_token)
+    const providerUser = {
+      // Donot send Google ID Directly.
+      userid: id,
+      useremail: email,
+      username: name,
+      avatar: picture,
+      idToken: tokens.id_token,
+      access_token: tokens.access_token
+    }
+    
+    return providerUser;
 }
