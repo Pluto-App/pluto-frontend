@@ -196,6 +196,9 @@ const MiniVideoCallCanvas = React.memo((props) => {
 	    let no = document.getElementsByClassName('ag-item').length
 	    let height = 75 + (no*120);
 
+	    if(state.streamingScreenShare)
+	    	height += 130;
+
 	    window.require("electron").ipcRenderer.send('set-video-player-height', height);
 
     }, [streamList])
@@ -316,6 +319,8 @@ const MiniVideoCallCanvas = React.memo((props) => {
 
     return (
 		<div>
+			<div id="ag-canvas" style={style}>
+	      	</div>
 	  	 	<div className="ag-btn-group" style={{background: 'rgba(34, 36, 37, 0.8)'}}>
 	          {exitBtn}
 	          {videoControlBtn}
