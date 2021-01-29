@@ -61,7 +61,7 @@ const RoomListItem = React.memo((room) => {
 
         socket_live.emit('join_room',channel_id);
 
-        window.require("electron").ipcRenderer.send('init-mini-video-call-window', channel_id);
+        window.require("electron").ipcRenderer.send('init-video-call-window', channel_id);
         //ToastNotification('success', `Initiated VC in room ${room.name} 📷`);
 
     }

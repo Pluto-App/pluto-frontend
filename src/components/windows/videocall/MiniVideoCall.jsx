@@ -39,9 +39,7 @@ const MiniVideoCall = React.memo((props) => {
         </div>
       </div>
     </div>
-
-
-    )
+  )
 })
 
 export default MiniVideoCall;

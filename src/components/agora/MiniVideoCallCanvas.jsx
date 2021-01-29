@@ -25,6 +25,8 @@ const MiniVideoCallCanvas = React.memo((props) => {
 	const [ sharingScreen, setSharingScreen ] = useState(false);
 	const [ enabledMedia, setEnabledMedia ] = useState({audio: false, video: false});
 
+	const [ compactView, setCompactView ] = useState(true);
+
 	const streamInit = (uid, videoProfile, config) => {
 
 	    let defaultConfig = {
@@ -135,6 +137,8 @@ const MiniVideoCallCanvas = React.memo((props) => {
     useEffect(() => {
 
         AgoraClient.init(props.appId, () => {
+
+        	subscribeStreamEvents();
 	      	
 	      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
 
@@ -170,8 +174,6 @@ const MiniVideoCallCanvas = React.memo((props) => {
     useEffect(() => {
 
     	let canvas = document.querySelector('#ag-canvas')
-    	let no = streamList.length
-    	let height = (120 * no) + 75;
 
 	    streamList.map((stream, index) => {
 
@@ -192,6 +194,9 @@ const MiniVideoCallCanvas = React.memo((props) => {
 
 	     	stream.play(elementId);
 	    })
+
+	    let no = document.getElementsByClassName('ag-item').length
+	    let height = 75 + (no*120);
 
 	    if(state.streamingScreenShare)
 	    	height += 130;
@@ -311,21 +316,12 @@ const MiniVideoCallCanvas = React.memo((props) => {
       	</span>
     )
 
-    const style = {
-    }
-
     return (
 		<div>
-			<div id="ag-canvas" style={style}>
-		      {
-		      	state.streamingScreenShare ?
-		      		<div class="mini-video-screenshare-container" style={{height: '130px'}}>
-		      			<StreamScreenShare/>
-	      			</div>
-	      			:
-	      			''
-		      }
+
+			<div id="ag-canvas">
 	      	</div>
+
 	  	 	<div className="ag-btn-group" style={{background: 'rgba(34, 36, 37, 0.8)'}}>
 	          {exitBtn}
 	          {videoControlBtn}

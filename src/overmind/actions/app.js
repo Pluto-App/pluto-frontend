@@ -11,6 +11,10 @@ export const setLoggedInUser = async ({ state, effect }) => {
 	state.loggedInUser = JSON.parse(localStorage.getItem('currentUser')).user
 }
 
+export const setVideoCallCompactMode = async ({ state, effect }, mode) => {
+	
+    state.videoCallCompactMode = mode;
+}
 
 export const setActiveWinInfo = async ({ state, effect }, activeWindowApp) => {
 	
@@ -54,7 +58,7 @@ export const userVideoCall = async ({ state, effect }, data) => {
  	localStorage.setItem("call_channel_id", data.channel_id);
  	socket_live.emit(events.joinRoom, data.channel_id);
 
-    window.require("electron").ipcRenderer.send('load-video-window', data.channel_id);
+    window.require("electron").ipcRenderer.send('init-video-call-window', data.channel_id);
 
     ToastNotification('success', `Incoming VC`);
 }

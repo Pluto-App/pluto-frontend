@@ -11,7 +11,6 @@ if (isDev) {
 
 let mainWindow
 
-let miniVideoCallWindow
 let videoCallWindow
 
 let initScreenShareWindow
@@ -50,10 +49,12 @@ const robotKeyMap = {
 
 const robotMods = ['shift','control','alt'];
 var currentMods = [];
+var primaryDisplay;
+var scaleFactor = 1;
 
 async function runPythonScript(py_script){
 
-   return new Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     PythonShell.run(py_script, null, function (err, results) {
 
       if (err) throw err;
@@ -81,7 +82,13 @@ async function getTabUrl (activeWinInfo){
 
     } else if (activeWinInfo.platform == 'windows') {
 
-      var py_script = './src/scripts/windows_chrome_active_tab_url.py';
+      var py_script;
+
+      if (isDev) 
+        py_script = path.join(app.getAppPath(), 'src/scripts/windows_chrome_active_tab_url.py');
+      else
+        py_script = path.join(app.getAppPath(), '..', 'src/scripts/windows_chrome_active_tab_url.py');
+
       url = await runPythonScript(py_script);
       url = url == 'null' ? undefined : url;
     }
@@ -137,16 +144,23 @@ function createWindow() {
 
   });
 
+  primaryDisplay = screen.getPrimaryDisplay();
+
+  if(isWindows)
+    scaleFactor = primaryDisplay.scaleFactor;
+
   ipcMain.on('active-win', async (event, arg) => {
 
     const activeWinInfo = await activeWin()
-    activeWinInfo.url = await getTabUrl(activeWinInfo);
-    activeWinInfo.cursor = screen.getCursorScreenPoint();
-
-    if (activeWinInfo.owner !== undefined && activeWinInfo.owner.name !== undefined)
+    
+    if(activeWinInfo && activeWinInfo.owner && activeWinInfo.owner.name){
+      
+      activeWinInfo.url = await getTabUrl(activeWinInfo);
       event.returnValue = activeWinInfo
-    else
+
+    } else {
       event.returnValue = "None"
+    }
   })
 
   ipcMain.on('logout', (event, arg) => {
@@ -161,12 +175,6 @@ function createWindow() {
   ipcMain.on('resize-normal', (event, arg) => {
     mainWindow.setSize(minWidth, 700)
     mainWindow.center();
-  })
-
-  ipcMain.on('close-video', (event, arg) => {
-    if (miniVideoCallWindow !== null) {
-      miniVideoCallWindow.close()
-    }
   })
 
   ipcMain.on(`display-app-menu`, function (e, args) {
@@ -228,14 +236,6 @@ function createWindow() {
 
   ipcMain.on('init-video-call-window', (event, data) => {
 
-    if(miniVideoCallWindow){
-      try{
-        miniVideoCallWindow.hide();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
     if (videoCallWindow) {
       try{
         videoCallWindow.close();
@@ -251,12 +251,14 @@ function createWindow() {
     // create the window
     videoCallWindow = new BrowserWindow({
       show: true,
-      width: swidth,
-      height: sheight,
+      width: 200,
+      height: 150,
+      resizable: false,
       frame: false,
       title: "VideoWindow",
-      x: 0,
-      y: 0,
+      alwaysOnTop: true,
+      x: swidth - 270,
+      y: sheight - 870,
       webPreferences: {
         nodeIntegration: true,
         plugins: true,
@@ -292,158 +294,44 @@ function createWindow() {
           console.error(error);
         }
 
-        if(miniVideoCallWindow){
-          try{
-            miniVideoCallWindow.close();
-          } catch (error) {
-            console.error(error);
-          }
-        }
-
         videoCallWindow = undefined;
     })
 
-    // here we can send the data to the new window
-    videoCallWindow.webContents.on('did-finish-load', () => {
-      videoCallWindow.webContents.send('data', data);
-    });
-
-    // Close the video player window when we 
-    // close the main window of the app. 
-    mainWindow.on('closed', () => {
-      if (videoCallWindow !== null) {
-        videoCallWindow.close();
-      }
-    })
-
     if (isDev) {
-       //videoCallWindow.webContents.openDevTools();
+       videoCallWindow.webContents.openDevTools();
     }
 
   });
 
-  ipcMain.on('init-mini-video-call-window', (event, data) => {
-
+  ipcMain.on('expand-video-call-window', (event, data) => {
     if (videoCallWindow) {
-      try{
-        videoCallWindow.close();
-      } catch (error) {
-        console.error(error);
-      }
+      
+      let display = screen.getPrimaryDisplay();
+      let swidth = display.bounds.width;
+      let sheight = display.bounds.height;
+
+      videoCallWindow.setPosition(0,0);
+      videoCallWindow.setSize(swidth - 100, sheight - 100);
+      videoCallWindow.setResizable(true);
     }
-
-    if (miniVideoCallWindow) {
-      try{
-        miniVideoCallWindow.close();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    let display = screen.getPrimaryDisplay();
-    let swidth = display.bounds.width;
-    let sheight = display.bounds.height;
-
-    // create the window
-    miniVideoCallWindow = new BrowserWindow({
-      show: true,
-      width: 200,
-      height: 150,
-      frame: false,
-      resizable: false,
-      title: "VideoWindow",
-      alwaysOnTop: true,
-      x: swidth - 270,
-      y: sheight - 870,
-      webPreferences: {
-        nodeIntegration: true,
-        plugins: true,
-        enableRemoteModule: true
-      }
-    })
-
-    miniVideoCallWindow.setMenu(null);
-
-    const videoUrl = url.format({
-      pathname: path.join(__dirname, '../build/index.html'),
-      hash: '/mini-video-call',
-      protocol: 'file:',
-      slashes: true
-    })
-
-    miniVideoCallWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/mini-video-call' : videoUrl);
-
-    miniVideoCallWindow.on('closed', () => {
-
-       try{
-          if(screenShareControlsWindow)
-            screenShareControlsWindow.close();
-        } catch (error) {
-          console.error(error);
-        }
-
-       try{
-          if(streamScreenShareWindow)
-            streamScreenShareWindow.close();
-        } catch (error) {
-          console.error(error);
-        }
-
-
-       try{
-          if(videoCallWindow)
-            videoCallWindow.close();
-        } catch (error) {
-          console.error(error);
-        }
-
-        miniVideoCallWindow = undefined;
-    })
-
-    // here we can send the data to the new window
-    miniVideoCallWindow.webContents.on('did-finish-load', () => {
-      miniVideoCallWindow.webContents.send('data', data);
-    });
-
-    // Close the video player window when we 
-    // close the main window of the app. 
-    mainWindow.on('closed', () => {
-      if (miniVideoCallWindow !== null) {
-        miniVideoCallWindow.close();
-      }
-    })
-
-    if (isDev) {
-       // miniVideoCallWindow.webContents.openDevTools();
-    }
-
   });
 
-  ipcMain.on('video-resize-normal', (event, arg) => {
-    miniVideoCallWindow.setSize(200, 150)
-  })
-
-  ipcMain.on('video-call-window-collapse', (event, arg) => {
-    if(miniVideoCallWindow){
-      try{
-        miniVideoCallWindow.show();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
+  ipcMain.on('collapse-video-call-window', (event, height) => {
     if (videoCallWindow) {
-      try{
-        videoCallWindow.hide();
-      } catch (error) {
-        console.error(error);
-      }
+
+      let display = screen.getPrimaryDisplay();
+      let swidth = display.bounds.width;
+      let sheight = display.bounds.height;
+
+      videoCallWindow.setPosition(swidth - 270,sheight - 870);
+      videoCallWindow.setResizable(false);
+      videoCallWindow.setSize(200, height);
     }
-  })
+  });
 
   ipcMain.on('set-video-player-height', (event, height) => {
-    if(miniVideoCallWindow)
-      miniVideoCallWindow.setSize(miniVideoCallWindow.getSize()[0], height);
+    if(videoCallWindow)
+      videoCallWindow.setSize(videoCallWindow.getSize()[0], height);
   })
 
 
@@ -492,9 +380,8 @@ function createWindow() {
 
   ipcMain.on('stream-screenshare', (event, arg) => {
 
-    let display = screen.getPrimaryDisplay();
-    let swidth = display.bounds.width;
-    let sheight = display.bounds.height;
+    let swidth = primaryDisplay.bounds.width;
+    let sheight = primaryDisplay.bounds.height;
 
     if(streamScreenShareWindow){
       try{
@@ -503,13 +390,9 @@ function createWindow() {
         console.error(error);
       }
 
-      if(videoCallWindow)
-        videoCallWindow.hide();
+      if(videoCallWindow){
 
-      if(miniVideoCallWindow){
-
-        miniVideoCallWindow.show();
-        miniVideoCallWindow.setPosition(swidth - 270, sheight - 870)
+        videoCallWindow.setPosition(swidth - 270, sheight - 870)
       }
     }
 
@@ -559,8 +442,7 @@ function createWindow() {
     if(initScreenShareWindow) {
 
       // ScreenShare Container
-      const mainScreen = screen.getPrimaryDisplay();
-      let workArea = mainScreen.bounds;
+      let workArea = primaryDisplay.bounds;
       let displayWidth = workArea.width;
       let displayHeight = workArea.height;
 
@@ -672,14 +554,9 @@ function createWindow() {
       }
   })
 
-  ipcMain.on('screen-share-options', (event, arg) => {
-    miniVideoCallWindow.setSize(675, 675)
-  })
-
   ipcMain.on('screen-size', async (event, arg) => {
 
-      const mainScreen = screen.getPrimaryDisplay();
-      event.returnValue = mainScreen.size;
+      event.returnValue = primaryDisplay.size;
   })
 
   var menu = Menu.buildFromTemplate([
@@ -760,7 +637,7 @@ function createWindow() {
   ipcMain.on('emit-click', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+    robot.moveMouse(arg.cursor.x * scaleFactor, arg.cursor.y * scaleFactor);
     robot.mouseClick();
     robot.moveMouse(originalPos.x, originalPos.y);
 
@@ -769,7 +646,7 @@ function createWindow() {
   ipcMain.on('emit-scroll', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+    robot.moveMouse(arg.cursor.x * scaleFactor, arg.cursor.y * scaleFactor);
 
     switch(arg.event.direction) {
       case 'up':
@@ -787,11 +664,10 @@ function createWindow() {
   ipcMain.on('emit-drag', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x, arg.cursor.y);
 
-    robot.moveMouse(arg.event.start_x, arg.event.start_y);
+    robot.moveMouse(arg.event.start_x * scaleFactor, arg.event.start_y * scaleFactor);
     robot.mouseToggle("down");
-    robot.dragMouse(arg.cursor.x, arg.cursor.y);
+    robot.dragMouse(arg.cursor.x * scaleFactor, arg.cursor.y * scaleFactor);
     robot.mouseToggle("up");
     
     robot.moveMouse(originalPos.x, originalPos.y);
@@ -800,7 +676,7 @@ function createWindow() {
   ipcMain.on('emit-mousedown', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+    robot.moveMouse(arg.cursor.x * scaleFactor, arg.cursor.y * scaleFactor);
     robot.mouseToggle("down");
     //robot.moveMouse(originalPos.x, originalPos.y);
 
@@ -809,7 +685,7 @@ function createWindow() {
   ipcMain.on('emit-mouseup', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    robot.moveMouse(arg.cursor.x, arg.cursor.y);
+    robot.moveMouse(arg.cursor.x * scaleFactor, arg.cursor.y * scaleFactor);
     robot.mouseToggle("up"); 
     //robot.moveMouse(originalPos.x, originalPos.y);
   })

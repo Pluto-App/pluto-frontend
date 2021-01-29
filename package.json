@@ -64,6 +64,7 @@
     "compression": "normal",
     "productName": "pluto",
     "copyright": "MIT",
+    "extraResources": ["src/scripts"],
     "files": [
       "build/**/*",
       "node_modules/**/*",
