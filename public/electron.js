@@ -82,7 +82,13 @@ async function getTabUrl (activeWinInfo){
 
     } else if (activeWinInfo.platform == 'windows') {
 
-      var py_script = './src/scripts/windows_chrome_active_tab_url.py';
+      var py_script;
+
+      if (isDev) 
+        py_script = path.join(app.getAppPath(), 'src/scripts/windows_chrome_active_tab_url.py');
+      else
+        py_script = path.join(app.getAppPath(), '..', 'src/scripts/windows_chrome_active_tab_url.py');
+
       url = await runPythonScript(py_script);
       url = url == 'null' ? undefined : url;
     }
