@@ -38,6 +38,14 @@ export const removeUser = async ({state, effects}, {authData, reqData}) => {
     state.teamUpdateReq = true
 }
 
+export const addUser = async ({state, effects}, {authData, reqData}) => {
+
+    state.loadingTeam = true;
+    var teamData = await effects.team.addUser(authData, reqData);
+    state.noTeams = false;
+    state.loadingTeam = false;
+}
+
 export const updateCurrentTeam = async ({state, effects}, {team_id}) => {
 
   	state.loadingTeam = true;

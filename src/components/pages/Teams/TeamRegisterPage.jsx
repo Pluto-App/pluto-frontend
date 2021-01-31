@@ -14,6 +14,7 @@ export default function TeamRegisterPage() {
     let history = useHistory();
 
     const [teamName, setTeamName] = useState('');
+    const [teamCode, setTeamCode] = useState('');
 
     const override = css`
         display: block;
@@ -42,46 +43,46 @@ export default function TeamRegisterPage() {
         }
     }
 
+    const joinTeam = async (e) => {
+
+        e.preventDefault();
+
+        var reqData = {
+            user_id: state.userProfileData.id,
+            tid: teamCode
+        }
+
+        if (teamCode.length == 12) {
+            await actions.team.addUser({authData: authData, reqData: reqData})
+            history.push('/')
+        }
+        else {
+            ToastNotification('error', "Must be 12 letters.")
+        }
+    }
+
     return (
         <div className="w-full flex main-container">
             <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)" }}>
-                <BackButton url={'/'}></BackButton>
+                {
+                    state.noTeams ? 
+                    ''
+                    : <BackButton url={'/'}></BackButton>
+                }
+                
                 <p className="font-bold px-4 text-white">Create New Team</p>
-                <p className="text-gray-500 px-4">You will be set as Team Owner</p>
                 <form className="px-4 pt-6 pb-8 mb-4">
                     <div className="mb-4">
                         <label className="block text-gray-600 text-sm font-bold mb-2" htmlFor="teamname">
-                            Unique Team Name
+                            Team Name
                         </label>
-                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                            onChange={(e) => {
-                                if (e.target.value === "") {
-                                    ToastNotification('error', "Team Name can't be empty")
-                                } else {
-                                    setTeamName(e.target.value)
-                                }
-                            }}
-                            onPaste={(e) => {
-                                if (e.target.value === "") {
-                                    ToastNotification('error', "Team Name can't be empty")
-                                } else {
-                                    setTeamName(e.target.value)
-                                }
-                            }}
-                            onKeyPress={(e) => {
-                                if (e.keyCode === 13 || e.which === 13) {
-                                    e.preventDefault()
-                                    if (e.target.value === "") {
-                                        ToastNotification('error', "Team Name can't be empty")
-                                    } else {
-                                        setTeamName(e.target.value)
-                                    }
-                                }
-                            }}
+                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight 
+                            focus:outline-none focus:shadow-outline"
                             name="teamname"
                             id="teamname"
                             type="text"
                             placeholder="Team Name"
+                            onChange={(e) => { setTeamName(e.target.value) }}
                             autoFocus />
                     </div>
                     {!state.addingTeam ?
@@ -96,6 +97,42 @@ export default function TeamRegisterPage() {
                             size={10}
                             color={"white"}
                             loading={state.addingTeam}
+                        />
+                    }
+                </form>
+
+                <div className="flex justify-center items-center" style={{ height: "15px" }}>
+                    <div className="text-gray-500"></div>
+                    Or
+                </div>
+
+                <p className="font-bold px-4 text-white">Join a Team</p>
+                <form className="px-4 pt-6 pb-8 mb-4">
+                    <div className="mb-4">
+                        <label className="block text-gray-600 text-sm font-bold mb-2" htmlFor="teamcode">
+                            Team Code
+                        </label>
+                        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight 
+                            focus:outline-none focus:shadow-outline"
+                            name="teamcode"
+                            id="teamcode"
+                            type="text"
+                            placeholder="Team Code"
+                            onChange={(e) => { setTeamCode(e.target.value) }}
+                            autoFocus />
+                    </div>
+                    {!state.joiningTeam ?
+                        <div className="flex items-center justify-between">
+                            <button className="bg-pink-500 w-full hover:bg-pink-700 text-white font-bold py-2 px-4 rounded 
+                                focus:outline-none focus:shadow-outline" type="button" onClick={joinTeam}>
+                                Join Team
+                            </button>
+                        </div> :
+                        <BeatLoader
+                            css={override}
+                            size={10}
+                            color={"white"}
+                            loading={state.joiningTeam}
                         />
                     }
                 </form>
