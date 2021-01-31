@@ -110,6 +110,13 @@ export default function HomePage() {
 
     }, [actions, authData, state.currentTeamId, state.teamUpdateReq])
 
+    useEffect(() => {
+
+        if(state.noTeams)
+            history.push('/add-team');
+
+    }, [state.noTeams])
+
     const addRoom = async (roomname) => {
 
         let roomData = {

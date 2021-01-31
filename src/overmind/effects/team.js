@@ -70,6 +70,27 @@ export const deleteTeam = async (authData, teamData) => {
     });
 }
 
+export const addUser = async (authData, params) => {
+
+  const token = authData.token;
+
+  return fetch(
+
+    BACKEND_URL + "/team/" + params.tid + '/add-user/' + params.user_id,
+    {
+        method: 'PUT', 
+        headers: headers(token)
+    }
+  )
+  .then(response => response.json())
+  .then(responseData => {
+    return responseData;
+  })
+  .catch((error) => {
+      // Error handling
+  });
+}
+
 export const removeUser = async (authData, params) => {
 
   const token = authData.token;

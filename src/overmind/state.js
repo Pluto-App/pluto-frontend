@@ -23,6 +23,7 @@ export const state = {
     addingRoom: false,
     loadingTeam: false,
     error: {},
+    noTeam: false,
 
     // Video Call
     streamingScreenShare: false,
