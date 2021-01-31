@@ -257,13 +257,15 @@ export default function HomePage() {
                         <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={customStyle}
                             onClick={(e) => {
                             }}>
-                            <h4 className="font-bold text-xl text-gray-600 text-center mb-2"> Invite Teammates to <br /> Pluto Office </h4>
+                            <h4 className="font-bold text-xl text-gray-600 text-center mb-2"> Add Teammates</h4>
                             <p className="text-purple-700 mb-3 text-center">
-                                Share this link with others to grant access to this team.
+                                Share this code to add teammates to this team.
                         </p>
-                            <input
+                            <textarea
+                                rows='3'
                                 id="InviteModalLink"
-                                value={'https://joinpluto.netlify.app/#/j/' + state.currentTeam.tid}
+                                value={'Team Code: ' + state.currentTeam.tid + '\n' + 'Download App: https://joinpluto.netlify.app/'}
+                                style={{ resize: 'none'}}
                                 className="w-full shadow appearance-none border text-purple-700 rounded py-1 px-1 bg-purple-200" />
                             <button
                                 className="bg-purple-700 w-full rounded-sm flex justify-center text-white items-center hover:bg-purple-500
