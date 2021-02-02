@@ -93,6 +93,26 @@ const VideoCallCanvas = React.memo((props) => {
 	      
 	      	removeStream(stream.getId())
 	    })
+
+      AgoraClient.on("mute-video", function (evt) {
+          
+          let uid = evt.uid;
+          console.log("Mute videos: " + uid);
+
+          let elementID = 'ag-item-' + uid;
+          let element = document.getElementById(elementID);
+          element.style.display = 'none';
+      })
+
+      AgoraClient.on("unmute-video", function (evt) {
+          
+          let uid = evt.uid;
+          console.log("Unmute video: " + uid);
+
+          let elementID = 'ag-item-' + uid;
+          let element = document.getElementById(elementID);
+          element.style.display = 'block';
+      })
 	}
 
 	const addStream = (stream, push = false) => {
@@ -193,6 +213,7 @@ const VideoCallCanvas = React.memo((props) => {
         	dom = document.createElement('div')
         	dom.setAttribute('id', elementID)
         	dom.setAttribute('class', 'ag-item Camera')
+          dom.style.display = 'none';
         	canvas.appendChild(dom)
      	}
       
@@ -217,14 +238,20 @@ const VideoCallCanvas = React.memo((props) => {
   }, [streamList, state.videoCallCompactMode])
 
  	const handleCamera = (e) => {
+
+    let elementID = 'ag-item-' + localStream.getId();
+    let element = document.getElementById(elementID);
+
 		if (localStream.isVideoOn()) {
       	
       		localStream.disableVideo()
       		document.getElementById("video-icon").innerHTML = "videocam_off"
+          element.style.display = 'none';
 		
 		} else {
       		localStream.unmuteVideo()
       		document.getElementById("video-icon").innerHTML = "videocam"
+          element.style.display = 'block';
   	}
 	}
 
@@ -385,8 +412,7 @@ const VideoCallCanvas = React.memo((props) => {
 
       max = max - (Margin * 2);
       setWidth(max, Margin);  
-    }
-    
+    }    
   }
 
   function setWidth(width, margin) {
@@ -401,7 +427,7 @@ const VideoCallCanvas = React.memo((props) => {
 
   return (
 
-	  <div id="ag-canvas" style={{background: 'black'}}>
+	  <div id="ag-canvas" style={{background: '#2F3136'}}>
 	    
       <div id="Dish"></div>
       

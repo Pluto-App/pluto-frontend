@@ -9,7 +9,6 @@ import TeamProfile from './components/pages/Teams/TeamProfile'
 import UserProfile from './components/pages/Users/UserProfile'
 import UserUpdate from './components/pages/Users/UserUpdate'
 
-import MiniVideoCall from './components/windows/videocall/MiniVideoCall'
 import VideoCall from './components/windows/videocall/VideoCall'
 
 import InitScreenShare from './components/windows/screenshare/InitScreenShare'
