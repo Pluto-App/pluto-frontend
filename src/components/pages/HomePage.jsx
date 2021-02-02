@@ -4,6 +4,7 @@ import Sidebar from '../widgets/Sidebar'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
 import MainBar from "../widgets/MainBar"
+import ManagementBar from "../widgets/ManagementBar"
 import UserListItem from "./Users/UserListItem"
 import RoomListItem from "./Rooms/RoomListItem"
 import { css } from "@emotion/core";
@@ -138,25 +139,33 @@ export default function HomePage() {
 
     return (
         <div className="w-full flex main-container">
-            <Sidebar></Sidebar>
+           {/* 
+                <Sidebar></Sidebar>
+           */} 
             
-            <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)", marginLeft: "49px" }}>
+            <div className="w-full ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)" }}>
+                <ManagementBar />
+
+                {/* 
                 <MainBar
                         userid={state.userProfileData.id}
                         teamid={state.currentTeam.id}
                         appName={appInfo}
                 />
+                */} 
 
                 <div className="rooms-list-container" style={{ height: "relative" }}>
-                    <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800"
-                        style={{ transition: "all .60s ease" }}
+                    <div className="flex justify-between items-center p-1 pl-1"
+                        style={{ paddingRight: '25px', paddingBottom: '5px' }}
                     >
-                        <div className="text-gray-500 px-3 font-bold tracking-wide text-xs">Rooms</div>
-                        <button className="text-white focus:outline-none hover:bg-gray-800">
-                            <i className="material-icons md-light md-inactive" onClick={(e) => {
-                                e.preventDefault();
-                                actions.app.setAddingRoom(true)
-                            }} style={{ fontSize: "18px", margin: "0" }}>add</i>
+                        <div className="px-3 font-bold tracking-wide" style={{fontWeight: '600', color: '#C4C4C4', fontSize: '14px'}}>
+                            ROOMS
+                        </div>
+                        
+                        <button className="text-white focus:outline-none btn-add" onClick={(e) => {
+                            e.preventDefault();
+                            actions.app.setAddingRoom(true)
+                        }}>
                         </button>
                     </div>
                     {
@@ -186,7 +195,7 @@ export default function HomePage() {
                                 autoFocus />
                         </div>
                     }
-                    <div className="" style={{ height: "115px", overflowY: "scroll" }}>
+                    <div className="" style={{ minHeight: "80px", maxHeight: "225px", overflowY: "scroll" }}>
                         {
                             !state.loadingCurrentTeam ?
                                 RoomList(state.currentTeam.rooms) :
@@ -198,21 +207,15 @@ export default function HomePage() {
                                 />
                         }
                     </div>
-                    <div className="flex justify-center items-center" style={{ height: "15px" }}>
-                        <div className="text-gray-500"></div>
-                        <button className="text-white focus:outline-none">
-                            <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}
-                                style={{ transition: "all .60s ease" }}
-                            >keyboard_arrow_down</i>
-                        </button>
-                    </div>
                 </div>
 
                 <div className="members-list-container" style={{ height: "relative" }}>
-                    <div className="flex justify-between items-center p-2 pl-2 hover:bg-gray-800"
+                    <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800"
                         style={{ transition: "all .60s ease" }}
                     >
-                        <div className="text-gray-500 px-3 font-bold tracking-wide text-xs">Team Mates</div>
+                        <div className="px-3 font-bold tracking-wide" style={{fontWeight: '600', color: '#BABBBE', fontSize: '14px'}}>
+                            TEAMMATES
+                        </div>
                     </div>
                     {
                         !state.loadingCurrentTeam ?
@@ -226,19 +229,10 @@ export default function HomePage() {
                     }
                 </div>
 
-                <div className="flex justify-center items-center" style={{ height: "15px" }}>
-                    <div className="text-gray-500"></div>
-                    <button className="text-white focus:outline-none">
-                        <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}
-                            style={{ transition: "all .60s ease" }}
-                        >keyboard_arrow_down</i>
-                    </button>
-                </div>
-
-                <div className="absolute pin-b pb-4" style={{ width: "calc(95% - 50px)" }}>
-                    <div className="mt-4 px-3 w-full">
+                <div className="pin-b pb-4 center">
+                    <div className="mt-4 px-3 w-full" style={{width: '240px', display: 'inline-block'}}>
                         <button
-                            className="bg-indigo-800 w-full rounded-full flex justify-center items-center hover:bg-indigo-400 
+                            className="w-full rounded-full flex justify-center items-center bg-purple
                             text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
                             type="button"
                             style={{ transition: "all .60s ease" }}

@@ -117,8 +117,17 @@ const UserListItem = React.memo((user) => {
             e.preventDefault();
         }}>
             <div className="flex justify-start p-2 pl-1">
-                <div className="bg-white h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden">
-                    <img src={user.url} alt="T" />
+                <div className="h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden"
+                    style={{paddingLeft: '3px', paddingTop: '5px'}}
+                >
+                    {/*
+                        <img src={user.url} alt="T" />
+                    */}
+                    <svg viewBox="0 0 6 6" height="11" width="11">
+                        <circle cx="3" cy="3" r="2.5" fill={user.statusColor || '#FF5959'} />
+                            Sorry, your browser does not support inline SVG.
+                    </svg>
+                    <span></span>
                 </div>
                 <div className="text-white px-1 font-bold tracking-wide text-xs" 
                     onClick={(e) => {
@@ -127,22 +136,32 @@ const UserListItem = React.memo((user) => {
                 >
                     {user.name}
                 </div>
+                {/*
                 <svg viewBox="0 0 6 6" height="8" width="8">
                     <circle cx="3" cy="3" r="2.5" fill={user.statusColor} />
                         Sorry, your browser does not support inline SVG.
                 </svg>
+                */}
                 <span></span>
             </div>
             <div className="items-center flex">
-                <div className="items-center bg-black h-6 w-6 flex text-black text-2xl font-semibold overflow-hidden">
+                <div style={{ fontSize: '12px', color: '#74767A'}}>  
+                    {state.usersActiveWindows[user.id] ?
+                        state.usersActiveWindows[user.id].owner.name 
+                        : ''
+                    } 
+                </div>
+                <div className="items-center h-6 w-6 flex text-black text-2xl font-semibold overflow-hidden">
                     <a onClick={(e) => {
                         activeAppClick( e, state.usersActiveWindows[user.id] )
                     }}>
                        { state.usersActiveWindows[user.id] ? 
 
-                            <img src={
-                                    getAppLogo(state.usersActiveWindows[user.id])
-                            } alt=""/>
+                            <div>
+                                <img src={
+                                        getAppLogo(state.usersActiveWindows[user.id])
+                                } alt=""/>
+                            </div>
                             :
                             <div></div>
                         }

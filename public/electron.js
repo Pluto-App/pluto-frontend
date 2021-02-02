@@ -29,7 +29,7 @@ const runApplescript = require('run-applescript');
 // TODO Now we can add external window for settings.
 // TODO Add support for App Signing.
 
-const minWidth = 360;
+const minWidth = 330;
 const minHeight = 500;
 
 const robotKeyMap = {
