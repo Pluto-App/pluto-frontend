@@ -229,7 +229,7 @@ export default function HomePage() {
                     }
                 </div>
 
-                <div className="pin-b pb-4 center">
+                <div className="pin-b pb-4 center" style={{position: 'absolute', bottom: '20px', left: 'calc(100vw/2 - 120px)'}}>
                     <div className="mt-4 px-3 w-full" style={{width: '240px', display: 'inline-block'}}>
                         <button
                             className="w-full rounded-full flex justify-center items-center bg-purple

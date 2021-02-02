@@ -129,7 +129,7 @@ const UserListItem = React.memo((user) => {
                     </svg>
                     <span></span>
                 </div>
-                <div className="text-white px-1 font-bold tracking-wide text-xs" 
+                <div className="text-white px-1 font-bold tracking-wide text-xs pointer" 
                     onClick={(e) => {
                         startVideo(e, user.uid);
                     }}
@@ -145,13 +145,13 @@ const UserListItem = React.memo((user) => {
                 <span></span>
             </div>
             <div className="items-center flex">
-                <div style={{ fontSize: '12px', color: '#74767A'}}>  
+                <div className="pointer" style={{ fontSize: '12px', color: '#74767A'}}>  
                     {state.usersActiveWindows[user.id] ?
                         state.usersActiveWindows[user.id].owner.name 
                         : ''
                     } 
                 </div>
-                <div className="items-center h-6 w-6 flex text-black text-2xl font-semibold overflow-hidden">
+                <div className="pointer items-center h-6 w-6 flex text-black text-2xl font-semibold overflow-hidden">
                     <a onClick={(e) => {
                         activeAppClick( e, state.usersActiveWindows[user.id] )
                     }}>
@@ -167,6 +167,7 @@ const UserListItem = React.memo((user) => {
                         }
                     </a>
                 </div>
+
                 {
                     showMenu &&
                     <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customMenuStyle}>

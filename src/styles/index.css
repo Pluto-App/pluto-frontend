@@ -658,6 +658,7 @@ video {
 .btn-join-room {
   border-radius: 10px;
   background: #673AB7;
+  height: 30px;
 }
 
 .room-list-item:hover {

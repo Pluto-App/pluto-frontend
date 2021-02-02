@@ -8,14 +8,25 @@ const MainBar = React.memo((props) => {
     let history = useHistory();
     const { state, actions } = useOvermind();
 
-
     const [showOptions, setShowOptions] = useState(false);
+
+    const addTeam = (e) => {
+        e.preventDefault()
+        history.push('/add-team');
+    }
+
+    useEffect(() => {
+        window.onclick = function(event) {
+            setShowOptions(false);
+        }
+    },[])
 
 
     return (
         <div className="main-team-select-container">
             <div className="main-team-select hover:bg-gray-700">
-                <div class="custom-select__trigger" onClick={() => {
+                <div class="custom-select__trigger" onClick={(e) => {
+                    e.stopPropagation();
                     setShowOptions( showOptions ? false : true )
                 }}>
                     <span style={{fontSize: '16px', fontWeight: '400'}}>
@@ -54,7 +65,7 @@ const MainBar = React.memo((props) => {
                                 </div>
                             )
                         }
-                            <div class="main-team-select-option">
+                            <div class="main-team-select-option" onClick={addTeam}>
                                 <div className="bg-black flex items-center justify-center text-2xl font-semibold 
                                 rounded-lg mb-1 overflow-hidden" style={{width: '45px', height: '45px', float: 'left'}}>
                                     <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}
