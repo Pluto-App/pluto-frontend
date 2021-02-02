@@ -25,7 +25,7 @@ const MainBar = React.memo((props) => {
     return (
         <div className="main-team-select-container">
             <div className="main-team-select hover:bg-gray-700">
-                <div class="custom-select__trigger" onClick={(e) => {
+                <div className="custom-select__trigger" onClick={(e) => {
                     e.stopPropagation();
                     setShowOptions( showOptions ? false : true )
                 }}>
@@ -41,12 +41,12 @@ const MainBar = React.memo((props) => {
             </div>
             {
                 showOptions ? 
-                <div class="main-team-select-options">
+                <div className="main-team-select-options">
                     {   state.userProfileData.teams ?
                         <div>
                         {
                             state.userProfileData.teams.map(team =>
-                                <div class="main-team-select-option"
+                                <div key={team.id} className="main-team-select-option"
                                     onClick={(e) => {
                                         e.preventDefault()
                                         actions.team.updateCurrentTeam({team_id: team.id}).then(() => {
@@ -65,7 +65,7 @@ const MainBar = React.memo((props) => {
                                 </div>
                             )
                         }
-                            <div class="main-team-select-option" onClick={addTeam}>
+                            <div className="main-team-select-option" onClick={addTeam}>
                                 <div className="bg-black flex items-center justify-center text-2xl font-semibold 
                                 rounded-lg mb-1 overflow-hidden" style={{width: '45px', height: '45px', float: 'left'}}>
                                     <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}

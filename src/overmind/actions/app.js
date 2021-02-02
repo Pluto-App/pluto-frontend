@@ -28,15 +28,13 @@ export const setAddingRoom = async ({ state, effect }, value) => {
 }
 
 export const addOnlineUser = async ({ state, effect }, user_id) => {
-	    
-    if(state.onlineUsers.indexOf(user_id) === -1)
-    	state.onlineUsers.push(user_id)
+	
+	state.onlineUsers[user_id] = true;
 }
 
 export const removeOnlineUser = async ({ state, effect }, user_id) => {
-	    
-    if(state.onlineUsers.indexOf(user_id) != -1)
-    	state.onlineUsers.splice(state.onlineUsers.indexOf(user_id),1)
+    
+    delete state.onlineUsers[user_id]; 
 }
 
 

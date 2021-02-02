@@ -39,26 +39,27 @@ const RoomList = ((rooms) => {
     );
 })
 
-const MembersList = (({users, onlineUsers}) => {
+const MembersList = (
+    ({users}) => {
 
-    const teamMemberList = Object.entries(users).map(([id, member]) =>
-        <UserListItem
-            id={member.id}
-            uid={member.uid}
-            key={member.id.toString()}
-            url={member.avatar}
-            name={member.name}
-            email={member.email}
-            statusColor={onlineUsers.includes(member.id) ? 'green' : member.statusColor}
-        />
-    )
+        const teamMemberList = Object.entries(users).map(([id, member]) =>
+            <UserListItem
+                id={member.id}
+                uid={member.uid}
+                key={member.id.toString()}
+                url={member.avatar}
+                name={member.name}
+                email={member.email}
+            />
+        )
 
-    return (
-        <div className='members-list'>
-            {teamMemberList}
-        </div>
-    );
-});
+        return (
+            <div className='members-list'>
+                {teamMemberList}
+            </div>
+        );
+    }
+);
 
 export default function HomePage() {
 

@@ -41,6 +41,13 @@ const UserListItem = React.memo((user) => {
         "position": "absolute"
     }
 
+    const getStatusColor = () => {
+        if(state.onlineUsers[user.id])
+            return '#5CFF59'
+        else
+            return '#FF5959'
+    }
+
     const getAppLogo = (appData) => {
 
         try {
@@ -120,11 +127,8 @@ const UserListItem = React.memo((user) => {
                 <div className="h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden"
                     style={{paddingLeft: '3px', paddingTop: '5px'}}
                 >
-                    {/*
-                        <img src={user.url} alt="T" />
-                    */}
                     <svg viewBox="0 0 6 6" height="11" width="11">
-                        <circle cx="3" cy="3" r="2.5" fill={user.statusColor || '#FF5959'} />
+                        <circle cx="3" cy="3" r="2.5" fill={getStatusColor()} />
                             Sorry, your browser does not support inline SVG.
                     </svg>
                     <span></span>
@@ -136,17 +140,10 @@ const UserListItem = React.memo((user) => {
                 >
                     {user.name}
                 </div>
-                {/*
-                <svg viewBox="0 0 6 6" height="8" width="8">
-                    <circle cx="3" cy="3" r="2.5" fill={user.statusColor} />
-                        Sorry, your browser does not support inline SVG.
-                </svg>
-                */}
-                <span></span>
             </div>
             <div className="items-center flex">
-                <div className="pointer" style={{ fontSize: '12px', color: '#74767A'}}>  
-                    {state.usersActiveWindows[user.id] ?
+                <div className="pointer" style={{ fontSize: '12px', color: '#74767A', marginRight: '5px'}}>  
+                    {state.usersActiveWindows[user.id] && state.usersActiveWindows[user.id].owner ?
                         state.usersActiveWindows[user.id].owner.name 
                         : ''
                     } 
@@ -158,9 +155,10 @@ const UserListItem = React.memo((user) => {
                        { state.usersActiveWindows[user.id] ? 
 
                             <div>
-                                <img src={
-                                        getAppLogo(state.usersActiveWindows[user.id])
-                                } alt=""/>
+                                <img 
+                                    src = { getAppLogo(state.usersActiveWindows[user.id]) } 
+                                    style = {{ borderRadius: '30%' }}
+                                />
                             </div>
                             :
                             <div></div>

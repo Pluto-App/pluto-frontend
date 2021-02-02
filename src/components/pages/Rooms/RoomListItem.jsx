@@ -169,21 +169,36 @@ const RoomListItem = React.memo((room) => {
                     :
                     <div className="flex py-0 justify-between p-1" id={room.id} >
                         <div className="flex justify-start p-2" style={{ width: '100%'}}>
-                            <div className="flex text-gray-500 font-semibold rounded-lg overflow-hidden" 
-                                style={{width: '40px', height: '40px', overflow: 'visible'}}>
-                                <img src={
-                                        getAppLogo()
-                                } style={{width: '40px'}} />
-                                
-                                <i className="material-icons md-light md-inactive hover:text-indigo-400" 
-                                    style={{ fontSize: "16px", position: 'relative', right: '15px', top: '25px', color: '#BABBBE', 
-                                        background: '#134DDF', height: '20px', minWidth: '20px', borderRadius: '50%', 
-                                        paddingLeft: '2px', paddingTop: '2px' }}>
-                                    volume_up
-                                </i>
-                            </div>
+                            {
+                                Object.keys(state.usersInRoom[room.rid] || []).length > 0 ?
+                                <div className="flex" 
+                                    style={{width: '40px', height: '40px', overflow: 'visible', background: '#2F3136', borderRadius: '30%'}}>
+                                    <img src={
+                                            getAppLogo()
+                                    } style={{width: '40px', borderRadius: '30%'}} />
+                                    
+                                    <i className="material-icons md-light md-inactive" 
+                                        style={{ fontSize: "16px", position: 'relative', right: '15px', top: '25px', color: '#BABBBE', 
+                                            background: '#134DDF', height: '20px', minWidth: '20px', borderRadius: '50%', 
+                                            paddingLeft: '2px', paddingTop: '2px' }}>
+                                        volume_up
+                                    </i>
+                                </div>
+                                :
+                                <div className="flex" >
+                                    
+                                    <i className="material-icons md-light md-inactive" 
+                                        style={{ fontSize: "20px", color: '#BABBBE', 
+                                            height: '20px', minWidth: '20px', borderRadius: '50%', 
+                                            paddingLeft: '2px', paddingTop: '2px' }}>
+                                        volume_up
+                                    </i>
+                                </div>    
+                            }
+                            
+
                             <div className="text-white px-2 font-bold tracking-wide text-xs" 
-                                style={{width: '50%', whiteSpace: 'nowrap', fontSize: '14px'}}
+                                style={{ whiteSpace: 'nowrap', fontSize: '14px'}}
                                 onClick={(e) => {
                                     //handleClick(e)
                                 }}
@@ -300,24 +315,19 @@ const RoomListItem = React.memo((room) => {
                     //handleClick(e)
                 }}
             >   
-                <div style={{width: '30px', marginRight: '10px'}}>
-                    <img src={
-                        state.userProfileData.avatar
-                    } style={{width: '100%', borderRadius: '15px'}} />
-                </div>
-
-                <div style={{width: '30px', marginRight: '10px'}}>
-                    <img src={
-                        state.userProfileData.avatar
-                    } style={{width: '100%', borderRadius: '15px'}} />
-                </div>
-
-                <div style={{width: '30px', marginRight: '10px'}}>
-                    <img src={
-                        state.userProfileData.avatar
-                    } style={{width: '100%', borderRadius: '15px'}} />
-                </div>
-               
+                {
+                    (state.usersInRoom[room.rid] || []).map((uid) => 
+                        
+                        <div key={uid} style={{width: '30px', marginRight: '10px'}}>
+                            
+                            <img src={
+                                state.currentTeam.users.find(user => user.uid === uid).avatar
+                                
+                            } style={{width: '100%', borderRadius: '15px'}} />
+                            
+                        </div>
+                    )
+                }
             </div>
         </div>
     )

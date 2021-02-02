@@ -33,10 +33,11 @@ body {
 }
 
 .members-list {
-    max-height: calc(100vh - 500px);
-    min-height: calc(100vh - 400px);
-    overflow-y: scroll;
-    padding-left: 10px;
+  /*max-height: calc(100vh - 500px);
+  min-height: calc(100vh - 400px);*/
+  max-height: 225px;
+  overflow-y: scroll;
+  padding-left: 10px;
 }
 
 .pointer {

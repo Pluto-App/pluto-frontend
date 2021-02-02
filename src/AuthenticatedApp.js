@@ -62,8 +62,6 @@ export default function App() {
     () => {
 
       loadProgressBar()
-      let interval = 0;
-      let onlineInterval = 0;
 
       // Some User is Online
       socket_live.on(events.online, (user_id) => {
@@ -101,10 +99,7 @@ export default function App() {
         actions.app.updateScreenShareViewers(data);
       });
 
-      interval = setInterval(() => {
-          // Emit User is online.
-          socket_live.emit(events.online, state.userProfileData.id)
-      }, 3000)
+      socket_live.emit(events.online, state.userProfileData.id)
 
     }, [authData]
   );

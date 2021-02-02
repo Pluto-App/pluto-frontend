@@ -35,7 +35,7 @@ export const state = {
     userProfileData: {},
     userData: {teams: []},
     currentTeam: {rooms: [], users: []},
-    onlineUsers: [],
+    onlineUsers: {},
     usersActiveWindows: {},
     screenShareViewers: {},
     screenShareCursors: {},

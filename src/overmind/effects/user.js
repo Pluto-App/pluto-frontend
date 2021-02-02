@@ -28,3 +28,26 @@ export const getUser = async (authData, params) => {
     	// Error handling
 	});
 }
+
+export const getOnlineUsers = async (authData, tid) => {
+
+  const token = authData.token;
+
+  return fetch(
+
+    BACKEND_URL + "/online-users/"+tid,
+    {
+        method: 'GET', 
+        headers: headers(token)
+    }
+  )
+  .then(response => response.json())
+  .then(responseData => {
+
+    return responseData;
+  })
+  .catch((error) => {
+    return {};
+      // Error handling
+  });
+}
