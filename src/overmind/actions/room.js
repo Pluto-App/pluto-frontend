@@ -12,3 +12,9 @@ export const deleteRoom = async ({state, effects}, {authData, roomData}) => {
   	var roomData = await effects.room.deleteRoom(authData, roomData)
   	state.deletingRoom = false
 }
+
+export const getUsersInRoom = async ({state, effects}, {authData, roomId}) => {
+
+  	var roomUsers = await effects.room.getUsersInRoom(authData, roomId)
+  	state.usersInRoom[roomId] = roomUsers;
+}

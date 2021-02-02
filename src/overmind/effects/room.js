@@ -48,3 +48,24 @@ export const deleteRoom = async (authData, roomData) => {
         // Error handling
     });
 }
+
+export const getUsersInRoom = async (authData, roomId) => {
+
+  const token = authData.token;
+
+    return fetch(
+
+      BACKEND_URL + "/room/"+roomId+'/users',
+      {
+          method: 'GET', 
+          headers: headers(token)
+      }
+    )
+    .then(response => response.json())
+    .then(responseData => {
+      return responseData;
+    })
+    .catch((error) => {
+        // Error handling
+    });
+}

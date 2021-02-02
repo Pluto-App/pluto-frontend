@@ -26,6 +26,10 @@ const RoomListItem = React.memo((room) => {
     const [roomName, updateRoomName] = useState(room.name);
     const [hoverState, setHoverState] = useState(false);
 
+    useEffect(() => {
+        actions.room.getUsersInRoom({authData: authData, roomId: room.id});
+    },[])
+
     const clickFunc = (e) => {
         updateEditStatus(startedEditing => !startedEditing)
     }
@@ -103,7 +107,10 @@ const RoomListItem = React.memo((room) => {
 
     const getAppLogo = () => {
 
-        var appData = state.usersActiveWindows[state.userProfileData.id];
+        var usersInRoom = state.usersInRoom[room.id];
+        var userUid = usersInRoom[Math.floor(Math.random() * usersInRoom.length)];
+        var user = state.currentTeam.users.find(user => user.uid === userUid);
+        var appData = state.usersActiveWindows[user ? user.id : undefined];
 
         try {
             if(appData.owner && appData.owner.name) {

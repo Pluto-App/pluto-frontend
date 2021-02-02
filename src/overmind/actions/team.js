@@ -8,8 +8,6 @@ export const getTeam = async ({state, effects}, {authData, team_id}) => {
 	var teamData = await effects.team.getTeam(authData, team_id)
 	state.currentTeam = teamData;
 
-  console.log(teamData.users);
-
   var onlineUsers = await effects.user.getOnlineUsers(authData, teamData.tid);
   
   for(var user_id of onlineUsers){
@@ -17,7 +15,6 @@ export const getTeam = async ({state, effects}, {authData, team_id}) => {
   }
 
   localStorage.setItem('current_team',state.currentTeam.tid);
-
   socket_live.emit('join_room', state.currentTeam.tid);
 
 	state.loadingTeam = false
