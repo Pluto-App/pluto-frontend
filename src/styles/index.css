@@ -110,6 +110,23 @@ body {
   background: rgba(34, 36, 37, 0.8);
 }
 
+/* button group compact */
+.ag-btn-group-compact {
+  height: 45px;
+  width: 100%;
+  margin: 0 auto;
+  background: transparent;
+  z-index: 11;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.ag-btn-group-compact:hover,
+.ag-btn-group-compact.active {
+  background: rgba(34, 36, 37, 0.8);
+}
+
+
 .ag-btn {
   z-index: 12;
   opacity: 0;
@@ -533,7 +550,7 @@ video {
    
 }
 /* Camera */
-#Dish div {
+#Dish .ag-item {
 
     position: relative;
     vertical-align: middle;
@@ -548,7 +565,7 @@ video {
 }
 /* Details (optional) */
 /* Aspect Ratio Number */
-    #Dish div:after {
+/*    #Dish .ag-item:after {
         color: #aaa;
         font-size: 13px;
         font-family: Arial, Helvetica, sans-serif;
@@ -556,22 +573,10 @@ video {
         bottom: 20px;
         right: 23px;
         font-weight: 100;
-        content: "4:3";
+        content: "Sambhav";
         display: block;
-    }
-/* Gray Diagonal */
-    #Dish div:before {
-        position: absolute;
-        height: 1px;
-        background: #ddd;
-        width: 100%;
-        transform: rotate(-37deg);
-        top: 50%;
-        font-weight: 100;
-        content: "4:3";
-        display: block;
-        ;
-    }
+    }*/
+
 /* Animation */
 @keyframes show {
     0% {

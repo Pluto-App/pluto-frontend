@@ -7,6 +7,8 @@ import { socket_live, events } from '../sockets'
 
 import {AuthContext} from '../../context/AuthContext'
 
+import { appLogo } from '../../utils/AppLogo';
+
 const { remote } = window.require('electron');
 var localStream = {};
 
@@ -102,6 +104,8 @@ const VideoCallCanvas = React.memo((props) => {
           let elementID = 'ag-item-' + uid;
           let element = document.getElementById(elementID);
           element.style.display = 'none';
+          element.classList.toggle('ag-video-on');
+          updateWindowSize();
       })
 
       AgoraClient.on("unmute-video", function (evt) {
@@ -112,6 +116,8 @@ const VideoCallCanvas = React.memo((props) => {
           let elementID = 'ag-item-' + uid;
           let element = document.getElementById(elementID);
           element.style.display = 'block';
+          element.classList.toggle('ag-video-on');
+          updateWindowSize();
       })
 	}
 
@@ -207,17 +213,6 @@ const VideoCallCanvas = React.memo((props) => {
 
      	let id = stream.getId()
      	let elementID = 'ag-item-' + id;
-   		let dom = document.getElementById(elementID)
-      	
-    	if (!dom) {
-        	dom = document.createElement('div')
-        	dom.setAttribute('id', elementID)
-        	dom.setAttribute('class', 'ag-item Camera')
-          dom.style.display = 'none';
-        	canvas.appendChild(dom)
-     	}
-      
-      dom.setAttribute('style', state.videoCallCompactMode ? 'height: 120px' : '')
 
       if(stream.isPlaying())
           stream.stop();
@@ -225,34 +220,60 @@ const VideoCallCanvas = React.memo((props) => {
         stream.play(elementID);
     })
 
+    updateWindowSize();
+
+  }, [streamList, state.videoCallCompactMode])
+
+  const updateWindowSize = () => {
+
     if(state.videoCallCompactMode){
-      let no = document.getElementsByClassName('ag-item').length
-      let height = 75 + (no*120);
+      
+      let videoElements = document.getElementsByClassName('ag-video-on').length
+      let userDetailsElements = document.getElementsByClassName('user-details').length
+
+      let height = 70 + (videoElements*148) + (userDetailsElements*60);
 
       window.require("electron").ipcRenderer.send('set-video-player-height', height);
 
-    } else {
-      Dish();
     }
 
-  }, [streamList, state.videoCallCompactMode])
+    Dish();
+  }
 
  	const handleCamera = (e) => {
 
     let elementID = 'ag-item-' + localStream.getId();
     let element = document.getElementById(elementID);
+    element.classList.toggle('ag-video-on');
+
+    let userDetailsID = 'user-details-' + localStream.getId();
+    let userDetailsElement = document.getElementById(userDetailsID);
+    userDetailsElement.classList.toggle('user-details');
 
 		if (localStream.isVideoOn()) {
       	
       		localStream.disableVideo()
       		document.getElementById("video-icon").innerHTML = "videocam_off"
-          element.style.display = 'none';
+
+          if(element)
+            element.style.display = 'none';
+          
+          if(userDetailsElement)
+            userDetailsElement.style.display = 'flex';
 		
 		} else {
+
       		localStream.unmuteVideo()
       		document.getElementById("video-icon").innerHTML = "videocam"
-          element.style.display = 'block';
-  	}
+
+          if(element)
+            element.style.display = 'block';
+
+          if(userDetailsElement)
+            userDetailsElement.style.display = 'none';
+    }
+
+    updateWindowSize();
 	}
 
  	const handleMic = (e) => {
@@ -424,19 +445,112 @@ const VideoCallCanvas = React.memo((props) => {
       }
   }
 
+  const activeAppClick = (e, usersActiveWindow) => {
+      e.preventDefault();
+      
+      if(usersActiveWindow && usersActiveWindow.url){
+          window.require("electron").shell.openExternal(usersActiveWindow.url);
+      }
+  }
+
+  const getAppLogo = (appData) => {
+
+      try {
+          if(appData.owner && appData.owner.name) {
+
+              var logo = appLogo(
+                  appData.owner.name.toLowerCase().replace(/ /g,'').replace('.exe',''),
+                  appData.url
+              ); 
+
+              return logo;   
+          } else {
+              
+              throw new Error('App Data Incorrect');
+          }
+
+      } catch (error) {
+
+          if(process.env.REACT_APP_DEV_BUILD)
+               console.log(error)
+
+          return "https://ui-avatars.com/api/?background=black&name="   
+      }
+  }
 
   return (
 
 	  <div id="ag-canvas" style={{background: '#2F3136'}}>
 	    
-      <div id="Dish"></div>
-      
-      <div className="ag-btn-group" style={{background: 'rgba(34, 36, 37, 0.8)'}}>
-        {exitBtn}
-        {videoControlBtn}
-        {audioControlBtn}
-        {screenShareBtn}
-        {collapseBtn}
+      <div id="Dish">
+
+        {
+          streamList.map(stream =>
+            <section style={{ width: 'auto'}}>
+              <div 
+                id={'ag-item-' + stream.getId()} 
+                class={stream.isVideoOn() ? 'ag-item Camera ag-video-on' : 'ag-item Camera'}
+                style={{ 
+                  height: '120px',
+                  display: stream.isVideoOn() ? 'block' : 'none'
+                }}
+              >
+              </div>
+              <div 
+                id={'user-details-' + stream.getId()} 
+                className={stream.isVideoOn() ? '' : 'user-details'}
+                style={{ 
+                  height: '40px',
+                  display: stream.isVideoOn() ? 'none' : 'flex',
+                  margin: '10px'
+                }}
+              >
+               <div className="bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-full mb-1 overflow-hidden">
+                    <img src={state.userProfileData.avatar} alt="" />
+                </div>
+                <div className="text-white px-1 font-bold tracking-wide"
+                  style={{display: 'table', height: '40px', marginLeft: '10px'}}
+                >
+                    <span style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px' }}>
+                      {state.userProfileData.name ? state.userProfileData.name.split(' ')[0] : ''}
+                      </span>
+                </div>
+                <div className="pointer items-center h-6 w-6 flex font-semibold overflow-hidden" 
+                  style={{ display: 'table', marginLeft: '10px' }}
+                >
+                    <a 
+                      style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: '40px' }}
+                      onClick={(e) => {
+                        activeAppClick( e, state.usersActiveWindows[state.userProfileData.id] )
+                      }}
+                    >
+                       { state.usersActiveWindows[state.userProfileData.id] ? 
+
+                            <div>
+                                <img 
+                                    src = { getAppLogo(state.usersActiveWindows[state.userProfileData.id]) } 
+                                    style = {{ borderRadius: '30%' }}
+                                />
+                            </div>
+                            :
+                            <div></div>
+                        }
+                    </a>
+                </div>
+
+              </div>
+            </section>
+          )
+        }
+        <div className={state.videoCallCompactMode ? "ag-btn-group-compact" : "ag-btn-group"} 
+          style={{background: 'rgba(34, 36, 37, 0.8)', height: '45px'}}
+          >
+          {exitBtn}
+          {videoControlBtn}
+          {audioControlBtn}
+          {screenShareBtn}
+          {collapseBtn}
+        </div>
       </div>
     </div>
 	);

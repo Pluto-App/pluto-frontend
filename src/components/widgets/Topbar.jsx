@@ -47,7 +47,7 @@ const TopBar = React.memo((props) => {
   }
 
   const videoTopBarStyle = {
-    background: '#202225',
+    background: '#25272C',
     height: '25px'
   }
 
