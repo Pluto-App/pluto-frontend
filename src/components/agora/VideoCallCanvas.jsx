@@ -530,118 +530,119 @@ const VideoCallCanvas = React.memo((props) => {
 	  <div id="ag-canvas" style={{background: '#2F3136'}}>
 	    
       <div id="Dish">
-
-        {
-          streamList.map(stream =>
-            <section style={{ width: 'auto', position: 'relative'}} key={stream.getId()}>
-              <div 
-                id={'ag-item-' + stream.getId()} 
-                className={stream.isVideoOn() ? 'ag-item Camera ag-video-on' : 'ag-item Camera'}
-                style={{ 
-                  height: '120px',
-                  display: stream.isVideoOn() ? 'block' : 'none'
-                }}
-              >
-              </div>
-              <div 
-                id={'ag-item-info-' + stream.getId()} 
-                className="ag-item-info"
-                style={{ 
-                  display: stream.isVideoOn() ? 'flex' : 'none',
-                  bottom: state.videoCallCompactMode ? '10px' : '30px',
-                  right: state.videoCallCompactMode ? '10px' : '30px'
-                }}
-              >
-                <div style={{ display: "table", height: '40px'}}>
-                  <span style={{ display: 'table-cell', verticalAlign: 'middle'}}>
-                    {
-                      state.currentTeam.users.find(user => user.id === stream.getId()) ?
-                      state.currentTeam.users.find(user => user.id === stream.getId()).name.split(' ')[0]
-                      : ''
-                    }
-                  </span>
-                </div>
-                <div className="pointer items-center h-6 w-6 flex font-semibold overflow-hidden" 
-                  style={{ display: 'table', marginLeft: '10px' }}
+        <div style={{ height: '100%'}}>
+          {
+            streamList.map(stream =>
+              <section style={{ width: '100%', position: 'relative'}} key={stream.getId()}>
+                <div 
+                  id={'ag-item-' + stream.getId()} 
+                  className={stream.isVideoOn() ? 'ag-item Camera ag-video-on' : 'ag-item Camera'}
+                  style={{ 
+                    height: '120px',
+                    display: stream.isVideoOn() ? 'block' : 'none'
+                  }}
                 >
-                    <a 
-                      style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: '40px' }}
-                      onClick={(e) => {
-                        activeAppClick( e, state.usersActiveWindows[stream.getId()] )
-                      }}
-                    >
-                       { state.usersActiveWindows[stream.getId()] ? 
-
-                            <div>
-                                <img 
-                                    src = { getAppLogo(state.usersActiveWindows[stream.getId()]) } 
-                                    style = {{ borderRadius: '30%' }}
-                                />
-                            </div>
-                            :
-                            <div></div>
-                        }
-                    </a>
                 </div>
-              </div>
-              <div 
-                id={'user-details-' + stream.getId()} 
-                className={stream.isVideoOn() ? '' : 'user-details'}
-                style={{ 
-                  height: '40px',
-                  display: stream.isVideoOn() ? 'none' : 'flex',
-                  margin: '10px'
-                }}
-              >
-                <div className="bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-full mb-1 overflow-hidden">
-                    <img 
-                      src={
-                        state.currentTeam.users.find(user => user.id === stream.getId()) ?
-                        state.currentTeam.users.find(user => user.id === stream.getId()).avatar
-                        : ''
-                      } 
-                    alt="" />
-                </div>
-                <div className="text-white px-1 font-bold tracking-wide"
-                  style={{display: 'table', height: '40px', marginLeft: '10px'}}
+                <div 
+                  id={'ag-item-info-' + stream.getId()} 
+                  className="ag-item-info"
+                  style={{ 
+                    display: stream.isVideoOn() ? 'flex' : 'none',
+                    bottom: state.videoCallCompactMode ? '10px' : '30px',
+                    right: state.videoCallCompactMode ? '10px' : '30px'
+                  }}
                 >
-                    <span style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px' }}>
+                  <div style={{ display: "table", height: '40px'}}>
+                    <span style={{ display: 'table-cell', verticalAlign: 'middle'}}>
                       {
                         state.currentTeam.users.find(user => user.id === stream.getId()) ?
                         state.currentTeam.users.find(user => user.id === stream.getId()).name.split(' ')[0]
                         : ''
                       }
                     </span>
+                  </div>
+                  <div className="pointer items-center h-6 w-6 flex font-semibold overflow-hidden" 
+                    style={{ display: 'table', marginLeft: '10px' }}
+                  >
+                      <a 
+                        style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: '40px' }}
+                        onClick={(e) => {
+                          activeAppClick( e, state.usersActiveWindows[stream.getId()] )
+                        }}
+                      >
+                         { state.usersActiveWindows[stream.getId()] ? 
+
+                              <div>
+                                  <img 
+                                      src = { getAppLogo(state.usersActiveWindows[stream.getId()]) } 
+                                      style = {{ borderRadius: '30%' }}
+                                  />
+                              </div>
+                              :
+                              <div></div>
+                          }
+                      </a>
+                  </div>
                 </div>
-                <div className="pointer items-center h-6 w-6 flex font-semibold overflow-hidden" 
-                  style={{ display: 'table', marginLeft: '10px' }}
+                <div 
+                  id={'user-details-' + stream.getId()} 
+                  className={stream.isVideoOn() ? '' : 'user-details'}
+                  style={{ 
+                    height: '40px',
+                    display: stream.isVideoOn() ? 'none' : 'flex',
+                    margin: '10px'
+                  }}
                 >
-                    <a 
-                      style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: '40px' }}
-                      onClick={(e) => {
-                        activeAppClick( e, state.usersActiveWindows[stream.getId()] )
-                      }}
-                    >
-                       { state.usersActiveWindows[stream.getId()] ? 
-
-                            <div>
-                                <img 
-                                    src = { getAppLogo(state.usersActiveWindows[stream.getId()]) } 
-                                    style = {{ borderRadius: '30%' }}
-                                />
-                            </div>
-                            :
-                            <div></div>
+                  <div className="bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-full mb-1 overflow-hidden">
+                      <img 
+                        src={
+                          state.currentTeam.users.find(user => user.id === stream.getId()) ?
+                          state.currentTeam.users.find(user => user.id === stream.getId()).avatar
+                          : ''
+                        } 
+                      alt="" />
+                  </div>
+                  <div className="text-white px-1 font-bold tracking-wide"
+                    style={{display: 'table', height: '40px', marginLeft: '10px'}}
+                  >
+                      <span style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px' }}>
+                        {
+                          state.currentTeam.users.find(user => user.id === stream.getId()) ?
+                          state.currentTeam.users.find(user => user.id === stream.getId()).name.split(' ')[0]
+                          : ''
                         }
-                    </a>
-                </div>
+                      </span>
+                  </div>
+                  <div className="pointer items-center h-6 w-6 flex font-semibold overflow-hidden" 
+                    style={{ display: 'table', marginLeft: '10px' }}
+                  >
+                      <a 
+                        style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: '40px' }}
+                        onClick={(e) => {
+                          activeAppClick( e, state.usersActiveWindows[stream.getId()] )
+                        }}
+                      >
+                         { state.usersActiveWindows[stream.getId()] ? 
 
-              </div>
-            </section>
-          )
-        }
+                              <div>
+                                  <img 
+                                      src = { getAppLogo(state.usersActiveWindows[stream.getId()]) } 
+                                      style = {{ borderRadius: '30%' }}
+                                  />
+                              </div>
+                              :
+                              <div></div>
+                          }
+                      </a>
+                  </div>
+
+                </div>
+              </section>
+            )
+          }
+        </div>
         <div className={state.videoCallCompactMode ? "ag-btn-group-compact" : "ag-btn-group"} 
-          style={{background: 'rgba(34, 36, 37, 0.8)', height: '45px'}}
+          style={{background: 'rgba(34, 36, 37, 0.8)', height: '45px', position: 'absolute', bottom: '0'}}
           >
           {exitBtn}
           {videoControlBtn}
