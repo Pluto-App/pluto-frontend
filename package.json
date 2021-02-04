@@ -16,7 +16,7 @@
     "active-win": "^6.2.0",
     "agora-rtc-sdk": "^3.1.1",
     "animate.css": "^3.7.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "axios-progress-bar": "^1.2.0",
     "bulma": "^0.9.0",
     "cross-env": "^7.0.2",
