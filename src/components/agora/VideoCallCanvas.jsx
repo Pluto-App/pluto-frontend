@@ -166,6 +166,8 @@ const VideoCallCanvas = React.memo((props) => {
     AgoraClient.init(props.appId, () => {
       	
         subscribeStreamEvents();
+
+        console.log("PROPS: " + props.uid);
       	
         AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
 
@@ -246,6 +248,9 @@ const VideoCallCanvas = React.memo((props) => {
     let element = document.getElementById(elementID);
     element.classList.toggle('ag-video-on');
 
+    let elementInfoId = 'ag-item-info-' + localStream.getId();
+    let elementInfo = document.getElementById(elementInfoId);
+
     let userDetailsID = 'user-details-' + localStream.getId();
     let userDetailsElement = document.getElementById(userDetailsID);
     userDetailsElement.classList.toggle('user-details');
@@ -257,6 +262,9 @@ const VideoCallCanvas = React.memo((props) => {
 
           if(element)
             element.style.display = 'none';
+
+          if(elementInfo)
+            elementInfo.style.display = 'none';
           
           if(userDetailsElement)
             userDetailsElement.style.display = 'flex';
@@ -268,6 +276,9 @@ const VideoCallCanvas = React.memo((props) => {
 
           if(element)
             element.style.display = 'block';
+
+          if(elementInfo)
+            elementInfo.style.display = 'flex';
 
           if(userDetailsElement)
             userDetailsElement.style.display = 'none';
@@ -410,10 +421,15 @@ const VideoCallCanvas = React.memo((props) => {
       else return Increment;
   }
 
-  function Dish() {
+  const Dish = () => {
 
-    let Margin = 2;
+    let Margin;
     let Scenary = document.getElementById('Dish');
+
+    if(state.videoCallCompactMode)
+      Margin = 2;
+    else
+      Margin = 20;
 
     if(Scenary){
       let Width = Scenary.offsetWidth - (Margin * 2);
@@ -486,15 +502,56 @@ const VideoCallCanvas = React.memo((props) => {
 
         {
           streamList.map(stream =>
-            <section style={{ width: 'auto'}}>
+            <section style={{ width: 'auto', position: 'relative'}} key={stream.getId()}>
               <div 
                 id={'ag-item-' + stream.getId()} 
-                class={stream.isVideoOn() ? 'ag-item Camera ag-video-on' : 'ag-item Camera'}
+                className={stream.isVideoOn() ? 'ag-item Camera ag-video-on' : 'ag-item Camera'}
                 style={{ 
                   height: '120px',
                   display: stream.isVideoOn() ? 'block' : 'none'
                 }}
               >
+              </div>
+              <div 
+                id={'ag-item-info-' + stream.getId()} 
+                className="ag-item-info"
+                style={{ 
+                  display: stream.isVideoOn() ? 'flex' : 'none',
+                  bottom: state.videoCallCompactMode ? '10px' : '30px',
+                  right: state.videoCallCompactMode ? '10px' : '30px'
+                }}
+              >
+                <div style={{ display: "table", height: '40px'}}>
+                  <span style={{ display: 'table-cell', verticalAlign: 'middle'}}>
+                    {
+                      state.currentTeam.users.find(user => user.id === stream.getId()).name ?
+                      state.currentTeam.users.find(user => user.id === stream.getId()).name.split(' ')[0]
+                      : ''
+                    }
+                  </span>
+                </div>
+                <div className="pointer items-center h-6 w-6 flex font-semibold overflow-hidden" 
+                  style={{ display: 'table', marginLeft: '10px' }}
+                >
+                    <a 
+                      style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: '40px' }}
+                      onClick={(e) => {
+                        activeAppClick( e, state.usersActiveWindows[state.userProfileData.id] )
+                      }}
+                    >
+                       { state.usersActiveWindows[state.userProfileData.id] ? 
+
+                            <div>
+                                <img 
+                                    src = { getAppLogo(state.usersActiveWindows[state.userProfileData.id]) } 
+                                    style = {{ borderRadius: '30%' }}
+                                />
+                            </div>
+                            :
+                            <div></div>
+                        }
+                    </a>
+                </div>
               </div>
               <div 
                 id={'user-details-' + stream.getId()} 

@@ -23,7 +23,7 @@ const VideoCall = React.memo((props) => {
       transcode:  Cookies.get("transcode") || "interop",
       baseMode:  Cookies.get("baseMode") || "avc",
       appId : AGORA_APP_ID,
-      uid:  undefined
+      uid: JSON.parse(localStorage.getItem('currentUser')).user.id
   });
 
    useEffect(() => {

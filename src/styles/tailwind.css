@@ -21816,16 +21816,32 @@ video {
 
 /* Aspect Ratio Number */
 
-/*#Dish .ag-item:after {
-  color: #aaa;
-  font-size: 13px;
+#Dish .ag-item-info {
+  font-size: 12px;
   font-family: Arial, Helvetica, sans-serif;
   position: absolute;
-  bottom: 20px;
-  right: 23px;
   font-weight: 100;
   display: block;
-}*/
+  opacity: 0.5;
+  background: black;
+  padding: 2px;
+}
+
+/* Details (optional) */
+
+/* Aspect Ratio Number */
+
+/*    #Dish .ag-item:after {
+        color: #aaa;
+        font-size: 13px;
+        font-family: Arial, Helvetica, sans-serif;
+        position: absolute;
+        bottom: 20px;
+        right: 23px;
+        font-weight: 100;
+        content: "Sambhav";
+        display: block;
+    }*/
 
 /* Animation */
 
