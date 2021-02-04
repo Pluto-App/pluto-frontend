@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useRef, useLayoutEffect } from 'react'
 import { merge } from 'lodash'
 import AgoraRTC from 'agora-rtc-sdk'
 
@@ -10,7 +10,11 @@ import {AuthContext} from '../../context/AuthContext'
 import { appLogo } from '../../utils/AppLogo';
 
 const { remote } = window.require('electron');
+
 var localStream = {};
+var streamState = {};
+
+const AgoraClient = AgoraRTC.createClient({ mode: 'interop', codec: "vp8" });
 
 const VideoCallCanvas = React.memo((props) => {
 
@@ -18,9 +22,12 @@ const VideoCallCanvas = React.memo((props) => {
 	const { authData, setAuthData } = useContext(AuthContext);
 
 	const [ streamList, setStreamList ] = useState([]);
+  const streamListRef = useRef();
+  streamListRef.current = streamList;
+
 	const [ userData, setUserData ] = useState({});
 
-	const AgoraClient = AgoraRTC.createClient({ mode: props.transcode, codec: "vp8" });
+	// const [ AgoraClient, setAgoraClient ] = useState(AgoraRTC.createClient({ mode: props.transcode, codec: "vp8" }));
 
 	const [ sharingScreen, setSharingScreen ] = useState(false);
 	const [ enabledMedia, setEnabledMedia ] = useState({audio: false, video: false});
@@ -46,8 +53,6 @@ const VideoCallCanvas = React.memo((props) => {
 
 	      	let stream = evt.stream
 	      	console.log("New stream added: " + stream.getId())
-	      	console.log('At ' + new Date().toLocaleTimeString())
-	      	console.log("Subscribe ", stream)
 
 	      	AgoraClient.subscribe(stream, function (err) {
 	        	console.log("Subscribe stream failed", err)
@@ -58,8 +63,6 @@ const VideoCallCanvas = React.memo((props) => {
 
 	      	let stream = evt.stream
 	      	console.log("New stream added: " + stream.getId())
-	      	console.log('At ' + new Date().toLocaleTimeString())
-	      	console.log("Subscribe ", stream)
 
 	      	AgoraClient.subscribe(stream, function (err) {
 	        	console.log("Subscribe stream failed", err)
@@ -69,19 +72,13 @@ const VideoCallCanvas = React.memo((props) => {
 	    AgoraClient.on('peer-leave', function (evt) {
 
 	      	console.log("Peer has left: " + evt.uid)
-	      	console.log(new Date().toLocaleTimeString())
-	      	console.log(evt)
-
 	      	removeStream(evt.uid)
 	    })
 
 	    AgoraClient.on('stream-subscribed', function (evt) {
 
       	let stream = evt.stream
-      	console.log("Got stream-subscribed event")
-      	console.log(new Date().toLocaleTimeString())
-      	console.log("Subscribe remote stream successfully: " + stream.getId())
-      	console.log(evt)
+      	console.log("New stream subscribed: " + stream.getId());
 
      	  addStream(stream)
 	    })
@@ -90,8 +87,6 @@ const VideoCallCanvas = React.memo((props) => {
 	      	
 	      	let stream = evt.stream
 	      	console.log("Stream removed: " + stream.getId())
-	      	console.log(new Date().toLocaleTimeString())
-	      	console.log(evt)
 	      
 	      	removeStream(stream.getId())
 	    })
@@ -100,12 +95,22 @@ const VideoCallCanvas = React.memo((props) => {
           
           let uid = evt.uid;
           console.log("Mute videos: " + uid);
+          var found = false;
 
-          let elementID = 'ag-item-' + uid;
-          let element = document.getElementById(elementID);
-          element.style.display = 'none';
-          element.classList.toggle('ag-video-on');
-          updateWindowSize();
+          streamListRef.current.map( (stream,index) => {
+            if(stream.getId() == uid){
+              stream.muteVideo();
+              found = true;
+            }
+          })
+
+          if(!found){
+            
+            if(!streamState[uid])
+              streamState[uid] = {};
+
+            streamState[uid]['video'] = false;
+          }
       })
 
       AgoraClient.on("unmute-video", function (evt) {
@@ -113,31 +118,30 @@ const VideoCallCanvas = React.memo((props) => {
           let uid = evt.uid;
           console.log("Unmute video: " + uid);
 
-          let elementID = 'ag-item-' + uid;
-          let element = document.getElementById(elementID);
-          element.style.display = 'block';
-          element.classList.toggle('ag-video-on');
-          updateWindowSize();
+          streamListRef.current.map( (stream,index) => {
+            if(stream.getId() == uid){
+              stream.unmuteVideo();
+            }
+          })
       })
 	}
 
 	const addStream = (stream, push = false) => {
 
-    let repeatition = streamList.some(item => {
+    let repeatition = streamListRef.current.some(item => {
       return item.getId() === stream.getId()
     })
     if (repeatition) {
       return
     }
+    var tempStreamList;
     if (push) {
-    	setStreamList(
-    		streamList.concat([stream])
-  		)
+      tempStreamList = streamListRef.current.concat([stream]);
     } else {
-    	setStreamList(
-    		[stream].concat(streamList)
-  		)
+    	tempStreamList = [stream].concat(streamListRef.current);
     }
+
+    setStreamList(tempStreamList)
 	}
 
 	const removeStream = (uid) => {
@@ -147,13 +151,13 @@ const VideoCallCanvas = React.memo((props) => {
       element.parentNode.removeChild(element)
     }
 
-    streamList.map((item, index) => {
+    streamListRef.current.map((item, index) => {
 
       if (item.getId() === uid) {
 
         item.close()
         
-        let tempList = [...streamList]
+        let tempList = [...streamListRef.current]
         tempList.splice(index, 1)
 
         setStreamList(tempList)
@@ -161,13 +165,24 @@ const VideoCallCanvas = React.memo((props) => {
     })
 	}
 
+  const updateStream = (stream) => {
+
+    //console.log(stream);
+    var tempStreamList = streamListRef.current;
+
+    tempStreamList.map( (item,index) => {
+      if(stream.getId() == item.getId())
+        tempStreamList[index] = stream;
+    })
+  
+    setStreamList(tempStreamList)
+  }
+
   useEffect(() => {
 
     AgoraClient.init(props.appId, () => {
       	
         subscribeStreamEvents();
-
-        console.log("PROPS: " + props.uid);
       	
         AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
 
@@ -175,14 +190,14 @@ const VideoCallCanvas = React.memo((props) => {
       		localStream = streamInit(uid, props.videoProfile);
 
       		localStream.init(() => {
-      			localStream.disableVideo();
-      			localStream.disableAudio();
+            
+            localStream.muteVideo();
+            localStream.muteAudio();
 
       			addStream(localStream, true)
-          		AgoraClient.publish(localStream, err => {
-            			alert("Publish local stream error: " + err);
-          		})
-
+        		AgoraClient.publish(localStream, err => {
+          			alert("Publish local stream error: " + err);
+        		})
         	},
           	err => {
 
@@ -213,18 +228,33 @@ const VideoCallCanvas = React.memo((props) => {
 
     streamList.map((stream, index) => {
 
-     	let id = stream.getId()
-     	let elementID = 'ag-item-' + id;
+     	let streamId = stream.getId()
+     	let elementID = 'ag-item-' + streamId;
 
       if(stream.isPlaying())
           stream.stop();
 
-        stream.play(elementID);
+      if(streamState[streamId]){
+        if(streamState[streamId]['video'] == false)
+          stream.muteVideo();
+
+        streamState[streamId] = undefined;
+      }
+
+      stream.play(elementID);
+
+      console.log(elementID + ' - ' + stream.isVideoOn());
+      console.log(elementID + ' - ' + stream.userMuteVideo);
+      console.log(elementID + ' - ' + stream.hasVideo());
     })
 
     updateWindowSize();
 
   }, [streamList, state.videoCallCompactMode])
+
+  useLayoutEffect(() => {
+       updateWindowSize();
+   }, [])
 
   const updateWindowSize = () => {
 
@@ -237,6 +267,7 @@ const VideoCallCanvas = React.memo((props) => {
 
       window.require("electron").ipcRenderer.send('set-video-player-height', height);
 
+      console.log('height: ' + height);
     }
 
     Dish();
@@ -257,7 +288,7 @@ const VideoCallCanvas = React.memo((props) => {
 
 		if (localStream.isVideoOn()) {
       	
-      		localStream.disableVideo()
+      		localStream.muteVideo()
       		document.getElementById("video-icon").innerHTML = "videocam_off"
 
           if(element)
@@ -449,7 +480,7 @@ const VideoCallCanvas = React.memo((props) => {
 
       max = max - (Margin * 2);
       setWidth(max, Margin);  
-    }    
+    }
   }
 
   function setWidth(width, margin) {
@@ -524,7 +555,7 @@ const VideoCallCanvas = React.memo((props) => {
                 <div style={{ display: "table", height: '40px'}}>
                   <span style={{ display: 'table-cell', verticalAlign: 'middle'}}>
                     {
-                      state.currentTeam.users.find(user => user.id === stream.getId()).name ?
+                      state.currentTeam.users.find(user => user.id === stream.getId()) ?
                       state.currentTeam.users.find(user => user.id === stream.getId()).name.split(' ')[0]
                       : ''
                     }
@@ -536,14 +567,14 @@ const VideoCallCanvas = React.memo((props) => {
                     <a 
                       style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: '40px' }}
                       onClick={(e) => {
-                        activeAppClick( e, state.usersActiveWindows[state.userProfileData.id] )
+                        activeAppClick( e, state.usersActiveWindows[stream.getId()] )
                       }}
                     >
-                       { state.usersActiveWindows[state.userProfileData.id] ? 
+                       { state.usersActiveWindows[stream.getId()] ? 
 
                             <div>
                                 <img 
-                                    src = { getAppLogo(state.usersActiveWindows[state.userProfileData.id]) } 
+                                    src = { getAppLogo(state.usersActiveWindows[stream.getId()]) } 
                                     style = {{ borderRadius: '30%' }}
                                 />
                             </div>
@@ -562,15 +593,25 @@ const VideoCallCanvas = React.memo((props) => {
                   margin: '10px'
                 }}
               >
-               <div className="bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-full mb-1 overflow-hidden">
-                    <img src={state.userProfileData.avatar} alt="" />
+                <div className="bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-full mb-1 overflow-hidden">
+                    <img 
+                      src={
+                        state.currentTeam.users.find(user => user.id === stream.getId()) ?
+                        state.currentTeam.users.find(user => user.id === stream.getId()).avatar
+                        : ''
+                      } 
+                    alt="" />
                 </div>
                 <div className="text-white px-1 font-bold tracking-wide"
                   style={{display: 'table', height: '40px', marginLeft: '10px'}}
                 >
                     <span style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px' }}>
-                      {state.userProfileData.name ? state.userProfileData.name.split(' ')[0] : ''}
-                      </span>
+                      {
+                        state.currentTeam.users.find(user => user.id === stream.getId()) ?
+                        state.currentTeam.users.find(user => user.id === stream.getId()).name.split(' ')[0]
+                        : ''
+                      }
+                    </span>
                 </div>
                 <div className="pointer items-center h-6 w-6 flex font-semibold overflow-hidden" 
                   style={{ display: 'table', marginLeft: '10px' }}
@@ -578,14 +619,14 @@ const VideoCallCanvas = React.memo((props) => {
                     <a 
                       style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: '40px' }}
                       onClick={(e) => {
-                        activeAppClick( e, state.usersActiveWindows[state.userProfileData.id] )
+                        activeAppClick( e, state.usersActiveWindows[stream.getId()] )
                       }}
                     >
-                       { state.usersActiveWindows[state.userProfileData.id] ? 
+                       { state.usersActiveWindows[stream.getId()] ? 
 
                             <div>
                                 <img 
-                                    src = { getAppLogo(state.usersActiveWindows[state.userProfileData.id]) } 
+                                    src = { getAppLogo(state.usersActiveWindows[stream.getId()]) } 
                                     style = {{ borderRadius: '30%' }}
                                 />
                             </div>

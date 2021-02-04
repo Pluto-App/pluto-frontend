@@ -21827,22 +21827,6 @@ video {
   padding: 2px;
 }
 
-/* Details (optional) */
-
-/* Aspect Ratio Number */
-
-/*    #Dish .ag-item:after {
-        color: #aaa;
-        font-size: 13px;
-        font-family: Arial, Helvetica, sans-serif;
-        position: absolute;
-        bottom: 20px;
-        right: 23px;
-        font-weight: 100;
-        content: "Sambhav";
-        display: block;
-    }*/
-
 /* Animation */
 
 @keyframes show {

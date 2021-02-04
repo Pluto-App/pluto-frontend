@@ -10,8 +10,10 @@ export const getTeam = async ({state, effects}, {authData, team_id}) => {
 
   var onlineUsers = await effects.user.getOnlineUsers(authData, teamData.tid);
   
-  for(var user_id of onlineUsers){
-    state.onlineUsers[user_id] = true;
+  if(onlineUsers){
+     for(var user_id of onlineUsers){
+      state.onlineUsers[user_id] = true;
+    }   
   }
 
   localStorage.setItem('current_team',state.currentTeam.tid);
