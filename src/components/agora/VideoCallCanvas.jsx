@@ -13,6 +13,7 @@ const { remote } = window.require('electron');
 
 var localStream = {};
 var streamState = {};
+var needWindowUpdate = false;
 
 const AgoraClient = AgoraRTC.createClient({ mode: 'interop', codec: "vp8" });
 
@@ -26,8 +27,16 @@ const VideoCallCanvas = React.memo((props) => {
   streamListRef.current = streamList;
 
 	const [ userData, setUserData ] = useState({});
+  const [ numActiveVideo, setNumActiveVideo ] = useState(0);
 
-	// const [ AgoraClient, setAgoraClient ] = useState(AgoraRTC.createClient({ mode: props.transcode, codec: "vp8" }));
+  if(needWindowUpdate){
+    console.log('updating');
+    console.log(document.getElementsByClassName('ag-video-on').length);
+
+    setNumActiveVideo(document.getElementsByClassName('ag-video-on').length);
+    needWindowUpdate = false;  
+  }
+  
 
 	const [ sharingScreen, setSharingScreen ] = useState(false);
 	const [ enabledMedia, setEnabledMedia ] = useState({audio: false, video: false});
@@ -99,7 +108,7 @@ const VideoCallCanvas = React.memo((props) => {
 
           streamListRef.current.map( (stream,index) => {
             if(stream.getId() == uid){
-              stream.muteVideo();
+              toggleVideoView(stream, 'mute');
               found = true;
             }
           })
@@ -111,6 +120,8 @@ const VideoCallCanvas = React.memo((props) => {
 
             streamState[uid]['video'] = false;
           }
+
+          needWindowUpdate = true;
       })
 
       AgoraClient.on("unmute-video", function (evt) {
@@ -120,9 +131,11 @@ const VideoCallCanvas = React.memo((props) => {
 
           streamListRef.current.map( (stream,index) => {
             if(stream.getId() == uid){
-              stream.unmuteVideo();
+              toggleVideoView(stream, 'unmute');
             }
           })
+
+          needWindowUpdate = true;
       })
 	}
 
@@ -252,9 +265,83 @@ const VideoCallCanvas = React.memo((props) => {
 
   }, [streamList, state.videoCallCompactMode])
 
-  useLayoutEffect(() => {
-       updateWindowSize();
-   }, [])
+  useEffect(() => {
+    
+    updateWindowSize();
+
+  },[numActiveVideo])
+
+  const toggleVideoView = (stream, action) => {
+
+    var uid = stream.getId();
+
+    let elementID = 'ag-item-' + uid;
+    let element = document.getElementById(elementID);
+    element.classList.toggle('ag-video-on');
+
+    let elementInfoId = 'ag-item-info-' + uid;
+    let elementInfo = document.getElementById(elementInfoId);
+
+    let userDetailsID = 'user-details-' + uid;
+    let userDetailsElement = document.getElementById(userDetailsID);
+    userDetailsElement.classList.toggle('user-details');
+
+    if (action == 'mute') {
+        
+          stream.muteVideo()
+
+          if(element)
+            element.style.display = 'none';
+
+          if(elementInfo)
+            elementInfo.style.display = 'none';
+          
+          if(userDetailsElement)
+            userDetailsElement.style.display = 'flex';
+    
+    } else {
+
+          stream.unmuteVideo()
+
+          if(element)
+            element.style.display = 'block';
+
+          if(elementInfo)
+            elementInfo.style.display = 'flex';
+
+          if(userDetailsElement)
+            userDetailsElement.style.display = 'none';
+    }
+
+    // if (stream.isVideoOn()) {
+        
+    //       stream.muteVideo()
+
+    //       if(element)
+    //         element.style.display = 'none';
+
+    //       if(elementInfo)
+    //         elementInfo.style.display = 'none';
+          
+    //       if(userDetailsElement)
+    //         userDetailsElement.style.display = 'flex';
+    
+    // } else {
+
+    //       stream.unmuteVideo()
+
+    //       if(element)
+    //         element.style.display = 'block';
+
+    //       if(elementInfo)
+    //         elementInfo.style.display = 'flex';
+
+    //       if(userDetailsElement)
+    //         userDetailsElement.style.display = 'none';
+    // }
+
+    updateWindowSize();
+  }
 
   const updateWindowSize = () => {
 
@@ -469,7 +556,7 @@ const VideoCallCanvas = React.memo((props) => {
       let max = 0;
 
       let i = 1;
-      while (i < 5000) {
+      while (i < 2500) {
           let w = Area(i, Cameras.length, Width, Height, Margin);
           if (w === false) {
               max =  i - 1;
@@ -479,6 +566,11 @@ const VideoCallCanvas = React.memo((props) => {
       }
 
       max = max - (Margin * 2);
+
+      if(state.videoCallCompactMode){
+        max = Width - 4;
+      }
+
       setWidth(max, Margin);  
     }
   }
@@ -530,10 +622,15 @@ const VideoCallCanvas = React.memo((props) => {
 	  <div id="ag-canvas" style={{background: '#2F3136'}}>
 	    
       <div id="Dish">
-        <div style={{ height: '100%'}}>
+        <div style={{ 
+            height: state.videoCallCompactMode ? '100%' : '',
+            display: state.videoCallCompactMode ? '' : 'flex'
+          }}
+        >
           {
             streamList.map(stream =>
-              <section style={{ width: '100%', position: 'relative'}} key={stream.getId()}>
+              <section style={{ width: 'auto', position: 'relative'}} key={stream.getId()}>
+
                 <div 
                   id={'ag-item-' + stream.getId()} 
                   className={stream.isVideoOn() ? 'ag-item Camera ag-video-on' : 'ag-item Camera'}
@@ -543,6 +640,7 @@ const VideoCallCanvas = React.memo((props) => {
                   }}
                 >
                 </div>
+                
                 <div 
                   id={'ag-item-info-' + stream.getId()} 
                   className="ag-item-info"
@@ -584,16 +682,17 @@ const VideoCallCanvas = React.memo((props) => {
                       </a>
                   </div>
                 </div>
+
                 <div 
                   id={'user-details-' + stream.getId()} 
                   className={stream.isVideoOn() ? '' : 'user-details'}
                   style={{ 
-                    height: '40px',
+                    height: '50px',
                     display: stream.isVideoOn() ? 'none' : 'flex',
                     margin: '10px'
                   }}
                 >
-                  <div className="bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-full mb-1 overflow-hidden">
+                  <div className="h-12 w-12 flex rounded-full mb-1 overflow-hidden">
                       <img 
                         src={
                           state.currentTeam.users.find(user => user.id === stream.getId()) ?
@@ -602,8 +701,8 @@ const VideoCallCanvas = React.memo((props) => {
                         } 
                       alt="" />
                   </div>
-                  <div className="text-white px-1 font-bold tracking-wide"
-                    style={{display: 'table', height: '40px', marginLeft: '10px'}}
+                  <div className="text-white px-1 font-bold "
+                    style={{display: 'table', height: '50px', marginLeft: '10px'}}
                   >
                       <span style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px' }}>
                         {
@@ -613,11 +712,11 @@ const VideoCallCanvas = React.memo((props) => {
                         }
                       </span>
                   </div>
-                  <div className="pointer items-center h-6 w-6 flex font-semibold overflow-hidden" 
+                  <div className="pointer items-center h-6 w-6 flex overflow-hidden" 
                     style={{ display: 'table', marginLeft: '10px' }}
                   >
                       <a 
-                        style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: '40px' }}
+                        style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: '50px' }}
                         onClick={(e) => {
                           activeAppClick( e, state.usersActiveWindows[stream.getId()] )
                         }}
@@ -635,8 +734,8 @@ const VideoCallCanvas = React.memo((props) => {
                           }
                       </a>
                   </div>
-
                 </div>
+
               </section>
             )
           }
