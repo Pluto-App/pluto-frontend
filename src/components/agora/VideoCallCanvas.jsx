@@ -30,13 +30,10 @@ const VideoCallCanvas = React.memo((props) => {
   const [ numActiveVideo, setNumActiveVideo ] = useState(0);
 
   if(needWindowUpdate){
-    console.log('updating');
-    console.log(document.getElementsByClassName('ag-video-on').length);
 
     setNumActiveVideo(document.getElementsByClassName('ag-video-on').length);
     needWindowUpdate = false;  
   }
-  
 
 	const [ sharingScreen, setSharingScreen ] = useState(false);
 	const [ enabledMedia, setEnabledMedia ] = useState({audio: false, video: false});
@@ -114,7 +111,6 @@ const VideoCallCanvas = React.memo((props) => {
           })
 
           if(!found){
-            
             if(!streamState[uid])
               streamState[uid] = {};
 
@@ -128,12 +124,21 @@ const VideoCallCanvas = React.memo((props) => {
           
           let uid = evt.uid;
           console.log("Unmute video: " + uid);
+          var found = false;
 
           streamListRef.current.map( (stream,index) => {
             if(stream.getId() == uid){
               toggleVideoView(stream, 'unmute');
+              found = true;
             }
           })
+
+          if(!found){
+            if(!streamState[uid])
+              streamState[uid] = {};
+
+            streamState[uid]['video'] = true;
+          }
 
           needWindowUpdate = true;
       })
@@ -147,6 +152,9 @@ const VideoCallCanvas = React.memo((props) => {
     if (repeatition) {
       return
     }
+
+    console.log(streamState[stream.getId()]);
+
     var tempStreamList;
     if (push) {
       tempStreamList = streamListRef.current.concat([stream]);
@@ -177,19 +185,6 @@ const VideoCallCanvas = React.memo((props) => {
       }
     })
 	}
-
-  const updateStream = (stream) => {
-
-    //console.log(stream);
-    var tempStreamList = streamListRef.current;
-
-    tempStreamList.map( (item,index) => {
-      if(stream.getId() == item.getId())
-        tempStreamList[index] = stream;
-    })
-  
-    setStreamList(tempStreamList)
-  }
 
   useEffect(() => {
 
@@ -248,17 +243,17 @@ const VideoCallCanvas = React.memo((props) => {
           stream.stop();
 
       if(streamState[streamId]){
-        if(streamState[streamId]['video'] == false)
-          stream.muteVideo();
 
+        if(streamState[streamId]['video'] == false){
+          stream.muteVideo();
+          toggleVideoView(stream, 'mute')
+        }
+
+        let element = document.getElementById(elementID);
         streamState[streamId] = undefined;
       }
 
       stream.play(elementID);
-
-      console.log(elementID + ' - ' + stream.isVideoOn());
-      console.log(elementID + ' - ' + stream.userMuteVideo);
-      console.log(elementID + ' - ' + stream.hasVideo());
     })
 
     updateWindowSize();
@@ -353,8 +348,6 @@ const VideoCallCanvas = React.memo((props) => {
       let height = 70 + (videoElements*148) + (userDetailsElements*60);
 
       window.require("electron").ipcRenderer.send('set-video-player-height', height);
-
-      console.log('height: ' + height);
     }
 
     Dish();
