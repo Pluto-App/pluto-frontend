@@ -348,6 +348,8 @@ const VideoCallCanvas = React.memo((props) => {
       let height = 70 + (videoElements*148) + (userDetailsElements*60);
 
       window.require("electron").ipcRenderer.send('set-video-player-height', height);
+
+      console.log('height: '+height);
     }
 
     Dish();

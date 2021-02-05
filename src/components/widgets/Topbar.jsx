@@ -54,7 +54,10 @@ const TopBar = React.memo((props) => {
 
 
   return (
-    <div className="topBar draggable-elem" style={ page == 'video-call' ? videoTopBarStyle : {}}>
+    <div 
+      className='topBar' 
+      style={ page == 'video-call' ? videoTopBarStyle : {}}
+    >
       <div className="flex justify-between items-center px-2 p-0">
         {/*
         <button className="text-white cursor-pointer hover:bg-gray-900 focus:outline-none">
@@ -62,19 +65,19 @@ const TopBar = React.memo((props) => {
         </button>
         */}
 
-        {
-          page == 'video-call' && 
-          <div className="flex-1 draggable-elem text-white font-bold center" >
+        <div className="flex-1 draggable-elem text-white font-bold center" >
+          { 
+            page == 'video-call' &&
             <i className="material-icons md-light md-inactive" 
                style={{ fontSize: "24px" }}> 
               drag_handle 
             </i>
-          </div>
-        }
+          }
+        </div>
         
         {
           {
-            '#/': <MainTopBar />,
+            'main': <MainTopBar />,
             'video-call': <VideoCallTopBar />
           }[page]
         }

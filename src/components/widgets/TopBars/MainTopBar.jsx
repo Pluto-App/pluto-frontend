@@ -32,17 +32,17 @@ const MiniVideoCallTopBar = React.memo((props) => {
 
   return (
     <>
-       {
-          isMac ?
-          ''
-          : 
-          <div className="flex items-center">
-            <button className="text-white hover:bg-gray-900 focus:outline-none" style={{ marginRight: "10px" }}>
-              <i className="material-icons md-light md-inactive" onClick={() => { minimize() }} style={{ fontSize: "16px", margin: "0", marginTop: "-15px" }}> minimize </i></button>
-            <button className="text-white hover:bg-gray-900 focus:outline-none" >
-              <i className="material-icons md-light md-inactive" onClick={() => { close() }} style={{ fontSize: "16px", margin: "0" }}> close </i>
-            </button>
-          </div>  
+      {
+        isMac ?
+        ''
+        : 
+        <div className="flex items-center">
+          <button className="text-white hover:bg-gray-900 focus:outline-none" style={{ marginRight: "10px" }}>
+            <i className="material-icons md-light md-inactive" onClick={() => { minimize() }} style={{ fontSize: "16px", margin: "0", marginTop: "-15px" }}> minimize </i></button>
+          <button className="text-white hover:bg-gray-900 focus:outline-none" >
+            <i className="material-icons md-light md-inactive" onClick={() => { close() }} style={{ fontSize: "16px", margin: "0" }}> close </i>
+          </button>
+        </div>  
       }
     </>  
   );

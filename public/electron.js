@@ -252,7 +252,7 @@ function createWindow() {
     videoCallWindow = new BrowserWindow({
       show: true,
       width: 200,
-      height: 150,
+      height: 130,
       resizable: false,
       frame: false,
       title: "VideoWindow",
@@ -266,7 +266,7 @@ function createWindow() {
       }
     })
 
-    videoCallWindow.setAlwaysOnTop(true, 'screen');
+    videoCallWindow.setAlwaysOnTop(true, 'pop-up-menu');
     videoCallWindow.setMenu(null);
 
     const videoUrl = url.format({
@@ -313,6 +313,7 @@ function createWindow() {
       videoCallWindow.setPosition(0,0);
       videoCallWindow.setSize(swidth - 100, sheight - 100);
       videoCallWindow.setResizable(true);
+      videoCallWindow.setAlwaysOnTop(false);
     }
   });
 
@@ -324,14 +325,19 @@ function createWindow() {
       let sheight = display.bounds.height;
 
       videoCallWindow.setPosition(swidth - 270,sheight - 870);
-      videoCallWindow.setResizable(false);
       videoCallWindow.setSize(200, height);
+      videoCallWindow.setResizable(false);
+      videoCallWindow.setAlwaysOnTop(true,'pop-up-menu');
     }
   });
 
   ipcMain.on('set-video-player-height', (event, height) => {
-    if(videoCallWindow)
+    if(videoCallWindow){
+      var resizeDisabled = videoCallWindow.isResizable() == true;
+
+      videoCallWindow.setMinimumSize(videoCallWindow.getSize()[0], height);
       videoCallWindow.setSize(videoCallWindow.getSize()[0], height);
+    }
   })
 
 
@@ -497,7 +503,6 @@ function createWindow() {
         minimizable: false,
         maximizable: false,
         resizable: false,
-        alwaysOnTop: true,
         titleBarStyle: 'hidden',
         title: "ScreenShare Controls",
         frame: false,
@@ -510,6 +515,7 @@ function createWindow() {
       })
 
       screenShareControlsWindow.setMenu(null);
+      screenShareControlsWindow.setAlwaysOnTop(true,'pop-up-menu');
 
       const screenShareControlsUrl = url.format({
         pathname: path.join(__dirname, '../build/index.html'),

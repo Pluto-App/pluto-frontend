@@ -618,6 +618,9 @@ video {
     transition: all 0.5s;
     z-index: 2;
     border-radius: 10px;
+    max-height: calc(100vh - 200px);
+    min-height: 300px;
+    overflow-y: scroll;
 }
 
  .main-team-select-option {
