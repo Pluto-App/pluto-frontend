@@ -72,12 +72,13 @@ const TopBar = React.memo((props) => {
           className="flex-1 draggable-elem text-white font-bold center" 
           style={{width: '100%', height: '100%'}}
         >
-          { 
+          { /*
             page == 'video-call' &&
             <i className="material-icons md-light md-inactive" 
                style={{ fontSize: "24px" }}> 
               drag_handle 
             </i>
+            */
           }
         </div>
         

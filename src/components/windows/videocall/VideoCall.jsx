@@ -15,15 +15,18 @@ const VideoCall = React.memo((props) => {
   const { state, actions } = useOvermind();
 
   const { authData } = useContext(AuthContext);
-    
+  
+  const user_id = JSON.parse(localStorage.getItem('currentUser')).user.id;
+  const channel_id = localStorage.getItem('call_channel_id');
+
   const [ config, setConfig ] = useState({
       videoProfile: "1080p_1",
       mode: "live",
-      channel: localStorage.getItem('call_channel_id'),
+      channel: channel_id,
       transcode:  Cookies.get("transcode") || "interop",
       baseMode:  Cookies.get("baseMode") || "avc",
       appId : AGORA_APP_ID,
-      uid: JSON.parse(localStorage.getItem('currentUser')).user.id
+      uid: user_id
   });
 
   useEffect(() => {
@@ -37,9 +40,11 @@ const VideoCall = React.memo((props) => {
 
   useEffect(() => {
 
-      socket_live.on(events.activeWindowUpdate, (data) => {
-        actions.app.updateUserActiveWindowData(data);
-      });
+    socket_live.emit('join_room',{ room: channel_id, user_id: user_id });
+
+    socket_live.on(events.activeWindowUpdate, (data) => {
+      actions.app.updateUserActiveWindowData(data);
+    });
 
     },[]
   );

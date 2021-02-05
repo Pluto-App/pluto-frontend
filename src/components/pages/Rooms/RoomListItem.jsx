@@ -25,9 +25,26 @@ const RoomListItem = React.memo((room) => {
     const [startedEditing, updateEditStatus] = useState(false);
     const [roomName, updateRoomName] = useState(room.name);
     const [hoverState, setHoverState] = useState(false);
+    const [activeAppInfo, setActiveAppInfo] = useState({});
 
     useEffect(() => {
         actions.room.getUsersInRoom({authData: authData, roomId: room.id});
+    },[])
+
+    useEffect(() => {
+
+        const setActiveWin = setInterval(async () => {
+            
+            var usersInRoom = state.usersInRoom[room.rid] || [];
+            var userUid = usersInRoom[Math.floor(Math.random() * usersInRoom.length)];
+            var user = state.currentTeam.users.find(user => user.uid === userUid);
+            var appData = state.usersActiveWindows[user ? user.id : undefined];
+
+            setActiveAppInfo(appLogo(appData));
+        }, 5000)
+        
+        return () => clearInterval(setActiveWin);
+
     },[])
 
     const clickFunc = (e) => {
@@ -66,11 +83,8 @@ const RoomListItem = React.memo((room) => {
             user: state.userProfileData.uid
         })
 
-        socket_live.emit('join_room',channel_id);
-
         window.require("electron").ipcRenderer.send('init-video-call-window', channel_id);
         //ToastNotification('success', `Initiated VC in room ${room.name} 📷`);
-
     }
 
     const removeRoomHandler = async (e) => {
@@ -103,36 +117,6 @@ const RoomListItem = React.memo((room) => {
         })
         window.require("electron").ipcRenderer.send('load-video-window', id);
         history.push("/room-profile")
-    }
-
-    const getAppLogo = () => {
-
-        var usersInRoom = state.usersInRoom[room.id];
-        var userUid = usersInRoom[Math.floor(Math.random() * usersInRoom.length)];
-        var user = state.currentTeam.users.find(user => user.uid === userUid);
-        var appData = state.usersActiveWindows[user ? user.id : undefined];
-
-        try {
-            if(appData.owner && appData.owner.name) {
-
-                var logo = appLogo(
-                    appData.owner.name.toLowerCase().replace(/ /g,'').replace('.exe',''),
-                    appData.url
-                ); 
-
-                return logo;   
-            } else {
-                
-                throw new Error('App Data Incorrect');
-            }
-
-        } catch (error) {
-
-            if(process.env.REACT_APP_DEV_BUILD)
-                 console.log(error)
-
-            return "https://ui-avatars.com/api/?background=black&name="   
-        }
     }
 
     return (
@@ -177,12 +161,21 @@ const RoomListItem = React.memo((room) => {
                     <div className="flex py-0 justify-between p-1" id={room.id} >
                         <div className="flex justify-start p-2" style={{ width: '100%'}}>
                             {
-                                Object.keys(state.usersInRoom[room.rid] || []).length > 0 ?
+                                Object.keys(state.usersInRoom[room.rid] || []).length > 0 && activeAppInfo.logo ?
+
                                 <div className="flex" 
-                                    style={{width: '40px', height: '40px', overflow: 'visible', background: '#2F3136', borderRadius: '30%'}}>
-                                    <img src={
-                                            getAppLogo()
-                                    } style={{width: '40px', borderRadius: '30%'}} />
+                                    style={{
+                                        width: '40px', 
+                                        height: '40px', 
+                                        overflow: 'visible', 
+                                        background: '#2F3136',
+                                        borderRadius: '30%'
+                                    }}
+                                >
+                                    <img 
+                                        src={ activeAppInfo.logo } 
+                                        style={{width: '40px', borderRadius: '30%'}} 
+                                    />
                                     
                                     <i className="material-icons md-light md-inactive" 
                                         style={{ fontSize: "16px", position: 'relative', right: '15px', top: '25px', color: '#BABBBE', 
@@ -197,7 +190,7 @@ const RoomListItem = React.memo((room) => {
                                     <i className="material-icons md-light md-inactive" 
                                         style={{ fontSize: "20px", color: '#BABBBE', 
                                             height: '20px', minWidth: '20px', borderRadius: '50%', 
-                                            paddingLeft: '2px', paddingTop: '2px' }}>
+                                            paddingLeft: '2px', paddingTop: '2px', paddingRight: '20px' }}>
                                         volume_up
                                     </i>
                                 </div>    
@@ -205,7 +198,7 @@ const RoomListItem = React.memo((room) => {
                             
 
                             <div className="text-white px-2 font-bold tracking-wide text-xs" 
-                                style={{ whiteSpace: 'nowrap', fontSize: '14px'}}
+                                style={{ whiteSpace: 'nowrap', fontSize: '14px', minHeight: '30px'}}
                                 onClick={(e) => {
                                     //handleClick(e)
                                 }}

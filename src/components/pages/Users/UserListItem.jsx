@@ -22,6 +22,7 @@ const UserListItem = React.memo((user) => {
 
     const [showChatModal, toggleshowChatModal] = useState(false);
     const [showMenu, toggleShowMenu] = useState(false);
+    const [activeAppInfo, setActiveAppInfo] = useState({});
 
     const logos = require.context('../../../assets/logos', true);
 
@@ -119,6 +120,12 @@ const UserListItem = React.memo((user) => {
         }
     }
 
+    useEffect(() => {
+
+        setActiveAppInfo(appLogo(state.usersActiveWindows[user.id]));
+
+    },[ state.usersActiveWindows[user.id]])
+
     return (
         <div className="flex py-0 justify-between p-1 pl-1 hover:bg-gray-800" id={user.id} onClick={(e) => {
             e.preventDefault();
@@ -143,20 +150,19 @@ const UserListItem = React.memo((user) => {
             </div>
             <div className="items-center flex">
                 <div className="pointer" style={{ fontSize: '12px', color: '#74767A', marginRight: '5px'}}>  
-                    {state.usersActiveWindows[user.id] && state.usersActiveWindows[user.id].owner ?
-                        state.usersActiveWindows[user.id].owner.name 
-                        : ''
+                    {
+                        activeAppInfo.logo ? activeAppInfo.name : ''
                     } 
                 </div>
                 <div className="pointer items-center h-6 w-6 flex text-black text-2xl font-semibold overflow-hidden">
                     <a onClick={(e) => {
-                        activeAppClick( e, state.usersActiveWindows[user.id] )
+                        activeAppClick( e, activeAppInfo.url )
                     }}>
-                       { state.usersActiveWindows[user.id] ? 
+                       { activeAppInfo.logo ? 
 
                             <div>
                                 <img 
-                                    src = { getAppLogo(state.usersActiveWindows[user.id]) } 
+                                    src = { activeAppInfo.logo } 
                                     style = {{ borderRadius: '30%' }}
                                 />
                             </div>

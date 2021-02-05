@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useRef, useLayoutEffect } from 'react'
+import React, { useEffect, useState, useContext, useRef } from 'react'
 import { merge } from 'lodash'
 import AgoraRTC from 'agora-rtc-sdk'
 
@@ -6,6 +6,8 @@ import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 
 import {AuthContext} from '../../context/AuthContext'
+
+import ActiveWindowInfo from "../widgets/VideoCall/ActiveWindowInfo";
 
 import { appLogo } from '../../utils/AppLogo';
 
@@ -21,6 +23,7 @@ const VideoCallCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
 	const { authData, setAuthData } = useContext(AuthContext);
+  const [activeAppInfo, setActiveAppInfo] = useState({});
 
 	const [ streamList, setStreamList ] = useState([]);
   const streamListRef = useRef();
@@ -194,7 +197,7 @@ const VideoCallCanvas = React.memo((props) => {
       	
         AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
 
-      		socket_live.emit(events.joinRoom, props.channel);
+      		socket_live.emit(events.joinRoom, { room: props.channel, user_id: props.uid});
       		localStream = streamInit(uid, props.videoProfile);
 
       		localStream.init(() => {
@@ -587,7 +590,7 @@ const VideoCallCanvas = React.memo((props) => {
       }
   }
 
-  const getAppLogo = (appData) => {
+    const getAppLogo = (appData) => {
 
       try {
           if(appData.owner && appData.owner.name) {
@@ -657,24 +660,7 @@ const VideoCallCanvas = React.memo((props) => {
                   <div className="pointer items-center h-6 w-6 flex font-semibold overflow-hidden" 
                     style={{ display: 'table', marginLeft: '10px' }}
                   >
-                      <a 
-                        style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: '40px' }}
-                        onClick={(e) => {
-                          activeAppClick( e, state.usersActiveWindows[stream.getId()] )
-                        }}
-                      >
-                         { state.usersActiveWindows[stream.getId()] ? 
-
-                              <div>
-                                  <img 
-                                      src = { getAppLogo(state.usersActiveWindows[stream.getId()]) } 
-                                      style = {{ borderRadius: '30%' }}
-                                  />
-                              </div>
-                              :
-                              <div></div>
-                          }
-                      </a>
+                      <ActiveWindowInfo userId={stream.getId()} videoOn={true}/>
                   </div>
                 </div>
 
@@ -707,28 +693,7 @@ const VideoCallCanvas = React.memo((props) => {
                         }
                       </span>
                   </div>
-                  <div className="pointer items-center h-6 w-6 flex overflow-hidden" 
-                    style={{ display: 'table', marginLeft: '10px' }}
-                  >
-                      <a 
-                        style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: '50px' }}
-                        onClick={(e) => {
-                          activeAppClick( e, state.usersActiveWindows[stream.getId()] )
-                        }}
-                      >
-                         { state.usersActiveWindows[stream.getId()] ? 
-
-                              <div>
-                                  <img 
-                                      src = { getAppLogo(state.usersActiveWindows[stream.getId()]) } 
-                                      style = {{ borderRadius: '30%' }}
-                                  />
-                              </div>
-                              :
-                              <div></div>
-                          }
-                      </a>
-                  </div>
+                  <ActiveWindowInfo userId={stream.getId()}/>
                 </div>
 
               </section>

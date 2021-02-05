@@ -11,7 +11,6 @@ const appLogos = {
   'googledrive':    'googledrive.png',
   'googledocs':     'googledocs.png',
   'googlesheets':   'googlesheets.png',
-  'googlechrome':   'chrome.png',
   'sublime_text':   'sublimetext.png',
   'sublimetext':    'sublimetext.png',
   'stackoverflow':  'stackoverflow.png',
@@ -31,38 +30,48 @@ const hostApp = {
   'trello.com':         'trello'
 }
   
-export const appLogo = function(appName, url) {
+export const appLogo = function(appData) {
 
-  var logo = "https://ui-avatars.com/api/?background=black&name=";
+  var appInfo = {};
 
-  if(url) {
-    url = new URL(url);
+  if(appData && appData.owner && appData.owner.name) {
 
-    appName = hostApp[url.hostname] ? hostApp[url.hostname] : appName;
+    var appName = appData.owner.name.toLowerCase().replace(/ /g,'').replace('.exe','');
+    var url = appData.url;
+    var logo;
 
-    // Google Document or Google Sheet?
-    if(appName == 'googledocs|googlesheets') {
+    if(url) {
+      url = new URL(url);
 
-      var doc_type = url.pathname.split('/')[1]; 
+      appName = hostApp[url.hostname] ? hostApp[url.hostname] : appName;
 
-      switch(doc_type) {
-        case 'document':
-          appName = 'googledocs';
-          break;
-        case 'spreadsheets':
-          appName = 'googlesheets';
-          break;
-        default:
-          // do nothing
+      // Google Document or Google Sheet?
+      if(appName == 'googledocs|googlesheets') {
+
+        var doc_type = url.pathname.split('/')[1]; 
+
+        switch(doc_type) {
+          case 'document':
+            appName = 'googledocs';
+            break;
+          case 'spreadsheets':
+            appName = 'googlesheets';
+            break;
+          default:
+            // do nothing
+        }
       }
-
     }
+
+    if(appLogos[appName]) {
+
+      logo = logos(logos_path + appLogos[appName]);
+    }
+
+    appInfo['logo'] = logo;
+    appInfo['url'] = url;
+    appInfo['name'] = appData.owner.name;
   }
 
-  if(appLogos[appName]) {
-
-    logo = logos(logos_path + appLogos[appName]);
-  }
-
-  return logo;  
+  return appInfo;  
 }
