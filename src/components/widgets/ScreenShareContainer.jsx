@@ -33,7 +33,7 @@ const ScreenShareContainer = React.memo((props) => {
         actions.app.setScreenSize();
     }, [])
 
-     useEffect(() => {
+    useEffect(() => {
 
         actions.user.getLoggedInUser({authData: authData})
 

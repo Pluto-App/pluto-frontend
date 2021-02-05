@@ -26,13 +26,14 @@ const VideoCall = React.memo((props) => {
       uid: JSON.parse(localStorage.getItem('currentUser')).user.id
   });
 
-   useEffect(() => {
+  useEffect(() => {
 
         if(state.currentTeamId){
-            actions.team.getTeam({authData: authData, team_id: state.currentTeamId})    
+
+          actions.team.getTeam({authData: authData, team_id: localStorage.getItem('current_team_id')})    
         }
 
-    }, [actions, authData, state.currentTeamId, state.teamUpdateReq])
+  }, [actions, authData, state.currentTeamId])
 
   useEffect(() => {
 
@@ -55,7 +56,7 @@ const VideoCall = React.memo((props) => {
             transcode={config.transcode}
             baseMode={config.baseMode}
             appId={config.appId}
-            uid={config.uid}
+            uid={ config.uid }
           />
         </div>
       </div>
