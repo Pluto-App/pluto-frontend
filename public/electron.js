@@ -484,6 +484,7 @@ function createWindow() {
       screenShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare-container' : screenshareContainerUrl);
       screenShareContainerWindow.setIgnoreMouseEvents(true);
       screenShareContainerWindow.setSize(displayWidth, displayHeight);
+      screenShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
 
       if (isDev) {
        
