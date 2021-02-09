@@ -655,6 +655,10 @@ video {
   padding-top: 15px;
 }
 
+.members-list-item:hover {
+  background: #202225
+}
+
 .btn-add:before {
   content: '\FF0B';
 }
@@ -684,6 +688,15 @@ video {
 .bg-purple {
   background:   #673AB7
 }
+
+.bg-red {
+  background: #FF5959
+}
+
+.bg-green {
+  background: #5CFF59
+}
+
 
 .center {
   text-align: center;

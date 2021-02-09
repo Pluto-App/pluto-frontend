@@ -53,16 +53,17 @@ const RoomListItem = React.memo((room) => {
 
     const customMenuStyle = {
         "top": "75px",
-        "height": "185px",
-        "width": "230px",
+        "height": "105px",
+        "width": "240px",
         "left": "55px",
-        "position": "absolute"
+        "position": "absolute",
+        'background': '#25272C'
     }
 
     const customChatStyle = {
         "top": "75px",
-        "height": "185px",
-        "width": "230px",
+        "height": "125",
+        "width": "225px",
         "left": "55px",
         "position": "absolute"
     }
@@ -221,47 +222,51 @@ const RoomListItem = React.memo((room) => {
                         </div>
 
                         {
-                            hoverState &&
+                            hoverState &&   
                             <div className="flex" style={{ padding: '5px'}}>
                                 {
-                                    showMenu &&
-                                    <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customMenuStyle}>
-                                        <div className="flex w-full justify-end">
-                                            <i className="material-icons text-white hover:bg-gray-900 md-light md-inactive" style={{ fontSize: "20px", margin: "0" }} onClick={() => {
-                                                toggleShowMenu(showMenu => !showMenu)
-                                            }}>close</i>
-                                        </div>
+                                   showMenu &&
+                                    <div className="items-center absolute rounded-lg mx-1 p-1 py-1" style={customMenuStyle}>
+
                                         <div className="items-center px-2">
-                                            <p className="text-grey font-bold tracking-wide text-xs">
-                                                {roomName}
+                                            <p className="text-grey font-bold tracking-wide text-xs center mt-2 mb-2">
+                                                Remove {roomName} ?
                                             </p>
-                                            <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
-                                            {/* 
-                                            <button className="w-full text-white focus:outline-none hover:bg-gray-800 rounded-lg flex font-bold tracking-wide text-xs items-center" >
-                                                <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>publish</i> Share Documents
-                                                    </button>
-                                            <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
-                                            <button className="w-full text-white focus:outline-none hover:bg-gray-800 rounded-lg flex font-bold tracking-wide text-xs items-center" onClick={() => {
-                                                toggleShowMenu(showMenu => !showMenu)
-                                                toggleshowChatModal(showChatModal => !showChatModal)
-                                            }}>
-                                                <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>question_answer</i>Group Chat
-                                                    </button>
-                                            <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
-                                            */}
-                                            <button className="w-full text-white text-green-700 hover:bg-gray-800 focus:outline-none rounded-lg flex font-bold tracking-wide text-xs items-center" onClick={(e) => {
-                                                toggleShowMenu(showMenu => !showMenu)
-                                                startVideo(e,room.rid)
-                                            }}>
-                                                <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>video_call</i>Video Call
-                                                    </button>
-                                            <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
-                                            <button className="w-full text-red-500 hover:bg-red-300 focus:outline-none rounded-lg font-bold tracking-wide text-xs flex items-center" onClick={(e) => {
-                                                toggleShowMenu(showMenu => !showMenu)
-                                                removeRoomHandler(e)
-                                            }}>
-                                                <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>delete_forever</i>Remove Room
-                                                    </button>
+
+                                            <div className="flex">
+                                                <button
+                                                className="rounded-full flex justify-center items-center bg-green-700
+                                                text-white py-2 px-4 mt-2 mr-2 focus:outline-none focus:shadow-outline"
+                                                type="button"
+                                                style={{ transition: "all .60s ease", fontSize: '14px' }}
+                                                onClick={(e) => {
+                                                    toggleShowMenu(showMenu => !showMenu)
+                                                    removeRoomHandler(e)
+                                                }}>
+                                                    <i 
+                                                        className="material-icons md-light md-inactive mr-2"
+                                                        style={{fontSize: '18px'}}
+                                                    >
+                                                        check
+                                                    </i> Confirm
+                                                </button>
+
+                                                <button
+                                                className="rounded-full flex justify-center items-center bg-red-700
+                                                text-white py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
+                                                type="button"
+                                                style={{ transition: "all .60s ease", fontSize: '14px' }}
+                                                onClick={() => {
+                                                    toggleShowMenu(showMenu => !showMenu)
+                                                }}>
+                                                     <i 
+                                                        className="material-icons md-light md-inactive mr-2"
+                                                        style={{fontSize: '18px'}}
+                                                    >
+                                                        close
+                                                    </i> Cancel
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 }
@@ -279,7 +284,7 @@ const RoomListItem = React.memo((room) => {
                                         toggleShowMenu(showMenu => !showMenu)
                                     }}
                                 >
-                                    <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}>more_vert</i>
+                                    <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}>delete_forever</i>
                                 </button>
                                 {
                                     showChatModal &&

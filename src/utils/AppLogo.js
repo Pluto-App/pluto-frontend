@@ -70,7 +70,7 @@ export const appLogo = function(appData) {
 
     appInfo['logo'] = logo;
     appInfo['url'] = url;
-    appInfo['name'] = appData.owner.name;
+    appInfo['name'] = appName;
   }
 
   return appInfo;  

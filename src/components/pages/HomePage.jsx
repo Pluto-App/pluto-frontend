@@ -126,7 +126,7 @@ export default function HomePage() {
             name: roomname
         }
 
-        actions.room.addRoom({authData: authData, roomData: roomData})
+        actions.room.addRoom({authData: authData, roomData: roomData});
     }
 
     const handleChange = async (e) => {
@@ -211,9 +211,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="members-list-container" style={{ height: "relative" }}>
-                    <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800"
-                        style={{ transition: "all .60s ease" }}
-                    >
+                    <div className="flex justify-between items-center p-1 pl-1">
                         <div className="px-3 font-bold tracking-wide" style={{fontWeight: '600', color: '#BABBBE', fontSize: '14px'}}>
                             TEAMMATES
                         </div>

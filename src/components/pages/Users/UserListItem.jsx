@@ -5,6 +5,8 @@ import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import * as Cookies from "js-cookie";
 import ToastNotification from '../../widgets/ToastNotification';
+import ReactTooltip from 'react-tooltip';
+
 import { socket_live, events } from '../../sockets';
 
 import { appLogo } from '../../../utils/AppLogo';
@@ -74,11 +76,10 @@ const UserListItem = React.memo((user) => {
         }
     }
 
-    const activeAppClick = (e, usersActiveWindow) => {
+    const activeAppClick = (e, url) => {
         e.preventDefault();
-        
-        if(usersActiveWindow && usersActiveWindow.url){
-            window.require("electron").shell.openExternal(usersActiveWindow.url);
+        if(url){
+            window.require("electron").shell.openExternal(url.href);
         }
     }
 
@@ -127,9 +128,10 @@ const UserListItem = React.memo((user) => {
     },[ state.usersActiveWindows[user.id]])
 
     return (
-        <div className="flex py-0 justify-between p-1 pl-1 hover:bg-gray-800" id={user.id} onClick={(e) => {
+        <div className="flex py-0 justify-between p-1 pl-1 members-list-item" id={user.id} onClick={(e) => {
             e.preventDefault();
         }}>
+            <ReactTooltip effect="solid" place="top" />
             <div className="flex justify-start p-2 pl-1">
                 <div className="h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden"
                     style={{paddingLeft: '3px', paddingTop: '5px'}}
@@ -140,7 +142,11 @@ const UserListItem = React.memo((user) => {
                     </svg>
                     <span></span>
                 </div>
-                <div className="text-white px-1 font-bold tracking-wide text-xs pointer" 
+                <div 
+                    className="text-white px-1 font-bold tracking-wide text-xs pointer" 
+                    data-tip="Click to Call"
+                    data-place="left"
+                    style={{minWidth: '100px'}}
                     onClick={(e) => {
                         startVideo(e, user.uid);
                     }}
@@ -148,16 +154,21 @@ const UserListItem = React.memo((user) => {
                     {user.name}
                 </div>
             </div>
-            <div className="items-center flex">
-                <div className="pointer" style={{ fontSize: '12px', color: '#74767A', marginRight: '5px'}}>  
+            <div 
+                className="items-center flex pr-2 pointer"
+                data-tip={ activeAppInfo.logo && activeAppInfo.url ? 'Click to visit App.' : '' }
+                style={{minWidth: '150px', placeContent: 'flex-end'}}
+                onClick={(e) => {
+                    activeAppClick( e, activeAppInfo.url )
+                }}
+            >
+                <div style={{ fontSize: '12px', color: '#74767A', marginRight: '5px'}}>  
                     {
                         activeAppInfo.logo ? activeAppInfo.name : ''
                     } 
                 </div>
-                <div className="pointer items-center h-6 w-6 flex text-black text-2xl font-semibold overflow-hidden">
-                    <a onClick={(e) => {
-                        activeAppClick( e, activeAppInfo.url )
-                    }}>
+                <div className="items-center h-6 w-6 flex overflow-hidden">
+                    <a>
                        { activeAppInfo.logo ? 
 
                             <div>
@@ -172,7 +183,7 @@ const UserListItem = React.memo((user) => {
                     </a>
                 </div>
 
-                {
+                {/*
                     showMenu &&
                     <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customMenuStyle}>
                         <div className="flex w-full justify-end">
@@ -195,7 +206,7 @@ const UserListItem = React.memo((user) => {
                             </div>
                             <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
                             
-                            {/*
+                            {
                             <button className="w-full text-white focus:outline-none hover:bg-gray-800 rounded-lg flex font-bold tracking-wide text-xs items-center" >
                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>publish</i> Share Documents
                                             </button>
@@ -209,7 +220,7 @@ const UserListItem = React.memo((user) => {
                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>question_answer</i>Instant Chat
                                             </button> 
 
-                            */}
+                            }
                             
                             {
                                 user.uid == state.userProfileData.uid ?
@@ -238,12 +249,16 @@ const UserListItem = React.memo((user) => {
                             </button>
                         </div>
                     </div>
-                }
+                */}
+
+            {/* 
                 <button className="text-gray-300 hover:text-indigo-500 px-1 focus:outline-none pointer" onClick={(e) => {
                     toggleShowMenu(showMenu => !showMenu)
                 }}>
                     <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}>more_vert</i>
                 </button>
+            */}
+
                 {
                     showChatModal &&
                     <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customChatStyle}>
