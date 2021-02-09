@@ -88,6 +88,14 @@ const RoomListItem = React.memo((room) => {
         //ToastNotification('success', `Initiated VC in room ${room.name} 📷`);
     }
 
+    const updateRoom = async (name) => {
+        
+        var roomData = {id: room.id, name: name}
+        await actions.room.updateRoom({ authData: authData, roomData: roomData})
+
+        //ToastNotification('error', "Only Owners can remove")
+    }
+
     const removeRoomHandler = async (e) => {
         
         var roomData = {id: room.id}
@@ -147,11 +155,14 @@ const RoomListItem = React.memo((room) => {
                             onChange={(e) =>
                                 updateRoomName(e.target.value)
                             }
-                            onKeyPress={(e) => {
+                            onKeyUp={(e) => {
                                 if (e.keyCode === 13 || e.which === 13) {
                                     e.target.value === '' ? ToastNotification('error', "Room Name Empty !") : updateEditStatus(false)
                                     updateRoomName(e.target.value)
-                                    // TODO Trigger Name Edit to database via backend
+                                    updateRoom(e.target.value)
+                                } else if(e.keyCode === 27 || e.which === 27) {
+
+                                    updateEditStatus(false);
                                 }
                             }}
                             type="text"
@@ -198,26 +209,24 @@ const RoomListItem = React.memo((room) => {
                             }
                             
 
-                            <div className="text-white px-2 font-bold tracking-wide text-xs" 
+                            <div className="text-white px-2 font-bold tracking-wide text-xs pointer" 
                                 style={{ whiteSpace: 'nowrap', fontSize: '14px', minHeight: '30px'}}
                                 onClick={(e) => {
-                                    //handleClick(e)
+                                    clickFunc(e)
                                 }}
-                            >
+                            >   
                                 {roomName}
-                            </div>
-                        {/* 
-                            <div className="users-in-room-container" style={{overflowX: 'scroll', width: '50%', height: '20px'}} >
+
                                 {
-                                    Object.keys(state.usersInRoom[room.rid] || []).map((rid, index) => 
-                                        <div className="bg-white h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden"
-                                            style={{marginRight: '5px', float: 'left'}} key={index}>
-                                            <img src={getUserAvatar(rid)} />
-                                        </div>
-                                    )
+                                     hoverState &&
+                                     <i 
+                                        className="material-icons md-light md-inactive ml-2"
+                                        style={{fontSize: '14px'}}
+                                    >
+                                        edit
+                                    </i>
                                 }
                             </div>
-                        */}
 
                         </div>
 

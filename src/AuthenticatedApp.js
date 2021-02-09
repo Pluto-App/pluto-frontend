@@ -8,6 +8,7 @@ import RoomProfile from './components/pages/Rooms/RoomProfile'
 import TeamProfile from './components/pages/Teams/TeamProfile'
 import UserProfile from './components/pages/Users/UserProfile'
 import UserUpdate from './components/pages/Users/UserUpdate'
+import Settings from './components/pages/Settings'
 
 import VideoCall from './components/windows/videocall/VideoCall'
 
@@ -122,6 +123,10 @@ export default function App() {
 
         <Route exact path="/screenshare-controls">
           <ScreenShareControls />
+        </Route>
+
+        <Route exact path="/settings">
+          <Settings />
         </Route>
 
         <Route path="*">

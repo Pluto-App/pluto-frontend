@@ -1,9 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef, useContext } from 'react'
-import Sidebar from '../widgets/Sidebar'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
-import MainBar from "../widgets/MainBar"
 import ManagementBar from "../widgets/ManagementBar"
 import UserListItem from "./Users/UserListItem"
 import RoomListItem from "./Rooms/RoomListItem"
@@ -119,6 +117,16 @@ export default function HomePage() {
 
     }, [state.noTeams])
 
+    useEffect(() => {
+
+        window.require("electron").ipcRenderer.on('refresh', function (e, args) {
+
+            if(state.currentTeamId){
+                actions.team.getTeam({authData: authData, team_id: state.currentTeamId})    
+            }    
+        });
+    }, [])
+
     const addRoom = async (roomname) => {
 
         let roomData = {
@@ -133,27 +141,17 @@ export default function HomePage() {
         updateNewRoomName(e.target.value);
     }
 
-    const customStyle = {
+    const inviteModalStyle = {
         "top": "46%",
-        "width": "calc(94% - 50px)"
+        "width": "calc(100vw - 17px)"
     }
 
     return (
         <div className="w-full flex main-container">
-           {/* 
-                <Sidebar></Sidebar>
-           */} 
             
             <div className="w-full ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)" }}>
+                
                 <ManagementBar />
-
-                {/* 
-                <MainBar
-                        userid={state.userProfileData.id}
-                        teamid={state.currentTeam.id}
-                        appName={appInfo}
-                />
-                */} 
 
                 <div className="rooms-list-container" style={{ height: "relative" }}>
                     <div className="flex justify-between items-center p-1 pl-1"
@@ -247,7 +245,7 @@ export default function HomePage() {
                 {
                     // Invite Modal HTML
                     showInviteModal && state.currentTeamId ?
-                        <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={customStyle}
+                        <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={inviteModalStyle}
                             onClick={(e) => {
                             }}>
                             <h4 className="font-bold text-xl text-gray-600 text-center mb-2"> Add Teammates</h4>

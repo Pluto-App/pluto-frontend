@@ -18,7 +18,7 @@ let streamScreenShareWindow
 let screenShareContainerWindow
 let screenShareControlsWindow
 
-let settings_page
+let settingsPage
 
 const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
@@ -50,6 +50,8 @@ const robotKeyMap = {
 const robotMods = ['shift','control','alt'];
 var currentMods = [];
 var primaryDisplay;
+var sWidth;
+var sHeight;
 var scaleFactor = 1;
 
 async function runPythonScript(py_script){
@@ -145,6 +147,8 @@ function createWindow() {
   });
 
   primaryDisplay = screen.getPrimaryDisplay();
+  sWidth = primaryDisplay.bounds.width;
+  sHeight = primaryDisplay.bounds.height;
 
   if(isWindows)
     scaleFactor = primaryDisplay.scaleFactor;
@@ -188,18 +192,17 @@ function createWindow() {
   });
 
   ipcMain.on(`open-settings`, (events, data) => {
-    let display = screen.getPrimaryDisplay();
-    let swidth = display.bounds.width;
-    let sheight = display.bounds.height;
 
-    settings_page = new BrowserWindow({
+    if (settingsPage) {
+      settingsPage.close();
+    }
+
+    settingsPage = new BrowserWindow({
       show: true,
-      width: 400,
-      height: 750,
+      width: 900,
+      height: sHeight,
       frame: false,
-      title: "VideoWindow",
-      x: swidth / 2,
-      y: sheight / 2,
+      titleBarStyle: 'hiddenInset',
       webPreferences: {
         nodeIntegration: true,
         plugins: true,
@@ -207,29 +210,34 @@ function createWindow() {
       }
     })
 
-    settings_page.setAlwaysOnTop(true, 'screen');
-    settings_page.setMenu(null);
-
+    settingsPage.setMenu(null);
+    settingsPage.setAlwaysOnTop(true, 'screen');
+   
     const settingsUrl = url.format({
       pathname: path.join(__dirname, '../build/index.html'),
-      hash: '/user-profile',
+      hash: '/settings',
       protocol: 'file:',
       slashes: true
     })
 
-    settings_page.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/user-profile' : settingsUrl);
-    settings_page.on('closed', () => {
-      settings_page = undefined;
+    settingsPage.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/settings' : settingsUrl);
+    settingsPage.on('closed', () => {
+      settingsPage = undefined;
+      mainWindow.webContents.send('refresh', {});
     })
 
     // here we can send the data to the new window
-    settings_page.webContents.on('did-finish-load', () => {
-      settings_page.webContents.send('data', data);
+    settingsPage.webContents.on('did-finish-load', () => {
+      settingsPage.webContents.send('data', data);
     });
 
+    if (isDev) {
+       settingsPage.webContents.openDevTools();
+    }
+
     mainWindow.on('closed', () => {
-      if (settings_page !== null) {
-        settings_page.close();
+      if (settingsPage) {
+        settingsPage.close();
       }
     })
   });
@@ -244,10 +252,6 @@ function createWindow() {
       }
     }
 
-    let display = screen.getPrimaryDisplay();
-    let swidth = display.bounds.width;
-    let sheight = display.bounds.height;
-
     // create the window
     videoCallWindow = new BrowserWindow({
       show: true,
@@ -257,8 +261,8 @@ function createWindow() {
       frame: false,
       title: "VideoWindow",
       alwaysOnTop: true,
-      x: swidth - 270,
-      y: sheight - 870,
+      x: sWidth - 270,
+      y: sHeight - 870,
       webPreferences: {
         nodeIntegration: true,
         plugins: true,
@@ -298,33 +302,26 @@ function createWindow() {
     })
 
     if (isDev) {
-       videoCallWindow.webContents.openDevTools();
+       // videoCallWindow.webContents.openDevTools();
     }
 
   });
 
   ipcMain.on('expand-video-call-window', (event, data) => {
-    if (videoCallWindow) {
-      
-      let display = screen.getPrimaryDisplay();
-      let swidth = display.bounds.width;
-      let sheight = display.bounds.height;
 
+    if (videoCallWindow) {
       videoCallWindow.setPosition(0,0);
-      videoCallWindow.setSize(swidth - 100, sheight - 100);
+      videoCallWindow.setSize(sWidth - 100, sHeight - 100);
       videoCallWindow.setResizable(true);
       videoCallWindow.setAlwaysOnTop(false);
     }
+  
   });
 
   ipcMain.on('collapse-video-call-window', (event, height) => {
+
     if (videoCallWindow) {
-
-      let display = screen.getPrimaryDisplay();
-      let swidth = display.bounds.width;
-      let sheight = display.bounds.height;
-
-      videoCallWindow.setPosition(swidth - 270,sheight - 870);
+      videoCallWindow.setPosition(sWidth - 270, sHeight - 870);
       videoCallWindow.setSize(200, height);
       videoCallWindow.setResizable(false);
       videoCallWindow.setAlwaysOnTop(true,'pop-up-menu');
@@ -339,7 +336,6 @@ function createWindow() {
       videoCallWindow.setSize(videoCallWindow.getSize()[0], height);
     }
   })
-
 
   ipcMain.on('init-screenshare', (event, arg) => {
 
@@ -381,13 +377,9 @@ function createWindow() {
     if (isDev) {
       // initScreenShareWindow.webContents.openDevTools();
     }
-
   })
 
   ipcMain.on('stream-screenshare', (event, arg) => {
-
-    let swidth = primaryDisplay.bounds.width;
-    let sheight = primaryDisplay.bounds.height;
 
     if(streamScreenShareWindow){
       try{
@@ -398,7 +390,7 @@ function createWindow() {
 
       if(videoCallWindow){
 
-        videoCallWindow.setPosition(swidth - 270, sheight - 870)
+        videoCallWindow.setPosition(sWidth - 270, sHeight - 870)
       }
     }
 
@@ -447,11 +439,6 @@ function createWindow() {
 
     if(initScreenShareWindow) {
 
-      // ScreenShare Container
-      let workArea = primaryDisplay.bounds;
-      let displayWidth = workArea.width;
-      let displayHeight = workArea.height;
-
       initScreenShareWindow.hide();
 
       screenShareContainerWindow = new BrowserWindow({
@@ -483,7 +470,7 @@ function createWindow() {
 
       screenShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare-container' : screenshareContainerUrl);
       screenShareContainerWindow.setIgnoreMouseEvents(true);
-      screenShareContainerWindow.setSize(displayWidth, displayHeight);
+      screenShareContainerWindow.setSize(sWidth, sHeight);
       screenShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
 
       if (isDev) {

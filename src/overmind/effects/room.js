@@ -28,6 +28,28 @@ export const addRoom = async (authData, roomData) => {
   	});
 }
 
+export const updateRoom = async (authData, roomData) => {
+
+  const token = authData.token;
+
+    return fetch(
+
+      BACKEND_URL + "/room/"+roomData.id,
+      {
+          method: 'PUT', 
+          headers: headers(token),
+          body:    JSON.stringify({room: roomData})
+      }
+    )
+    .then(response => response.json())
+    .then(responseData => {
+      return responseData;
+    })
+    .catch((error) => {
+        // Error handling
+    });
+}
+
 export const deleteRoom = async (authData, roomData) => {
 
   const token = authData.token;

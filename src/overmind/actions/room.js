@@ -7,6 +7,11 @@ export const addRoom = async ({state, effects, actions}, {authData, roomData}) =
   	state.addingRoom = false
 }
 
+export const updateRoom = async ({state, effects, actions}, {authData, roomData}) => {
+
+  	var roomData = await effects.room.updateRoom(authData, roomData)
+}
+
 export const deleteRoom = async ({state, effects, actions}, {authData, roomData}) => {
 
   	state.deletingRoom = true

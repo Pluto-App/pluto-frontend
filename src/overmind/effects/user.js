@@ -51,3 +51,25 @@ export const getOnlineUsers = async (authData, tid) => {
       // Error handling
   });
 }
+
+export const updateUser = async (authData, userData) => {
+
+  const token = authData.token;
+
+    return fetch(
+
+      BACKEND_URL + "/user/"+userData.id,
+      {
+          method: 'PUT', 
+          headers: headers(token),
+          body:    JSON.stringify({user: userData})
+      }
+    )
+    .then(response => response.json())
+    .then(responseData => {
+      return responseData;
+    })
+    .catch((error) => {
+        // Error handling
+    });
+}

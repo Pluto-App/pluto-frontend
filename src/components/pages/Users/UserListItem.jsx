@@ -97,9 +97,6 @@ const UserListItem = React.memo((user) => {
 
     const startVideo = (e, receiver_uid) => {
 
-        // TODO User Video Call ID. Check Needed.
-        // Cannot start a VC Call with oneself.
-
         if (receiver_uid !== state.userProfileData.uid) {
 
             let channel_id = md5(receiver_uid + state.userProfileData.uid);
@@ -131,7 +128,8 @@ const UserListItem = React.memo((user) => {
         <div className="flex py-0 justify-between p-1 pl-1 members-list-item" id={user.id} onClick={(e) => {
             e.preventDefault();
         }}>
-            <ReactTooltip effect="solid" place="top" />
+            <ReactTooltip effect="solid" place="top" delayShow={500} />
+
             <div className="flex justify-start p-2 pl-1">
                 <div className="h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden"
                     style={{paddingLeft: '3px', paddingTop: '5px'}}
@@ -144,7 +142,7 @@ const UserListItem = React.memo((user) => {
                 </div>
                 <div 
                     className="text-white px-1 font-bold tracking-wide text-xs pointer" 
-                    data-tip="Click to Call"
+                    data-tip="Click to Talk ✆"
                     data-place="left"
                     style={{minWidth: '100px'}}
                     onClick={(e) => {

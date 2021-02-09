@@ -7,7 +7,7 @@ import { Provider } from 'overmind-react'
 import { config } from '../overmind'
 
 const overmind = createOvermind(config, {
-  devtools: true 
+  // devtools: true 
   // defaults to 'localhost:3031'
 })
 

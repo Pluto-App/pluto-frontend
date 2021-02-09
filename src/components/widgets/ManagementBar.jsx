@@ -33,9 +33,9 @@ const MainBar = React.memo((props) => {
                    
                     <div className="flex items-center">
 
-                        <a href="/user-profile" onClick={(e) => {
-                            e.preventDefault();
-                            window.require("electron").ipcRenderer.send('open-settings', state.userProfileData.userid);
+                        <a onClick={(e) => {
+                            // e.preventDefault();
+                            // window.require("electron").ipcRenderer.send('open-settings', state.userProfileData.userid);
                         }} className="flex items-center text-grey rounded-lg  px-1 py-1  no-underline cursor-pointer hover:bg-grey-darker">
                             <div className="bg-white h-6 w-6 flex items-center justify-center text-black text-2xl font-semibold 
                             rounded-lg mb-1 overflow-hidden">
@@ -43,10 +43,13 @@ const MainBar = React.memo((props) => {
                             </div>
                         </a>
 
-                        <button className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" onClick={(e) => {
-                            e.preventDefault();
-                            history.push('/team-profile')
-                        }}>
+                        <button 
+                            className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                window.require("electron").ipcRenderer.send('open-settings', state.userProfileData.userid);
+                            }}
+                        >
                             <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>settings</i>
                         </button>
                         

@@ -26,3 +26,13 @@ export const getLoggedInUser = async ({state, effects}, {authData: authData, par
   		state.error = error;
   	}
 }
+
+export const updateUser = async ({state, effects, actions}, {authData, userData}) => {
+
+    var userData = await effects.user.updateUser(authData, userData)
+    state.userProfileData.name = userData.name;
+
+    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    currentUser.user = userData;
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+}
