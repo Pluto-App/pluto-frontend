@@ -168,6 +168,8 @@ function createWindow() {
   })
 
   ipcMain.on('logout', (event, arg) => {
+    console.log('LOGOUT');
+    mainWindow.webContents.send('logout', {});
     mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : startPageUrl);
     mainWindow.setSize(minWidth, minHeight)
   })
@@ -304,7 +306,6 @@ function createWindow() {
     if (isDev) {
        // videoCallWindow.webContents.openDevTools();
     }
-
   });
 
   ipcMain.on('expand-video-call-window', (event, data) => {
@@ -315,7 +316,6 @@ function createWindow() {
       videoCallWindow.setResizable(true);
       videoCallWindow.setAlwaysOnTop(false);
     }
-  
   });
 
   ipcMain.on('collapse-video-call-window', (event, height) => {

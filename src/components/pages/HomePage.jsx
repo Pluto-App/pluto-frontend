@@ -62,7 +62,7 @@ const MembersList = (
 export default function HomePage() {
 
     let history = useHistory();
-    const { authData } = useContext(AuthContext);
+    const { authData, setAuthData } = useContext(AuthContext);
 
     const override = css`
         display: block;
@@ -125,6 +125,15 @@ export default function HomePage() {
                 actions.team.getTeam({authData: authData, team_id: state.currentTeamId})    
             }    
         });
+
+        window.require("electron").ipcRenderer.on('logout', function (e, args) {
+
+            actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+                var curentWindow = window.require("electron").remote.getCurrentWindow();
+                curentWindow.close(); 
+            });
+        });
+
     }, [])
 
     const addRoom = async (roomname) => {

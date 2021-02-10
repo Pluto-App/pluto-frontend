@@ -15,18 +15,24 @@ const UserProfile = React.memo(() => {
     const { state, actions } = useOvermind();
 
     const [ activeSection, setActiveSection ] = useState('profile');
+    const [ activeTeam, setActiveTeam ] = useState();
+    const [ hoverUser, setHoverUser ] = useState();
     const [ userName, setUserName ] = useState(JSON.parse(localStorage.getItem('currentUser')).user.name);
 
     const logout = (e) => {
         
         e.preventDefault();
         
-        actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+        window.require("electron").ipcRenderer.send('logout');
+        var curentWindow = window.require("electron").remote.getCurrentWindow();
+        curentWindow.close(); 
 
-            window.require("electron").ipcRenderer.send('logout');
-            var curentWindow = window.require("electron").remote.getCurrentWindow();
-            curentWindow.close(); 
-        });
+        // actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+
+        //     window.require("electron").ipcRenderer.send('logout');
+        //     var curentWindow = window.require("electron").remote.getCurrentWindow();
+        //     curentWindow.close(); 
+        // });
     }
 
     const addTeam = (e) => {
@@ -107,14 +113,18 @@ const UserProfile = React.memo(() => {
                             <div 
                                 key={team.id}
                                 className={
-                                    activeSection == team.id ? 
+                                    activeSection == 'team' && activeTeam.id == team.id ? 
                                     'px-3 pt-2 pb-2 flex pointer settings-menu-item active' 
                                     : 
                                     'px-3 pt-2 pb-2 flex pointer settings-menu-item'
                                 }
-                                onClick ={function(){ setActiveSection(team.id) }}
+                                onClick ={function(){ 
+                                    setActiveSection('team') 
+                                    setActiveTeam(team)
+                                    actions.team.getTeam({authData: authData, team_id: team.id})
+                                }}
                             >
-                                <div className="bg-white h-6 w-6 flex items-center justify-center mr-3 overflow-hidden">
+                                <div className="bg-white h-8 w-8 flex items-center justify-center mr-3 overflow-hidden">
                                     <img src={team.avatar} alt="" />
                                 </div> 
                                 <div>
@@ -146,55 +156,179 @@ const UserProfile = React.memo(() => {
             <div className="flex-1 px-12 text-white pt-2" style={{ height: "calc(100vh - 0px)" }}>
                 <div className="w-full draggable-elem" style={{ height: '20px'}}></div>
 
-                <p className="text-grey font-bold text-lg tracking-wide mt-2 mb-12">My Profile</p>
+                {
+                    activeSection == 'profile' && 
 
-                <div className="flex">
-                    <div className="bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-full mb-1 overflow-hidden">
-                        <img src={state.userProfileData.avatar} alt="" />
-                    </div>
-                    <div className="ml-3">
-                        <p className="font-bold text-white">{state.userProfileData.name}</p>
-                        <p className="text-gray-500">{state.userProfileData.email}</p>
-                    </div>
-                </div>
-                
-                <div className="mt-6" style={{ height: "1px", width: "100%", background: '#484e52' }}></div>
+                    <div>
 
-                <p className="text-grey text-md tracking-wide mt-12 mb-8">My Info</p>
+                        <p className="text-grey font-bold text-lg tracking-wide mt-2 mb-12">My Profile</p>
 
-                <div className="flex">
-                    <div className="flex items-center justify-center text-grey text-md font-semibold mb-1 overflow-hidden">
-                        <p className="font-bold text-white">Name: </p>
+                        <div className="flex">
+                            <div className="bg-white h-12 w-12 flex items-center justify-center text-black text-2xl font-semibold rounded-full mb-1 overflow-hidden">
+                                <img src={state.userProfileData.avatar} alt="" />
+                            </div>
+                            <div className="ml-3">
+                                <p className="font-bold text-white">{state.userProfileData.name}</p>
+                                <p className="text-gray-500">{state.userProfileData.email}</p>
+                            </div>
+                        </div>
+                        
+                        <div className="mt-6" style={{ height: "1px", width: "100%", background: '#484e52' }}></div>
+
+                        <p className="text-grey text-md tracking-wide mt-12 mb-8">My Info</p>
+
+                        <div className="flex">
+                            <div className="flex items-center justify-center text-grey text-md font-semibold mb-1 overflow-hidden">
+                                <p className="font-bold text-white">Name: </p>
+                            </div>
+                            <div className="ml-3">
+                                <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700"
+                                    style={{ width: "100%" }}
+                                    onChange={(e) =>
+                                        //state.userProfileData.name = e.target.value
+                                        setUserName(e.target.value)
+                                    }
+                                    type="text"
+                                    value={userName}
+                                    autoFocus 
+                                />
+                            </div>
+                        </div>
+
+                        <div className="pin-b pb-4" style={{}}>
+                            <div className="mt-4 w-full" style={{width: '105px', display: 'inline-block'}}>
+                                <button
+                                    className="w-full flex justify-center items-center
+                                    text-white py-2 mt-2"
+                                    type="button"
+                                    style={{ background: '#202225', fontSize: '14px', borderRadius: '8px' }}
+                                    onClick={() => {
+                                        updateUser()
+                                        //toggleshowInviteModal(showInviteModal => !showInviteModal)
+                                    }}>
+                                    <i className="material-icons mr-2" style={{ fontSize: '14px' }}>save</i>Update
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
-                    <div className="ml-3">
-                        <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700"
-                            style={{ width: "100%" }}
-                            onChange={(e) =>
-                                //state.userProfileData.name = e.target.value
-                                setUserName(e.target.value)
+                }
+
+                {
+                    activeSection == 'team' &&
+
+                    <div>
+                        <div className="flex">
+                            <div className="h-8 w-8 flex items-center justify-center overflow-hidden">
+                                <img src={activeTeam.avatar} alt="" />
+                            </div>
+                            <div className="ml-3" style={{alignSelf: 'flex-end'}}>
+                                <p className="text-grey font-bold text-lg tracking-wide">
+                                    {activeTeam.name}
+                                </p>
+                            </div>
+                        </div>
+                        
+
+                        <p className="text-grey text-md tracking-wide mt-12 mb-8">Team Members</p>
+
+                        <div className="">
+                            {
+                                state.currentTeam.users && state.currentTeam.users.map(user => 
+                                    <div 
+                                        key={user.id}
+                                        className='px-3 pt-2 pb-2 flex pointer settings-menu-item'
+                                        onClick ={function(){ 
+                                            //setActiveSection('team') 
+                                            //setActiveTeam(team) 
+                                        }}
+                                        onMouseEnter={function(){ 
+                                            setHoverUser(user.id)
+                                        }}
+                                        onMouseLeave={function(){ 
+                                            setHoverUser()
+                                        }}
+                                    >
+                                        <div className="h-6 w-6 flex items-center justify-center mr-3 overflow-hidden">
+                                            <img src={user.avatar} alt="" />
+                                        </div> 
+                                        <div>
+                                            {user.name}
+                                        </div>
+                                        <div>
+                                            {
+                                                hoverUser == user.id && 
+                                            
+                                                 <button
+                                                    className="w-full flex justify-center items-center text-white ml-2"
+                                                    type="button"
+                                                    style={{ 
+                                                        background: '#202225', fontSize: '12px', borderRadius: '8px', padding: '5px' 
+                                                    }}
+                                                    onClick={() => {
+                                                        //updateUser()
+                                                        //toggleshowInviteModal(showInviteModal => !showInviteModal)
+                                                    }}>
+                                                    <i className="material-icons mr-2" style={{ fontSize: '12px' }}>delete</i>
+                                                    <span className='mr-1'>Remove</span>
+                                                </button>
+                                            }
+                                        </div>
+                                    </div>
+                                )
                             }
-                            type="text"
-                            value={userName}
-                            autoFocus 
-                        />
-                    </div>
-                </div>
+                        </div>
 
-                <div className="pin-b pb-4" style={{}}>
-                    <div className="mt-4 w-full" style={{width: '105px', display: 'inline-block'}}>
-                        <button
-                            className="w-full flex justify-center items-center
-                            text-white py-2 mt-2"
-                            type="button"
-                            style={{ background: '#202225', fontSize: '14px', borderRadius: '8px' }}
-                            onClick={() => {
-                                updateUser()
-                                //toggleshowInviteModal(showInviteModal => !showInviteModal)
-                            }}>
-                            <i className="material-icons mr-2" style={{ fontSize: '14px' }}>save</i>Update
-                        </button>
+                        <div className="mt-6" style={{ height: "1px", width: "100%", background: '#484e52' }}></div>
+
+                        <p className="text-grey text-md tracking-wide mt-12 mb-8">Team Settings</p>
+
+                        <div className="flex">
+                            <div className="flex items-center justify-center text-grey text-md font-semibold mb-1 overflow-hidden">
+                                <p className="font-bold text-white">Name: </p>
+                            </div>
+                            <div className="ml-3">
+                                <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700"
+                                    style={{ width: "100%" }}
+                                    onChange={(e) =>
+                                        //state.userProfileData.name = e.target.value
+                                        setUserName(e.target.value)
+                                    }
+                                    type="text"
+                                    value={activeTeam.name}
+                                    autoFocus 
+                                />
+                            </div>
+                        </div>
+
+                        <div className="pin-b pb-4" style={{}}>
+                            <div className="mt-4 w-full" style={{width: '105px', display: 'inline-block'}}>
+                                <button
+                                    className="w-full flex justify-center items-center bg-green-700
+                                    text-white py-2 mt-2"
+                                    type="button"
+                                    style={{  fontSize: '14px', borderRadius: '8px' }}
+                                    onClick={() => {
+                                        //updateUser()
+                                    }}>
+                                    <i className="material-icons mr-2" style={{ fontSize: '14px' }}>save</i>Update
+                                </button>
+                            </div>
+                            <div className="mt-4 w-full ml-3" style={{width: '125px', display: 'inline-block'}}>
+                                <button
+                                    className="w-full flex justify-center items-center bg-red-700
+                                    text-white py-2 mt-2"
+                                    type="button"
+                                    style={{ fontSize: '14px', borderRadius: '8px' }}
+                                    onClick={() => {
+                                        //deleteTeam()
+                                    }}>
+                                    <i className="material-icons mr-2" style={{ fontSize: '14px' }}>delete</i>Delete Team
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                }
 
             </div>
         </div>

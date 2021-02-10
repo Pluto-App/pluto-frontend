@@ -7,6 +7,8 @@ export const getTeam = async ({state, effects}, {authData, team_id}) => {
 
 	var teamData = await effects.team.getTeam(authData, team_id)
 	state.currentTeam = teamData;
+  console.log('setting currentTeam');
+  console.log(state.currentTeam);
 
   var onlineUsers = await effects.user.getOnlineUsers(authData, teamData.tid);
   
