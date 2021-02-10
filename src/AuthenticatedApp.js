@@ -127,6 +127,7 @@ export default function App() {
 
         <Route exact path="/settings">
           <Settings />
+          <ToastContainer />
         </Route>
 
         <Route path="*">

@@ -7,8 +7,6 @@ export const getTeam = async ({state, effects}, {authData, team_id}) => {
 
 	var teamData = await effects.team.getTeam(authData, team_id)
 	state.currentTeam = teamData;
-  console.log('setting currentTeam');
-  console.log(state.currentTeam);
 
   var onlineUsers = await effects.user.getOnlineUsers(authData, teamData.tid);
   
@@ -32,14 +30,21 @@ export const createTeam = async ({state, effects}, {authData, teamData}) => {
 	state.addingTeam = true
 	var teamData = await effects.team.createTeam(authData, teamData)
 	state.addingTeam = false
+
+  return teamData;
 }
+
+export const updateTeam = async ({state, effects}, {authData, teamData}) => {
+
+   return await effects.team.updateTeam(authData, teamData)
+}
+
 
 export const deleteTeam = async ({state, effects}, {authData, teamData}) => {
 
   // These states don't really do anything for now: Jan 2nd
   state.deletingTeam = true;
   var teamData = await effects.team.deleteTeam(authData, teamData);
-  state.currentTeamId = null;
   state.deletingTeam = false;
 }
 
@@ -63,3 +68,4 @@ export const updateCurrentTeam = async ({state, effects}, {team_id}) => {
   	state.currentTeamId = team_id;
   	state.loadingTeam = false;
 }
+

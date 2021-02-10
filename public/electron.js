@@ -170,8 +170,8 @@ function createWindow() {
   ipcMain.on('logout', (event, arg) => {
     console.log('LOGOUT');
     mainWindow.webContents.send('logout', {});
-    mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : startPageUrl);
-    mainWindow.setSize(minWidth, minHeight)
+    //mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : startPageUrl);
+    //mainWindow.setSize(minWidth, minHeight)
   })
 
   ipcMain.on('resize-login', (event, arg) => {

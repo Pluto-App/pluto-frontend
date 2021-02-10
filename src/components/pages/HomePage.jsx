@@ -129,8 +129,8 @@ export default function HomePage() {
         window.require("electron").ipcRenderer.on('logout', function (e, args) {
 
             actions.auth.logOut({setAuthData: setAuthData}).then(() => {
-                var curentWindow = window.require("electron").remote.getCurrentWindow();
-                curentWindow.close(); 
+                // var curentWindow = window.require("electron").remote.getCurrentWindow();
+                // curentWindow.close(); 
             });
         });
 
