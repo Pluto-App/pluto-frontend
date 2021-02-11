@@ -31,7 +31,10 @@ export const state = {
 
     // App Data
     activeWindowApp: {},
-    userPreference: {},
+    userPreference: {
+        show_active_app: true,
+        share_active_app: true
+    },
     loggedInUser: {},
     userProfileData: {},
     userData: {teams: []},

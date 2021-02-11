@@ -27,7 +27,7 @@ const UserProfile = React.memo(() => {
     const [ confirmUserRemoval, setConfirmUserRemoval ] = useState(false);
     
     const [ currentUser, setCurrentUser ] = useState(JSON.parse(localStorage.getItem('currentUser')).user);
-    const [ userPreference, setUserPreference ] = useState(JSON.parse(localStorage.getItem('userPreference')) || {});
+    const [ userPreference, setUserPreference ] = useState(JSON.parse(localStorage.getItem('userPreference')) || state.userPreference);
     
     const [ hoverUser, setHoverUser ] = useState();
     const [ userName, setUserName ] = useState(JSON.parse(localStorage.getItem('currentUser')).user.name);
@@ -476,14 +476,30 @@ const UserProfile = React.memo(() => {
                                         >
                                             <img src={user.avatar} alt="" />
                                         </div> 
+
                                         <div>
                                             {user.name}
                                         </div>
+
+                                        {
+                                            activeTeam.owner_id == user.id && 
+                                            <div
+                                                className="ml-1 justify-center items-center text-white"
+                                                style={{ 
+                                                    background: '#b59400', fontSize: '12px', borderRadius: '8px', padding: '5px' 
+                                                }}
+                                            >
+                                                <span>Owner</span>
+                                            </div>
+                                        }
+        
                                         <div>
                                             {
+                                                activeTeam.owner_id == currentUser.id && 
+                                                user.id != currentUser.id &&
                                                 hoverUser == user.id && 
                                             
-                                                 <button
+                                                <button
                                                     className="w-full flex justify-center items-center text-white ml-2"
                                                     type="button"
                                                     style={{ 
@@ -503,53 +519,59 @@ const UserProfile = React.memo(() => {
                             }
                         </div>
 
-                        <div className="mt-6" style={{ height: "1px", width: "100%", background: '#484e52' }}></div>
 
-                        <p className="text-grey text-md tracking-wide mt-12 mb-8">Team Settings</p>
+                        {
+                            activeTeam.owner_id == currentUser.id &&
+                            <div>
+                                <div className="mt-6" style={{ height: "1px", width: "100%", background: '#484e52' }}></div>
 
-                        <div className="flex">
-                            <div className="flex items-center justify-center text-grey text-md font-semibold mb-1 overflow-hidden">
-                                <p className="font-bold text-white">Name: </p>
-                            </div>
-                            <div className="ml-3">
-                                <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700"
-                                    style={{ width: "100%" }}
-                                    onChange={(e) =>
-                                        setActiveTeam({...activeTeam, name: e.target.value })
-                                    }
-                                    type="text"
-                                    value={activeTeam.name}
-                                    autoFocus 
-                                />
-                            </div>
-                        </div>
+                                <p className="text-grey text-md tracking-wide mt-12 mb-8">Team Settings</p>
 
-                        <div className="pin-b pb-4" style={{}}>
-                            <div className="mt-4 w-full" style={{width: '105px', display: 'inline-block'}}>
-                                <button
-                                    className="w-full flex justify-center items-center bg-purple-700
-                                    text-white py-2 mt-2"
-                                    type="button"
-                                    style={{  fontSize: '14px', borderRadius: '8px' }}
-                                    onClick={() => {
-                                        updateTeam()
-                                    }}>
-                                    <i className="material-icons mr-2" style={{ fontSize: '14px' }}>save</i>Update
-                                </button>
+                                <div className="flex">
+                                    <div className="flex items-center justify-center text-grey text-md font-semibold mb-1 overflow-hidden">
+                                        <p className="font-bold text-white">Name: </p>
+                                    </div>
+                                    <div className="ml-3">
+                                        <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700"
+                                            style={{ width: "100%" }}
+                                            onChange={(e) =>
+                                                setActiveTeam({...activeTeam, name: e.target.value })
+                                            }
+                                            type="text"
+                                            value={activeTeam.name}
+                                            autoFocus 
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="pin-b pb-4" style={{}}>
+                                    <div className="mt-4 w-full" style={{width: '105px', display: 'inline-block'}}>
+                                        <button
+                                            className="w-full flex justify-center items-center bg-purple-700
+                                            text-white py-2 mt-2"
+                                            type="button"
+                                            style={{  fontSize: '14px', borderRadius: '8px' }}
+                                            onClick={() => {
+                                                updateTeam()
+                                            }}>
+                                            <i className="material-icons mr-2" style={{ fontSize: '14px' }}>save</i>Update
+                                        </button>
+                                    </div>
+                                    <div className="mt-4 w-full ml-3" style={{width: '125px', display: 'inline-block'}}>
+                                        <button
+                                            className="w-full flex justify-center items-center bg-pink-700
+                                            text-white py-2 mt-2"
+                                            type="button"
+                                            style={{ fontSize: '14px', borderRadius: '8px' }}
+                                            onClick={() => {
+                                                setConfirmTeamDelete(true)
+                                            }}>
+                                            <i className="material-icons mr-2" style={{ fontSize: '14px' }}>delete</i>Delete Team
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="mt-4 w-full ml-3" style={{width: '125px', display: 'inline-block'}}>
-                                <button
-                                    className="w-full flex justify-center items-center bg-pink-700
-                                    text-white py-2 mt-2"
-                                    type="button"
-                                    style={{ fontSize: '14px', borderRadius: '8px' }}
-                                    onClick={() => {
-                                        setConfirmTeamDelete(true)
-                                    }}>
-                                    <i className="material-icons mr-2" style={{ fontSize: '14px' }}>delete</i>Delete Team
-                                </button>
-                            </div>
-                        </div>
+                        }
 
                         {
                            confirmTeamDelete &&

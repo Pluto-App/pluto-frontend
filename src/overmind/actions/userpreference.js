@@ -5,10 +5,11 @@ export const getUserPreference = async ({state, effects}, {authData}) => {
 
 	var userPreference = await effects.userpreference.getUserPreference(authData, authData.user.id)
 	
-	if(userPreference && userPreference.user_id){
-
+	if(userPreference && userPreference.user_id){	
+		state.userPreference = userPreference;
 		localStorage.setItem('userPreference', JSON.stringify(userPreference));
-		state.userPreference = userPreference;	
+	} else {
+		localStorage.removeItem('userPreference');
 	}
 }
 

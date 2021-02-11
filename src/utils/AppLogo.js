@@ -42,8 +42,6 @@ export const appLogo = function(appData, userPreference) {
 
     if(url) {
       url = new URL(url);
-      console.log(url);
-      console.log(url.hostname);
       appName = hostApp[url.hostname] ? hostApp[url.hostname] : appName;
 
       // Google Document or Google Sheet?
