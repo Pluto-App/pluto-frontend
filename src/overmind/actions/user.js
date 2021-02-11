@@ -1,7 +1,7 @@
 
 import { socket_live, events } from '../../components/sockets'
 
-export const getLoggedInUser = async ({state, effects}, {authData: authData, params: params}) => {
+export const getLoggedInUser = async ({state, actions, effects}, {authData: authData, params: params}) => {
 
   	state.loadingUser = true
     var userData = {}
@@ -9,6 +9,7 @@ export const getLoggedInUser = async ({state, effects}, {authData: authData, par
   	try {
 
   		userData = await effects.user.getUser(authData, params)
+      actions.userpreference.getUserPreference({ authData: authData});
 
 	  	socket_live.emit('join_room', userData.uid);
 

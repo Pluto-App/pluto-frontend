@@ -21,9 +21,14 @@ let token = localStorage.getItem("currentUser")
   ? JSON.parse(localStorage.getItem("currentUser")).token
   : "";
 
+let userPreference = localStorage.getItem("userPreference")
+  ? JSON.parse(localStorage.getItem("userPreference"))
+  : "";
+
 const initialAuthState = {
   user: "" || user,
-  token: "" || token
+  token: "" || token,
+  userPreference: "" || userPreference
 };
 
 function AppProviders({children}) {

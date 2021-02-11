@@ -24,5 +24,4 @@ export const getUsersInRoom = async ({state, effects}, {authData, roomId}) => {
 
   	var roomUsers = await effects.room.getUsersInRoom(authData, roomId)
   	state.usersInRoom[roomId] = roomUsers;
-  	console.log(state.usersInRoom);
 }

@@ -16,9 +16,16 @@ const UserProfile = React.memo(() => {
 
     const [ activeSection, setActiveSection ] = useState('profile');
     const [ activeTeam, setActiveTeam ] = useState({});
+    
     const [ newTeam, setNewTeam ] = useState({});
+    const [ userToRemove, setUserToRemove ] = useState({});
+
     const [ confirmTeamDelete, setConfirmTeamDelete ] = useState(false);
+    const [ confirmUserRemoval, setConfirmUserRemoval ] = useState(false);
+    
     const [ currentUser, setCurrentUser ] = useState(JSON.parse(localStorage.getItem('currentUser')).user);
+    const [ userPreference, setUserPreference ] = useState(JSON.parse(localStorage.getItem('userPreference')) || {});
+    
     const [ hoverUser, setHoverUser ] = useState();
     const [ userName, setUserName ] = useState(JSON.parse(localStorage.getItem('currentUser')).user.name);
 
@@ -34,23 +41,21 @@ const UserProfile = React.memo(() => {
     const createTeam = async (e) => {
         e.preventDefault();
         
-        var teamData = {name: newTeam.name, user_id: currentUser.id}
-        var team = await actions.team.createTeam({ authData: authData, teamData: teamData})
+        if(newTeam.name.length > 2){
+            var teamData = {name: newTeam.name, user_id: currentUser.id}
+            var team = await actions.team.createTeam({ authData: authData, teamData: teamData})
 
-        if(currentUser){
-            setCurrentUser({...currentUser, teams: [...currentUser.teams, team]});    
+            if(currentUser){
+                setCurrentUser({...currentUser, teams: [...currentUser.teams, team]});    
+            }
+
+            ToastNotification('success', "New Team Added!")  
+            setNewTeam({});
+
+        } else {
+            ToastNotification('error', "Team name too short!");  
         }
-
-        ToastNotification('success', "New Team Added!")  
-        setNewTeam({});
-    }
-
-    const updateUser = async () => {
         
-        var userData = {name: userName, id: state.userProfileData.id}
-        await actions.user.updateUser({ authData: authData, userData: userData})
-
-        ToastNotification('success', "Profile Updated!")
     }
 
     const updateTeam = async () => {
@@ -65,13 +70,18 @@ const UserProfile = React.memo(() => {
                 var index = userTeams.findIndex(team => team.id == updatedTeam.id);
 
                 userTeams[index]['name'] = updatedTeam.name;
+
+                if(updatedTeam['avatar']){
+                    userTeams[index]['avatar'] = updatedTeam.avatar;
+                    setActiveTeam({...activeTeam, avatar: updatedTeam['avatar']});
+                }
+               
                 setCurrentUser({...currentUser, teams: userTeams});    
             }
 
             ToastNotification('success', "Team Updated!")  
 
-        }
-        
+        }   
     }
 
     const deleteTeam = async () => {
@@ -91,6 +101,52 @@ const UserProfile = React.memo(() => {
 
             ToastNotification('success', "Team Deleted!")  
         }
+    }
+
+    const removeUserFromTeam = async () => {
+        
+        if(activeTeam){
+
+            var reqData = {team_id: activeTeam.id, user_id: userToRemove.id}
+            await actions.team.removeUser({ authData: authData, reqData: reqData})
+
+            let teamUsers = [...activeTeam.users];
+            var index = teamUsers.findIndex(user => user.id == userToRemove.id);
+            teamUsers.splice(index, 1);
+
+            setActiveTeam({...activeTeam, users: teamUsers});
+            ToastNotification('success', "User Removed!")  
+        }   
+    }
+
+    const updateUser = async () => {
+        
+        var userData = {name: userName, id: state.userProfileData.id}
+        await actions.user.updateUser({ authData: authData, userData: userData})
+
+        ToastNotification('success', "Profile Updated!")
+    }
+
+    const updateUserPreference = async () => {
+        
+        var userPreferenceData = {
+            id: userPreference.id,
+            show_active_app: userPreference.show_active_app,
+            share_active_app: userPreference.share_active_app,
+            user_id: state.userProfileData.id
+        }
+
+        if(userPreference.id){
+
+            await actions.userpreference.updateUserPreference({ authData: authData, userPreferenceData: userPreferenceData})
+            
+        } else {
+            
+            await actions.userpreference.createUserPreference({ authData: authData, userPreferenceData: userPreferenceData});
+            setUserPreference(JSON.parse(localStorage.getItem('userPreference')))
+        }
+       
+        ToastNotification('success', "Preference Updated!")
     }
 
     useEffect(() => {
@@ -180,10 +236,9 @@ const UserProfile = React.memo(() => {
                                     : 
                                     'px-3 pt-2 pb-2 flex pointer settings-menu-item'
                                 }
-                                onClick ={function(){ 
+                                onClick ={ async function() { 
                                     setActiveSection('team') 
-                                    setActiveTeam(team)
-                                    actions.team.getTeam({authData: authData, team_id: team.id})
+                                    setActiveTeam(await actions.team.getTeam({authData: authData, team_id: team.id}))
                                 }}
                             >
                                 <div className="bg-white h-8 w-8 flex items-center justify-center mr-3 overflow-hidden">
@@ -206,15 +261,15 @@ const UserProfile = React.memo(() => {
                             setActiveSection('create-team') 
                         }}
                     >
-                        <div className="mr-3 bg-black flex items-center justify-center overflow-hidden" 
-                            style={{width: '34px', height: '34px', float: 'left'}}>
-                            <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}
-                                style={{ transition: "all .60s ease" }}
-                            >add</i>
-                        </div> 
-                        <div>
-                            Create Team
-                        </div>
+                    <div className="mr-3 bg-black flex items-center justify-center overflow-hidden" 
+                        style={{width: '34px', height: '34px', float: 'left'}}>
+                        <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}
+                            style={{ transition: "all .60s ease" }}
+                        >add</i>
+                    </div> 
+                    <div>
+                        Create Team
+                    </div>
                     </div>
                 </div>
 
@@ -304,6 +359,51 @@ const UserProfile = React.memo(() => {
 
                         <p className="text-grey font-bold text-lg tracking-wide mt-2 mb-12">Preferences</p>
 
+                        <div className="flex">
+                            <div className="flex items-center justify-center text-grey text-sm font-semibold mb-1 overflow-hidden">
+                                <p className="text-white">Show Active App to Team Members: </p>
+                            </div>
+                            <div className="ml-3">
+                                <input className="shadow border py-1 px-5 text-gray-700"
+                                    type="checkbox"
+                                    checked={userPreference.show_active_app}
+                                    onChange={(e) => {
+                                        setUserPreference({...userPreference, show_active_app: !userPreference.show_active_app })
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex mt-3">
+                            <div className="flex items-center justify-center text-grey text-sm font-semibold mb-1 overflow-hidden">
+                                <p className="text-white">Allow Users To Join On Active App: </p>
+                            </div>
+                            <div className="ml-3">
+                                <input className="shadow border py-1 px-5 text-gray-700"
+                                    type="checkbox"
+                                    checked={userPreference.share_active_app}
+                                    onChange={(e) => {
+                                        setUserPreference({...userPreference, share_active_app: !userPreference.share_active_app })
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="pin-b pb-4" style={{}}>
+                            <div className="mt-4 w-full" style={{width: '105px', display: 'inline-block'}}>
+                                <button
+                                    className="w-full flex justify-center items-center
+                                    text-white py-2 mt-2"
+                                    type="button"
+                                    style={{ background: '#202225', fontSize: '14px', borderRadius: '8px' }}
+                                    onClick={() => {
+                                        updateUserPreference()
+                                    }}>
+                                    <i className="material-icons mr-2" style={{ fontSize: '14px' }}>save</i>Save
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 }
 
@@ -328,14 +428,10 @@ const UserProfile = React.memo(() => {
 
                         <div className="">
                             {
-                                state.currentTeam.users && state.currentTeam.users.map(user => 
+                                activeTeam.users && activeTeam.users.map(user => 
                                     <div 
                                         key={user.id}
                                         className='px-3 pt-2 pb-2 flex pointer settings-menu-item'
-                                        onClick ={function(){ 
-                                            //setActiveSection('team') 
-                                            //setActiveTeam(team) 
-                                        }}
                                         onMouseEnter={function(){ 
                                             setHoverUser(user.id)
                                         }}
@@ -363,8 +459,8 @@ const UserProfile = React.memo(() => {
                                                         background: '#202225', fontSize: '12px', borderRadius: '8px', padding: '5px' 
                                                     }}
                                                     onClick={() => {
-                                                        //updateUser()
-                                                        //toggleshowInviteModal(showInviteModal => !showInviteModal)
+                                                        setUserToRemove(user)
+                                                        setConfirmUserRemoval(true);
                                                     }}>
                                                     <i className="material-icons mr-2" style={{ fontSize: '12px' }}>delete</i>
                                                     <span className='mr-1'>Remove</span>
@@ -388,7 +484,6 @@ const UserProfile = React.memo(() => {
                                 <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700"
                                     style={{ width: "100%" }}
                                     onChange={(e) =>
-                                        //state.userProfileData.name = e.target.value
                                         setActiveTeam({...activeTeam, name: e.target.value })
                                     }
                                     type="text"
@@ -459,6 +554,53 @@ const UserProfile = React.memo(() => {
                                         style={{ transition: "all .60s ease", fontSize: '14px' }}
                                         onClick={() => {
                                             setConfirmTeamDelete(false)
+                                        }}>
+                                             <i 
+                                                className="material-icons md-light md-inactive mr-2"
+                                                style={{fontSize: '18px'}}
+                                            >
+                                                close
+                                            </i> Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        {
+                           confirmUserRemoval &&
+                            <div className="items-center absolute rounded-lg mx-1 p-1 py-1" style={confirmDialogueStyle}>
+
+                                <div className="items-center px-2">
+                                    <p className="text-grey font-bold tracking-wide text-xs center mt-2 mb-2">
+                                        Remove {userToRemove.name} ?
+                                    </p>
+
+                                    <div className="flex">
+                                        <button
+                                        className="rounded-full flex justify-center items-center bg-green-700
+                                        text-white py-2 px-4 mt-2 mr-2 focus:outline-none focus:shadow-outline"
+                                        type="button"
+                                        style={{ transition: "all .60s ease", fontSize: '14px' }}
+                                        onClick={(e) => {
+                                            setConfirmUserRemoval(false)
+                                            removeUserFromTeam(e)
+                                        }}>
+                                            <i 
+                                                className="material-icons md-light md-inactive mr-2"
+                                                style={{fontSize: '18px'}}
+                                            >
+                                                check
+                                            </i> Confirm
+                                        </button>
+
+                                        <button
+                                        className="rounded-full flex justify-center items-center bg-red-700
+                                        text-white py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
+                                        type="button"
+                                        style={{ transition: "all .60s ease", fontSize: '14px' }}
+                                        onClick={() => {
+                                            setConfirmUserRemoval(false)
                                         }}>
                                              <i 
                                                 className="material-icons md-light md-inactive mr-2"

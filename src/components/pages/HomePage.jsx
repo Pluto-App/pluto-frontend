@@ -121,6 +121,7 @@ export default function HomePage() {
 
         window.require("electron").ipcRenderer.on('refresh', function (e, args) {
 
+            actions.user.getLoggedInUser({authData: authData});
             if(state.currentTeamId){
                 actions.team.getTeam({authData: authData, team_id: state.currentTeamId})    
             }    

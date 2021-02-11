@@ -22,6 +22,8 @@ export const getTeam = async ({state, effects}, {authData, team_id}) => {
 
 	state.loadingTeam = false
   state.teamUpdateReq = false
+
+  return teamData;
 }
 
 export const createTeam = async ({state, effects}, {authData, teamData}) => {
