@@ -12,7 +12,12 @@ if __name__ == '__main__':
         control = controlList[0]
     else:
         control = controlList[1]
-    address_control = automation.FindControl(control, lambda c, d: isinstance(c, automation.EditControl) and "Address and search bar" in c.Name)
+    
+    try:
+        address_control = automation.FindControl(control, lambda c, d: isinstance(c, automation.EditControl) and "Address and search bar" in c.Name)
+    except:
+        address_control = None
+
     if address_control == None:
         print('null')
     else:

@@ -5,6 +5,8 @@ import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import * as Cookies from "js-cookie";
 import ToastNotification from '../../widgets/ToastNotification';
+import ReactTooltip from 'react-tooltip';
+
 import { socket_live, events } from '../../sockets';
 
 import { appLogo } from '../../../utils/AppLogo';
@@ -22,6 +24,7 @@ const UserListItem = React.memo((user) => {
 
     const [showChatModal, toggleshowChatModal] = useState(false);
     const [showMenu, toggleShowMenu] = useState(false);
+    const [activeAppInfo, setActiveAppInfo] = useState({});
 
     const logos = require.context('../../../assets/logos', true);
 
@@ -41,36 +44,17 @@ const UserListItem = React.memo((user) => {
         "position": "absolute"
     }
 
-    const getAppLogo = (appData) => {
-
-        try {
-            if(appData.owner && appData.owner.name) {
-
-                var logo = appLogo(
-                    appData.owner.name.toLowerCase().replace(/ /g,'').replace('.exe',''),
-                    appData.url
-                ); 
-
-                return logo;   
-            } else {
-                
-                throw new Error('App Data Incorrect');
-            }
-
-        } catch (error) {
-
-            if(process.env.REACT_APP_DEV_BUILD)
-                 console.log(error)
-
-            return "https://ui-avatars.com/api/?background=black&name="   
-        }
+    const getStatusColor = () => {
+        if(state.onlineUsers[user.id])
+            return '#5CFF59'
+        else
+            return '#FF5959'
     }
 
-    const activeAppClick = (e, usersActiveWindow) => {
+    const activeAppClick = (e, url) => {
         e.preventDefault();
-        
-        if(usersActiveWindow && usersActiveWindow.url){
-            window.require("electron").shell.openExternal(usersActiveWindow.url);
+        if(url){
+            window.require("electron").shell.openExternal(url.href);
         }
     }
 
@@ -87,9 +71,6 @@ const UserListItem = React.memo((user) => {
     }
 
     const startVideo = (e, receiver_uid) => {
-
-        // TODO User Video Call ID. Check Needed.
-        // Cannot start a VC Call with oneself.
 
         if (receiver_uid !== state.userProfileData.uid) {
 
@@ -112,43 +93,70 @@ const UserListItem = React.memo((user) => {
         }
     }
 
+    useEffect(() => {
+
+        setActiveAppInfo(appLogo(state.usersActiveWindows[user.id], state.userPreference));
+
+    },[ state.usersActiveWindows[user.id]])
+
     return (
-        <div className="flex py-0 justify-between p-1 pl-1 hover:bg-gray-800" id={user.id} onClick={(e) => {
+        <div className="flex py-0 justify-between p-1 pl-1 members-list-item" id={user.id} onClick={(e) => {
             e.preventDefault();
         }}>
+            <ReactTooltip effect="solid" place="top" delayShow={500} />
+
             <div className="flex justify-start p-2 pl-1">
-                <div className="bg-white h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden">
-                    <img src={user.url} alt="T" />
+                <div className="h-5 w-5 flex text-black text-2xl font-semibold rounded-lg overflow-hidden"
+                    style={{paddingLeft: '3px', paddingTop: '5px'}}
+                >
+                    <svg viewBox="0 0 6 6" height="11" width="11">
+                        <circle cx="3" cy="3" r="2.5" fill={getStatusColor()} />
+                            Sorry, your browser does not support inline SVG.
+                    </svg>
+                    <span></span>
                 </div>
-                <div className="text-white px-1 font-bold tracking-wide text-xs" 
+                <div 
+                    className="text-white px-1 font-bold tracking-wide text-xs pointer" 
+                    data-tip="Click to Talk ✆"
+                    data-place="left"
+                    style={{minWidth: '100px'}}
                     onClick={(e) => {
                         startVideo(e, user.uid);
                     }}
                 >
                     {user.name}
                 </div>
-                <svg viewBox="0 0 6 6" height="8" width="8">
-                    <circle cx="3" cy="3" r="2.5" fill={user.statusColor} />
-                        Sorry, your browser does not support inline SVG.
-                </svg>
-                <span></span>
             </div>
-            <div className="items-center flex">
-                <div className="items-center bg-black h-6 w-6 flex text-black text-2xl font-semibold overflow-hidden">
-                    <a onClick={(e) => {
-                        activeAppClick( e, state.usersActiveWindows[user.id] )
-                    }}>
-                       { state.usersActiveWindows[user.id] ? 
+            <div 
+                className="items-center flex pr-2 pointer"
+                data-tip={ activeAppInfo.logo && activeAppInfo.url ? 'Click to visit App.' : '' }
+                style={{minWidth: '150px', placeContent: 'flex-end'}}
+                onClick={(e) => {
+                    activeAppClick( e, activeAppInfo.url )
+                }}
+            >
+                <div style={{ fontSize: '12px', color: '#74767A', marginRight: '5px'}}>  
+                    {
+                        activeAppInfo.logo ? activeAppInfo.name : ''
+                    } 
+                </div>
+                <div className="items-center h-6 w-6 flex overflow-hidden">
+                    <a>
+                       { activeAppInfo.logo ? 
 
-                            <img src={
-                                    getAppLogo(state.usersActiveWindows[user.id])
-                            } alt=""/>
+                            <div>
+                                <img 
+                                    src = { activeAppInfo.logo } 
+                                    style = {{ borderRadius: '30%' }}
+                                />
+                            </div>
                             :
                             <div></div>
                         }
                     </a>
                 </div>
-                {
+
+                {/*
                     showMenu &&
                     <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customMenuStyle}>
                         <div className="flex w-full justify-end">
@@ -171,7 +179,7 @@ const UserListItem = React.memo((user) => {
                             </div>
                             <div className="mt-3 bg-black" style={{ height: "1px", width: "100%" }}></div>
                             
-                            {/*
+                            {
                             <button className="w-full text-white focus:outline-none hover:bg-gray-800 rounded-lg flex font-bold tracking-wide text-xs items-center" >
                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>publish</i> Share Documents
                                             </button>
@@ -185,7 +193,7 @@ const UserListItem = React.memo((user) => {
                                 <i className="material-icons md-light md-inactive mr-2" style={{ fontSize: "18px" }}>question_answer</i>Instant Chat
                                             </button> 
 
-                            */}
+                            }
                             
                             {
                                 user.uid == state.userProfileData.uid ?
@@ -214,12 +222,16 @@ const UserListItem = React.memo((user) => {
                             </button>
                         </div>
                     </div>
-                }
+                */}
+
+            {/* 
                 <button className="text-gray-300 hover:text-indigo-500 px-1 focus:outline-none pointer" onClick={(e) => {
                     toggleShowMenu(showMenu => !showMenu)
                 }}>
                     <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}>more_vert</i>
                 </button>
+            */}
+
                 {
                     showChatModal &&
                     <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customChatStyle}>

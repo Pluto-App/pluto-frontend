@@ -1,9 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef, useContext } from 'react'
-import Sidebar from '../widgets/Sidebar'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
-import MainBar from "../widgets/MainBar"
+import ManagementBar from "../widgets/ManagementBar"
 import UserListItem from "./Users/UserListItem"
 import RoomListItem from "./Rooms/RoomListItem"
 import { css } from "@emotion/core";
@@ -38,31 +37,32 @@ const RoomList = ((rooms) => {
     );
 })
 
-const MembersList = (({users, onlineUsers}) => {
+const MembersList = (
+    ({users}) => {
 
-    const teamMemberList = Object.entries(users).map(([id, member]) =>
-        <UserListItem
-            id={member.id}
-            uid={member.uid}
-            key={member.id.toString()}
-            url={member.avatar}
-            name={member.name}
-            email={member.email}
-            statusColor={onlineUsers.includes(member.id) ? 'green' : member.statusColor}
-        />
-    )
+        const teamMemberList = Object.entries(users).map(([id, member]) =>
+            <UserListItem
+                id={member.id}
+                uid={member.uid}
+                key={member.id.toString()}
+                url={member.avatar}
+                name={member.name}
+                email={member.email}
+            />
+        )
 
-    return (
-        <div className='members-list'>
-            {teamMemberList}
-        </div>
-    );
-});
+        return (
+            <div className='members-list'>
+                {teamMemberList}
+            </div>
+        );
+    }
+);
 
 export default function HomePage() {
 
     let history = useHistory();
-    const { authData } = useContext(AuthContext);
+    const { authData, setAuthData } = useContext(AuthContext);
 
     const override = css`
         display: block;
@@ -117,6 +117,26 @@ export default function HomePage() {
 
     }, [state.noTeams])
 
+    useEffect(() => {
+
+        window.require("electron").ipcRenderer.on('refresh', function (e, args) {
+
+            actions.user.getLoggedInUser({authData: authData});
+            if(state.currentTeamId){
+                actions.team.getTeam({authData: authData, team_id: state.currentTeamId})    
+            }    
+        });
+
+        window.require("electron").ipcRenderer.on('logout', function (e, args) {
+
+            actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+                // var curentWindow = window.require("electron").remote.getCurrentWindow();
+                // curentWindow.close(); 
+            });
+        });
+
+    }, [])
+
     const addRoom = async (roomname) => {
 
         let roomData = {
@@ -124,39 +144,37 @@ export default function HomePage() {
             name: roomname
         }
 
-        actions.room.addRoom({authData: authData, roomData: roomData})
+        actions.room.addRoom({authData: authData, roomData: roomData});
     }
 
     const handleChange = async (e) => {
         updateNewRoomName(e.target.value);
     }
 
-    const customStyle = {
+    const inviteModalStyle = {
         "top": "46%",
-        "width": "calc(94% - 50px)"
+        "width": "calc(100vw - 17px)"
     }
 
     return (
         <div className="w-full flex main-container">
-            <Sidebar></Sidebar>
             
-            <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)", marginLeft: "49px" }}>
-                <MainBar
-                        userid={state.userProfileData.id}
-                        teamid={state.currentTeam.id}
-                        appName={appInfo}
-                />
+            <div className="w-full ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)" }}>
+                
+                <ManagementBar />
 
                 <div className="rooms-list-container" style={{ height: "relative" }}>
-                    <div className="flex justify-between items-center p-1 pl-1 hover:bg-gray-800"
-                        style={{ transition: "all .60s ease" }}
+                    <div className="flex justify-between items-center p-1 pl-1"
+                        style={{ paddingRight: '25px', paddingBottom: '5px' }}
                     >
-                        <div className="text-gray-500 px-3 font-bold tracking-wide text-xs">Rooms</div>
-                        <button className="text-white focus:outline-none hover:bg-gray-800">
-                            <i className="material-icons md-light md-inactive" onClick={(e) => {
-                                e.preventDefault();
-                                actions.app.setAddingRoom(true)
-                            }} style={{ fontSize: "18px", margin: "0" }}>add</i>
+                        <div className="px-3 font-bold tracking-wide" style={{fontWeight: '600', color: '#C4C4C4', fontSize: '14px'}}>
+                            ROOMS
+                        </div>
+                        
+                        <button className="text-white focus:outline-none btn-add" onClick={(e) => {
+                            e.preventDefault();
+                            actions.app.setAddingRoom(true)
+                        }}>
                         </button>
                     </div>
                     {
@@ -186,7 +204,7 @@ export default function HomePage() {
                                 autoFocus />
                         </div>
                     }
-                    <div className="" style={{ height: "115px", overflowY: "scroll" }}>
+                    <div className="" style={{ minHeight: "80px", maxHeight: "225px", overflowY: "scroll" }}>
                         {
                             !state.loadingCurrentTeam ?
                                 RoomList(state.currentTeam.rooms) :
@@ -198,21 +216,13 @@ export default function HomePage() {
                                 />
                         }
                     </div>
-                    <div className="flex justify-center items-center" style={{ height: "15px" }}>
-                        <div className="text-gray-500"></div>
-                        <button className="text-white focus:outline-none">
-                            <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}
-                                style={{ transition: "all .60s ease" }}
-                            >keyboard_arrow_down</i>
-                        </button>
-                    </div>
                 </div>
 
                 <div className="members-list-container" style={{ height: "relative" }}>
-                    <div className="flex justify-between items-center p-2 pl-2 hover:bg-gray-800"
-                        style={{ transition: "all .60s ease" }}
-                    >
-                        <div className="text-gray-500 px-3 font-bold tracking-wide text-xs">Team Mates</div>
+                    <div className="flex justify-between items-center p-1 pl-1">
+                        <div className="px-3 font-bold tracking-wide" style={{fontWeight: '600', color: '#BABBBE', fontSize: '14px'}}>
+                            TEAMMATES
+                        </div>
                     </div>
                     {
                         !state.loadingCurrentTeam ?
@@ -226,19 +236,10 @@ export default function HomePage() {
                     }
                 </div>
 
-                <div className="flex justify-center items-center" style={{ height: "15px" }}>
-                    <div className="text-gray-500"></div>
-                    <button className="text-white focus:outline-none">
-                        <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}
-                            style={{ transition: "all .60s ease" }}
-                        >keyboard_arrow_down</i>
-                    </button>
-                </div>
-
-                <div className="absolute pin-b pb-4" style={{ width: "calc(95% - 50px)" }}>
-                    <div className="mt-4 px-3 w-full">
+                <div className="pin-b pb-4 center" style={{position: 'absolute', bottom: '20px', left: 'calc(100vw/2 - 120px)'}}>
+                    <div className="mt-4 px-3 w-full" style={{width: '240px', display: 'inline-block'}}>
                         <button
-                            className="bg-indigo-800 w-full rounded-full flex justify-center items-center hover:bg-indigo-400 
+                            className="w-full rounded-full flex justify-center items-center bg-purple
                             text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
                             type="button"
                             style={{ transition: "all .60s ease" }}
@@ -254,7 +255,7 @@ export default function HomePage() {
                 {
                     // Invite Modal HTML
                     showInviteModal && state.currentTeamId ?
-                        <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={customStyle}
+                        <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={inviteModalStyle}
                             onClick={(e) => {
                             }}>
                             <h4 className="font-bold text-xl text-gray-600 text-center mb-2"> Add Teammates</h4>

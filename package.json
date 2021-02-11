@@ -50,6 +50,7 @@
     "react-show-more-list": "^0.5.2",
     "react-spinners": "^0.8.3",
     "react-toastify": "^6.0.6",
+    "react-tooltip": "^4.2.13",
     "react-transition-group": "^4.4.1",
     "robotjs": "^0.6.0",
     "run-applescript": "^4.0.0",
@@ -64,7 +65,9 @@
     "compression": "normal",
     "productName": "pluto",
     "copyright": "MIT",
-    "extraResources": ["src/scripts"],
+    "extraResources": [
+      "src/scripts"
+    ],
     "files": [
       "build/**/*",
       "node_modules/**/*",

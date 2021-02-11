@@ -26,7 +26,7 @@ export default function TeamProfile() {
 
     return (
         <div className="w-full flex main-container">
-            <div className="bg-black flex-1 px-3 text-white pt-2" style={{ height: "calc(100vh - 30px)" }}>
+            <div className="flex-1 px-3 text-white pt-2" style={{ height: "calc(100vh - 30px)" }}>
                 <BackButton url={'/'}></BackButton>
                 <p className="text-grey font-bold text-sm tracking-wide mt-2">TEAM INFO</p>
                 <div className="mt-3 mb-4 bg-gray-900" style={{ height: "1px", width: "100%" }}></div>

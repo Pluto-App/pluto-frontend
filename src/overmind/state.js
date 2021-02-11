@@ -31,11 +31,15 @@ export const state = {
 
     // App Data
     activeWindowApp: {},
+    userPreference: {
+        show_active_app: true,
+        share_active_app: true
+    },
     loggedInUser: {},
     userProfileData: {},
     userData: {teams: []},
     currentTeam: {rooms: [], users: []},
-    onlineUsers: [],
+    onlineUsers: {},
     usersActiveWindows: {},
     screenShareViewers: {},
     screenShareCursors: {},

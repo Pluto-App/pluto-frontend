@@ -11,15 +11,16 @@ body {
 
 .topBar {
   position: fixed;
-  height: 30px;
+  height: 45px;
   top: 0;
-  background: #000;
+  background: #202225;
   width: 100%;
 }
 
 .main-container {
   position: fixed;
-  top: 30px;
+  top: 45px;
+  background: #2F3136;
 }
 
 .sidebar-container {
@@ -32,9 +33,17 @@ body {
 }
 
 .members-list {
-    max-height: calc(100vh - 500px);
-    min-height: calc(100vh - 400px);
-    overflow-y: scroll;
+  max-height: 225px;
+  overflow-y: scroll;
+  padding-left: 10px;
+}
+
+.settings-menu-item:hover { 
+  background: #73767D;
+}
+
+.settings-menu-item.active { 
+  background: #73767D;
 }
 
 .pointer {
@@ -106,6 +115,23 @@ body {
 .ag-btn-group.active {
   background: rgba(34, 36, 37, 0.8);
 }
+
+/* button group compact */
+.ag-btn-group-compact {
+  height: 45px;
+  width: 100%;
+  margin: 0 auto;
+  background: transparent;
+  z-index: 11;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.ag-btn-group-compact:hover,
+.ag-btn-group-compact.active {
+  background: rgba(34, 36, 37, 0.8);
+}
+
 
 .ag-btn {
   z-index: 12;
@@ -530,7 +556,7 @@ video {
    
 }
 /* Camera */
-#Dish div {
+#Dish .ag-item {
 
     position: relative;
     vertical-align: middle;
@@ -543,32 +569,22 @@ video {
     animation: show 0.4s ease;
 
 }
+
 /* Details (optional) */
 /* Aspect Ratio Number */
-    #Dish div:after {
-        color: #aaa;
-        font-size: 13px;
-        font-family: Arial, Helvetica, sans-serif;
-        position: absolute;
-        bottom: 20px;
-        right: 23px;
-        font-weight: 100;
-        content: "4:3";
-        display: block;
-    }
-/* Gray Diagonal */
-    #Dish div:before {
-        position: absolute;
-        height: 1px;
-        background: #ddd;
-        width: 100%;
-        transform: rotate(-37deg);
-        top: 50%;
-        font-weight: 100;
-        content: "4:3";
-        display: block;
-        ;
-    }
+#Dish .ag-item-info {
+    font-size: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+    position: absolute;
+    font-weight: 100;
+    display: block;
+    opacity: 0.5;
+    background: black;
+    padding: 2px;
+}
+
+
+
 /* Animation */
 @keyframes show {
     0% {
@@ -581,3 +597,113 @@ video {
     }
 }
 
+.main-team-select {
+  position: relative;
+  background: #202225;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.custom-select__trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: 300;
+    cursor: pointer;
+    color: #B8B9BC;
+}
+ .main-team-select-options {
+    width: 230px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    border-top: 0;
+    background: #25272C;
+    transition: all 0.5s;
+    z-index: 2;
+    border-radius: 10px;
+    max-height: calc(100vh - 200px);
+    min-height: 300px;
+    overflow-y: scroll;
+}
+
+ .main-team-select-option {
+    position: relative;
+    margin: 5px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.5s;
+    background: #202225;
+    padding: 10px;
+    height: 65px;
+
+}
+
+.main-team-select-option:hover {
+     cursor: pointer;
+     background-color: #b2b2b2;
+}
+ .main-team-select-option.selected {
+     color: #ffffff;
+     background-color: #305c91;
+}
+
+.rooms-list-container {
+  padding-top: 15px;
+}
+
+.members-list-container {
+  padding-top: 15px;
+}
+
+.members-list-item:hover {
+  background: #202225
+}
+
+.btn-add:before {
+  content: '\FF0B';
+}
+
+.btn-add {
+  border-radius: 50%;
+  height: 24px;
+  width: 24px;
+  background: #673AB7;
+}
+
+.btn-join-room {
+  border-radius: 10px;
+  background: #673AB7;
+  height: 30px;
+}
+
+.room-list-item:hover {
+  background: #202225
+}
+
+.room-list-item {
+  min-height: 45px;
+  border-radius: 20px;
+}
+
+.bg-purple {
+  background:   #673AB7
+}
+
+.bg-red {
+  background: #FF5959
+}
+
+.bg-green {
+  background: #5CFF59
+}
+
+
+.center {
+  text-align: center;
+}

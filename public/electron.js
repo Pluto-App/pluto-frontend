@@ -18,7 +18,7 @@ let streamScreenShareWindow
 let screenShareContainerWindow
 let screenShareControlsWindow
 
-let settings_page
+let settingsPage
 
 const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
@@ -29,8 +29,8 @@ const runApplescript = require('run-applescript');
 // TODO Now we can add external window for settings.
 // TODO Add support for App Signing.
 
-const minWidth = 360;
-const minHeight = 500;
+const minWidth = 330;
+const minHeight = 700;
 
 const robotKeyMap = {
   'arrowup'     : 'up',
@@ -50,6 +50,8 @@ const robotKeyMap = {
 const robotMods = ['shift','control','alt'];
 var currentMods = [];
 var primaryDisplay;
+var sWidth;
+var sHeight;
 var scaleFactor = 1;
 
 async function runPythonScript(py_script){
@@ -145,6 +147,8 @@ function createWindow() {
   });
 
   primaryDisplay = screen.getPrimaryDisplay();
+  sWidth = primaryDisplay.bounds.width;
+  sHeight = primaryDisplay.bounds.height;
 
   if(isWindows)
     scaleFactor = primaryDisplay.scaleFactor;
@@ -164,8 +168,9 @@ function createWindow() {
   })
 
   ipcMain.on('logout', (event, arg) => {
-    mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : startPageUrl);
-    mainWindow.setSize(minWidth, minHeight)
+    mainWindow.webContents.send('logout', {});
+    //mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : startPageUrl);
+    //mainWindow.setSize(minWidth, minHeight)
   })
 
   ipcMain.on('resize-login', (event, arg) => {
@@ -188,18 +193,17 @@ function createWindow() {
   });
 
   ipcMain.on(`open-settings`, (events, data) => {
-    let display = screen.getPrimaryDisplay();
-    let swidth = display.bounds.width;
-    let sheight = display.bounds.height;
 
-    settings_page = new BrowserWindow({
+    if (settingsPage) {
+      settingsPage.close();
+    }
+
+    settingsPage = new BrowserWindow({
       show: true,
-      width: 400,
-      height: 750,
+      width: 900,
+      height: sHeight,
       frame: false,
-      title: "VideoWindow",
-      x: swidth / 2,
-      y: sheight / 2,
+      titleBarStyle: 'hiddenInset',
       webPreferences: {
         nodeIntegration: true,
         plugins: true,
@@ -207,29 +211,34 @@ function createWindow() {
       }
     })
 
-    settings_page.setAlwaysOnTop(true, 'screen');
-    settings_page.setMenu(null);
-
+    settingsPage.setMenu(null);
+    settingsPage.setAlwaysOnTop(true, 'screen');
+   
     const settingsUrl = url.format({
       pathname: path.join(__dirname, '../build/index.html'),
-      hash: '/user-profile',
+      hash: '/settings',
       protocol: 'file:',
       slashes: true
     })
 
-    settings_page.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/user-profile' : settingsUrl);
-    settings_page.on('closed', () => {
-      settings_page = undefined;
+    settingsPage.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/settings' : settingsUrl);
+    settingsPage.on('closed', () => {
+      settingsPage = undefined;
+      mainWindow.webContents.send('refresh', {});
     })
 
     // here we can send the data to the new window
-    settings_page.webContents.on('did-finish-load', () => {
-      settings_page.webContents.send('data', data);
+    settingsPage.webContents.on('did-finish-load', () => {
+      settingsPage.webContents.send('data', data);
     });
 
+    if (isDev) {
+       settingsPage.webContents.openDevTools();
+    }
+
     mainWindow.on('closed', () => {
-      if (settings_page !== null) {
-        settings_page.close();
+      if (settingsPage) {
+        settingsPage.close();
       }
     })
   });
@@ -244,21 +253,17 @@ function createWindow() {
       }
     }
 
-    let display = screen.getPrimaryDisplay();
-    let swidth = display.bounds.width;
-    let sheight = display.bounds.height;
-
     // create the window
     videoCallWindow = new BrowserWindow({
       show: true,
       width: 200,
-      height: 150,
+      height: 130,
       resizable: false,
       frame: false,
       title: "VideoWindow",
       alwaysOnTop: true,
-      x: swidth - 270,
-      y: sheight - 870,
+      x: sWidth - 270,
+      y: sHeight - 870,
       webPreferences: {
         nodeIntegration: true,
         plugins: true,
@@ -266,7 +271,7 @@ function createWindow() {
       }
     })
 
-    videoCallWindow.setAlwaysOnTop(true, 'screen');
+    videoCallWindow.setAlwaysOnTop(true, 'pop-up-menu');
     videoCallWindow.setMenu(null);
 
     const videoUrl = url.format({
@@ -298,42 +303,38 @@ function createWindow() {
     })
 
     if (isDev) {
-       videoCallWindow.webContents.openDevTools();
+       // videoCallWindow.webContents.openDevTools();
     }
-
   });
 
   ipcMain.on('expand-video-call-window', (event, data) => {
-    if (videoCallWindow) {
-      
-      let display = screen.getPrimaryDisplay();
-      let swidth = display.bounds.width;
-      let sheight = display.bounds.height;
 
+    if (videoCallWindow) {
       videoCallWindow.setPosition(0,0);
-      videoCallWindow.setSize(swidth - 100, sheight - 100);
+      videoCallWindow.setSize(sWidth - 100, sHeight - 100);
       videoCallWindow.setResizable(true);
+      videoCallWindow.setAlwaysOnTop(false);
     }
   });
 
   ipcMain.on('collapse-video-call-window', (event, height) => {
+
     if (videoCallWindow) {
-
-      let display = screen.getPrimaryDisplay();
-      let swidth = display.bounds.width;
-      let sheight = display.bounds.height;
-
-      videoCallWindow.setPosition(swidth - 270,sheight - 870);
-      videoCallWindow.setResizable(false);
+      videoCallWindow.setPosition(sWidth - 270, sHeight - 870);
       videoCallWindow.setSize(200, height);
+      videoCallWindow.setResizable(false);
+      videoCallWindow.setAlwaysOnTop(true,'pop-up-menu');
     }
   });
 
   ipcMain.on('set-video-player-height', (event, height) => {
-    if(videoCallWindow)
-      videoCallWindow.setSize(videoCallWindow.getSize()[0], height);
-  })
+    if(videoCallWindow){
+      var resizeDisabled = videoCallWindow.isResizable() == true;
 
+      videoCallWindow.setMinimumSize(videoCallWindow.getSize()[0], height);
+      videoCallWindow.setSize(videoCallWindow.getSize()[0], height);
+    }
+  })
 
   ipcMain.on('init-screenshare', (event, arg) => {
 
@@ -375,13 +376,9 @@ function createWindow() {
     if (isDev) {
       // initScreenShareWindow.webContents.openDevTools();
     }
-
   })
 
   ipcMain.on('stream-screenshare', (event, arg) => {
-
-    let swidth = primaryDisplay.bounds.width;
-    let sheight = primaryDisplay.bounds.height;
 
     if(streamScreenShareWindow){
       try{
@@ -392,7 +389,7 @@ function createWindow() {
 
       if(videoCallWindow){
 
-        videoCallWindow.setPosition(swidth - 270, sheight - 870)
+        videoCallWindow.setPosition(sWidth - 270, sHeight - 870)
       }
     }
 
@@ -441,11 +438,6 @@ function createWindow() {
 
     if(initScreenShareWindow) {
 
-      // ScreenShare Container
-      let workArea = primaryDisplay.bounds;
-      let displayWidth = workArea.width;
-      let displayHeight = workArea.height;
-
       initScreenShareWindow.hide();
 
       screenShareContainerWindow = new BrowserWindow({
@@ -477,7 +469,8 @@ function createWindow() {
 
       screenShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare-container' : screenshareContainerUrl);
       screenShareContainerWindow.setIgnoreMouseEvents(true);
-      screenShareContainerWindow.setSize(displayWidth, displayHeight);
+      screenShareContainerWindow.setSize(sWidth, sHeight);
+      screenShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
 
       if (isDev) {
        
@@ -497,7 +490,6 @@ function createWindow() {
         minimizable: false,
         maximizable: false,
         resizable: false,
-        alwaysOnTop: true,
         titleBarStyle: 'hidden',
         title: "ScreenShare Controls",
         frame: false,
@@ -510,6 +502,7 @@ function createWindow() {
       })
 
       screenShareControlsWindow.setMenu(null);
+      screenShareControlsWindow.setAlwaysOnTop(true,'pop-up-menu');
 
       const screenShareControlsUrl = url.format({
         pathname: path.join(__dirname, '../build/index.html'),

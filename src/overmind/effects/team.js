@@ -49,6 +49,28 @@ export const createTeam = async (authData, teamData) => {
     });
 }
 
+export const updateTeam = async (authData, teamData) => {
+
+  const token = authData.token;
+
+    return fetch(
+
+      BACKEND_URL + "/team/"+teamData.id,
+      {
+          method: 'PUT', 
+          headers: headers(token),
+          body:    JSON.stringify({team: teamData})
+      }
+    )
+    .then(response => response.json())
+    .then(responseData => {
+      return responseData;
+    })
+    .catch((error) => {
+        // Error handling
+    });
+}
+
 export const deleteTeam = async (authData, teamData) => {
 
   const token = authData.token;

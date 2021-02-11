@@ -7,12 +7,23 @@ export const getTeam = async ({state, effects}, {authData, team_id}) => {
 
 	var teamData = await effects.team.getTeam(authData, team_id)
 	state.currentTeam = teamData;
-  localStorage.setItem('current_team',state.currentTeam.tid);
 
-  socket_live.emit('join_room', state.currentTeam.tid);
+  var onlineUsers = await effects.user.getOnlineUsers(authData, teamData.tid);
+  
+  if(onlineUsers){
+     for(var user_id of onlineUsers){
+      state.onlineUsers[user_id] = true;
+    }   
+  }
+
+  localStorage.setItem('current_team',state.currentTeam.tid);
+  localStorage.setItem('current_team_id',state.currentTeam.id);
+  socket_live.emit(events.joinRoom, { room: state.currentTeam.tid, user_id: state.userProfileData.id});
 
 	state.loadingTeam = false
   state.teamUpdateReq = false
+
+  return teamData;
 }
 
 export const createTeam = async ({state, effects}, {authData, teamData}) => {
@@ -21,14 +32,21 @@ export const createTeam = async ({state, effects}, {authData, teamData}) => {
 	state.addingTeam = true
 	var teamData = await effects.team.createTeam(authData, teamData)
 	state.addingTeam = false
+
+  return teamData;
 }
+
+export const updateTeam = async ({state, effects}, {authData, teamData}) => {
+
+   return await effects.team.updateTeam(authData, teamData)
+}
+
 
 export const deleteTeam = async ({state, effects}, {authData, teamData}) => {
 
   // These states don't really do anything for now: Jan 2nd
   state.deletingTeam = true;
   var teamData = await effects.team.deleteTeam(authData, teamData);
-  state.currentTeamId = null;
   state.deletingTeam = false;
 }
 
@@ -52,3 +70,4 @@ export const updateCurrentTeam = async ({state, effects}, {team_id}) => {
   	state.currentTeamId = team_id;
   	state.loadingTeam = false;
 }
+

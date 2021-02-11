@@ -63,7 +63,7 @@ export default function TeamRegisterPage() {
 
     return (
         <div className="w-full flex main-container">
-            <div className="w-full bg-black ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)" }}>
+            <div className="w-full ml-15 flex-1 text-white" style={{ height: "calc(100vh - 30px)" }}>
                 {
                     state.noTeams ? 
                     ''

@@ -1,13 +1,15 @@
 
 import { socket_live, events } from '../../components/sockets'
 
-export const getLoggedInUser = async ({state, effects}, {authData: authData, params: params}) => {
+export const getLoggedInUser = async ({state, actions, effects}, {authData: authData, params: params}) => {
 
   	state.loadingUser = true
+    var userData = {}
 
   	try {
 
-  		var userData = await effects.user.getUser(authData, params)
+  		userData = await effects.user.getUser(authData, params)
+      actions.userpreference.getUserPreference({ authData: authData});
 
 	  	socket_live.emit('join_room', userData.uid);
 
@@ -25,4 +27,16 @@ export const getLoggedInUser = async ({state, effects}, {authData: authData, par
 
   		state.error = error;
   	}
+
+    return userData;
+}
+
+export const updateUser = async ({state, effects, actions}, {authData, userData}) => {
+
+    var userData = await effects.user.updateUser(authData, userData)
+    state.userProfileData.name = userData.name;
+
+    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    currentUser.user = userData;
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
 }

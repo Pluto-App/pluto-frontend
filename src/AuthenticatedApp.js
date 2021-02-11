@@ -8,8 +8,8 @@ import RoomProfile from './components/pages/Rooms/RoomProfile'
 import TeamProfile from './components/pages/Teams/TeamProfile'
 import UserProfile from './components/pages/Users/UserProfile'
 import UserUpdate from './components/pages/Users/UserUpdate'
+import Settings from './components/pages/Settings'
 
-import MiniVideoCall from './components/windows/videocall/MiniVideoCall'
 import VideoCall from './components/windows/videocall/VideoCall'
 
 import InitScreenShare from './components/windows/screenshare/InitScreenShare'
@@ -56,14 +56,12 @@ export default function App() {
         });
       }
 
-  }, [actions, state.error])
+  }, [state.error])
 
   useEffect(
     () => {
 
       loadProgressBar()
-      let interval = 0;
-      let onlineInterval = 0;
 
       // Some User is Online
       socket_live.on(events.online, (user_id) => {
@@ -100,14 +98,21 @@ export default function App() {
       socket_live.on(events.viewScreenShare, (data) => {
         actions.app.updateScreenShareViewers(data);
       });
-
-      interval = setInterval(() => {
-          // Emit User is online.
-          socket_live.emit(events.online, state.userProfileData.id)
-      }, 3000)
-
+      
     }, [authData]
   );
+
+  useEffect(() => {
+
+    const interval = setInterval(() => {
+      
+      socket_live.emit(events.online, state.userProfileData.id)
+
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  
+  }, []);
 
   return (
     <HashRouter>
@@ -128,6 +133,11 @@ export default function App() {
 
         <Route exact path="/screenshare-controls">
           <ScreenShareControls />
+        </Route>
+
+        <Route exact path="/settings">
+          <Settings />
+          <ToastContainer />
         </Route>
 
         <Route path="*">

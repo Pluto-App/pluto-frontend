@@ -16,6 +16,16 @@ const TopBar = React.memo((props) => {
   const isMac = os.platform() === "darwin";
 
   const pageHash = window.location.hash;
+  var page;
+
+  switch(pageHash) {
+    case '#/video-call':
+      page = 'video-call'
+      break;
+    default:
+      page = 'main'
+  }
+
 
   const minimize = () => {
     var window = remote.getCurrentWindow();
@@ -36,22 +46,47 @@ const TopBar = React.memo((props) => {
     });
   }
 
+  const videoTopBarStyle = {
+    background: '#25272C',
+    height: '25px'
+  }
+
+
+
   return (
-    <div className="topBar">
-      <div className="flex justify-between items-center px-2 p-0">
+    <div 
+      className='topBar' 
+      style={ page == 'video-call' ? videoTopBarStyle : {}}
+    >
+      <div 
+        className="flex justify-between items-center px-2 p-0"
+        style={{width: '100%', height: '100%'}}
+      >
         {/*
         <button className="text-white cursor-pointer hover:bg-gray-900 focus:outline-none">
           <i className="material-icons md-light md-inactive" onClick={() => { openMenu() }} style={{ fontSize: "16px" }}> menu </i>
         </button>
         */}
 
-        <div className="flex-1 draggable-elem text-white font-bold" style={{ height: "30px" }}>
+        <div 
+          className="flex-1 draggable-elem text-white font-bold center" 
+          style={{width: '100%', height: '100%'}}
+        >
+          { /*
+            page == 'video-call' &&
+            <i className="material-icons md-light md-inactive" 
+               style={{ fontSize: "24px" }}> 
+              drag_handle 
+            </i>
+            */
+          }
         </div>
+        
         {
           {
-            '#/': <MainTopBar />,
-            '#/video-call': <VideoCallTopBar />
-          }[pageHash]
+            'main': <MainTopBar />,
+            'video-call': <VideoCallTopBar />
+          }[page]
         }
       </div>
     </div>

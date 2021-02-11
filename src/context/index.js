@@ -7,7 +7,7 @@ import { Provider } from 'overmind-react'
 import { config } from '../overmind'
 
 const overmind = createOvermind(config, {
-  devtools: true 
+  // devtools: true 
   // defaults to 'localhost:3031'
 })
 
@@ -21,9 +21,14 @@ let token = localStorage.getItem("currentUser")
   ? JSON.parse(localStorage.getItem("currentUser")).token
   : "";
 
+let userPreference = localStorage.getItem("userPreference")
+  ? JSON.parse(localStorage.getItem("userPreference"))
+  : "";
+
 const initialAuthState = {
   user: "" || user,
-  token: "" || token
+  token: "" || token,
+  userPreference: "" || userPreference
 };
 
 function AppProviders({children}) {

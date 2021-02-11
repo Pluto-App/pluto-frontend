@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useRef } from 'react'
 import { merge } from 'lodash'
 import AgoraRTC from 'agora-rtc-sdk'
 
@@ -7,18 +7,34 @@ import { socket_live, events } from '../sockets'
 
 import {AuthContext} from '../../context/AuthContext'
 
+import ActiveWindowInfo from "../widgets/VideoCall/ActiveWindowInfo";
+
 const { remote } = window.require('electron');
+
 var localStream = {};
+var streamState = {};
+var needWindowUpdate = false;
+
+const AgoraClient = AgoraRTC.createClient({ mode: 'interop', codec: "vp8" });
 
 const VideoCallCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
 	const { authData, setAuthData } = useContext(AuthContext);
+  const [activeAppInfo, setActiveAppInfo] = useState({});
 
 	const [ streamList, setStreamList ] = useState([]);
-	const [ userData, setUserData ] = useState({});
+  const streamListRef = useRef();
+  streamListRef.current = streamList;
 
-	const AgoraClient = AgoraRTC.createClient({ mode: props.transcode, codec: "vp8" });
+	const [ userData, setUserData ] = useState({});
+  const [ numActiveVideo, setNumActiveVideo ] = useState(0);
+
+  if(needWindowUpdate){
+
+    setNumActiveVideo(document.getElementsByClassName('ag-video-on').length);
+    needWindowUpdate = false;  
+  }
 
 	const [ sharingScreen, setSharingScreen ] = useState(false);
 	const [ enabledMedia, setEnabledMedia ] = useState({audio: false, video: false});
@@ -44,8 +60,6 @@ const VideoCallCanvas = React.memo((props) => {
 
 	      	let stream = evt.stream
 	      	console.log("New stream added: " + stream.getId())
-	      	console.log('At ' + new Date().toLocaleTimeString())
-	      	console.log("Subscribe ", stream)
 
 	      	AgoraClient.subscribe(stream, function (err) {
 	        	console.log("Subscribe stream failed", err)
@@ -56,8 +70,6 @@ const VideoCallCanvas = React.memo((props) => {
 
 	      	let stream = evt.stream
 	      	console.log("New stream added: " + stream.getId())
-	      	console.log('At ' + new Date().toLocaleTimeString())
-	      	console.log("Subscribe ", stream)
 
 	      	AgoraClient.subscribe(stream, function (err) {
 	        	console.log("Subscribe stream failed", err)
@@ -67,19 +79,13 @@ const VideoCallCanvas = React.memo((props) => {
 	    AgoraClient.on('peer-leave', function (evt) {
 
 	      	console.log("Peer has left: " + evt.uid)
-	      	console.log(new Date().toLocaleTimeString())
-	      	console.log(evt)
-
 	      	removeStream(evt.uid)
 	    })
 
 	    AgoraClient.on('stream-subscribed', function (evt) {
 
       	let stream = evt.stream
-      	console.log("Got stream-subscribed event")
-      	console.log(new Date().toLocaleTimeString())
-      	console.log("Subscribe remote stream successfully: " + stream.getId())
-      	console.log(evt)
+      	console.log("New stream subscribed: " + stream.getId());
 
      	  addStream(stream)
 	    })
@@ -88,30 +94,74 @@ const VideoCallCanvas = React.memo((props) => {
 	      	
 	      	let stream = evt.stream
 	      	console.log("Stream removed: " + stream.getId())
-	      	console.log(new Date().toLocaleTimeString())
-	      	console.log(evt)
 	      
 	      	removeStream(stream.getId())
 	    })
+
+      AgoraClient.on("mute-video", function (evt) {
+          
+          let uid = evt.uid;
+          console.log("Mute videos: " + uid);
+          var found = false;
+
+          streamListRef.current.map( (stream,index) => {
+            if(stream.getId() == uid){
+              toggleVideoView(stream, 'mute');
+              found = true;
+            }
+          })
+
+          if(!found){
+            if(!streamState[uid])
+              streamState[uid] = {};
+
+            streamState[uid]['video'] = false;
+          }
+
+          needWindowUpdate = true;
+      })
+
+      AgoraClient.on("unmute-video", function (evt) {
+          
+          let uid = evt.uid;
+          console.log("Unmute video: " + uid);
+          var found = false;
+
+          streamListRef.current.map( (stream,index) => {
+            if(stream.getId() == uid){
+              toggleVideoView(stream, 'unmute');
+              found = true;
+            }
+          })
+
+          if(!found){
+            if(!streamState[uid])
+              streamState[uid] = {};
+
+            streamState[uid]['video'] = true;
+          }
+
+          needWindowUpdate = true;
+      })
 	}
 
 	const addStream = (stream, push = false) => {
 
-    let repeatition = streamList.some(item => {
+    let repeatition = streamListRef.current.some(item => {
       return item.getId() === stream.getId()
     })
     if (repeatition) {
       return
     }
+
+    var tempStreamList;
     if (push) {
-    	setStreamList(
-    		streamList.concat([stream])
-  		)
+      tempStreamList = streamListRef.current.concat([stream]);
     } else {
-    	setStreamList(
-    		[stream].concat(streamList)
-  		)
+    	tempStreamList = [stream].concat(streamListRef.current);
     }
+
+    setStreamList(tempStreamList)
 	}
 
 	const removeStream = (uid) => {
@@ -121,13 +171,13 @@ const VideoCallCanvas = React.memo((props) => {
       element.parentNode.removeChild(element)
     }
 
-    streamList.map((item, index) => {
+    streamListRef.current.map((item, index) => {
 
       if (item.getId() === uid) {
 
         item.close()
         
-        let tempList = [...streamList]
+        let tempList = [...streamListRef.current]
         tempList.splice(index, 1)
 
         setStreamList(tempList)
@@ -143,18 +193,18 @@ const VideoCallCanvas = React.memo((props) => {
       	
         AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
 
-      		socket_live.emit(events.joinRoom, props.channel);
+      		socket_live.emit(events.joinRoom, { room: props.channel, user_id: props.uid});
       		localStream = streamInit(uid, props.videoProfile);
 
       		localStream.init(() => {
-      			localStream.disableVideo();
-      			localStream.disableAudio();
+            
+            localStream.muteVideo();
+            localStream.muteAudio();
 
       			addStream(localStream, true)
-          		AgoraClient.publish(localStream, err => {
-            			alert("Publish local stream error: " + err);
-          		})
-
+        		AgoraClient.publish(localStream, err => {
+          			alert("Publish local stream error: " + err);
+        		})
         	},
           	err => {
 
@@ -185,47 +235,139 @@ const VideoCallCanvas = React.memo((props) => {
 
     streamList.map((stream, index) => {
 
-     	let id = stream.getId()
-     	let elementID = 'ag-item-' + id;
-   		let dom = document.getElementById(elementID)
-      	
-    	if (!dom) {
-        	dom = document.createElement('div')
-        	dom.setAttribute('id', elementID)
-        	dom.setAttribute('class', 'ag-item Camera')
-        	canvas.appendChild(dom)
-     	}
-      
-      dom.setAttribute('style', state.videoCallCompactMode ? 'height: 120px' : '')
+     	let streamId = stream.getId()
+     	let elementID = 'ag-item-' + streamId;
 
       if(stream.isPlaying())
           stream.stop();
 
-        stream.play(elementID);
+      if(streamState[streamId]){
+
+        if(streamState[streamId]['video'] == false){
+          stream.muteVideo();
+          toggleVideoView(stream, 'mute')
+        }
+
+        let element = document.getElementById(elementID);
+        streamState[streamId] = undefined;
+      }
+
+      stream.play(elementID);
     })
 
-    if(state.videoCallCompactMode){
-      let no = document.getElementsByClassName('ag-item').length
-      let height = 75 + (no*120);
-
-      window.require("electron").ipcRenderer.send('set-video-player-height', height);
-
-    } else {
-      Dish();
-    }
+    updateWindowSize();
 
   }, [streamList, state.videoCallCompactMode])
 
+  useEffect(() => {
+    
+    updateWindowSize();
+
+  },[numActiveVideo])
+
+  const toggleVideoView = (stream, action) => {
+
+    var uid = stream.getId();
+
+    let elementID = 'ag-item-' + uid;
+    let element = document.getElementById(elementID);
+    element.classList.toggle('ag-video-on');
+
+    let elementInfoId = 'ag-item-info-' + uid;
+    let elementInfo = document.getElementById(elementInfoId);
+
+    let userDetailsID = 'user-details-' + uid;
+    let userDetailsElement = document.getElementById(userDetailsID);
+    userDetailsElement.classList.toggle('user-details');
+
+    if (action == 'mute') {
+        
+          stream.muteVideo()
+
+          if(element)
+            element.style.display = 'none';
+
+          if(elementInfo)
+            elementInfo.style.display = 'none';
+          
+          if(userDetailsElement)
+            userDetailsElement.style.display = 'flex';
+    
+    } else {
+
+          stream.unmuteVideo()
+
+          if(element)
+            element.style.display = 'block';
+
+          if(elementInfo)
+            elementInfo.style.display = 'flex';
+
+          if(userDetailsElement)
+            userDetailsElement.style.display = 'none';
+    }
+
+    updateWindowSize();
+  }
+
+  const updateWindowSize = () => {
+
+    if(state.videoCallCompactMode){
+      
+      let videoElements = document.getElementsByClassName('ag-video-on').length
+      let userDetailsElements = document.getElementsByClassName('user-details').length
+
+      let height = 70 + (videoElements*148) + (userDetailsElements*60);
+
+      window.require("electron").ipcRenderer.send('set-video-player-height', height);
+    }
+
+    Dish();
+  }
+
  	const handleCamera = (e) => {
+
+    let elementID = 'ag-item-' + localStream.getId();
+    let element = document.getElementById(elementID);
+    element.classList.toggle('ag-video-on');
+
+    let elementInfoId = 'ag-item-info-' + localStream.getId();
+    let elementInfo = document.getElementById(elementInfoId);
+
+    let userDetailsID = 'user-details-' + localStream.getId();
+    let userDetailsElement = document.getElementById(userDetailsID);
+    userDetailsElement.classList.toggle('user-details');
+
 		if (localStream.isVideoOn()) {
       	
-      		localStream.disableVideo()
+      		localStream.muteVideo()
       		document.getElementById("video-icon").innerHTML = "videocam_off"
+
+          if(element)
+            element.style.display = 'none';
+
+          if(elementInfo)
+            elementInfo.style.display = 'none';
+          
+          if(userDetailsElement)
+            userDetailsElement.style.display = 'flex';
 		
 		} else {
+
       		localStream.unmuteVideo()
       		document.getElementById("video-icon").innerHTML = "videocam"
-  	}
+
+          if(element)
+            element.style.display = 'block';
+
+          if(elementInfo)
+            elementInfo.style.display = 'flex';
+
+          if(userDetailsElement)
+            userDetailsElement.style.display = 'none';
+    }
+
+    updateWindowSize();
 	}
 
  	const handleMic = (e) => {
@@ -362,10 +504,15 @@ const VideoCallCanvas = React.memo((props) => {
       else return Increment;
   }
 
-  function Dish() {
+  const Dish = () => {
 
-    let Margin = 2;
+    let Margin;
     let Scenary = document.getElementById('Dish');
+
+    if(state.videoCallCompactMode)
+      Margin = 2;
+    else
+      Margin = 20;
 
     if(Scenary){
       let Width = Scenary.offsetWidth - (Margin * 2);
@@ -374,7 +521,7 @@ const VideoCallCanvas = React.memo((props) => {
       let max = 0;
 
       let i = 1;
-      while (i < 5000) {
+      while (i < 2500) {
           let w = Area(i, Cameras.length, Width, Height, Margin);
           if (w === false) {
               max =  i - 1;
@@ -384,9 +531,13 @@ const VideoCallCanvas = React.memo((props) => {
       }
 
       max = max - (Margin * 2);
+
+      if(state.videoCallCompactMode){
+        max = Width - 4;
+      }
+
       setWidth(max, Margin);  
     }
-    
   }
 
   function setWidth(width, margin) {
@@ -398,19 +549,108 @@ const VideoCallCanvas = React.memo((props) => {
       }
   }
 
+  const activeAppClick = (e, usersActiveWindow) => {
+      e.preventDefault();
+      
+      if(usersActiveWindow && usersActiveWindow.url){
+          window.require("electron").shell.openExternal(usersActiveWindow.url);
+      }
+  }
 
   return (
 
-	  <div id="ag-canvas" style={{background: 'black'}}>
+	  <div id="ag-canvas" style={{background: '#2F3136'}}>
 	    
-      <div id="Dish"></div>
-      
-      <div className="ag-btn-group" style={{background: 'rgba(34, 36, 37, 0.8)'}}>
-        {exitBtn}
-        {videoControlBtn}
-        {audioControlBtn}
-        {screenShareBtn}
-        {collapseBtn}
+      <div id="Dish">
+        <div style={{ 
+            height: state.videoCallCompactMode ? '100%' : '',
+            display: state.videoCallCompactMode ? '' : 'flex'
+          }}
+        >
+          {
+            streamList.map(stream =>
+              <section style={{ width: 'auto', position: 'relative'}} key={stream.getId()}>
+
+                <div 
+                  id={'ag-item-' + stream.getId()} 
+                  className={stream.isVideoOn() ? 'ag-item Camera ag-video-on' : 'ag-item Camera'}
+                  style={{ 
+                    height: '120px',
+                    display: stream.isVideoOn() ? 'block' : 'none'
+                  }}
+                >
+                </div>
+                
+                <div 
+                  id={'ag-item-info-' + stream.getId()} 
+                  className="ag-item-info"
+                  style={{ 
+                    display: stream.isVideoOn() ? 'flex' : 'none',
+                    bottom: state.videoCallCompactMode ? '10px' : '30px',
+                    right: state.videoCallCompactMode ? '10px' : '30px'
+                  }}
+                >
+                  <div style={{ display: "table", height: '40px'}}>
+                    <span style={{ display: 'table-cell', verticalAlign: 'middle'}}>
+                      {
+                        state.currentTeam.users.find(user => user.id === stream.getId()) ?
+                        state.currentTeam.users.find(user => user.id === stream.getId()).name.split(' ')[0]
+                        : ''
+                      }
+                    </span>
+                  </div>
+                  <div className="pointer items-center h-6 w-6 flex font-semibold overflow-hidden" 
+                    style={{ display: 'table', marginLeft: '10px' }}
+                  >
+                      <ActiveWindowInfo userId={stream.getId()} videoOn={true}/>
+                  </div>
+                </div>
+
+                <div 
+                  id={'user-details-' + stream.getId()} 
+                  className={stream.isVideoOn() ? '' : 'user-details'}
+                  style={{ 
+                    height: '50px',
+                    display: stream.isVideoOn() ? 'none' : 'flex',
+                    margin: '10px'
+                  }}
+                >
+                  <div className="h-12 w-12 flex rounded-full mb-1 overflow-hidden">
+                      <img 
+                        src={
+                          state.currentTeam.users.find(user => user.id === stream.getId()) ?
+                          state.currentTeam.users.find(user => user.id === stream.getId()).avatar
+                          : ''
+                        } 
+                      alt="" />
+                  </div>
+                  <div className="text-white px-1 font-bold "
+                    style={{display: 'table', height: '50px', marginLeft: '10px'}}
+                  >
+                      <span style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px' }}>
+                        {
+                          state.currentTeam.users.find(user => user.id === stream.getId()) ?
+                          state.currentTeam.users.find(user => user.id === stream.getId()).name.split(' ')[0]
+                          : ''
+                        }
+                      </span>
+                  </div>
+                  <ActiveWindowInfo userId={stream.getId()}/>
+                </div>
+
+              </section>
+            )
+          }
+        </div>
+        <div className={state.videoCallCompactMode ? "ag-btn-group-compact" : "ag-btn-group"} 
+          style={{background: 'rgba(34, 36, 37, 0.8)', height: '45px', position: 'absolute', bottom: '0'}}
+          >
+          {exitBtn}
+          {videoControlBtn}
+          {audioControlBtn}
+          {screenShareBtn}
+          {collapseBtn}
+        </div>
       </div>
     </div>
 	);
