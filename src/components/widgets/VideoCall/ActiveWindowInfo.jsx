@@ -5,15 +5,18 @@ import { useOvermind } from '../../../overmind'
 import { appLogo } from '../../../utils/AppLogo';
 
 
-
-// TODO Clear Login cache or store it in some local storage/file. => window.localStorage in electron.
-// TODO Secure the Google Login. 
-
 const ActiveWindowInfo = React.memo((props) => {
 
 
   const { state, actions } = useOvermind();
   const [activeAppInfo, setActiveAppInfo] = useState({});
+
+  const activeAppClick = (e, url) => {
+      e.preventDefault();
+      if(url){
+          window.require("electron").shell.openExternal(url.href);
+      }
+  }
 
   useEffect(() => {
 
@@ -31,7 +34,7 @@ const ActiveWindowInfo = React.memo((props) => {
           <a 
             style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: props.videoOn ? '40px' : '50px' }}
             onClick={(e) => {
-              //activeAppClick( e, state.usersActiveWindows[userId] )
+              activeAppClick( e, activeAppInfo.url )
             }}
           >
             <div>
