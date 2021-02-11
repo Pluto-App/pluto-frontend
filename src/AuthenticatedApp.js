@@ -56,7 +56,7 @@ export default function App() {
         });
       }
 
-  }, [actions, state.error])
+  }, [state.error])
 
   useEffect(
     () => {
@@ -98,11 +98,21 @@ export default function App() {
       socket_live.on(events.viewScreenShare, (data) => {
         actions.app.updateScreenShareViewers(data);
       });
-
-      socket_live.emit(events.online, state.userProfileData.id)
-
+      
     }, [authData]
   );
+
+  useEffect(() => {
+
+    const interval = setInterval(() => {
+      
+      socket_live.emit(events.online, state.userProfileData.id)
+
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  
+  }, []);
 
   return (
     <HashRouter>

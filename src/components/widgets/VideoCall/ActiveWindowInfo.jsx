@@ -17,7 +17,7 @@ const ActiveWindowInfo = React.memo((props) => {
 
   useEffect(() => {
 
-    setActiveAppInfo(appLogo(state.usersActiveWindows[props.userId]));
+    setActiveAppInfo(appLogo(state.usersActiveWindows[props.userId], state.userPreference));
 
   },[state.usersActiveWindows[props.userId]])
 

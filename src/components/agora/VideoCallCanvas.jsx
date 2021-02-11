@@ -9,8 +9,6 @@ import {AuthContext} from '../../context/AuthContext'
 
 import ActiveWindowInfo from "../widgets/VideoCall/ActiveWindowInfo";
 
-import { appLogo } from '../../utils/AppLogo';
-
 const { remote } = window.require('electron');
 
 var localStream = {};
@@ -309,33 +307,6 @@ const VideoCallCanvas = React.memo((props) => {
             userDetailsElement.style.display = 'none';
     }
 
-    // if (stream.isVideoOn()) {
-        
-    //       stream.muteVideo()
-
-    //       if(element)
-    //         element.style.display = 'none';
-
-    //       if(elementInfo)
-    //         elementInfo.style.display = 'none';
-          
-    //       if(userDetailsElement)
-    //         userDetailsElement.style.display = 'flex';
-    
-    // } else {
-
-    //       stream.unmuteVideo()
-
-    //       if(element)
-    //         element.style.display = 'block';
-
-    //       if(elementInfo)
-    //         elementInfo.style.display = 'flex';
-
-    //       if(userDetailsElement)
-    //         userDetailsElement.style.display = 'none';
-    // }
-
     updateWindowSize();
   }
 
@@ -583,31 +554,6 @@ const VideoCallCanvas = React.memo((props) => {
       
       if(usersActiveWindow && usersActiveWindow.url){
           window.require("electron").shell.openExternal(usersActiveWindow.url);
-      }
-  }
-
-    const getAppLogo = (appData) => {
-
-      try {
-          if(appData.owner && appData.owner.name) {
-
-              var logo = appLogo(
-                  appData.owner.name.toLowerCase().replace(/ /g,'').replace('.exe',''),
-                  appData.url
-              ); 
-
-              return logo;   
-          } else {
-              
-              throw new Error('App Data Incorrect');
-          }
-
-      } catch (error) {
-
-          if(process.env.REACT_APP_DEV_BUILD)
-               console.log(error)
-
-          return "https://ui-avatars.com/api/?background=black&name="   
       }
   }
 

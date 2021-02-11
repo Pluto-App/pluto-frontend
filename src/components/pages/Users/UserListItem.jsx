@@ -51,31 +51,6 @@ const UserListItem = React.memo((user) => {
             return '#FF5959'
     }
 
-    const getAppLogo = (appData) => {
-
-        try {
-            if(appData.owner && appData.owner.name) {
-
-                var logo = appLogo(
-                    appData.owner.name.toLowerCase().replace(/ /g,'').replace('.exe',''),
-                    appData.url
-                ); 
-
-                return logo;   
-            } else {
-                
-                throw new Error('App Data Incorrect');
-            }
-
-        } catch (error) {
-
-            if(process.env.REACT_APP_DEV_BUILD)
-                 console.log(error)
-
-            return "https://ui-avatars.com/api/?background=black&name="   
-        }
-    }
-
     const activeAppClick = (e, url) => {
         e.preventDefault();
         if(url){
@@ -120,7 +95,7 @@ const UserListItem = React.memo((user) => {
 
     useEffect(() => {
 
-        setActiveAppInfo(appLogo(state.usersActiveWindows[user.id]));
+        setActiveAppInfo(appLogo(state.usersActiveWindows[user.id], state.userPreference));
 
     },[ state.usersActiveWindows[user.id]])
 

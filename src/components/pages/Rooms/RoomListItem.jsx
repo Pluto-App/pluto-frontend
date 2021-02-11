@@ -40,7 +40,7 @@ const RoomListItem = React.memo((room) => {
             var user = state.currentTeam.users.find(user => user.uid === userUid);
             var appData = state.usersActiveWindows[user ? user.id : undefined];
 
-            setActiveAppInfo(appLogo(appData));
+            setActiveAppInfo(appLogo(appData, state.userPreference));
         }, 5000)
         
         return () => clearInterval(setActiveWin);

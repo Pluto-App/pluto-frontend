@@ -4,12 +4,15 @@ import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
 import ToastNotification from '../widgets/ToastNotification';
 
+import { supportedApps } from '../../utils/AppLogo';
 
 import {AuthContext} from '../../context/AuthContext'
 
 const UserProfile = React.memo(() => {
 
     let history = useHistory();
+    const supportedAppsList = supportedApps();
+
     const { authData, setAuthData } = useContext(AuthContext);
 
     const { state, actions } = useOvermind();
@@ -291,7 +294,7 @@ const UserProfile = React.memo(() => {
                 </div>
             </div>
 
-            <div className="flex-1 px-12 text-white pt-2" style={{ height: "calc(100vh - 0px)" }}>
+            <div className="flex-1 px-12 text-white pt-2" style={{ height: "calc(100vh - 0px)", overflowY: 'scroll' }}>
                 <div className="w-full draggable-elem" style={{ height: '20px'}}></div>
 
                 {
@@ -359,8 +362,10 @@ const UserProfile = React.memo(() => {
 
                         <p className="text-grey font-bold text-lg tracking-wide mt-2 mb-12">Preferences</p>
 
+                        <p className="text-grey text-md tracking-wide mt-12 mb-8">Active App Sharing Settings</p>
+
                         <div className="flex">
-                            <div className="flex items-center justify-center text-grey text-sm font-semibold mb-1 overflow-hidden">
+                            <div className="flex items-center justify-center text-grey text-sm mb-1 overflow-hidden">
                                 <p className="text-white">Show Active App to Team Members: </p>
                             </div>
                             <div className="ml-3">
@@ -375,7 +380,7 @@ const UserProfile = React.memo(() => {
                         </div>
 
                         <div className="flex mt-3">
-                            <div className="flex items-center justify-center text-grey text-sm font-semibold mb-1 overflow-hidden">
+                            <div className="flex items-center justify-center text-grey text-sm mb-1 overflow-hidden">
                                 <p className="text-white">Allow Users To Join On Active App: </p>
                             </div>
                             <div className="ml-3">
@@ -402,6 +407,32 @@ const UserProfile = React.memo(() => {
                                     <i className="material-icons mr-2" style={{ fontSize: '14px' }}>save</i>Save
                                 </button>
                             </div>
+                        </div>
+
+                        <p className="text-grey text-md tracking-wide mt-12 mb-8">Supported Active Apps</p>
+
+                        <div className="" style={{maxHeight: 'calc(100vh - 400px)'}}>
+                            {
+                                supportedAppsList && Object.keys(supportedAppsList).map(key => 
+                                    <li 
+                                        key={supportedAppsList[key].name}
+                                        className='px-3 pt-2 pb-2 flex pointer settings-menu-item'
+                                        style={{
+                                            width: '33%', float: 'left', listStyle: 'none'
+                                        }}
+                                    >
+                                        <div 
+                                            className="flex items-center justify-center mr-3 overflow-hidden"
+                                            style={{height: '30px', width: '30px'}}
+                                        >
+                                            <img src={supportedAppsList[key].logo} alt="" />
+                                        </div> 
+                                        <div>
+                                            {supportedAppsList[key].name}
+                                        </div>
+                                    </li>
+                                )
+                            }
                         </div>
 
                     </div>

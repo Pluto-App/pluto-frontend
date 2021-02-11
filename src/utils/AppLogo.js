@@ -4,25 +4,25 @@ const logos = require.context('../assets/logos', true);
 const logos_path = './';
 
 const appLogos = {
-  'chrome':         'chrome.png',
-  'discord':        'discord.png',
-  'electron':       'electron.png',
-  'github':         'github.png',
-  'googledrive':    'googledrive.png',
-  'googledocs':     'googledocs.png',
-  'googlesheets':   'googlesheets.png',
-  'sublime_text':   'sublimetext.png',
-  'sublimetext':    'sublimetext.png',
-  'stackoverflow':  'stackoverflow.png',
-  'slack':          'slack.png',
-  'terminal':       'terminal.png',
-  'trello':         'trello.png'
+  'discord':        { name: 'Discord', logo: logos(logos_path + 'discord.png') },
+  'electron':       { name: 'Electron', logo: logos(logos_path + 'electron.png') },
+  'figma':          { name: 'Figma', logo: logos(logos_path + 'figma.png')  },
+  'github':         { name: 'GitHub', logo: logos(logos_path + 'github.png') } ,
+  'googledrive':    { name: 'Google Drive', logo: logos(logos_path + 'googledrive.png') } ,
+  'googledocs':     { name: 'Google Docs', logo: logos(logos_path + 'googledocs.png') } ,
+  'googlesheets':   { name: 'Google Sheets', logo: logos(logos_path + 'googlesheets.png') } ,
+  'sublimetext':    { name: 'Sublime Text', logo: logos(logos_path + 'sublimetext.png') } ,
+  'stackoverflow':  { name: 'Stack Overflow', logo: logos(logos_path + 'stackoverflow.png') } ,
+  'slack':          { name: 'Slack', logo: logos(logos_path + 'slack.png') } ,
+  'terminal':       { name: 'Terminal', logo: logos(logos_path + 'terminal.png') } ,
+  'trello':         { name: 'Trello', logo: logos(logos_path + 'trello.png') } 
 }
 
 const hostApp = {
   'drive.google.com':   'googledrive',
   'docs.google.com':    'googledocs|googlesheets',
   'discord.com':        'discord',
+  'www.figma.com':      'figma',
   'github.com':         'github',
   'slack.com':          'slack',
   'app.slack.com':      'slack',
@@ -30,7 +30,7 @@ const hostApp = {
   'trello.com':         'trello'
 }
   
-export const appLogo = function(appData) {
+export const appLogo = function(appData, userPreference) {
 
   var appInfo = {};
 
@@ -42,7 +42,8 @@ export const appLogo = function(appData) {
 
     if(url) {
       url = new URL(url);
-
+      console.log(url);
+      console.log(url.hostname);
       appName = hostApp[url.hostname] ? hostApp[url.hostname] : appName;
 
       // Google Document or Google Sheet?
@@ -65,13 +66,22 @@ export const appLogo = function(appData) {
 
     if(appLogos[appName]) {
 
-      logo = logos(logos_path + appLogos[appName]);
+      logo = appLogos[appName]['logo'];
     }
 
-    appInfo['logo'] = logo;
-    appInfo['url'] = url;
-    appInfo['name'] = appName;
+    if(userPreference.show_active_app){
+      appInfo['logo'] = logo;
+      appInfo['name'] = appName;
+
+      if(userPreference.share_active_app){
+        appInfo['url'] = url;     
+      }  
+    }
   }
 
   return appInfo;  
+}
+
+export const supportedApps = function() {
+  return appLogos;
 }
