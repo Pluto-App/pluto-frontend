@@ -45,7 +45,7 @@ const UserProfile = React.memo(() => {
         e.preventDefault();
         
         if(newTeam.name.length > 2){
-            var teamData = {name: newTeam.name, user_id: currentUser.id}
+            var teamData = {name: newTeam.name, owner_id: currentUser.id}
             var team = await actions.team.createTeam({ authData: authData, teamData: teamData})
 
             if(currentUser){
