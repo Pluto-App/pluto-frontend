@@ -21252,8 +21252,7 @@ body {
 .main-container {
   position: fixed;
   top: 45px;
-  /*background: #2F3136;*/
-  background: red;
+  background: #2F3136;
 }
 
 .sidebar-container {

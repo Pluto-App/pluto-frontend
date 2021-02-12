@@ -385,6 +385,9 @@ const VideoCallCanvas = React.memo((props) => {
   	if (sharingScreen) {
 
     		window.require("electron").ipcRenderer.send('stop-screenshare');
+        socket_live.emit(events.endScreenShare, {
+            channel_id: 'scr-' + localStorage.getItem('call_channel_id')
+        });
     		setSharingScreen(false);
     
   	} else {
@@ -416,6 +419,7 @@ const VideoCallCanvas = React.memo((props) => {
       
       	AgoraClient && AgoraClient.leave(() => {
         	console.log('Client succeed to leave.')
+
       	}, () => {
         	console.log('Client failed to leave.')
       	})
@@ -469,7 +473,9 @@ const VideoCallCanvas = React.memo((props) => {
       	title="Enable/Disable Screen Share"
       	style={{opacity: 1}}
   	>
-    	<i className="material-icons focus:outline-none md-light" id="screen-share" style={{ fontSize: "30px" }} >screen_share</i>
+    	<i className="material-icons focus:outline-none md-light" id="screen-share" style={{ fontSize: "30px" }} >
+        { sharingScreen ? 'stop_screen_share' : 'screen_share' }
+      </i>
   	</span>
   )
 

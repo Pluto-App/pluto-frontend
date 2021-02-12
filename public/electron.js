@@ -486,8 +486,8 @@ function createWindow() {
       screenShareControlsWindow = new BrowserWindow({
         width: windowWidth,
         height: windowHeight,
-        x: displayWidth/2 - windowWidth/2,
-        y: displayHeight - 80,
+        x: sWidth/2 - windowWidth/2,
+        y: sHeight - 80,
         movable: true,
         minimizable: false,
         maximizable: false,

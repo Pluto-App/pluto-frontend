@@ -17,6 +17,7 @@ export const events = {
   viewScreenShare:    'viewScreenShare',
   screenShareCursor:  'screenShareCursor',
   exitRoomVideoCall:  'exitRoomVideoCall',
+  endScreenShare:     'endScreenShare',
 
   offline: "Offline",
   sleeping: "Sleeping",

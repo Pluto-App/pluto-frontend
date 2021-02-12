@@ -4,6 +4,8 @@ import * as Cookies from "js-cookie";
 import { css } from "@emotion/core";
 import { useOvermind } from '../../../overmind'
 
+import { socket_live, events } from '../../sockets'
+
 const { remote } = window.require('electron');
 
 const ScreenShareControls = React.memo((props) => {
@@ -18,6 +20,10 @@ const ScreenShareControls = React.memo((props) => {
 
   const stopScreenShare = () => {
 
+    socket_live.emit(events.endScreenShare, {
+        channel_id: 'scr-' + localStorage.getItem('call_channel_id')
+    });
+
     actions.app.clearScreenShareData();
     var window = remote.getCurrentWindow();
     window.close();
@@ -26,8 +32,6 @@ const ScreenShareControls = React.memo((props) => {
   const controlsContainerStyle = {
     'display': 'flex',
     'background-color': 'black',
-    // '-webkit-user-select': 'none',
-    // '-webkit-app-region': 'drag',
     'height': '80px'
   }
 
