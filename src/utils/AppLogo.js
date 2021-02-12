@@ -69,7 +69,9 @@ export const appLogo = function(appData, userPreference) {
 
     if(userPreference.show_active_app){
       appInfo['logo'] = logo;
-      appInfo['name'] = appLogos[appName]['name'];
+
+      if(appLogos[appName])
+        appInfo['name'] = appLogos[appName]['name'];
 
       if(userPreference.share_active_app){
         appInfo['url'] = url;     

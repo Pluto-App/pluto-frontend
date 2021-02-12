@@ -1,9 +1,11 @@
-const { app, BrowserWindow, ipcMain, protocol, screen, Menu } = require('electron')
+const { app, BrowserWindow, ipcMain, protocol, screen, Menu, dialog } = require('electron')
 const path = require('path')
 const isDev = require('electron-is-dev');
 const url = require('url')
 const { PythonShell } = require( 'python-shell');
 const robot = require('robotjs');
+
+const { autoUpdater } = require('electron-updater');
 
 if (isDev) {
   require('electron-reload')
@@ -729,14 +731,27 @@ function createWindow() {
   })
 }
 
+///////////////////
+// Auto upadater //
+///////////////////
+autoUpdater.autoDownload = true;
+autoUpdater.autoInstallOnAppQuit = true;
+
+autoUpdater.logger = require("electron-log")
+autoUpdater.logger.transports.file.level = "info";
+
 app.on('ready', () => {
-  createWindow()
+  //autoUpdater.checkForUpdates();
+  autoUpdater.checkForUpdatesAndNotify();
+  createWindow();
 })
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+  // if (process.platform !== 'darwin') {
+  //   app.quit()
+  // }
+
+  app.quit()
 })
 
 app.on('activate', () => {

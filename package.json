@@ -6,7 +6,7 @@
   "author": "Pluto Dev Team <plutoapp.devs@gmail.com>",
   "email": "plutoapp.devs@gmail.com",
   "description": "Virtual Office App for Organizations",
-  "private": true,
+  "repository": "github:Pluto-App/pluto-desktop-releases",
   "dependencies": {
     "@emotion/core": "^10.0.28",
     "@reactivex/rxjs": "^6.5.5",
@@ -25,7 +25,9 @@
     "dotenv-cli": "3.0.0",
     "electron-disable-minimize": "^2.0.2",
     "electron-is-dev": "^1.2.0",
+    "electron-log": "^4.3.1",
     "electron-titlebar": "0.0.3",
+    "electron-updater": "^4.3.5",
     "env-cmd": "^10.1.0",
     "firebase": "^7.15.4",
     "iconv": "^3.0.0",
@@ -65,6 +67,7 @@
     "compression": "normal",
     "productName": "pluto",
     "copyright": "MIT",
+    "afterSign": "src/scripts/notarize.js",
     "extraResources": [
       "src/scripts"
     ],
@@ -81,10 +84,14 @@
       "icon": "./assets/macos/logo.icns",
       "category": "public.app-category.business",
       "entitlements": "./assets/entitlements.mac.plist",
-      "type": "development",
-      "target": [
-        "dmg"
-      ],
+      "entitlementsInherit": "./assets/entitlements.mac.plist",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "extendInfo": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      },
       "publish": {
         "provider": "github",
         "releaseType": "release"
@@ -163,8 +170,9 @@
     "build": "cross-env NODE_ENV=production && npm run build:style && cross-env BROWSER=none env-cmd -f .env react-scripts build",
     "clean": "rm -rf build/ dist/",
     "mac": "cross-env NODE_ENV=production electron-builder build --mac -c.extraMetadata.main=build/electron.js --publish=never",
-    "linux": "cross-env NODE_ENV=production electron-builder build --linux -c.extraMetadata.main=build/electron.js --publish=never",
-    "windows": "cross-env NODE_ENV=production electron-builder build --win -c.extraMetadata.main=build/electron.js --publish=never",
+    "mac-release": "cross-env NODE_ENV=production electron-builder build --mac -c.extraMetadata.main=build/electron.js --publish=always",
+    "linux": "cross-env NODE_ENV=production electron-builder build --linux -c.extraMetadata.main=build/electron.js --publish=always",
+    "windows": "cross-env NODE_ENV=production electron-builder build --win -c.extraMetadata.main=build/electron.js --publish=always",
     "activewin": "node src/activeWinTest.js"
   },
   "eslintConfig": {
@@ -191,6 +199,7 @@
     "concurrently": "^5.2.0",
     "electron": "^11.1.1",
     "electron-builder": "^22.6.1",
+    "electron-notarize": "^1.0.0",
     "electron-packager": "^14.2.1",
     "electron-react-devtools": "^0.5.3",
     "electron-reload": "^1.5.0",
