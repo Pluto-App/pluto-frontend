@@ -221,7 +221,7 @@ export default function HomePage() {
                 <div className="members-list-container" style={{ height: "relative" }}>
                     <div className="flex justify-between items-center p-1 pl-1">
                         <div className="px-3 font-bold tracking-wide" style={{fontWeight: '600', color: '#BABBBE', fontSize: '14px'}}>
-                            TEAMMATES
+                            TEAM MATES
                         </div>
                     </div>
                     {

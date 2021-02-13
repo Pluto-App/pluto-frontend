@@ -10,15 +10,21 @@ export const googleLogin = async ({state, effects}, {setAuthData}) => {
 
         var loginData = await effects.auth.googleLogin(state.userProfileData);
 
-        localStorage.setItem('currentUser', JSON.stringify(loginData));
-        state.userProfileData = loginData.user;
+        if(loginData.user){
+            localStorage.setItem('currentUser', JSON.stringify(loginData));
+            state.userProfileData = loginData.user;
 
-        window.require("electron").ipcRenderer.send('resize-normal');
-        setAuthData(loginData);
-
+            window.require("electron").ipcRenderer.send('resize-normal');
+            setAuthData(loginData);    
+        
+        } else {
+            throw('Login Failed! Please try again..');
+        }
+        
     } catch (error){
         
         state.error = error;
+        ToastNotification('error', error);
     }
 }
 

@@ -77,10 +77,13 @@ const LoginPage = React.memo(() => {
               />
             </div>
         }
-        <p className="text-center mt-6 text-md"> Don't have an account? <br />
-          <a href="" onClick={openSignup} className="text-indigo-700 font-bold no-underline hover:text-indigo-400"
-            style={{ transition: "all .60s ease" }}>Sign Up</a>
-        </p>
+        
+        {/*
+          <p className="text-center mt-6 text-md"> Don't have an account? <br />
+            <a href="" onClick={openSignup} className="text-indigo-700 font-bold no-underline hover:text-indigo-400"
+              style={{ transition: "all .60s ease" }}>Sign Up</a>
+          </p>
+        */}
       </div>
     </div>
   );

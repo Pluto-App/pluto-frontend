@@ -15,7 +15,7 @@ export const getLoggedInUser = async ({state, actions, effects}, {authData: auth
 
 		  state.userProfileData = userData;
 
-      if(userData.teamIds.length == 0)
+      if(userData.teamIds && userData.teamIds.length == 0)
         state.noTeams = true;
       else
         state.noTeams = false;

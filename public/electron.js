@@ -353,6 +353,7 @@ function createWindow() {
         height: 650,
         frame: true,
         title: "ScreenShare",
+        resizable: false,
         webPreferences: {
           nodeIntegration: true,
           plugins: true,
@@ -376,7 +377,7 @@ function createWindow() {
     })
 
     if (isDev) {
-      // initScreenShareWindow.webContents.openDevTools();
+      initScreenShareWindow.webContents.openDevTools();
     }
   })
 

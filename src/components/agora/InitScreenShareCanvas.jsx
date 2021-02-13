@@ -19,16 +19,19 @@ const InitScreenShareCanvas = React.memo((props) => {
 	var localStream = {};
 	const [ screenShareState, setScreenShareState ] = useState({ ready: false});
 
-	const streamInit = (uid, attendeeMode, videoProfile, config) => {
+	const [ screenSources, setScreenSources ] = useState([]);
+
+	const streamInit = (uid, videoProfile, sourceId) => {
 
 	    let defaultConfig = {
 	      	streamID: uid,
 	      	audio: false,
 	      	video: false,
 	      	screen: true,
+	      	sourceId: sourceId
 	    }
 
-    	let stream = AgoraRTC.createStream(merge(defaultConfig, config))
+    	let stream = AgoraRTC.createStream(defaultConfig)
     	stream.setVideoProfile(videoProfile)
     	return stream
   	}
@@ -44,13 +47,22 @@ const InitScreenShareCanvas = React.memo((props) => {
 
     	actions.app.setScreenSize();
 
+    	AgoraRTC.getScreenSources(function(err, sources) {
+		    setScreenSources(sources);
+		    console.log(sources);
+		})
+
+    }, [])
+
+    const initScreenShare = (sourceId) => {
+
         AgoraClient.init(props.appId, () => {
 	      	
 	      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
 
 	      		socket_live.emit(events.joinRoom, props.channel);
 
-        		localStream = streamInit(uid, props.attendeeMode, props.videoProfile);
+        		localStream = streamInit(uid, props.videoProfile, sourceId);
 
         		localStream.init(() => {
 
@@ -69,6 +81,7 @@ const InitScreenShareCanvas = React.memo((props) => {
 
 	          		setScreenShareState({ ready: true })
 	        	},
+
 	          	err => {
 
 	            	alert("No Access to media stream", err)
@@ -77,8 +90,7 @@ const InitScreenShareCanvas = React.memo((props) => {
 	          	})
 	      	})
     	})
-
-    }, [])
+    };
 
     useEffect(() => {
 
@@ -95,7 +107,41 @@ const InitScreenShareCanvas = React.memo((props) => {
     }
 
     return (
-		<div id="ag-screenshare-canvas" >
+		<div>
+			<div className="mb-4 text-lg px-3 center">
+				Select Screen/Window to share..
+			</div>
+			{
+				screenSources.map(source => 
+
+					<li 
+                        key={source.id}
+                        className='px-3 pt-2 pb-2 flex pointer settings-menu-item mb-2'
+                        style={{
+                            width: '33%', float: 'left', listStyle: 'none'
+                        }}
+                        onClick={() =>{initScreenShare(source.id)}}
+                    >
+                    	<div className="w-full">
+                    		 <div 
+	                            className="w-full flex items-center justify-center mr-3 overflow-hidden"
+	                            style={{}}
+	                        >
+	                            <img style={{height: '100px'}} src={source.thumbnail.toDataURL()} alt="" />
+	                        </div> 
+	                        <div className="center mt-2 text-sm" style={{
+	                        	textOverflow: 'ellipsis',
+							    overflow: 'hidden',
+							    width: '160px',
+							    height: '1.2em',
+							    whiteSpace: 'nowrap',
+	                        }}>
+	                            {source.name}
+	                        </div>
+                    	</div>
+                    </li>
+				)
+			}
       	</div>
 	);
 })
