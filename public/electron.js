@@ -32,7 +32,8 @@ const runApplescript = require('run-applescript');
 // TODO Add support for App Signing.
 
 const minWidth = 330;
-const minHeight = 700;
+const minHeight = 400;
+//const minLoginHeight = 500;
 
 const robotKeyMap = {
   'arrowup'     : 'up',
@@ -171,8 +172,7 @@ function createWindow() {
 
   ipcMain.on('logout', (event, arg) => {
     mainWindow.webContents.send('logout', {});
-    //mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : startPageUrl);
-    //mainWindow.setSize(minWidth, minHeight)
+    mainWindow.setSize(minWidth, minHeight)
   })
 
   ipcMain.on('resize-login', (event, arg) => {
@@ -437,11 +437,26 @@ function createWindow() {
 
   })
 
-  ipcMain.on('sharing-screen', (event, arg) => {
+  ipcMain.on('sharing-screen', (event, sourceId) => {
 
     if(initScreenShareWindow) {
 
       initScreenShareWindow.hide();
+
+      var display_id = sourceId.split(':')[1];
+      var sharedWindow;
+
+      console.log(BrowserWindow.getAllWindows());
+
+      for( win of BrowserWindow.getAllWindows()){
+        console.log(win.getMediaSourceId());
+      }
+      // screen.getAllDisplays().map(function(display){
+      //   console.log(win.id);
+      // })
+
+      //var sharedWindow = BrowserWindow.fromId(sourceId);
+      console.log('sourceId: ' + sourceId);
 
       screenShareContainerWindow = new BrowserWindow({
         x: 0,
@@ -462,6 +477,8 @@ function createWindow() {
           enableRemoteModule: true
         }
       });
+
+      console.log('screenShareContainerWindow: ' + screenShareContainerWindow.id);
 
       const screenshareContainerUrl = url.format({
         pathname: path.join(__dirname, '../build/index.html'),

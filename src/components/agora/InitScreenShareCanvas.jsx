@@ -49,7 +49,6 @@ const InitScreenShareCanvas = React.memo((props) => {
 
     	AgoraRTC.getScreenSources(function(err, sources) {
 		    setScreenSources(sources);
-		    console.log(sources);
 		})
 
     }, [])
@@ -66,6 +65,8 @@ const InitScreenShareCanvas = React.memo((props) => {
 
         		localStream.init(() => {
 
+        			console.log(localStream);
+
             		AgoraClient.publish(localStream, err => {
               			alert("Publish local stream error: " + err);
             		})
@@ -77,7 +78,7 @@ const InitScreenShareCanvas = React.memo((props) => {
 				 		sender_id:  		state.userProfileData.uid
 				 	});
 
-	          		window.require("electron").ipcRenderer.send('sharing-screen');
+	          		window.require("electron").ipcRenderer.send('sharing-screen',sourceId);
 
 	          		setScreenShareState({ ready: true })
 	        	},

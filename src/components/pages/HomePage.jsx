@@ -94,12 +94,26 @@ export default function HomePage() {
 
     }, [state.activeWindowApp])
 
-    
+
     useEffect(() => {
 
         actions.user.getLoggedInUser({authData: authData})
 
-    }, [actions, authData])
+        // async function abc() {
+
+        //     // navigator.mediaDevices.enumerateDevices()
+        //     //   .then(function(devices) {
+        //     //     devices.forEach(function(device) {
+        //     //       console.log(device.kind + ": " + device.label +
+        //     //                   " id = " + device.deviceId);
+        //     //     });
+        //     //   })
+
+        //    // console.log(await navigator.mediaDevices.getDisplayMedia());
+        // }
+        // abc();
+
+    }, [authData])
 
     
     useEffect(() => {
@@ -108,7 +122,7 @@ export default function HomePage() {
             actions.team.getTeam({authData: authData, team_id: state.currentTeamId})    
         }
 
-    }, [actions, authData, state.currentTeamId, state.teamUpdateReq])
+    }, [state.currentTeamId, state.teamUpdateReq])
 
     useEffect(() => {
 
@@ -118,6 +132,8 @@ export default function HomePage() {
     }, [state.noTeams])
 
     useEffect(() => {
+
+        window.require("electron").ipcRenderer.send('resize-normal');
 
         window.require("electron").ipcRenderer.on('refresh', function (e, args) {
 
@@ -130,6 +146,7 @@ export default function HomePage() {
         window.require("electron").ipcRenderer.on('logout', function (e, args) {
 
             actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+                 window.require("electron").ipcRenderer.send('resize-login');
                 // var curentWindow = window.require("electron").remote.getCurrentWindow();
                 // curentWindow.close(); 
             });
