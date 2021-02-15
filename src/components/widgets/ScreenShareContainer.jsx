@@ -12,7 +12,6 @@ const ScreenShareContainer = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
     const { authData, setAuthData } = useContext(AuthContext);
-   // const { overlaySize, setOverlaySize } = useState({});
 
 	useEffect(() => {
 
@@ -33,8 +32,9 @@ const ScreenShareContainer = React.memo((props) => {
 
                     var overlayBounds = await window.require("electron").ipcRenderer.sendSync('screenshare-source-bounds', 
                                             sourceInfo);
-                    if(overlaySize && overlayBounds) {
 
+                    if(overlaySize && overlayBounds) {
+                        localStorage.setItem('screenshare_resolution', JSON.stringify(overlayBounds));
                         if(overlaySize.width != overlayBounds.width || overlaySize.height != overlayBounds.height){
                             overlaySize = {
                                 width: overlayBounds.width, height: overlayBounds.height

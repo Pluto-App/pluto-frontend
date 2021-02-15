@@ -229,7 +229,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
     }, [screenShareResolution])
 
-  	function Area(Increment, Count, Width, Height, Margin = 10) {
+  	function Area(Increment, Count, Width, Height, Margin = 0) {
       
       var resolution = screenShareResolution;
       var ratio = resolution.height/resolution.width;
@@ -251,7 +251,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
   	const Dish = () => {
 
-	    let Margin = 20;
+	    let Margin = 5;
 	    let Scenary = document.getElementById('Dish');
 
 	    if(Scenary){
@@ -290,19 +290,18 @@ const StreamScreenShareCanvas = React.memo((props) => {
   	}
 
     return (
-		<div id="ag-canvas" tabIndex="0" style={{background: '#2F3136'}} 
-			onMouseMove={ shareCursorData }
-			onDoubleClick={ shareCursorData }
-			onKeyUp={ shareCursorData }
-			onKeyDown={ shareCursorData }
-			onMouseDown={ shareCursorData }
-			onMouseUp={ shareCursorData }
-
-		>
+		<div id="ag-canvas" style={{background: '#2F3136'}} >
 			<div id="Dish">
 				<div style={{ display: 'flex' }}>
 					<section style={{ width: 'auto', position: 'relative'}}>
-						<div id="ag-screen" className="ag-item Camera">
+						<div id="ag-screen" className="ag-item Camera" tabIndex="0"
+							onMouseMove={ shareCursorData }
+							onDoubleClick={ shareCursorData }
+							onKeyUp={ shareCursorData }
+							onKeyDown={ shareCursorData }
+							onMouseDown={ shareCursorData }
+							onMouseUp={ shareCursorData }
+						>
 		    			</div>
 					</section>
 	    		</div>
