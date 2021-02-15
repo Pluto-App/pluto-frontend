@@ -205,6 +205,8 @@ function createWindow() {
       show: true,
       width: 900,
       height: sHeight,
+      minHeight: 500,
+      minWidth: 400,
       frame: false,
       titleBarStyle: 'hiddenInset',
       webPreferences: {

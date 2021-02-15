@@ -8,19 +8,17 @@ const MiniVideoCallTopBar = React.memo((props) => {
 
   const { actions } = useOvermind();
 
-  const isWindows = os.platform() === 'win32'
+  const isWindows = os.platform() === 'win32';
   const isMac = os.platform() === "darwin";
 
   const minimize = () => {
-    var window = remote.getCurrentWindow();
-    // TODO Emit user is away/sleeping mode. 
-    window.minimize();
+    var win = remote.getCurrentWindow();
+    win.minimize();
   }
 
   const close = () => {
-    // TODO need to close all windows here. 
-    var window = remote.getCurrentWindow();
-    window.close();
+    var win = remote.getCurrentWindow();
+    win.destroy();
   }
 
   const openMenu = () => {
