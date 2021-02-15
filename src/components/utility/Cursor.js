@@ -19,24 +19,24 @@ const Cursor = React.memo((props) => {
         'height': '20px',
         'left': cursorPosition['left'],
         'top': cursorPosition['top'],
-        'border-radius': '50%',
+        'borderRadius': '50%',
         'position': 'absolute',
-        'background-color': cursorColor,
+        'backgroundColor': cursorColor,
         'opacity': '60%'
     }
 
     const arrowStyle = {
-        'font-size': '20px',
-        'font-weight': 'bold',
+        'fontSize': '20px',
+        'fontWeight': 'bold',
         'margin': '2px',
         'color': 'white'
     }
 
     const textStyle = {
-        'background-color': cursorColor,
-        'font-size': '11px',
-        'font-weight': 'bold',
-        'white-space': 'nowrap',
+        'backgroundColor': cursorColor,
+        'fontSize': '11px',
+        'fontWeight': 'bold',
+        'whiteSpace': 'nowrap',
         'color': 'white'
     }
 

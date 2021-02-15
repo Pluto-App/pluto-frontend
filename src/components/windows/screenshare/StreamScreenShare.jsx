@@ -11,9 +11,6 @@ const StreamScreenShare = React.memo((props) => {
   const { state, actions } = useOvermind();
 
     const screenShareChannel = localStorage.getItem('screenshare_channel_id');
-    const screenShareResolution = JSON.parse(localStorage.getItem("screenshare_resolution")) || {width: 16, height: 10};
-
-    const paddingPercentage = (1/(screenShareResolution.width/screenShareResolution.height))*100 + '%';
     
     const [ screenShareState, setScreeenShareState] = useState({options: 'show', status: 'stopped'});
     const [ config, setConfig ] = useState({
@@ -21,36 +18,12 @@ const StreamScreenShare = React.memo((props) => {
         mode: "live",
         backgroundColor: '#2e2c29',
         channel:  screenShareChannel || 'scr-' + localStorage.getItem('call_channel_id'),
-        transcode:  Cookies.get("transcode") || "interop",
+        transcode:  "interop",
         attendeeMode: 'audience',
-        baseMode:  Cookies.get("baseMode") || "avc",
+        baseMode: "avc",
         appId : AGORA_APP_ID,
         uid:  undefined
     });
-
-    const display_video = css`
-        -webkit-app-region: drag;
-        height: 10px; 
-        width: 100%;
-    `;
-
-    const wrapper_style = {
-      //padding: '10px',
-      background: 'white',
-      'box-sizing': 'border-box',
-      resize: 'horizontal',
-      border: '1px dashed',
-      overflow: 'auto',
-      'max-width': '100%',
-      //height: 'calc(100vh - 30px)',
-    };
-
-    const media_style = {
-      'width': '100%',
-      'padding-bottom': paddingPercentage,
-      'background': 'black',
-      'position': 'relative'
-    };
 
     return (
 

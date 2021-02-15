@@ -420,8 +420,6 @@ function createWindow() {
     });
 
     streamScreenShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-screenshare' : screenShareWindowUrl);
-
-    //streamScreenShareWindow.maximize();
     streamScreenShareWindow.show();
 
     streamScreenShareWindow.on('closed', () => {
@@ -474,7 +472,7 @@ function createWindow() {
 
       if (isDev) {
        
-        // screenShareContainerWindow.webContents.openDevTools();
+        screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls

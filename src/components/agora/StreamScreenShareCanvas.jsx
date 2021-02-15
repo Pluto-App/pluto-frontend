@@ -14,7 +14,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	const { state, actions } = useOvermind();
 
 	const AgoraClient = AgoraRTC.createClient({ mode: props.transcode, codec: "vp8" });
-	const screenShareResolution = JSON.parse(localStorage.getItem("screenshare_resolution"));
+	const [screenShareResolution, setScreenShareResolution] = useState(JSON.parse(localStorage.getItem("screenshare_resolution")));
 
 	const [ streamList, setStreamList ] = useState([]);
 
@@ -203,6 +203,10 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
     	document.getElementById("root").addEventListener("wheel", handleScroll);
 
+    	socket_live.on(events.screenShareSourceResize, (data) => {
+            setScreenShareResolution(data.resolution);
+        });
+
     	return () => {
       		document.getElementById("root").removeEventListener("wheel", handleScroll);
     	};
@@ -219,9 +223,15 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
     }, [streamList])
 
+    useEffect(() => {
+
+	    Dish();
+
+    }, [screenShareResolution])
+
   	function Area(Increment, Count, Width, Height, Margin = 10) {
       
-      var resolution = JSON.parse(localStorage.getItem('screenshare_resolution'))
+      var resolution = screenShareResolution;
       var ratio = resolution.height/resolution.width;
 
       let w = 0;
@@ -269,7 +279,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
   	function setWidth(width, margin) {
 
       let Cameras = document.getElementsByClassName('Camera');
-      var resolution = JSON.parse(localStorage.getItem('screenshare_resolution'))
+      var resolution = screenShareResolution;
       var ratio = resolution.height/resolution.width;
 
       for (var s = 0; s < Cameras.length; s++) {

@@ -170,6 +170,7 @@ export const clearScreenShareData = async ({ state, effect }) => {
 	localStorage.removeItem('attendeeMode');
 	localStorage.removeItem('screenshare_channel_id');
 	localStorage.removeItem('screenshare_owner');
+	localStorage.removeItem('screenshare_source');
 	localStorage.removeItem('screenshare_resolution');
 	localStorage.removeItem('screenShareViewers');
 	localStorage.removeItem('screenShareCursors');
