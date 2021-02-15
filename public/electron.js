@@ -682,7 +682,7 @@ function createWindow() {
       default:
         // code block
     }
-    robot.moveMouse(originalPos.x, originalPos.y);
+    // robot.moveMouse(originalPos.x, originalPos.y);
   })
 
   ipcMain.on('emit-drag', async (event, arg) => {

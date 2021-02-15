@@ -62,24 +62,10 @@ const TopBar = React.memo((props) => {
         className="flex justify-between items-center px-2 p-0"
         style={{width: '100%', height: '100%'}}
       >
-        {/*
-        <button className="text-white cursor-pointer hover:bg-gray-900 focus:outline-none">
-          <i className="material-icons md-light md-inactive" onClick={() => { openMenu() }} style={{ fontSize: "16px" }}> menu </i>
-        </button>
-        */}
-
         <div 
           className="flex-1 draggable-elem text-white font-bold center" 
           style={{width: '100%', height: '100%'}}
         >
-          { /*
-            page == 'video-call' &&
-            <i className="material-icons md-light md-inactive" 
-               style={{ fontSize: "24px" }}> 
-              drag_handle 
-            </i>
-            */
-          }
         </div>
         
         {
