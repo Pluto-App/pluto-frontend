@@ -19,6 +19,23 @@ const ScreenShareContainer = React.memo((props) => {
 
         }, 100)
 
+        let sourceInfo = localStorage.getItem("screenshare_source");
+
+        if(sourceInfo){
+            let [sourceType, sourceId] = sourceInfo.split(':');
+        
+            if(sourceType == 'window'){
+                const followScreenShareSource = setInterval(async () => {
+
+                    var overlayBounds = await window.require("electron").ipcRenderer.sendSync('screenshare-source-bounds', 
+                                            sourceInfo);
+                    
+                    window.require("electron").ipcRenderer.send('update-screenshare-container-bounds',overlayBounds);
+
+                }, 2000)    
+            }    
+        }
+
         socket_live.on(events.viewScreenShare, (data) => {
             actions.app.updateScreenShareViewers(data);
         });
@@ -40,7 +57,7 @@ const ScreenShareContainer = React.memo((props) => {
     }, [actions, authData])
 
     const containerStyle = {
-        border: 'blue 2px solid',
+        border: 'blue 3px solid',
         position: 'absolute',
         top: 0,
         bottom: 0,

@@ -4,6 +4,7 @@ const isDev = require('electron-is-dev');
 const url = require('url')
 const { PythonShell } = require( 'python-shell');
 const robot = require('robotjs');
+const { windowManager } = require("node-window-manager");
 
 const { autoUpdater } = require('electron-updater');
 
@@ -437,30 +438,15 @@ function createWindow() {
 
   })
 
-  ipcMain.on('sharing-screen', (event, sourceId) => {
+  ipcMain.on('sharing-screen', (event, overlayBounds) => {
 
     if(initScreenShareWindow) {
 
       initScreenShareWindow.hide();
 
-      var display_id = sourceId.split(':')[1];
-      var sharedWindow;
-
-      console.log(BrowserWindow.getAllWindows());
-
-      for( win of BrowserWindow.getAllWindows()){
-        console.log(win.getMediaSourceId());
-      }
-      // screen.getAllDisplays().map(function(display){
-      //   console.log(win.id);
-      // })
-
-      //var sharedWindow = BrowserWindow.fromId(sourceId);
-      console.log('sourceId: ' + sourceId);
-
       screenShareContainerWindow = new BrowserWindow({
-        x: 0,
-        y: 0,
+        x: overlayBounds.x,
+        y: overlayBounds.y,
         hasShadow: false,
         transparent: true,
         frame: false,
@@ -489,7 +475,7 @@ function createWindow() {
 
       screenShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare-container' : screenshareContainerUrl);
       screenShareContainerWindow.setIgnoreMouseEvents(true);
-      screenShareContainerWindow.setSize(sWidth, sHeight);
+      screenShareContainerWindow.setSize(overlayBounds.width, overlayBounds.height);
       screenShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
 
       if (isDev) {
@@ -552,6 +538,14 @@ function createWindow() {
     }
   })
 
+  ipcMain.on('update-screenshare-container-bounds', (event, overlayBounds) => {
+
+    if(screenShareContainerWindow){
+
+      screenShareContainerWindow.setBounds(overlayBounds);
+    }
+  })
+
   ipcMain.on('stop-screenshare', (event, arg) => {
 
     try{
@@ -570,6 +564,25 @@ function createWindow() {
   ipcMain.on('screen-size', async (event, arg) => {
 
       event.returnValue = primaryDisplay.size;
+  })
+
+  ipcMain.on('screenshare-source-bounds', async (event, sourceInfo) => {
+
+    var [sourceType, sourceId] = sourceInfo.split(':');
+    var overlayBounds;
+              
+    if(sourceType == 'screen'){
+      
+      overlayBounds = {
+        x: 0, y: 0, width: sWidth, height: sHeight
+      }
+    
+    } else {
+
+      overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+    }
+
+      event.returnValue = overlayBounds;
   })
 
   var menu = Menu.buildFromTemplate([

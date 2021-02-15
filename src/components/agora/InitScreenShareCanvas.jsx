@@ -7,6 +7,7 @@ import { socket_live, events } from '../sockets'
 
 import {AuthContext} from '../../context/AuthContext'
 
+import { windowManager } from "node-window-manager";
 const { remote } = window.require('electron');
 
 const InitScreenShareCanvas = React.memo((props) => {
@@ -48,12 +49,13 @@ const InitScreenShareCanvas = React.memo((props) => {
     	actions.app.setScreenSize();
 
     	AgoraRTC.getScreenSources(function(err, sources) {
+
 		    setScreenSources(sources);
 		})
 
     }, [])
 
-    const initScreenShare = (sourceId) => {
+    const initScreenShare = (sourceInfo) => {
 
         AgoraClient.init(props.appId, () => {
 	      	
@@ -61,24 +63,26 @@ const InitScreenShareCanvas = React.memo((props) => {
 
 	      		socket_live.emit(events.joinRoom, props.channel);
 
-        		localStream = streamInit(uid, props.videoProfile, sourceId);
+        		localStream = streamInit(uid, props.videoProfile, sourceInfo);
 
-        		localStream.init(() => {
-
-        			console.log(localStream);
+        		localStream.init( async () => {
 
             		AgoraClient.publish(localStream, err => {
               			alert("Publish local stream error: " + err);
             		})
 
+            		var overlayBounds = await window.require("electron").ipcRenderer.sendSync('screenshare-source-bounds', 
+            								sourceInfo);
+
 				 	socket_live.emit(events.userScreenShare, {
 	          			call_channel_id: 	localStorage.getItem("call_channel_id"),
-	          			resolution: 		state.screenSize,
+	          			resolution: 		overlayBounds,
 				 		channel_id: 		props.channel,
 				 		sender_id:  		state.userProfileData.uid
 				 	});
 
-	          		window.require("electron").ipcRenderer.send('sharing-screen',sourceId);
+				 	localStorage.setItem('screenshare_source', sourceInfo);
+	          		window.require('electron').ipcRenderer.send('sharing-screen', overlayBounds);
 
 	          		setScreenShareState({ ready: true })
 	        	},

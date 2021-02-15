@@ -37,6 +37,7 @@
     "loadash": "^1.0.0",
     "lodash": "^4.17.15",
     "md5": "^2.2.1",
+    "node-window-manager": "^2.2.4",
     "overmind": "^23.1.0",
     "overmind-react": "^24.1.0",
     "python-shell": "^2.0.3",
