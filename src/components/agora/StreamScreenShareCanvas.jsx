@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useLayoutEffect } from 'react'
 import { merge } from 'lodash'
 import AgoraRTC from 'agora-rtc-sdk'
 
@@ -12,19 +12,11 @@ const { remote } = window.require('electron');
 const StreamScreenShareCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
-	const { authData, setAuthData } = useContext(AuthContext);
 
 	const AgoraClient = AgoraRTC.createClient({ mode: props.transcode, codec: "vp8" });
 	const screenShareResolution = JSON.parse(localStorage.getItem("screenshare_resolution"));
 
-	const [ screenShareState, setScreenShareState ] = useState({ ready: false});
 	const [ streamList, setStreamList ] = useState([]);
-	const [ userData, setUserData ] = useState({});
-	const [ orgCursorPos, setOrgCursorPos ] = useState(undefined);
-	const [ mouseState, setMouseState ] = useState('up');
-
-	// Hack to maintain aspect ratio
-	const [ canvasStyle, setCanvasStyle ] = useState({});
 
 	const subscribeStreamEvents = () => {
 
@@ -189,6 +181,10 @@ const StreamScreenShareCanvas = React.memo((props) => {
   		shareCursorData(e);
   	}
 
+  	useLayoutEffect(() => {
+ 		window.addEventListener("resize", Dish);
+ 	}, [])
+
     useEffect(() => {
 
     	actions.app.setLoggedInUser();
@@ -202,9 +198,6 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
 	      		socket_live.emit(events.joinRoom, props.channel);
 	        	viewingScreenShare();
-	        	
-	        	// Hack to maintain aspect ratio
-	        	setCanvasStyle({position: 'absolute'});
 	      	})
     	})
 
@@ -222,11 +215,72 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	     	stream.play('ag-screen');
 	    })
 
+	    Dish();
+
     }, [streamList])
 
+  	function Area(Increment, Count, Width, Height, Margin = 10) {
+      
+      var resolution = JSON.parse(localStorage.getItem('screenshare_resolution'))
+      var ratio = resolution.height/resolution.width;
+
+      let w = 0;
+      let i = 0;
+      let h = Increment * ratio + (Margin * 2);
+      while (i < (Count)) {
+          if ((w + Increment) > Width) {
+              w = 0;
+              h = h + (Increment * ratio) + (Margin * 2);
+          }
+          w = w + Increment + (Margin * 2);
+          i++;
+      }
+      if (h > Height) return false;
+      else return Increment;
+  	}
+
+  	const Dish = () => {
+
+	    let Margin = 20;
+	    let Scenary = document.getElementById('Dish');
+
+	    if(Scenary){
+	      let Width = Scenary.offsetWidth - (Margin * 2);
+	      let Height = Scenary.offsetHeight - (Margin * 2);
+	      let Cameras = document.getElementsByClassName('Camera');
+	      let max = 0;
+
+	      let i = 1;
+	      while (i < 2500) {
+	          let w = Area(i, Cameras.length, Width, Height, Margin);
+	          if (w === false) {
+	              max =  i - 1;
+	              break;
+	          }
+	          i++;
+	      }
+
+	      max = max - (Margin * 2);
+
+	      setWidth(max, Margin);  
+	    }
+  	}
+
+  	function setWidth(width, margin) {
+
+      let Cameras = document.getElementsByClassName('Camera');
+      var resolution = JSON.parse(localStorage.getItem('screenshare_resolution'))
+      var ratio = resolution.height/resolution.width;
+
+      for (var s = 0; s < Cameras.length; s++) {
+          Cameras[s].style.width = width + "px";
+          Cameras[s].style.margin = margin + "px";
+          Cameras[s].style.height = (width * ratio) + "px";
+      }
+  	}
 
     return (
-		<div id="ag-screenshare-canvas" tabIndex="0" style={canvasStyle} 
+		<div id="ag-canvas" tabIndex="0" style={{background: '#2F3136'}} 
 			onMouseMove={ shareCursorData }
 			onDoubleClick={ shareCursorData }
 			onKeyUp={ shareCursorData }
@@ -235,10 +289,17 @@ const StreamScreenShareCanvas = React.memo((props) => {
 			onMouseUp={ shareCursorData }
 
 		>
-    		<div id="ag-screen" className="ag-item">
+			<div id="Dish">
+				<div style={{ display: 'flex' }}>
+					<section style={{ width: 'auto', position: 'relative'}}>
+						<div id="ag-screen" className="ag-item Camera">
+		    			</div>
+					</section>
+	    		</div>
     		</div>
       	</div>
 	);
 })
 
 export default StreamScreenShareCanvas;
+

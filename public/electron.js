@@ -306,7 +306,7 @@ function createWindow() {
     })
 
     if (isDev) {
-       // videoCallWindow.webContents.openDevTools();
+       videoCallWindow.webContents.openDevTools();
     }
   });
 
@@ -378,7 +378,7 @@ function createWindow() {
     })
 
     if (isDev) {
-      initScreenShareWindow.webContents.openDevTools();
+      // initScreenShareWindow.webContents.openDevTools();
     }
   })
 
@@ -424,16 +424,12 @@ function createWindow() {
     //streamScreenShareWindow.maximize();
     streamScreenShareWindow.show();
 
-    if (isDev) {
-      //streamScreenShareWindow.setSize(500,400);
-    }
-
     streamScreenShareWindow.on('closed', () => {
       streamScreenShareWindow = undefined;
     })
 
     if (isDev) {
-       // streamScreenShareWindow.webContents.openDevTools();
+      streamScreenShareWindow.webContents.openDevTools();
     }
 
   })
@@ -463,8 +459,6 @@ function createWindow() {
           enableRemoteModule: true
         }
       });
-
-      console.log('screenShareContainerWindow: ' + screenShareContainerWindow.id);
 
       const screenshareContainerUrl = url.format({
         pathname: path.join(__dirname, '../build/index.html'),
@@ -533,7 +527,7 @@ function createWindow() {
       })
 
       if (isDev) {
-        screenShareControlsWindow.webContents.openDevTools();
+        //screenShareControlsWindow.webContents.openDevTools();
       }
     }
   })
