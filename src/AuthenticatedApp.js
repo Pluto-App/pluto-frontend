@@ -98,6 +98,10 @@ export default function App() {
       socket_live.on(events.viewScreenShare, (data) => {
         actions.app.updateScreenShareViewers(data);
       });
+
+      socket_live.on(events.updateTeam, (data) => {
+        actions.team.getTeam({authData: authData, team_id: state.currentTeamId})    
+      });
       
     }, [authData]
   );

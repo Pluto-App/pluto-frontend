@@ -21,6 +21,7 @@ export const events = {
   screenShareSourceResize:  'screenShareSourceResize',
 
   roomMessage: 'roomMessage',
+  updateTeam:  'updateTeam',
 
   offline: "Offline",
   sleeping: "Sleeping",

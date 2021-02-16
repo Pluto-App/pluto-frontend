@@ -148,6 +148,17 @@ export const setError = async ({ state, effect }, error) => {
 		state.error = error
 }
 
+export const emitUpdateTeam = async ({ actions, state, effect }) => {
+
+	for( var team of state.userProfileData.teams){
+		socket_live.emit(events.updateTeam, 
+			{ 
+				tid: team.tid
+			}
+		);	
+	}
+}
+
 export const clearVideoCallData = async ({ state, effect }) => {
 
 	var call_channel_id = localStorage.getItem('call_channel_id');

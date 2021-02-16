@@ -13,18 +13,20 @@ export const getUserPreference = async ({state, effects}, {authData}) => {
 	}
 }
 
-export const createUserPreference = async ({state, effects}, {authData, userPreferenceData}) => {
+export const createUserPreference = async ({state, effects, actions}, {authData, userPreferenceData}) => {
 
 	var userPreference = await effects.userpreference.createUserPreference(authData, userPreferenceData)
 
 	if(userPreference && userPreference.user_id){
 
 		localStorage.setItem('userPreference', JSON.stringify(userPreference));
-		state.userPreference = userPreference;	
+		state.userPreference = userPreference;
+		actions.app.emitUpdateTeam();
 	}
 }
 
-export const updateUserPreference = async ({state, effects}, {authData, userPreferenceData}) => {
+export const updateUserPreference = async ({state, effects, actions}, {authData, userPreferenceData}) => {
 
 	var responseData = await effects.userpreference.updateUserPreference(authData, userPreferenceData);
+	actions.app.emitUpdateTeam();
 }
