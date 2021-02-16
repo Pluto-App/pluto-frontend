@@ -40,7 +40,6 @@
     "node-window-manager": "^2.2.4",
     "overmind": "^23.1.0",
     "overmind-react": "^24.1.0",
-    "python-shell": "^2.0.3",
     "qs": "^6.9.4",
     "query-string": "^6.13.1",
     "react": "^16.13.1",
@@ -70,7 +69,7 @@
     "copyright": "MIT",
     "afterSign": "src/scripts/notarize.js",
     "extraResources": [
-      "src/scripts"
+      "src/scripts", "src/dlls"
     ],
     "files": [
       "build/**/*",

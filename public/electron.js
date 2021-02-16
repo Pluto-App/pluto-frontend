@@ -2,15 +2,34 @@ const { app, BrowserWindow, ipcMain, protocol, screen, Menu, dialog } = require(
 const path = require('path')
 const isDev = require('electron-is-dev');
 const url = require('url')
-const { PythonShell } = require( 'python-shell');
 const robot = require('robotjs');
 const { windowManager } = require("node-window-manager");
+
+const ffi = require('ffi-napi');
 
 const { autoUpdater } = require('electron-updater');
 
 if (isDev) {
   require('electron-reload')
 }
+
+const user32 = new ffi.Library('User32.dll', {
+  // https://msdn.microsoft.com/en-us/library/windows/desktop/ms633505(v=vs.85).aspx
+  GetForegroundWindow: ['pointer', []]
+});
+
+var _path;
+
+if (isDev) 
+  _path = path.join(app.getAppPath(), 'src/dlls/BrowserURLs.dll');
+else
+  _path = path.join(app.getAppPath(), '..', 'src/dlls/BrowserURLs.dll');
+
+let winurl = new ffi.Library(_path, {
+  FetchChromeURL: ['string', ['pointer']],
+  FetchFirefoxURL: ['string', ['pointer']],
+  FetchEdgeURL: ['string', ['pointer']]
+});
 
 let mainWindow
 
@@ -27,6 +46,7 @@ const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
 
 const activeWin = require('active-win');
+// const activeWin = require('active-win-with-url');
 const runApplescript = require('run-applescript');
 
 // TODO Now we can add external window for settings.
@@ -58,17 +78,6 @@ var sWidth;
 var sHeight;
 var scaleFactor = 1;
 
-async function runPythonScript(py_script){
-
-  return new Promise(function (resolve, reject) {
-    PythonShell.run(py_script, null, function (err, results) {
-
-      if (err) throw err;
-      resolve(results[0]);
-    });
-  })
-}
-
 async function getTabUrl (activeWinInfo){
 
   var url = activeWinInfo ? activeWinInfo.url : undefined;
@@ -87,16 +96,25 @@ async function getTabUrl (activeWinInfo){
       }
 
     } else if (activeWinInfo.platform == 'windows') {
+      
+      var activeWindowHandle = user32.GetForegroundWindow();
 
-      var py_script;
+      if(activeWinInfo.owner.name == 'chrome.exe') {
+        
+        url = winurl.FetchChromeURL(activeWindowHandle);
 
-      if (isDev) 
-        py_script = path.join(app.getAppPath(), 'src/scripts/windows_chrome_active_tab_url.py');
-      else
-        py_script = path.join(app.getAppPath(), '..', 'src/scripts/windows_chrome_active_tab_url.py');
+      } else if(activeWinInfo.owner.name == 'firefox.exe'){
 
-      url = await runPythonScript(py_script);
+        url = winurl.FetchFirefoxURL(activeWindowHandle);
+      }
+    
       url = url == 'null' ? undefined : url;
+
+      if(url){
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'http://' + url;
+        }
+      }
     }
   }
 
