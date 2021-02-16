@@ -601,7 +601,7 @@ const VideoCallCanvas = React.memo((props) => {
                   }}
                 >
                   <div style={{ display: "table", height: '40px'}}>
-                    <span style={{ display: 'table-cell', verticalAlign: 'middle'}}>
+                    <span className="text-gray-200 px-1" style={{ display: 'table-cell', verticalAlign: 'middle'}}>
                       {
                         state.currentTeam.users.find(user => user.id === stream.getId()) ?
                         state.currentTeam.users.find(user => user.id === stream.getId()).name.split(' ')[0]
@@ -609,8 +609,8 @@ const VideoCallCanvas = React.memo((props) => {
                       }
                     </span>
                   </div>
-                  <div className="pointer items-center h-6 w-6 flex font-semibold overflow-hidden" 
-                    style={{ display: 'table', marginLeft: '10px' }}
+                  <div className="pointer items-center h-6 w-6 flex overflow-hidden" 
+                    style={{ display: 'table'}}
                   >
                       <ActiveWindowInfo userId={stream.getId()} videoOn={true}/>
                   </div>

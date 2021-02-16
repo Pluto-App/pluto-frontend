@@ -327,7 +327,7 @@ function createWindow() {
     })
 
     if (isDev) {
-       // videoCallWindow.webContents.openDevTools();
+       videoCallWindow.webContents.openDevTools();
     }
   });
 
