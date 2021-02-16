@@ -12,28 +12,9 @@ if (isDev) {
   require('electron-reload')
 }
 
-if (process.platform === 'win32') {
-  const user32 = new ffi.Library('User32.dll', {
-    GetForegroundWindow: ['pointer', []]
-  });
-
-  var _path;
-
-  if (isDev) 
-    _path = path.join(app.getAppPath(), 'src/dlls/BrowserURLs.dll');
-  else
-    _path = path.join(app.getAppPath(), '..', 'src/dlls/BrowserURLs.dll');
-
-  let winurl = new ffi.Library(_path, {
-    FetchChromeURL: ['string', ['pointer']],
-    FetchFirefoxURL: ['string', ['pointer']],
-    FetchEdgeURL: ['string', ['pointer']]
-  });
-
-}
+let user32;
 
 let mainWindow
-
 let videoCallWindow
 
 let initScreenShareWindow
@@ -78,6 +59,26 @@ var primaryDisplay;
 var sWidth;
 var sHeight;
 var scaleFactor = 1;
+
+if (isWindows) {
+  user32 = new ffi.Library('User32.dll', {
+    GetForegroundWindow: ['pointer', []]
+  });
+
+  var _path;
+
+  if (isDev) 
+    _path = path.join(app.getAppPath(), 'src/dlls/BrowserURLs.dll');
+  else
+    _path = path.join(app.getAppPath(), '..', 'src/dlls/BrowserURLs.dll');
+
+  let winurl = new ffi.Library(_path, {
+    FetchChromeURL: ['string', ['pointer']],
+    FetchFirefoxURL: ['string', ['pointer']],
+    FetchEdgeURL: ['string', ['pointer']]
+  });
+
+}
 
 async function getTabUrl (activeWinInfo){
 
