@@ -625,14 +625,19 @@ const VideoCallCanvas = React.memo((props) => {
                     margin: '10px'
                   }}
                 >
-                  <div className="h-12 w-12 flex rounded-full mb-1 overflow-hidden">
+                  <div style={{display: 'table'}}>
+                    <div className="rounded-full"
+                      style={{display: 'table-cell', verticalAlign: 'middle', height: '50px'}}
+                    >
                       <img 
+                        style={{height: '35px'}}
                         src={
                           state.currentTeam.users.find(user => user.id === stream.getId()) ?
                           state.currentTeam.users.find(user => user.id === stream.getId()).avatar
                           : ''
                         } 
                       alt="" />
+                    </div>
                   </div>
                   <div className="text-white px-1 font-bold "
                     style={{display: 'table', height: '50px', marginLeft: '10px'}}

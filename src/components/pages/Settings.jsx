@@ -11,7 +11,7 @@ import {AuthContext} from '../../context/AuthContext'
 const os = window.require('os');
 const { remote } = window.require('electron');
 
-const UserProfile = React.memo(() => {
+const Settings = React.memo(() => {
 
     let history = useHistory();
     const supportedAppsList = supportedApps();
@@ -747,4 +747,4 @@ const UserProfile = React.memo(() => {
     )
 })
 
-export default UserProfile;
+export default Settings;

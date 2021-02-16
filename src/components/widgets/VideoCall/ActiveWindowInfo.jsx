@@ -20,14 +20,17 @@ const ActiveWindowInfo = React.memo((props) => {
 
   useEffect(() => {
 
-    setActiveAppInfo(appLogo(state.usersActiveWindows[props.userId], state.userPreference));
+    if(props.userId && state.currentTeam.users){
+        var preference = state.currentTeam.users.find(u => u.id === props.userId).UserPreference;
+        setActiveAppInfo(appLogo(state.usersActiveWindows[props.userId], preference));    
+    }
 
   },[state.usersActiveWindows[props.userId]])
 
 
   return (
-    <div className="pointer items-center h-6 w-6 flex overflow-hidden" 
-        style={{ display: 'table', marginLeft: '10px' }}
+    <div className="pointer items-center flex overflow-hidden" 
+        style={{ display: 'table', marginLeft: '10px', height: '35px', width: '35px' }}
       > 
         {
           activeAppInfo.logo?

@@ -94,8 +94,11 @@ const UserListItem = React.memo((user) => {
 
     useEffect(() => {
 
-        setActiveAppInfo(appLogo(state.usersActiveWindows[user.id], state.userPreference));
-
+        if(user){
+            var preference = state.currentTeam.users.find(u => u.id === user.id).UserPreference;
+            setActiveAppInfo(appLogo(state.usersActiveWindows[user.id], preference));    
+        }
+        
     },[ state.usersActiveWindows[user.id]])
 
     return (
