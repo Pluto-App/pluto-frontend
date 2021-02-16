@@ -25,12 +25,11 @@ export default function TeamRegisterPage() {
     const { state, actions } = useOvermind();
 
     const createTeam = async (e) => {
-        // FIXME preventDefault ?? 
-        // FIXME Team Add press enter issue.
+
         e.preventDefault();
 
         var teamData = {
-            user_id: state.userProfileData.id,
+            owner_id: state.userProfileData.id,
             name: teamName
         }
 
