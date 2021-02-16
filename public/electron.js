@@ -6,30 +6,31 @@ const robot = require('robotjs');
 const { windowManager } = require("node-window-manager");
 
 const ffi = require('ffi-napi');
-
 const { autoUpdater } = require('electron-updater');
 
 if (isDev) {
   require('electron-reload')
 }
 
-const user32 = new ffi.Library('User32.dll', {
-  // https://msdn.microsoft.com/en-us/library/windows/desktop/ms633505(v=vs.85).aspx
-  GetForegroundWindow: ['pointer', []]
-});
+if (process.platform === 'win32') {
+  const user32 = new ffi.Library('User32.dll', {
+    GetForegroundWindow: ['pointer', []]
+  });
 
-var _path;
+  var _path;
 
-if (isDev) 
-  _path = path.join(app.getAppPath(), 'src/dlls/BrowserURLs.dll');
-else
-  _path = path.join(app.getAppPath(), '..', 'src/dlls/BrowserURLs.dll');
+  if (isDev) 
+    _path = path.join(app.getAppPath(), 'src/dlls/BrowserURLs.dll');
+  else
+    _path = path.join(app.getAppPath(), '..', 'src/dlls/BrowserURLs.dll');
 
-let winurl = new ffi.Library(_path, {
-  FetchChromeURL: ['string', ['pointer']],
-  FetchFirefoxURL: ['string', ['pointer']],
-  FetchEdgeURL: ['string', ['pointer']]
-});
+  let winurl = new ffi.Library(_path, {
+    FetchChromeURL: ['string', ['pointer']],
+    FetchFirefoxURL: ['string', ['pointer']],
+    FetchEdgeURL: ['string', ['pointer']]
+  });
+
+}
 
 let mainWindow
 

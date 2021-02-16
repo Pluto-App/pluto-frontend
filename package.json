@@ -1,10 +1,10 @@
 {
   "name": "pluto",
   "productName": "pluto",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "public/electron.js",
   "author": "Pluto Dev Team <plutoapp.devs@gmail.com>",
-  "email": "sambhav.sharma@hotmail.com",
+  "email": "plutoapp.devs@gmail.com",
   "description": "Virtual Office App for Organizations",
   "repository": "github:Pluto-App/pluto-desktop-releases",
   "dependencies": {
@@ -132,7 +132,7 @@
       "icon": "./assets/windows/logo.ico",
       "publish": {
         "provider": "github",
-        "releaseType": "release",
+        "releaseType": "release"
       }
     },
     "linux": {
