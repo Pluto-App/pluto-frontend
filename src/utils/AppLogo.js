@@ -67,13 +67,13 @@ export const appLogo = function(appData, userPreference) {
       logo = appLogos[appName]['logo'];
     }
 
-    if(userPreference.show_active_app){
+    if(!userPreference || userPreference.show_active_app){
       appInfo['logo'] = logo;
 
       if(appLogos[appName])
         appInfo['name'] = appLogos[appName]['name'];
 
-      if(userPreference.share_active_app){
+      if(!userPreference || userPreference.share_active_app){
         appInfo['url'] = url;     
       }  
     }
