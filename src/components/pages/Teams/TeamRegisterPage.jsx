@@ -10,7 +10,7 @@ import {AuthContext} from '../../../context/AuthContext'
 
 export default function TeamRegisterPage() {
 
-    const { authData } = useContext(AuthContext);
+    const { authData, setAuthData } = useContext(AuthContext);
     let history = useHistory();
 
     const [teamName, setTeamName] = useState('');
@@ -58,6 +58,14 @@ export default function TeamRegisterPage() {
         else {
             ToastNotification('error', "Must be 12 letters.")
         }
+    }
+
+    const logout = (e) => {
+        
+        actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+            history.push('/');
+            window.require("electron").ipcRenderer.send('resize-login');
+        });
     }
 
     return (
@@ -135,7 +143,26 @@ export default function TeamRegisterPage() {
                         />
                     }
                 </form>
+
+                 {
+                    state.noTeams &&
+                    <div className='px-4 pt-6 pb-8 mb-4'>
+
+                        <div className="flex items-center justify-between">
+                            <button className="w-full text-white font-bold py-2 px-4 rounded 
+                                focus:outline-none focus:shadow-outline" type="button" onClick={logout}
+                                style={{ background: '#202225', fontSize: '14px' }}
+                            >
+                                Sign Out
+                            </button>
+                        </div>
+
+                    </div>
+                }
+
+                
             </div>
+
         </div>
     )
 }

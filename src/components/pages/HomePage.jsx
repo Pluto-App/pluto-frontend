@@ -99,20 +99,6 @@ export default function HomePage() {
 
         actions.user.getLoggedInUser({authData: authData})
 
-        // async function abc() {
-
-        //     // navigator.mediaDevices.enumerateDevices()
-        //     //   .then(function(devices) {
-        //     //     devices.forEach(function(device) {
-        //     //       console.log(device.kind + ": " + device.label +
-        //     //                   " id = " + device.deviceId);
-        //     //     });
-        //     //   })
-
-        //    // console.log(await navigator.mediaDevices.getDisplayMedia());
-        // }
-        // abc();
-
     }, [authData])
 
     
@@ -147,8 +133,6 @@ export default function HomePage() {
 
             actions.auth.logOut({setAuthData: setAuthData}).then(() => {
                  window.require("electron").ipcRenderer.send('resize-login');
-                // var curentWindow = window.require("electron").remote.getCurrentWindow();
-                // curentWindow.close(); 
             });
         });
 
