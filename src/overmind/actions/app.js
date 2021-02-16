@@ -53,11 +53,15 @@ export const setElectronWindowScreenShareViewers = async ({ state, effect }, scr
 
 export const userVideoCall = async ({ state, effect }, data) => {
 
- 	localStorage.setItem("call_channel_id", data.channel_id);
- 	socket_live.emit(events.joinRoom, data.channel_id);
+	if(localStorage.getItem("call_channel_id") && localStorage.getItem("call_channel_id") == data.channel_id){
+		// Do nothing
+	} else {
+		localStorage.setItem("call_channel_id", data.channel_id);
+	 	socket_live.emit(events.joinRoom, data.channel_id);
 
-    window.require("electron").ipcRenderer.send('init-video-call-window', data.channel_id);
-
+	    window.require("electron").ipcRenderer.send('init-video-call-window', data.channel_id);	
+	}
+ 	
     ToastNotification('success', `Incoming VC`);
 }
 

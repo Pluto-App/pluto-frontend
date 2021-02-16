@@ -9,7 +9,9 @@ import {AuthContext} from '../../context/AuthContext'
 
 import ActiveWindowInfo from "../widgets/VideoCall/ActiveWindowInfo";
 
+
 const { remote } = window.require('electron');
+const os = window.require('os');
 
 var localStream = {};
 var streamState = {};
@@ -21,6 +23,10 @@ const VideoCallCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
 	const { authData, setAuthData } = useContext(AuthContext);
+
+  const isWindows = os.platform() === 'win32';
+  const isMac = os.platform() === "darwin";
+
   const [activeAppInfo, setActiveAppInfo] = useState({});
 
 	const [ streamList, setStreamList ] = useState([]);
@@ -186,6 +192,10 @@ const VideoCallCanvas = React.memo((props) => {
 	}
 
   useEffect(() => {
+
+    if(isMac){
+      window.require('electron').ipcRenderer.send('media-access');      
+    }
 
     AgoraClient.init(props.appId, () => {
       	

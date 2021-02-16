@@ -35,10 +35,20 @@ import {
 
 import {AuthContext} from './context/AuthContext'
 
+import {
+  hasScreenCapturePermission,
+  hasPromptedForPermission,
+  resetPermissions
+} from 'mac-screen-capture-permissions';
+
 
 export default function App() {
 
-  window.require("electron").ipcRenderer.send('resize-normal');
+  //window.require("electron").ipcRenderer.send('resize-normal');
+  if(!hasScreenCapturePermission()){
+    resetPermissions({bundleId: 'com.pluto.office'})
+    hasScreenCapturePermission()
+  };
 
   const { state, actions } = useOvermind();
   const { authData, setAuthData } = useContext(AuthContext);

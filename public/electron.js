@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, protocol, screen, Menu, dialog } = require('electron')
+const { app, BrowserWindow, ipcMain, protocol, screen, Menu, dialog, systemPreferences } = require('electron')
 const path = require('path')
 const isDev = require('electron-is-dev');
 const url = require('url')
@@ -203,6 +203,19 @@ function createWindow() {
     mainWindow.setSize(minWidth, 700)
     mainWindow.center();
   })
+
+  ipcMain.on('media-access', async (event, arg) => {
+
+    console.log('asking perm!');
+    await systemPreferences.askForMediaAccess('camera')
+
+    if(systemPreferences.getMediaAccessStatus('camera') != 'granted')
+      systemPreferences.askForMediaAccess('camera')
+
+    if(systemPreferences.getMediaAccessStatus('microphone') != 'granted')
+      systemPreferences.askForMediaAccess('microphone')
+  })
+
 
   ipcMain.on(`display-app-menu`, function (e, args) {
     if (isWindows && mainWindow) {
