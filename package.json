@@ -133,7 +133,6 @@
       "publish": {
         "provider": "github",
         "releaseType": "release",
-        "token": "d6c17f903090e274e591d1515aa82e623e001558"
       }
     },
     "linux": {
