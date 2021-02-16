@@ -160,12 +160,17 @@ export const clearVideoCallData = async ({ state, effect }) => {
 			uid: state.userProfileData.uid 
 		}
 	);
-
-	clearScreenShareData();
+	
+	deleteScreenShareData();
 	localStorage.removeItem('call_channel_id');
 }
 
 export const clearScreenShareData = async ({ state, effect }) => {
+
+	deleteScreenShareData();
+}
+
+const deleteScreenShareData = () => {
 
 	localStorage.removeItem('attendeeMode');
 	localStorage.removeItem('screenshare_channel_id');
@@ -176,4 +181,3 @@ export const clearScreenShareData = async ({ state, effect }) => {
 	localStorage.removeItem('screenShareCursors');
 	localStorage.removeItem('remoteAccessEnabled');
 }
-

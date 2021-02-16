@@ -219,6 +219,10 @@ const VideoCallCanvas = React.memo((props) => {
         window.onresize = Dish;
     }, false);
 
+    return () => {
+      handleExit();
+    }
+
   }, [])
 
 
@@ -408,7 +412,7 @@ const VideoCallCanvas = React.memo((props) => {
 
 	const handleExit = (e) => {
     
-    if (e.currentTarget.classList.contains('disabled')) {
+    if (e && e.currentTarget.classList.contains('disabled')) {
     		return
     }
 
@@ -428,8 +432,8 @@ const VideoCallCanvas = React.memo((props) => {
     finally {
 
     	actions.app.clearVideoCallData();
-      	var window = remote.getCurrentWindow();
-      	window.close();
+    	var window = remote.getCurrentWindow();
+    	window.close();
     }
 	}
 

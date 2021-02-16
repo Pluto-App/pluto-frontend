@@ -20,7 +20,6 @@ const RoomListItem = React.memo((room) => {
 
     const { state, actions } = useOvermind();
 
-    const [showChatModal, toggleshowChatModal] = useState(false);
     const [showMenu, toggleShowMenu] = useState(false);
     const [startedEditing, updateEditStatus] = useState(false);
     const [roomName, updateRoomName] = useState(room.name);
@@ -28,7 +27,7 @@ const RoomListItem = React.memo((room) => {
     const [activeAppInfo, setActiveAppInfo] = useState({});
 
     useEffect(() => {
-        actions.room.getUsersInRoom({authData: authData, roomId: room.id});
+        actions.room.getUsersInRoom({authData: authData, roomId: room.id, roomRid: room.rid});
     },[])
 
     useEffect(() => {
@@ -47,7 +46,7 @@ const RoomListItem = React.memo((room) => {
 
     },[])
 
-    const clickFunc = (e) => {
+    const toggleEditRoomName = (e) => {
         updateEditStatus(startedEditing => !startedEditing)
     }
 
@@ -68,10 +67,10 @@ const RoomListItem = React.memo((room) => {
         "position": "absolute"
     }
 
-    const startVideo = (e, room_rid) => {
+    const startVideo = async (e, room_rid) => {
 
-        // TODO User Video Call ID. Check Needed.
-        // Cannot start a VC Call with oneself.
+        if(localStorage.getItem('call_channel_id'))
+            await actions.app.clearVideoCallData();
 
         let channel_id = room_rid;
         localStorage.setItem('call_channel_id', channel_id);
@@ -85,6 +84,11 @@ const RoomListItem = React.memo((room) => {
         })
 
         window.require("electron").ipcRenderer.send('init-video-call-window', channel_id);
+        
+        // for(room of state.currentTeam.rooms){
+        //     actions.room.getUsersInRoom({authData: authData, roomId: room.id, roomRid: room.rid});    
+        // }
+
         //ToastNotification('success', `Initiated VC in room ${room.name} 📷`);
     }
 
@@ -131,10 +135,10 @@ const RoomListItem = React.memo((room) => {
     return (
         <div id={room.id} className="room-list-item"
             onMouseEnter={(e) => {
-                setHoverState(true);
+                    setHoverState(true);
             }}
             onMouseLeave={(e) => {
-               setHoverState(false);
+                    setHoverState(false);
             }}
         >
             {
@@ -143,7 +147,7 @@ const RoomListItem = React.memo((room) => {
                         style={{ transition: "all .60s ease" }}
                         onContextMenu={(e) => {
                             e.preventDefault();
-                            clickFunc()
+                            toggleEditRoomName()
                         }}>
                         <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700 leading-tight focus:outline-none 
                         focus:shadow-outline"
@@ -170,15 +174,20 @@ const RoomListItem = React.memo((room) => {
                             autoFocus />
                     </div>
                     :
-                    <div className="flex py-0 justify-between p-1" id={room.id} >
+                    <div className="flex py-0 justify-between p-1" id={room.id} 
+                        style={{ 
+                            background: (!(state.usersInRoom[room.rid]) ||
+                                                !(state.usersInRoom[room.rid].includes(state.userProfileData.uid))) ? '' : '#202225'
+                        }}
+                    >
                         <div className="flex justify-start p-2" style={{ width: '100%'}}>
                             {
                                 Object.keys(state.usersInRoom[room.rid] || []).length > 0 && activeAppInfo.logo ?
 
                                 <div className="flex" 
                                     style={{
-                                        width: '40px', 
-                                        height: '40px', 
+                                        width: '30px', 
+                                        height: '30px', 
                                         overflow: 'visible', 
                                         background: '#2F3136',
                                         borderRadius: '30%'
@@ -190,8 +199,8 @@ const RoomListItem = React.memo((room) => {
                                     />
                                     
                                     <i className="material-icons md-light md-inactive" 
-                                        style={{ fontSize: "16px", position: 'relative', right: '15px', top: '25px', color: '#BABBBE', 
-                                            background: '#134DDF', height: '20px', minWidth: '20px', borderRadius: '50%', 
+                                        style={{ fontSize: "16px", position: 'relative', right: '15px', top: '20px', color: '#BABBBE', 
+                                            background: '#36383D', height: '20px', minWidth: '20px', borderRadius: '50%', 
                                             paddingLeft: '2px', paddingTop: '2px' }}>
                                         volume_up
                                     </i>
@@ -211,17 +220,23 @@ const RoomListItem = React.memo((room) => {
 
                             <div className="text-white px-2 font-bold tracking-wide text-xs pointer" 
                                 style={{ whiteSpace: 'nowrap', fontSize: '14px', minHeight: '30px'}}
-                                onClick={(e) => {
-                                    clickFunc(e)
-                                }}
                             >   
-                                {roomName}
-
+                                <span 
+                                    onClick={(e) => {
+                                        startVideo(e, room.rid)
+                                    }}
+                                >
+                                    {roomName}
+                                </span>
+                                
                                 {
                                      hoverState &&
                                      <i 
                                         className="material-icons md-light md-inactive ml-2"
                                         style={{fontSize: '14px'}}
+                                        onClick={(e) => {
+                                            toggleEditRoomName(e)
+                                        }}
                                     >
                                         edit
                                     </i>
@@ -279,14 +294,20 @@ const RoomListItem = React.memo((room) => {
                                         </div>
                                     </div>
                                 }
-                                <button className="text-white focus:outline-none btn-join-room" 
-                                    style={{width: '60px', fontSize: '14px'}}
-                                    onClick={(e) => {
-                                        startVideo(e,room.rid);
-                                    }}
-                                >
-                                    Join
-                                </button>
+
+                                {
+                                    (!(state.usersInRoom[room.rid]) ||
+                                    !(state.usersInRoom[room.rid].includes(state.userProfileData.uid))) && 
+                                    <button className="text-white focus:outline-none bg-light-blue btn-join-room" 
+                                        style={{width: '60px', fontSize: '14px'}}
+                                        onClick={(e) => {
+                                            startVideo(e,room.rid);
+                                        }}
+                                    >
+                                        Join
+                                    </button>
+                                }
+                                
 
                                 <button className="text-gray-300 hover:text-indigo-500 px-1 focus:outline-none"
                                     onClick={() => {
@@ -295,27 +316,6 @@ const RoomListItem = React.memo((room) => {
                                 >
                                     <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}>delete_forever</i>
                                 </button>
-                                {
-                                    showChatModal &&
-                                    <div className="items-center absolute rounded-lg bg-black mx-1 p-1 py-1" style={customChatStyle}>
-                                        <div className="flex w-full justify-end">
-                                            <i className="material-icons text-white hover:bg-gray-900 md-light md-inactive" style={{ fontSize: "20px", margin: "0" }} onClick={() => {
-                                                toggleShowMenu(false)
-                                                toggleshowChatModal(showChatModal => !showChatModal)
-                                            }}>close</i>
-                                        </div>
-                                        <h4 className="font-bold text-xl text-gray-400 text-center mb-1"> Messenger </h4>
-                                        <div className="flex justify-start bg-black p-2 pl-1">
-                                            <div className="text-white px-1 font-bold tracking-wide text-xs">
-                                                {roomName}
-                                            </div>
-                                        </div>
-                                        <input
-                                            placeholder='Send Message'
-                                            className="w-full shadow appearance-none border rounded py-1 px-2 text-gray-900 bg-gray-200"
-                                        />
-                                    </div>
-                                }
                             </div>    
                         }
                         
@@ -323,26 +323,27 @@ const RoomListItem = React.memo((room) => {
 
 
             }
-             <div className="flex" 
-                style={{paddingLeft: '60px', position: 'relative', top: '-10px'}}
-                onClick={(e) => {
-                    //handleClick(e)
-                }}
-            >   
-                {
-                    (state.usersInRoom[room.rid] || []).map((uid) => 
-                        
-                        <div key={uid} style={{width: '30px', marginRight: '10px'}}>
+            {
+                (state.usersInRoom[room.rid] || []).length > 0 &&
+                <div className="flex px-3 p-2" 
+                    style={{}}
+                >   
+                    {
+                        (state.usersInRoom[room.rid] || []).map((uid) => 
                             
-                            <img src={
-                                state.currentTeam.users.find(user => user.uid === uid).avatar
+                            <div key={uid} style={{width: '25px', marginRight: '10px'}}>
                                 
-                            } style={{width: '100%', borderRadius: '15px'}} />
-                            
-                        </div>
-                    )
-                }
-            </div>
+                                <img src={
+                                    state.currentTeam.users.find(user => user.uid === uid).avatar
+                                    
+                                } style={{width: '100%', borderRadius: '12px'}} />
+                                
+                            </div>
+                        )
+                    }
+                </div>
+            }
+            
         </div>
     )
 })

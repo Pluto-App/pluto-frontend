@@ -26,7 +26,7 @@ const ScreenShare = React.memo((props) => {
 
     return (
 
-        <div className="font-sans" style={{background: '#2F3136'}}>
+        <div className="font-sans" style={{background: '#2F3136', height: '100vh'}}>
             <div className="flex">
               <div className="text-white flex-1 p-0 w-100">
                 <InitScreenShareCanvas

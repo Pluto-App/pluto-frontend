@@ -310,15 +310,15 @@ function createWindow() {
     videoCallWindow.on('closed', () => {
 
        try{
+          if(initScreenShareWindow)
+            initScreenShareWindow.close();
+
           if(screenShareControlsWindow)
             screenShareControlsWindow.close();
-        } catch (error) {
-          console.error(error);
-        }
 
-       try{
           if(streamScreenShareWindow)
             streamScreenShareWindow.close();
+
         } catch (error) {
           console.error(error);
         }
@@ -399,7 +399,7 @@ function createWindow() {
     })
 
     if (isDev) {
-      // initScreenShareWindow.webContents.openDevTools();
+      initScreenShareWindow.webContents.openDevTools();
     }
   })
 

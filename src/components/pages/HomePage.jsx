@@ -240,10 +240,9 @@ export default function HomePage() {
                 <div className="pin-b pb-4 center" style={{position: 'absolute', bottom: '20px', left: 'calc(100vw/2 - 120px)'}}>
                     <div className="mt-4 px-3 w-full" style={{width: '240px', display: 'inline-block'}}>
                         <button
-                            className="w-full rounded-full flex justify-center items-center bg-purple
-                            text-white font-bold py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
+                            className="w-full rounded-full flex justify-center items-center bg-grey py-2 px-4 mt-2"
                             type="button"
-                            style={{ transition: "all .60s ease" }}
+                            style={{ transition: "all .60s ease", color: '#BABBBE' }}
                             onClick={() => {
                                 togglecopySuccess(false);
                                 toggleshowInviteModal(showInviteModal => !showInviteModal)
@@ -259,18 +258,26 @@ export default function HomePage() {
                         <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={inviteModalStyle}
                             onClick={(e) => {
                             }}>
-                            <h4 className="font-bold text-xl text-gray-600 text-center mb-2"> Add Teammates</h4>
-                            <p className="text-purple-700 mb-3 text-center">
+                            <div class="flex w-full">
+                                <h4 className="font-bold text-xl text-gray-600 text-center mb-2 flex-1"> Add Teammates</h4>
+                                <h4
+                                className="text-gray-600 text-center px-2 pointer"
+                                onClick={() => toggleshowInviteModal(showInviteModal => !showInviteModal)}
+                                > 
+                                    X 
+                                </h4>
+                            </div>
+                            <p className="text-gray-800 mb-3 text-center">
                                 Share this code to add teammates to this team.
-                        </p>
+                            </p>
                             <textarea
                                 rows='3'
                                 id="InviteModalLink"
-                                value={'Team Code: ' + state.currentTeam.tid + '\n' + 'Download App: https://joinpluto.netlify.app/'}
+                                value={'Team Code: ' + state.currentTeam.tid + '\n' + 'Download App: https://github.com/Pluto-App/pluto-desktop-releases/releases'}
                                 style={{ resize: 'none'}}
-                                className="w-full shadow appearance-none border text-purple-700 rounded py-1 px-1 bg-purple-200" />
+                                className="w-full shadow appearance-none border text-gray-200 rounded py-1 px-1 bg-gray-600" />
                             <button
-                                className="bg-purple-700 w-full rounded-sm flex justify-center text-white items-center hover:bg-purple-500
+                                className="bg-light-blue w-full rounded-sm flex justify-center text-white items-center
                                 text-white font-bold py-2 px-2 mt-2 focus:outline-none focus:shadow-outline"
                                 type="button"
                                 style={{ transition: "all .60s ease" }}
