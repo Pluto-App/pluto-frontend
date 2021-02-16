@@ -132,6 +132,12 @@ const RoomListItem = React.memo((room) => {
         history.push("/room-profile")
     }
 
+    const userAvatar = (uid) => {
+        var userInfo = state.currentTeam.users.find(user => user.uid === uid);
+
+        return userInfo ? userInfo.avatar : '';
+    }
+
     return (
         <div id={room.id} className="room-list-item"
             onMouseEnter={(e) => {
@@ -334,8 +340,7 @@ const RoomListItem = React.memo((room) => {
                             <div key={uid} style={{width: '25px', marginRight: '10px'}}>
                                 
                                 <img src={
-                                    state.currentTeam.users.find(user => user.uid === uid).avatar
-                                    
+                                    userAvatar(uid)
                                 } style={{width: '100%', borderRadius: '12px'}} />
                                 
                             </div>

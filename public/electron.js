@@ -210,10 +210,10 @@ function createWindow() {
     await systemPreferences.askForMediaAccess('camera')
 
     if(systemPreferences.getMediaAccessStatus('camera') != 'granted')
-      systemPreferences.askForMediaAccess('camera')
+      await systemPreferences.askForMediaAccess('camera')
 
     if(systemPreferences.getMediaAccessStatus('microphone') != 'granted')
-      systemPreferences.askForMediaAccess('microphone')
+      await systemPreferences.askForMediaAccess('microphone')
   })
 
 
@@ -340,7 +340,7 @@ function createWindow() {
     })
 
     if (isDev) {
-       videoCallWindow.webContents.openDevTools();
+       // videoCallWindow.webContents.openDevTools();
     }
   });
 
@@ -412,7 +412,7 @@ function createWindow() {
     })
 
     if (isDev) {
-      initScreenShareWindow.webContents.openDevTools();
+      // initScreenShareWindow.webContents.openDevTools();
     }
   })
 
@@ -461,7 +461,7 @@ function createWindow() {
     })
 
     if (isDev) {
-      streamScreenShareWindow.webContents.openDevTools();
+      // streamScreenShareWindow.webContents.openDevTools();
     }
 
   })
