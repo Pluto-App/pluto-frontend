@@ -37,7 +37,6 @@ const runApplescript = require('run-applescript');
 
 const minWidth = 350;
 const minHeight = 400;
-//const minLoginHeight = 500;
 
 const robotKeyMap = {
   'arrowup'     : 'up',
@@ -194,15 +193,18 @@ function createWindow() {
 
   ipcMain.on('logout', (event, arg) => {
     mainWindow.webContents.send('logout', {});
-    mainWindow.setSize(minWidth, minHeight)
+    mainWindow.setSize(minWidth, minHeight);
+    mainWindow.setMinimumSize(minWidth, 700)
   })
 
   ipcMain.on('resize-login', (event, arg) => {
-    mainWindow.setSize(minWidth, minHeight)
+    mainWindow.setSize(minWidth, minHeight);
+    mainWindow.setMinimumSize(minWidth, 700)
   })
 
   ipcMain.on('resize-normal', (event, arg) => {
-    mainWindow.setSize(minWidth, 700)
+    mainWindow.setSize(minWidth, 700);
+    mainWindow.setMinimumSize(minWidth, 700);
     mainWindow.center();
   })
 
@@ -298,8 +300,8 @@ function createWindow() {
       frame: false,
       title: "VideoWindow",
       alwaysOnTop: true,
-      x: sWidth - 270,
-      y: sHeight - 870,
+      x: sWidth - 230,
+      y: sHeight,
       webPreferences: {
         nodeIntegration: true,
         plugins: true,
@@ -367,8 +369,14 @@ function createWindow() {
     if(videoCallWindow){
       var resizeDisabled = videoCallWindow.isResizable() == true;
 
+      var bounds = videoCallWindow.getBounds();
       videoCallWindow.setMinimumSize(videoCallWindow.getSize()[0], height);
-      videoCallWindow.setSize(videoCallWindow.getSize()[0], height);
+
+      videoCallWindow.setBounds({
+        ...bounds,
+        height: height,
+        y: sHeight - height
+      });
     }
   })
 
