@@ -97,7 +97,7 @@ export default function HomePage() {
 
     useEffect(() => {
 
-        actions.user.getLoggedInUser({authData: authData})
+        actions.user.getLoggedInUser({authData: authData, setAuthData: setAuthData})
 
     }, [authData])
 
@@ -145,7 +145,8 @@ export default function HomePage() {
             name: roomname
         }
 
-        actions.room.addRoom({authData: authData, roomData: roomData});
+        await actions.room.addRoom({authData: authData, roomData: roomData});
+        actions.app.emitUpdateTeam();
     }
 
     const handleChange = async (e) => {

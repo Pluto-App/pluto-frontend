@@ -72,11 +72,11 @@ const RoomListItem = React.memo((room) => {
         if(localStorage.getItem('call_channel_id'))
             await actions.app.clearVideoCallData();
 
-        let channel_id = room_rid;
+        let channel_id = 'rvc-' + room_rid;
         localStorage.setItem('call_channel_id', channel_id);
 
         socket_live.emit(events.roomVideoCall, {
-            channel_id: state.currentTeam.tid,
+            channel_id: 't-' + state.currentTeam.tid,
             call_channel_id: channel_id,
             room_id: room.id,
             room_rid: room.rid,
@@ -84,12 +84,6 @@ const RoomListItem = React.memo((room) => {
         })
 
         window.require("electron").ipcRenderer.send('init-video-call-window', channel_id);
-        
-        // for(room of state.currentTeam.rooms){
-        //     actions.room.getUsersInRoom({authData: authData, roomId: room.id, roomRid: room.rid});    
-        // }
-
-        //ToastNotification('success', `Initiated VC in room ${room.name} 📷`);
     }
 
     const updateRoom = async (name) => {

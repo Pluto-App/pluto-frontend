@@ -215,6 +215,7 @@ const VideoCallCanvas = React.memo((props) => {
         		AgoraClient.publish(localStream, err => {
           			alert("Publish local stream error: " + err);
         		})
+            actions.app.emitUpdateTeam();
         	},
           	err => {
 
@@ -427,7 +428,7 @@ const VideoCallCanvas = React.memo((props) => {
     }
 
     try {
-    		
+    		actions.app.emitUpdateTeam();
     		AgoraClient && AgoraClient.unpublish(localStream)
       	localStream && localStream.close()
       

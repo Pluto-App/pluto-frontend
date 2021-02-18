@@ -18,7 +18,7 @@ export const getTeam = async ({state, effects}, {authData, team_id}) => {
 
   localStorage.setItem('current_team',state.currentTeam.tid);
   localStorage.setItem('current_team_id',state.currentTeam.id);
-  socket_live.emit(events.joinRoom, { room: state.currentTeam.tid, user_id: state.userProfileData.id});
+  socket_live.emit(events.joinRoom, { room: 't-' + state.currentTeam.tid, user_id: state.userProfileData.id});
 
 	state.loadingTeam = false
   state.teamUpdateReq = false

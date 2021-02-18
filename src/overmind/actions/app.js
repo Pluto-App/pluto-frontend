@@ -171,7 +171,7 @@ export const clearVideoCallData = async ({ state, effect }) => {
 	socket_live.emit(events.exitRoomVideoCall, 
 		{ 
 			tid: curent_team,
-			rid: call_channel_id, 
+			rid: call_channel_id.split('-')[1], 
 			uid: state.userProfileData.uid 
 		}
 	);

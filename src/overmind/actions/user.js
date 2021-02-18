@@ -1,7 +1,7 @@
 
 import { socket_live, events } from '../../components/sockets'
 
-export const getLoggedInUser = async ({state, actions, effects}, {authData: authData, params: params}) => {
+export const getLoggedInUser = async ({state, actions, effects}, {authData: authData, params: params, setAuthData: setAuthData}) => {
 
   	state.loadingUser = true
     var userData = {}
@@ -9,21 +9,31 @@ export const getLoggedInUser = async ({state, actions, effects}, {authData: auth
   	try {
 
   		userData = await effects.user.getUser(authData, params)
-      actions.userpreference.getUserPreference({ authData: authData});
+      
+      if(userData.id){
+        actions.userpreference.getUserPreference({ authData: authData});
 
-	  	socket_live.emit('join_room', userData.uid);
+        socket_live.emit('join_room', userData.uid);
 
-		  state.userProfileData = userData;
+        state.userProfileData = userData;
 
-      if(userData.teamIds){
-        if(userData.teamIds.length == 0){
-          state.noTeams = true;  
-        } else {
-          state.noTeams = false;
-          state.currentTeamId = userData.teamIds[0];
+        if(userData.teamIds){
+          if(userData.teamIds.length == 0){
+            state.noTeams = true;  
+          } else {
+            state.noTeams = false;
+            state.currentTeamId = userData.teamIds[0];
+          }
+        }  
+      } else {
+
+        if(setAuthData) {
+          actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+              window.require("electron").ipcRenderer.send('logout');
+          });  
         }
       }
-		  
+      
 	  	state.loadingUser = false
 
   	} catch (error) {

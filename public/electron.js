@@ -34,7 +34,7 @@ const runApplescript = require('run-applescript');
 // TODO Now we can add external window for settings.
 // TODO Add support for App Signing.
 
-const minWidth = 330;
+const minWidth = 350;
 const minHeight = 400;
 //const minLoginHeight = 500;
 
@@ -806,6 +806,10 @@ autoUpdater.autoInstallOnAppQuit = true;
 
 autoUpdater.logger = require("electron-log")
 autoUpdater.logger.transports.file.level = "info";
+
+autoUpdater.on('update-downloaded', () => {
+  dialog.showMessageBox(mainWindow, {message: 'A new update has been downloaded. Restart the app to install.'});
+})
 
 app.on('ready', () => {
   //autoUpdater.checkForUpdates();

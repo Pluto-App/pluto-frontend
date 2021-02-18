@@ -73,7 +73,7 @@ const UserListItem = React.memo((user) => {
 
         if (receiver_uid !== state.userProfileData.uid) {
 
-            let channel_id = md5(receiver_uid + state.userProfileData.uid);
+            let channel_id = 'uvc-'+ receiver_uid + '-' + state.userProfileData.uid;
 
             localStorage.setItem('call_channel_id', channel_id);
 
@@ -82,10 +82,8 @@ const UserListItem = React.memo((user) => {
                 receiver: user.uid,
                 sender: state.userProfileData.uid
             });
-            socket_live.emit('join_room',channel_id);
 
             window.require("electron").ipcRenderer.send('init-video-call-window', channel_id);
-            //ToastNotification('success', `Initiated VC with ${user.name} 📷`);
 
         } else {
             ToastNotification('error', "Can't start VC with self 😠")
@@ -119,15 +117,27 @@ const UserListItem = React.memo((user) => {
                 </div>
                 <div 
                     className="text-white px-1 font-bold tracking-wide text-xs pointer" 
-                    data-tip={user.uid != state.userProfileData.uid ? 'Click to Talk!' : ''}
+                    data-tip={
+                        user.uid != state.userProfileData.uid && !state.currentTeam.users_in_call[user.id] ? 
+                        'Click to Talk!' : ''
+                    }
                     data-place="left"
                     style={{minWidth: '100px'}}
                     onClick={(e) => {
-                        startVideo(e, user.uid);
+                        if(!state.currentTeam.users_in_call[user.id])
+                            startVideo(e, user.uid);
                     }}
                 >
                     {user.name}
-                    {user.uid == state.userProfileData.uid && ' *'}
+                    {user.uid == state.userProfileData.uid && ' •'}
+
+                    {
+                        state.currentTeam.users_in_call[user.id] && 
+                        <i className="material-icons md-light md-inactive" 
+                            style={{ fontSize: "16px", paddingLeft: '2px' }}>
+                            call
+                        </i>
+                    }
                 </div>
             </div>
             <div 
