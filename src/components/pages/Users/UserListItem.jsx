@@ -118,13 +118,14 @@ const UserListItem = React.memo((user) => {
                 <div 
                     className="text-white px-1 font-bold tracking-wide text-xs pointer" 
                     data-tip={
-                        user.uid != state.userProfileData.uid && !state.currentTeam.users_in_call[user.id] ? 
+                        user.uid != state.userProfileData.uid && !state.currentTeam.users_in_call[user.id] && 
+                            !state.currentTeam.users_in_call[state.userProfileData.id] ? 
                         'Click to Talk!' : ''
                     }
                     data-place="left"
                     style={{minWidth: '100px'}}
                     onClick={(e) => {
-                        if(!state.currentTeam.users_in_call[user.id])
+                        if(!state.currentTeam.users_in_call[user.id] && !state.currentTeam.users_in_call[state.userProfileData.id])
                             startVideo(e, user.uid);
                     }}
                 >

@@ -428,7 +428,6 @@ const VideoCallCanvas = React.memo((props) => {
     }
 
     try {
-    		actions.app.emitUpdateTeam();
     		AgoraClient && AgoraClient.unpublish(localStream)
       	localStream && localStream.close()
       
@@ -442,6 +441,7 @@ const VideoCallCanvas = React.memo((props) => {
     
     finally {
 
+      actions.app.emitUpdateTeam();
     	actions.app.clearVideoCallData();
     	var window = remote.getCurrentWindow();
     	window.close();

@@ -208,9 +208,6 @@ function createWindow() {
 
   ipcMain.on('media-access', async (event, arg) => {
 
-    console.log('asking perm!');
-    await systemPreferences.askForMediaAccess('camera')
-
     if(systemPreferences.getMediaAccessStatus('camera') != 'granted')
       await systemPreferences.askForMediaAccess('camera')
 
