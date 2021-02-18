@@ -13,6 +13,7 @@ if (isDev) {
 }
 
 let user32;
+let winurl;
 
 let mainWindow
 let videoCallWindow
@@ -72,7 +73,7 @@ if (isWindows) {
   else
     _path = path.join(app.getAppPath(), '..', 'src/dlls/BrowserURLs.dll');
 
-  let winurl = new ffi.Library(_path, {
+  winurl = new ffi.Library(_path, {
     FetchChromeURL: ['string', ['pointer']],
     FetchFirefoxURL: ['string', ['pointer']],
     FetchEdgeURL: ['string', ['pointer']]
