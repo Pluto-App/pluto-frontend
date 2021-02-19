@@ -58,6 +58,8 @@ var currentMods = [];
 var primaryDisplay;
 var sWidth;
 var sHeight;
+var compactVideoWidth = 170;
+var previousVideoBounds;
 var scaleFactor = 1;
 
 if (isWindows) {
@@ -193,13 +195,11 @@ function createWindow() {
 
   ipcMain.on('logout', (event, arg) => {
     mainWindow.webContents.send('logout', {});
-    mainWindow.setSize(minWidth, minHeight);
-    mainWindow.setMinimumSize(minWidth, 700)
   })
 
   ipcMain.on('resize-login', (event, arg) => {
+    mainWindow.setMinimumSize(minWidth, minHeight);
     mainWindow.setSize(minWidth, minHeight);
-    mainWindow.setMinimumSize(minWidth, 700)
   })
 
   ipcMain.on('resize-normal', (event, arg) => {
@@ -294,7 +294,7 @@ function createWindow() {
     // create the window
     videoCallWindow = new BrowserWindow({
       show: true,
-      width: 200,
+      width: compactVideoWidth,
       height: 130,
       resizable: false,
       frame: false,
@@ -341,13 +341,14 @@ function createWindow() {
     })
 
     if (isDev) {
-       // videoCallWindow.webContents.openDevTools();
+       videoCallWindow.webContents.openDevTools();
     }
   });
 
   ipcMain.on('expand-video-call-window', (event, data) => {
 
     if (videoCallWindow) {
+      previousVideoBounds = videoCallWindow.getBounds();
       videoCallWindow.setPosition(0,0);
       videoCallWindow.setSize(sWidth - 100, sHeight - 100);
       videoCallWindow.setResizable(true);
@@ -358,8 +359,11 @@ function createWindow() {
   ipcMain.on('collapse-video-call-window', (event, height) => {
 
     if (videoCallWindow) {
-      videoCallWindow.setPosition(sWidth - 270, sHeight - 870);
-      videoCallWindow.setSize(200, height);
+      videoCallWindow.setBounds({
+        ...previousVideoBounds,
+        height: height
+      })
+
       videoCallWindow.setResizable(false);
       videoCallWindow.setAlwaysOnTop(true,'pop-up-menu');
     }
@@ -371,11 +375,12 @@ function createWindow() {
 
       var bounds = videoCallWindow.getBounds();
       videoCallWindow.setMinimumSize(videoCallWindow.getSize()[0], height);
+      var newY = bounds.y - (height - bounds.height) ;
 
       videoCallWindow.setBounds({
         ...bounds,
         height: height,
-        y: sHeight - height
+        y: newY
       });
     }
   })

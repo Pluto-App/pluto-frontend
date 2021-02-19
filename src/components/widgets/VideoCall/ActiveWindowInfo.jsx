@@ -20,22 +20,23 @@ const ActiveWindowInfo = React.memo((props) => {
 
   useEffect(() => {
 
-    if(props.userId && state.currentTeam.users){
-        var userObj = state.currentTeam.users.find(u => u.id === props.userId);
-        setActiveAppInfo(appLogo(state.usersActiveWindows[props.userId], userObj ? userObj.UserPreference : undefined));    
+    if(props.userId && state.teamMembers){
+        var userObj = state.teamMembersMap[props.userId];
+        console.log(userObj);
+        setActiveAppInfo(appLogo(state.usersActiveWindows[props.userId], userObj ? userObj.user_preference : undefined));    
     }
 
   },[state.usersActiveWindows[props.userId]])
 
 
   return (
-    <div className="pointer items-center flex overflow-hidden" 
-        style={{ display: 'table', marginLeft: '10px', height: '35px', width: '35px' }}
+    <div className="active-window-info pointer items-center flex overflow-hidden" 
+        style={{ display: 'table', marginLeft: '5px', height: '30px', width: '30px' }}
       > 
         {
           activeAppInfo.logo?
           <a 
-            style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: props.videoOn ? '40px' : '50px' }}
+            style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: props.videoOn ? '30px' : '50px' }}
             onClick={(e) => {
               activeAppClick( e, activeAppInfo.url )
             }}

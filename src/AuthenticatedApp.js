@@ -53,6 +53,13 @@ export default function App() {
   const { state, actions } = useOvermind();
   const { authData, setAuthData } = useContext(AuthContext);
 
+  const logout = () => {
+
+    actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+      window.require("electron").ipcRenderer.send('resize-login');
+    });
+  }
+
   useEffect(() => {
       if(state.error && state.error.message){
         
@@ -60,10 +67,6 @@ export default function App() {
           alert(state.error);
           console.log(state.error);
         }
-
-        actions.auth.logOut({setAuthData: setAuthData}).then(() => {
-            window.require("electron").ipcRenderer.send('logout');
-        });
       }
 
   }, [state.error])
@@ -72,6 +75,10 @@ export default function App() {
     () => {
 
       loadProgressBar()
+
+      window.require("electron").ipcRenderer.on('logout', function (e, args) {
+        logout();
+      });
 
       socket_live.on(events.online, (user_id) => {
 
@@ -111,7 +118,7 @@ export default function App() {
       });
 
       socket_live.on(events.updateTeam, (data) => {
-        actions.team.getTeam({authData: authData, team_id: state.currentTeam.id})
+        setTimeout( () => {actions.team.getTeam({authData: authData, team_id: state.currentTeam.id})}, 1000);
       });
 
       socket_live.on(events.updateTeamMembers, (data) => {

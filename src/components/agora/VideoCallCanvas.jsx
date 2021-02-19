@@ -332,7 +332,7 @@ const VideoCallCanvas = React.memo((props) => {
       let videoElements = document.getElementsByClassName('ag-video-on').length
       let userDetailsElements = document.getElementsByClassName('user-details').length
 
-      let height = 70 + (videoElements*148) + (userDetailsElements*60);
+      let height = 70 + (videoElements*123) + (userDetailsElements*60);
 
       window.require("electron").ipcRenderer.send('set-video-player-height', height);
     }
@@ -607,11 +607,11 @@ const VideoCallCanvas = React.memo((props) => {
                   className="ag-item-info"
                   style={{ 
                     display: stream.isVideoOn() ? 'flex' : 'none',
-                    bottom: state.videoCallCompactMode ? '10px' : '30px',
-                    right: state.videoCallCompactMode ? '10px' : '30px'
+                    bottom: state.videoCallCompactMode ? '5px' : '30px',
+                    right: state.videoCallCompactMode ? '5px' : '30px'
                   }}
                 >
-                  <div style={{ display: "table", height: '40px'}}>
+                  <div style={{ display: "table", height: '30px'}}>
                     <span className="text-gray-200 px-1" style={{ display: 'table-cell', verticalAlign: 'middle'}}>
                       {
                         state.teamMembers.find(user => user.id === stream.getId()) ?
@@ -620,7 +620,7 @@ const VideoCallCanvas = React.memo((props) => {
                       }
                     </span>
                   </div>
-                  <div className="pointer items-center h-6 w-6 flex overflow-hidden" 
+                  <div className="pointer items-center flex overflow-hidden" 
                     style={{ display: 'table'}}
                   >
                       <ActiveWindowInfo userId={stream.getId()} videoOn={true}/>
@@ -641,7 +641,7 @@ const VideoCallCanvas = React.memo((props) => {
                       style={{display: 'table-cell', verticalAlign: 'middle', height: '50px'}}
                     >
                       <img 
-                        style={{height: '35px'}}
+                        style={{height: '30px'}}
                         src={
                           state.teamMembers.find(user => user.id === stream.getId()) ?
                           state.teamMembers.find(user => user.id === stream.getId()).avatar

@@ -1,3 +1,4 @@
+
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef, useContext } from 'react'
 import { useOvermind } from '../../overmind'
@@ -120,13 +121,6 @@ export default function HomePage() {
             if(state.currentTeamId){
                 actions.team.getTeam({authData: authData, team_id: state.currentTeamId})    
             }    
-        });
-
-        window.require("electron").ipcRenderer.on('logout', function (e, args) {
-
-            actions.auth.logOut({setAuthData: setAuthData}).then(() => {
-                 window.require("electron").ipcRenderer.send('resize-login');
-            });
         });
 
     }, [])
