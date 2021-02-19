@@ -34,7 +34,12 @@ const VideoCallCanvas = React.memo((props) => {
   streamListRef.current = streamList;
 
   const [usersInCallIds, setUsersInCallIds] = useState([]);
+  const usersInCallIdsRef = useRef();
+  usersInCallIdsRef.current = usersInCallIds;
+
   const [usersInCall, setUsersInCall] = useState({});
+  const usersInCallRef = useRef();
+  usersInCallRef.current = usersInCall;
 
 	const [ userData, setUserData ] = useState({});
   const [ numActiveVideo, setNumActiveVideo ] = useState(0);
@@ -263,11 +268,8 @@ const VideoCallCanvas = React.memo((props) => {
 
       if(usersInCallIds){
         for (var userId of usersInCallIds){
-          if(!usersInCall[userId]){
-            console.log(usersInCall);
-            console.log('hello!');
-            //usersInCall[userId] = await actions.user.getUser({authData: authData, user_id: streamId});
-            setUsersInCall({...usersInCall, [userId]: await actions.user.getUser({authData: authData, user_id: userId})})
+          if(!usersInCallRef.current[userId]){
+            setUsersInCall({...usersInCallRef.current, [userId]: await actions.user.getUser({authData: authData, user_id: userId})})
           }
         }  
       }
@@ -287,8 +289,9 @@ const VideoCallCanvas = React.memo((props) => {
      	let streamId = stream.getId()
      	let elementID = 'ag-item-' + streamId;
 
-      if( !usersInCallIds.includes(streamId) ){
-        setUsersInCallIds(usersInCallIds.concat([streamId])); 
+      if( !usersInCallIdsRef.current.includes(streamId) ){
+        var tempUsersInCallIds = usersInCallIdsRef.current.concat([streamId]);
+        setUsersInCallIds(tempUsersInCallIds); 
       }
 
       if(stream.isPlaying())
