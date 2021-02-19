@@ -82,13 +82,13 @@ export default function App() {
 
       socket_live.on(events.online, (user_id) => {
 
-        if(!state.teamMembersMap[user_id].online)
+        if(!state.teamMembersMap[user_id] || !state.teamMembersMap[user_id].online)
           actions.user.getTeamMembers({authData: authData, teamId: state.currentTeam.id});
       });
 
       socket_live.on(events.offline, (user_id) => {
 
-        if(state.teamMembersMap[user_id].online)
+        if(!state.teamMembersMap[user_id] || state.teamMembersMap[user_id].online)
           actions.user.getTeamMembers({authData: authData, teamId: state.currentTeam.id});
 
       });
