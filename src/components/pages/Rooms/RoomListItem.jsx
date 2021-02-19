@@ -12,13 +12,14 @@ import { appLogo } from '../../../utils/AppLogo';
 
 import { AuthContext } from '../../../context/AuthContext'
 
-const RoomListItem = React.memo((room) => {
+const RoomListItem = React.memo((props) => {
 
     // TODO Notify when new room created. Add to list room info.  
     let history = useHistory();
     const { authData } = useContext(AuthContext);
 
     const { state, actions } = useOvermind();
+    const [room, setRoom] = useState(props.room);
 
     const [showMenu, toggleShowMenu] = useState(false);
     const [startedEditing, updateEditStatus] = useState(false);
@@ -27,16 +28,12 @@ const RoomListItem = React.memo((room) => {
     const [activeAppInfo, setActiveAppInfo] = useState({});
 
     useEffect(() => {
-        actions.room.getUsersInRoom({authData: authData, roomId: room.id, roomRid: room.rid});
-    },[])
-
-    useEffect(() => {
 
         const setActiveWin = setInterval(async () => {
             
-            var usersInRoom = state.usersInRoom[room.rid] || [];
+            var usersInRoom = room.users || [];
             var userUid = usersInRoom[Math.floor(Math.random() * usersInRoom.length)];
-            var user = state.currentTeam.users.find(user => user.uid === userUid);
+            var user = state.teamMembers.find(user => user.uid === userUid);
             var appData = state.usersActiveWindows[user ? user.id : undefined];
 
             setActiveAppInfo(appLogo(appData, state.userPreference));
@@ -45,6 +42,12 @@ const RoomListItem = React.memo((room) => {
         return () => clearInterval(setActiveWin);
 
     },[])
+
+    useEffect(() => {
+
+        setRoom(props.room);
+        
+    },[ props.room ])
 
     const toggleEditRoomName = (e) => {
         updateEditStatus(startedEditing => !startedEditing)
@@ -98,8 +101,6 @@ const RoomListItem = React.memo((room) => {
         
         var roomData = {id: room.id}
         await actions.room.deleteRoom({ authData: authData, roomData: roomData})
-
-        //ToastNotification('error', "Only Owners can remove")
     }
 
     const handleClick = async (e) => {
@@ -127,7 +128,7 @@ const RoomListItem = React.memo((room) => {
     }
 
     const userAvatar = (uid) => {
-        var userInfo = state.currentTeam.users.find(user => user.uid === uid);
+        var userInfo = state.teamMembers.find(user => user.uid === uid);
 
         return userInfo ? userInfo.avatar : '';
     }
@@ -176,13 +177,13 @@ const RoomListItem = React.memo((room) => {
                     :
                     <div className="flex py-0 justify-between p-1" id={room.id} 
                         style={{ 
-                            background: (!(state.usersInRoom[room.rid]) ||
-                                                !(state.usersInRoom[room.rid].includes(state.userProfileData.uid))) ? '' : '#202225'
+                            background: (!room.users ||
+                                                !(room.users.includes(state.userProfileData.uid))) ? '' : '#202225'
                         }}
                     >
                         <div className="flex justify-start p-2" style={{ width: '100%'}}>
                             {
-                                Object.keys(state.usersInRoom[room.rid] || []).length > 0 && activeAppInfo.logo ?
+                                Object.keys(room.users || []).length > 0 && activeAppInfo.logo ?
 
                                 <div className="flex" 
                                     style={{
@@ -296,8 +297,8 @@ const RoomListItem = React.memo((room) => {
                                 }
 
                                 {
-                                    (!(state.usersInRoom[room.rid]) ||
-                                    !(state.usersInRoom[room.rid].includes(state.userProfileData.uid))) && 
+                                    (!room.users ||
+                                    !(room.users.includes(state.userProfileData.uid))) &&
                                     <button className="text-white focus:outline-none bg-light-blue btn-join-room" 
                                         style={{width: '60px', fontSize: '14px'}}
                                         onClick={(e) => {
@@ -324,12 +325,12 @@ const RoomListItem = React.memo((room) => {
 
             }
             {
-                (state.usersInRoom[room.rid] || []).length > 0 &&
+                (room.users || []).length > 0 &&
                 <div className="flex px-3 p-2" 
                     style={{}}
                 >   
                     {
-                        (state.usersInRoom[room.rid] || []).map((uid) => 
+                        (room.users || []).map((uid) => 
                             
                             <div key={uid} style={{width: '25px', marginRight: '10px'}}>
                                 

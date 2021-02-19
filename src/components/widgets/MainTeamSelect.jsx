@@ -1,12 +1,15 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useOvermind } from '../../overmind'
 import { useHistory } from "react-router-dom"
+import { AuthContext } from '../../context/AuthContext'
 
 const MainBar = React.memo((props) => {
 
     let history = useHistory();
     const { state, actions } = useOvermind();
+
+    const { authData } = useContext(AuthContext);
 
     const [showOptions, setShowOptions] = useState(false);
 
@@ -49,7 +52,7 @@ const MainBar = React.memo((props) => {
                                 <div key={team.id} className="main-team-select-option"
                                     onClick={(e) => {
                                         e.preventDefault()
-                                        actions.team.updateCurrentTeam({team_id: team.id}).then(() => {
+                                        actions.team.getTeam({team_id: team.id, authData: authData}).then(() => {
                                             setShowOptions(false);
                                             history.push('/')
                                         })

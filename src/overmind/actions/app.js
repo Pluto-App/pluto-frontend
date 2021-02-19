@@ -27,17 +27,6 @@ export const setAddingRoom = async ({ state, effect }, value) => {
     state.addingRoom = value;
 }
 
-export const addOnlineUser = async ({ state, effect }, user_id) => {
-	
-	state.onlineUsers[user_id] = true;
-}
-
-export const removeOnlineUser = async ({ state, effect }, user_id) => {
-    
-    delete state.onlineUsers[user_id]; 
-}
-
-
 export const updateUserActiveWindowData = async ({ state, effect }, {user_id, active_window_data}) => {
 
 	state.usersActiveWindows[user_id] = active_window_data;
@@ -63,28 +52,6 @@ export const userVideoCall = async ({ state, effect }, data) => {
 	}
  	
     ToastNotification('success', `Incoming VC`);
-}
-
-export const roomVideoCall = async ({ state, effect }, data) => {
-
-    if(data.room_rid){
-    	if(!state.usersInRoom[data.room_rid])
-    		state.usersInRoom[data.room_rid] = []
-
-    	if(state.usersInRoom[data.room_rid].indexOf(data.user) == -1)
-			state.usersInRoom[data.room_rid].push(data.user);
-    }
-}
-
-export const exitRoomVideoCall = async ({ state, effect }, data) => {
-
-    if(data.rid && data.uid && state.usersInRoom[data.rid]){
-
-    	var elemIndex = state.usersInRoom[data.rid].indexOf(data.uid);
-
-    	if(elemIndex != -1)
-    		state.usersInRoom[data.rid].splice(elemIndex,1)
-    }
 }
 
 export const userScreenShare = async ({ state, effect }, data) => {
@@ -153,6 +120,28 @@ export const setError = async ({ state, effect }, error) => {
 }
 
 export const emitUpdateTeam = async ({ actions, state, effect }) => {
+
+	for( var team of state.userProfileData.teams){
+		socket_live.emit(events.updateTeam, 
+			{ 
+				tid: team.tid
+			}
+		);	
+	}
+}
+
+export const emitUpdateTeamRooms = async ({ actions, state, effect }) => {
+
+	for( var team of state.userProfileData.teams){
+		socket_live.emit(events.updateTeam, 
+			{ 
+				tid: team.tid
+			}
+		);	
+	}
+}
+
+export const emitUpdateTeamMembers = async ({ actions, state, effect }) => {
 
 	for( var team of state.userProfileData.teams){
 		socket_live.emit(events.updateTeam, 

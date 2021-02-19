@@ -614,8 +614,8 @@ const VideoCallCanvas = React.memo((props) => {
                   <div style={{ display: "table", height: '40px'}}>
                     <span className="text-gray-200 px-1" style={{ display: 'table-cell', verticalAlign: 'middle'}}>
                       {
-                        state.currentTeam.users.find(user => user.id === stream.getId()) ?
-                        state.currentTeam.users.find(user => user.id === stream.getId()).name.split(' ')[0]
+                        state.teamMembers.find(user => user.id === stream.getId()) ?
+                        state.teamMembers.find(user => user.id === stream.getId()).name.split(' ')[0]
                         : ''
                       }
                     </span>
@@ -643,8 +643,8 @@ const VideoCallCanvas = React.memo((props) => {
                       <img 
                         style={{height: '35px'}}
                         src={
-                          state.currentTeam.users.find(user => user.id === stream.getId()) ?
-                          state.currentTeam.users.find(user => user.id === stream.getId()).avatar
+                          state.teamMembers.find(user => user.id === stream.getId()) ?
+                          state.teamMembers.find(user => user.id === stream.getId()).avatar
                           : ''
                         } 
                       alt="" />
@@ -655,8 +655,8 @@ const VideoCallCanvas = React.memo((props) => {
                   >
                       <span style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px' }}>
                         {
-                          state.currentTeam.users.find(user => user.id === stream.getId()) ?
-                          state.currentTeam.users.find(user => user.id === stream.getId()).name.split(' ')[0]
+                          state.teamMembers.find(user => user.id === stream.getId()) ?
+                          state.teamMembers.find(user => user.id === stream.getId()).name.split(' ')[0]
                           : ''
                         }
                       </span>

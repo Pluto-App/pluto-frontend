@@ -23,10 +23,8 @@ const RoomList = ((rooms) => {
 
     const roomlist = rooms.map((room) =>
         <RoomListItem
-            id={room.id}
-            rid={room.rid}
-            key={room.id.toString()}
-            name={room.name}
+            room={room}
+            key={room.id}
         />
     )
 
@@ -39,15 +37,10 @@ const RoomList = ((rooms) => {
 
 const MembersList = (
     ({users}) => {
-
         const teamMemberList = Object.entries(users).map(([id, member]) =>
             <UserListItem
-                id={member.id}
-                uid={member.uid}
-                key={member.id.toString()}
-                url={member.avatar}
-                name={member.name}
-                email={member.email}
+                key={member.id}
+                user={member}
             />
         )
 
@@ -209,7 +202,7 @@ export default function HomePage() {
                     <div className="" style={{ minHeight: "80px", maxHeight: "225px", overflowY: "scroll" }}>
                         {
                             !state.loadingCurrentTeam ?
-                                RoomList(state.currentTeam.rooms) :
+                                RoomList(state.teamRooms) :
                                 <BeatLoader
                                     css={override}
                                     size={10}
@@ -228,7 +221,7 @@ export default function HomePage() {
                     </div>
                     {
                         !state.loadingCurrentTeam ?
-                            MembersList({users: state.currentTeam.users, onlineUsers: state.onlineUsers}) :
+                            MembersList({users: state.teamMembers}) :
                             <BeatLoader
                                 css={override}
                                 size={10}

@@ -1,3 +1,5 @@
+import { derived } from 'overmind'
+
 export const state = {
     teamowner: "",
     signedUp: false,
@@ -30,6 +32,12 @@ export const state = {
     videoCallCompactMode: true,
 
     // App Data
+    teamRooms: [],
+    teamMembers: [],
+    teamMembersMap: {},
+    userTeams: [],
+    currentTeam: {},
+
     activeWindowApp: {},
     userPreference: {
         show_active_app: true,
@@ -37,14 +45,8 @@ export const state = {
     },
     loggedInUser: {},
     userProfileData: {},
-    userData: {teams: []},
-    currentTeam: {rooms: [], users: []},
-    onlineUsers: {},
     usersActiveWindows: {},
     screenShareViewers: {},
     screenShareCursors: {},
-    screenSize: {},
-
-    usersInRoom: {},
-
+    screenSize: {}
 }

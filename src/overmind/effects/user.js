@@ -51,13 +51,13 @@ export const updateUser = async (authData, userData) => {
     });
 }
 
-export const getOnlineUsers = async (authData, tid) => {
+export const getTeamMembers = async (authData, teamId) => {
 
   const token = authData.token;
 
   return fetch(
 
-    BACKEND_URL + "/online-users/"+tid,
+    BACKEND_URL + "/user/team/"+teamId,
     {
         method: 'GET', 
         headers: headers(token)

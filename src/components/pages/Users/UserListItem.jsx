@@ -15,7 +15,7 @@ import { AuthContext } from '../../../context/AuthContext'
 
 import * as md5 from "md5";
 
-const UserListItem = React.memo((user) => {
+const UserListItem = React.memo((props) => {
 
     let history = useHistory();
     const { authData } = useContext(AuthContext);
@@ -24,6 +24,7 @@ const UserListItem = React.memo((user) => {
 
     const [showMenu, toggleShowMenu] = useState(false);
     const [activeAppInfo, setActiveAppInfo] = useState({});
+    const [user, setUser] = useState(props.user);
 
     const logos = require.context('../../../assets/logos', true);
 
@@ -44,7 +45,7 @@ const UserListItem = React.memo((user) => {
     }
 
     const getStatusColor = () => {
-        if(state.onlineUsers[user.id])
+        if(user.online)
             return '#5CFF59'
         else
             return '#FF5959'
@@ -93,11 +94,17 @@ const UserListItem = React.memo((user) => {
     useEffect(() => {
 
         if(user){
-            var preference = state.currentTeam.users.find(u => u.id === user.id).UserPreference;
+            var preference = state.teamMembers.find(u => u.id === user.id).UserPreference;
             setActiveAppInfo(appLogo(state.usersActiveWindows[user.id], preference));    
         }
         
     },[ state.usersActiveWindows[user.id]])
+
+    useEffect(() => {
+
+        setUser(props.user);
+        
+    },[ props.user ])
 
     return (
         <div className="flex py-0 justify-between p-1 pl-1 members-list-item" id={user.id} onClick={(e) => {
@@ -118,14 +125,13 @@ const UserListItem = React.memo((user) => {
                 <div 
                     className="text-white px-1 font-bold tracking-wide text-xs pointer" 
                     data-tip={
-                        user.uid != state.userProfileData.uid && !state.currentTeam.users_in_call[user.id] && 
-                            !state.currentTeam.users_in_call[state.userProfileData.id] ? 
+                        user.uid != state.userProfileData.uid && !state.teamMembersMap[state.userProfileData.id].in_call && !user.in_call ? 
                         'Click to Talk!' : ''
                     }
                     data-place="left"
                     style={{minWidth: '100px'}}
                     onClick={(e) => {
-                        if(!state.currentTeam.users_in_call[user.id] && !state.currentTeam.users_in_call[state.userProfileData.id])
+                        if(user.uid != state.userProfileData.uid && !state.teamMembersMap[state.userProfileData.id].in_call && !user.in_call)
                             startVideo(e, user.uid);
                     }}
                 >
@@ -133,7 +139,7 @@ const UserListItem = React.memo((user) => {
                     {user.uid == state.userProfileData.uid && ' •'}
 
                     {
-                        state.currentTeam.users_in_call[user.id] && 
+                        user.in_call && 
                         <i className="material-icons md-light md-inactive" 
                             style={{ fontSize: "16px", paddingLeft: '2px' }}>
                             call

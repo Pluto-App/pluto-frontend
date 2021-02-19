@@ -71,13 +71,13 @@ export const deleteRoom = async (authData, roomData) => {
     });
 }
 
-export const getUsersInRoom = async (authData, roomId) => {
+export const getTeamRooms = async (authData, teamId) => {
 
   const token = authData.token;
 
     return fetch(
 
-      BACKEND_URL + "/room/"+roomId+'/users',
+      BACKEND_URL + "/room/team/"+teamId,
       {
           method: 'GET', 
           headers: headers(token)

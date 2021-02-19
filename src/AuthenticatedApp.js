@@ -73,16 +73,17 @@ export default function App() {
 
       loadProgressBar()
 
-      // Some User is Online
       socket_live.on(events.online, (user_id) => {
 
-        actions.app.addOnlineUser(user_id);
+        if(!state.teamMembersMap[user_id].online)
+          actions.user.getTeamMembers({authData: authData, teamId: state.currentTeam.id});
       });
 
-      // Some User went Offline
       socket_live.on(events.offline, (user_id) => {
 
-        actions.app.removeOnlineUser(user_id);
+        if(state.teamMembersMap[user_id].online)
+          actions.user.getTeamMembers({authData: authData, teamId: state.currentTeam.id});
+
       });
 
       socket_live.on(events.activeWindowUpdate, (data) => {
@@ -94,11 +95,11 @@ export default function App() {
       });
 
       socket_live.on(events.roomVideoCall, (data) => {
-        actions.app.roomVideoCall(data);
+        actions.room.getTeamRooms({authData: authData, teamId: state.currentTeam.id});
       });
 
       socket_live.on(events.exitRoomVideoCall, (data) => {
-        actions.app.exitRoomVideoCall(data);
+        actions.room.getTeamRooms({authData: authData, teamId: state.currentTeam.id});
       });
 
       socket_live.on(events.userScreenShare, (data) => {
@@ -110,7 +111,15 @@ export default function App() {
       });
 
       socket_live.on(events.updateTeam, (data) => {
-        actions.team.getTeam({authData: authData, team_id: state.currentTeamId})    
+        actions.team.getTeam({authData: authData, team_id: state.currentTeam.id})
+      });
+
+      socket_live.on(events.updateTeamMembers, (data) => {
+        actions.user.getTeamMembers({authData: authData, team_id: state.currentTeam.id})
+      });
+
+      socket_live.on(events.updateTeamRooms, (data) => {
+        actions.room.getTeamRooms({authData: authData, team_id: state.currentTeam.id})
       });
       
     }, [authData]

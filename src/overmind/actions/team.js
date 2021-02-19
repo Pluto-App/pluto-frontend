@@ -1,25 +1,27 @@
 
 import { socket_live, events } from '../../components/sockets'
 
-export const getTeam = async ({state, effects}, {authData, team_id}) => {
+export const getTeam = async ({state, actions, effects}, {authData, team_id}) => {
 
 	state.loadingTeam = true
 
 	var teamData = await effects.team.getTeam(authData, team_id)
-	state.currentTeam = teamData;
 
-  var onlineUsers = await effects.user.getOnlineUsers(authData, teamData.tid);
-  
-  if(onlineUsers){
-     for(var user_id of onlineUsers){
-      state.onlineUsers[user_id] = true;
-    }   
+  if(teamData.id){
+    
+    state.currentTeam = teamData;
+
+    // Remove
+    state.currentTeam.users_in_call = {};
+    
+    actions.room.getTeamRooms({ authData: authData, teamId: teamData.id});
+    actions.user.getTeamMembers({ authData: authData, teamId: teamData.id});
+
+    localStorage.setItem('current_team',state.currentTeam.tid);
+    localStorage.setItem('current_team_id',state.currentTeam.id);
+    socket_live.emit(events.joinRoom, { room: 't-' + state.currentTeam.tid, user_id: state.userProfileData.id});
   }
-
-  localStorage.setItem('current_team',state.currentTeam.tid);
-  localStorage.setItem('current_team_id',state.currentTeam.id);
-  socket_live.emit(events.joinRoom, { room: 't-' + state.currentTeam.tid, user_id: state.userProfileData.id});
-
+	
 	state.loadingTeam = false
   state.teamUpdateReq = false
 
@@ -62,12 +64,5 @@ export const addUser = async ({state, effects}, {authData, reqData}) => {
     var teamData = await effects.team.addUser(authData, reqData);
     state.noTeams = false;
     state.loadingTeam = false;
-}
-
-export const updateCurrentTeam = async ({state, effects}, {team_id}) => {
-
-  	state.loadingTeam = true;
-  	state.currentTeamId = team_id;
-  	state.loadingTeam = false;
 }
 

@@ -22,7 +22,7 @@ export const getLoggedInUser = async ({state, actions, effects}, {authData: auth
             state.noTeams = true;  
           } else {
             state.noTeams = false;
-            state.currentTeamId = userData.teamIds[0];
+            actions.team.getTeam({authData: authData, team_id: userData.teamIds[0]})
           }
         }  
       } else {
@@ -52,4 +52,29 @@ export const updateUser = async ({state, effects, actions}, {authData, userData}
     var currentUser = JSON.parse(localStorage.getItem('currentUser'));
     currentUser.user = userData;
     localStorage.setItem('currentUser', JSON.stringify(currentUser));
+}
+
+export const getTeamMembers = async ({state, actions, effects}, {authData: authData, teamId: teamId}) => {
+
+    state.loadingUser = true
+    var userData = {}
+
+    try {
+
+      var teamMembers = await effects.user.getTeamMembers(authData, teamId)
+      
+      if(teamMembers){
+        state.teamMembers = teamMembers;
+
+        for(var member of teamMembers){
+          state.teamMembersMap[member.id] = member;
+        }
+      }
+      
+    } catch (error) {
+
+      state.error = error;
+    }
+
+    return userData;
 }
