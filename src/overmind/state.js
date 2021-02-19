@@ -35,6 +35,7 @@ export const state = {
     teamRooms: [],
     teamMembers: [],
     teamMembersMap: {},
+    onlineUsers: {},
     userTeams: [],
     currentTeam: {},
 

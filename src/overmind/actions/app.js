@@ -119,6 +119,16 @@ export const setError = async ({ state, effect }, error) => {
 		state.error = error
 }
 
+export const setUserOnline = async ({ state, effect }, user_id) => {
+	
+	state.onlineUsers[user_id] = true;
+}
+
+export const setUserOffline = async ({ state, effect }, user_id) => {
+
+	state.onlineUsers[user_id] = false;
+}
+
 export const emitUpdateTeam = async ({ actions, state, effect }) => {
 
 	for( var team of state.userProfileData.teams){
