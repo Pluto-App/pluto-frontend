@@ -309,6 +309,7 @@ function createWindow() {
       }
     })
 
+    videoCallWindow.setVisibleOnAllWorkspaces(true);
     videoCallWindow.setAlwaysOnTop(true, 'pop-up-menu');
     videoCallWindow.setMenu(null);
 
@@ -511,10 +512,12 @@ function createWindow() {
         slashes: true
       })
 
+      screenShareContainerWindow.setVisibleOnAllWorkspaces(true);
       screenShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/screenshare-container' : screenshareContainerUrl);
       screenShareContainerWindow.setIgnoreMouseEvents(true);
       screenShareContainerWindow.setSize(overlayBounds.width, overlayBounds.height);
       screenShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
+
 
       if (isDev) {
        
@@ -522,7 +525,7 @@ function createWindow() {
       }
 
       // ScreenShare Controls
-      let windowWidth = 460;
+      let windowWidth = 370;
       let windowHeight = 80;
 
       screenShareControlsWindow = new BrowserWindow({
@@ -545,6 +548,7 @@ function createWindow() {
         }
       })
 
+      screenShareControlsWindow.setVisibleOnAllWorkspaces(true);
       screenShareControlsWindow.setMenu(null);
       screenShareControlsWindow.setAlwaysOnTop(true,'pop-up-menu');
 
@@ -571,7 +575,7 @@ function createWindow() {
       })
 
       if (isDev) {
-        //screenShareControlsWindow.webContents.openDevTools();
+        // screenShareControlsWindow.webContents.openDevTools();
       }
     }
   })
@@ -586,17 +590,21 @@ function createWindow() {
 
   ipcMain.on('stop-screenshare', (event, arg) => {
 
+    videoCallWindow.webContents.send('stop-screenshare', {});
     try{
 
-        if(screenShareControlsWindow)
-          screenShareControlsWindow.close();
+      if(initScreenShareWindow)
+        initScreenShareWindow.close();  
 
-        if(streamScreenShareWindow)
-          streamScreenShareWindow.close();
+      if(screenShareControlsWindow)
+        screenShareControlsWindow.close();
 
-      } catch (error) {
-        console.error(error);
-      }
+      if(streamScreenShareWindow)
+        streamScreenShareWindow.close();
+
+    } catch (error) {
+      console.error(error);
+    }
   })
 
   ipcMain.on('screen-size', async (event, arg) => {

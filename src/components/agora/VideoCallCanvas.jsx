@@ -230,6 +230,13 @@ const VideoCallCanvas = React.memo((props) => {
         window.onresize = Dish;
     }, false);
 
+    window.require("electron").ipcRenderer.on('stop-screenshare', function (e, args) {
+      socket_live.emit(events.endScreenShare, {
+            channel_id: 'scr-' + localStorage.getItem('call_channel_id')
+        });
+      setSharingScreen(false);
+    });
+
     return () => {
       handleExit();
     }
@@ -398,15 +405,10 @@ const VideoCallCanvas = React.memo((props) => {
 	const handleScreenShare = async (e) => {
 
   	if (sharingScreen) {
-
     		window.require("electron").ipcRenderer.send('stop-screenshare');
-        socket_live.emit(events.endScreenShare, {
-            channel_id: 'scr-' + localStorage.getItem('call_channel_id')
-        });
-    		setSharingScreen(false);
-    
   	} else {
-    
+      
+       console.log('NO');
     		window.require("electron").ipcRenderer.send('init-screenshare');
     		setSharingScreen(true);
   	}

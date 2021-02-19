@@ -250,53 +250,6 @@ const RoomListItem = React.memo((props) => {
                             hoverState &&   
                             <div className="flex" style={{ padding: '5px'}}>
                                 {
-                                   showMenu &&
-                                    <div className="items-center absolute rounded-lg mx-1 p-1 py-1" style={customMenuStyle}>
-
-                                        <div className="items-center px-2">
-                                            <p className="text-grey font-bold tracking-wide text-xs center mt-2 mb-2">
-                                                Remove {roomName} ?
-                                            </p>
-
-                                            <div className="flex">
-                                                <button
-                                                className="rounded-full flex justify-center items-center bg-green-700
-                                                text-white py-2 px-4 mt-2 mr-2 focus:outline-none focus:shadow-outline"
-                                                type="button"
-                                                style={{ transition: "all .60s ease", fontSize: '14px' }}
-                                                onClick={(e) => {
-                                                    toggleShowMenu(showMenu => !showMenu)
-                                                    removeRoomHandler(e)
-                                                }}>
-                                                    <i 
-                                                        className="material-icons md-light md-inactive mr-2"
-                                                        style={{fontSize: '18px'}}
-                                                    >
-                                                        check
-                                                    </i> Confirm
-                                                </button>
-
-                                                <button
-                                                className="rounded-full flex justify-center items-center bg-red-700
-                                                text-white py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
-                                                type="button"
-                                                style={{ transition: "all .60s ease", fontSize: '14px' }}
-                                                onClick={() => {
-                                                    toggleShowMenu(showMenu => !showMenu)
-                                                }}>
-                                                     <i 
-                                                        className="material-icons md-light md-inactive mr-2"
-                                                        style={{fontSize: '18px'}}
-                                                    >
-                                                        close
-                                                    </i> Cancel
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-
-                                {
                                     (!room.users ||
                                     !(room.users.includes(state.userProfileData.uid))) &&
                                     <button className="text-white focus:outline-none bg-light-blue btn-join-room" 
@@ -318,6 +271,53 @@ const RoomListItem = React.memo((props) => {
                                     <i className="material-icons md-light md-inactive" style={{ fontSize: "18px", margin: "0" }}>delete_forever</i>
                                 </button>
                             </div>    
+                        }
+
+                        {
+                           showMenu &&
+                            <div className="items-center absolute rounded-lg mx-1 p-1 py-1" style={customMenuStyle}>
+
+                                <div className="items-center px-2">
+                                    <p className="text-grey font-bold tracking-wide text-xs center mt-2 mb-2">
+                                        Remove {roomName} ?
+                                    </p>
+
+                                    <div className="flex">
+                                        <button
+                                        className="rounded-full flex justify-center items-center bg-green-700
+                                        text-white py-2 px-4 mt-2 mr-2 focus:outline-none focus:shadow-outline"
+                                        type="button"
+                                        style={{ transition: "all .60s ease", fontSize: '14px' }}
+                                        onClick={(e) => {
+                                            toggleShowMenu(showMenu => !showMenu)
+                                            removeRoomHandler(e)
+                                        }}>
+                                            <i 
+                                                className="material-icons md-light md-inactive mr-2"
+                                                style={{fontSize: '18px'}}
+                                            >
+                                                check
+                                            </i> Confirm
+                                        </button>
+
+                                        <button
+                                        className="rounded-full flex justify-center items-center bg-red-700
+                                        text-white py-2 px-4 mt-2 focus:outline-none focus:shadow-outline"
+                                        type="button"
+                                        style={{ transition: "all .60s ease", fontSize: '14px' }}
+                                        onClick={() => {
+                                            toggleShowMenu(showMenu => !showMenu)
+                                        }}>
+                                             <i 
+                                                className="material-icons md-light md-inactive mr-2"
+                                                style={{fontSize: '18px'}}
+                                            >
+                                                close
+                                            </i> Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         }
                         
                     </div>
