@@ -44,7 +44,7 @@ const Settings = React.memo(() => {
         
         window.require("electron").ipcRenderer.send('logout');
         var curentWindow = window.require("electron").remote.getCurrentWindow();
-        curentWindow.close(); 
+        curentWindow.destroy(); 
     }
 
     const createTeam = async (e) => {

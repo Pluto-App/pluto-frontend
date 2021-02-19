@@ -33,7 +33,7 @@ const RoomListItem = React.memo((props) => {
             
             var usersInRoom = room.users || [];
             var userUid = usersInRoom[Math.floor(Math.random() * usersInRoom.length)];
-            var user = state.teamMembers.find(user => user.uid === userUid);
+            var user = (state.teamMembers || []).find(user => user.uid === userUid);
             var appData = state.usersActiveWindows[user ? user.id : undefined];
 
             setActiveAppInfo(appLogo(appData, state.userPreference));
