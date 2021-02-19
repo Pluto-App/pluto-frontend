@@ -21,16 +21,6 @@ const ScreenShareControls = React.memo((props) => {
   const stopScreenShare = () => {
 
     window.require("electron").ipcRenderer.send('stop-screenshare');
-    
-    // socket_live.emit(events.endScreenShare, {
-    //     channel_id: 'scr-' + localStorage.getItem('call_channel_id')
-    // });
-
-    // actions.app.clearScreenShareData();
-    // var window = remote.getCurrentWindow();
-    // window.close();
-
-
   }
 
   const controlsContainerStyle = {
