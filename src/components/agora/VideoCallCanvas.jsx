@@ -33,6 +33,7 @@ const VideoCallCanvas = React.memo((props) => {
   const streamListRef = useRef();
   streamListRef.current = streamList;
 
+  const [usersInCallIds, setUsersInCallIds] = useState([]);
   const [usersInCall, setUsersInCall] = useState({});
 
 	const [ userData, setUserData ] = useState({});
@@ -249,24 +250,45 @@ const VideoCallCanvas = React.memo((props) => {
   useEffect(() => {
 
       actions.user.getLoggedInUser({authData: authData});
-      actions.team.getTeam({team_id: localStorage.getItem('current_team_id'), authData: authData});
 
+      if(localStorage.getItem('current_team_id')){
+        actions.team.getTeam({team_id: localStorage.getItem('current_team_id'), authData: authData});  
+      }
+      
   }, [actions, authData])
+
+  useEffect(() => {
+
+    const getUserData = async () => {
+
+      if(usersInCallIds){
+        for (var userId of usersInCallIds){
+          if(!usersInCall[userId]){
+            console.log(usersInCall);
+            console.log('hello!');
+            //usersInCall[userId] = await actions.user.getUser({authData: authData, user_id: streamId});
+            setUsersInCall({...usersInCall, [userId]: await actions.user.getUser({authData: authData, user_id: userId})})
+          }
+        }  
+      }
+    }
+
+    getUserData();
+
+  }, [usersInCallIds])
 
   useEffect(() => {
 
     var canvasSelector = 'Dish' 
     var canvas = document.getElementById(canvasSelector);
 
-    streamList.map(async (stream, index) => {
+    streamList.map( (stream, index) => {
 
      	let streamId = stream.getId()
      	let elementID = 'ag-item-' + streamId;
 
-      if(!usersInCall[streamId]){
-        var data = {};
-        data[streamId] = await actions.user.getUser({authData: authData, user_id: streamId});
-        setUsersInCall({ ...usersInCall, ...data }) 
+      if( !usersInCallIds.includes(streamId) ){
+        setUsersInCallIds(usersInCallIds.concat([streamId])); 
       }
 
       if(stream.isPlaying())
@@ -633,7 +655,10 @@ const VideoCallCanvas = React.memo((props) => {
                   <div className="pointer items-center flex overflow-hidden" 
                     style={{ display: 'table'}}
                   >
-                      <ActiveWindowInfo userId={stream.getId()} videoOn={true}/>
+                    {
+                      usersInCall[stream.getId()] && usersInCall[stream.getId()].id &&
+                      <ActiveWindowInfo user={usersInCall[stream.getId()]} user_id={usersInCall[stream.getId()].id} videoOn={true}/>
+                    }
                   </div>
                 </div>
 
