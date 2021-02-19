@@ -224,7 +224,8 @@ const RoomListItem = React.memo((props) => {
                             >   
                                 <span 
                                     onClick={(e) => {
-                                        startVideo(e, room.rid)
+                                        if(!state.teamMembersMap[state.userProfileData.id].in_call)
+                                            startVideo(e, room.rid)
                                     }}
                                 >
                                     {roomName}
@@ -250,8 +251,7 @@ const RoomListItem = React.memo((props) => {
                             hoverState &&   
                             <div className="flex" style={{ padding: '5px'}}>
                                 {
-                                    (!room.users ||
-                                    !(room.users.includes(state.userProfileData.uid))) &&
+                                    !state.teamMembersMap[state.userProfileData.id].in_call &&
                                     <button className="text-white focus:outline-none bg-light-blue btn-join-room" 
                                         style={{width: '60px', fontSize: '14px'}}
                                         onClick={(e) => {
