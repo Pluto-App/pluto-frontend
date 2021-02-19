@@ -120,7 +120,7 @@ const Settings = React.memo(() => {
             var reqData = {team_id: activeTeam.id, user_id: userToRemove.id}
             await actions.team.removeUser({ authData: authData, reqData: reqData})
 
-            let teamUsers = [...activeTeam.users];
+            let teamUsers = [...activeTeamUsers];
             var index = teamUsers.findIndex(user => user.id == userToRemove.id);
             teamUsers.splice(index, 1);
 
