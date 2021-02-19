@@ -33,6 +33,8 @@ const VideoCallCanvas = React.memo((props) => {
   const streamListRef = useRef();
   streamListRef.current = streamList;
 
+  const [usersInCall, setUsersInCall] = useState({});
+
 	const [ userData, setUserData ] = useState({});
   const [ numActiveVideo, setNumActiveVideo ] = useState(0);
 
@@ -256,10 +258,16 @@ const VideoCallCanvas = React.memo((props) => {
     var canvasSelector = 'Dish' 
     var canvas = document.getElementById(canvasSelector);
 
-    streamList.map((stream, index) => {
+    streamList.map(async (stream, index) => {
 
      	let streamId = stream.getId()
      	let elementID = 'ag-item-' + streamId;
+
+      if(!usersInCall[streamId]){
+        var data = {};
+        data[streamId] = await actions.user.getUser({authData: authData, user_id: streamId});
+        setUsersInCall({ ...usersInCall, ...data }) 
+      }
 
       if(stream.isPlaying())
           stream.stop();
@@ -409,7 +417,6 @@ const VideoCallCanvas = React.memo((props) => {
     		window.require("electron").ipcRenderer.send('stop-screenshare');
   	} else {
       
-       console.log('NO');
     		window.require("electron").ipcRenderer.send('init-screenshare');
     		setSharingScreen(true);
   	}
@@ -617,8 +624,8 @@ const VideoCallCanvas = React.memo((props) => {
                   <div style={{ display: "table", height: '30px'}}>
                     <span className="text-gray-200 px-1" style={{ display: 'table-cell', verticalAlign: 'middle'}}>
                       {
-                        state.teamMembers.find(user => user.id === stream.getId()) ?
-                        state.teamMembers.find(user => user.id === stream.getId()).name.split(' ')[0]
+                        usersInCall[stream.getId()] ?
+                        usersInCall[stream.getId()].name.split(' ')[0]
                         : ''
                       }
                     </span>
@@ -646,8 +653,8 @@ const VideoCallCanvas = React.memo((props) => {
                       <img 
                         style={{height: '30px'}}
                         src={
-                          state.teamMembers.find(user => user.id === stream.getId()) ?
-                          state.teamMembers.find(user => user.id === stream.getId()).avatar
+                          usersInCall[stream.getId()] ?
+                          usersInCall[stream.getId()].avatar
                           : ''
                         } 
                       alt="" />
@@ -658,13 +665,17 @@ const VideoCallCanvas = React.memo((props) => {
                   >
                       <span style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px' }}>
                         {
-                          state.teamMembers.find(user => user.id === stream.getId()) ?
-                          state.teamMembers.find(user => user.id === stream.getId()).name.split(' ')[0]
+                          usersInCall[stream.getId()] ?
+                          usersInCall[stream.getId()].name.split(' ')[0]
                           : ''
                         }
                       </span>
                   </div>
-                  <ActiveWindowInfo userId={stream.getId()}/>
+                  {
+                    usersInCall[stream.getId()] && usersInCall[stream.getId()].id &&
+                    <ActiveWindowInfo user={usersInCall[stream.getId()]} user_id={usersInCall[stream.getId()].id}/>
+                  }
+                  
                 </div>
 
               </section>

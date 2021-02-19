@@ -8,7 +8,7 @@ export const getLoggedInUser = async ({state, actions, effects}, {authData: auth
 
   	try {
 
-  		userData = await effects.user.getUser(authData, params)
+  		userData = await effects.user.getUser(authData, authData.user.id); 
       
       if(userData.id){
         actions.userpreference.getUserPreference({ authData: authData});
@@ -23,6 +23,12 @@ export const getLoggedInUser = async ({state, actions, effects}, {authData: auth
           } else {
             state.noTeams = false;
             actions.team.getTeam({authData: authData, team_id: userData.teamIds[0]})
+          }
+        }
+
+        if(userData.teams){
+          for(var team of userData.teams){
+            socket_live.emit(events.joinRoom, { room: 't-' + team.tid, user_id: userData.id})
           }
         }  
       } else {
@@ -43,6 +49,12 @@ export const getLoggedInUser = async ({state, actions, effects}, {authData: auth
 
     return userData;
 }
+
+export const getUser = async ({state, effects, actions}, {authData, user_id}) => {
+
+  return await effects.user.getUser(authData, user_id); 
+}
+
 
 export const updateUser = async ({state, effects, actions}, {authData, userData}) => {
 

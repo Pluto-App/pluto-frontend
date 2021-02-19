@@ -6,27 +6,27 @@ function headers(token) {
   return { 'Content-Type': 'application/json', 'Authorization': 'Bearer '+token }
 }
 
-export const getUser = async (authData, params) => {
+export const getUser = async (authData, user_id) => {
 
   const token = authData.token;
 
-	return fetch(
+  return fetch(
 
-  	BACKEND_URL + "/user/"+authData.user.id,
-  	{
-    		method: 'GET', 
-    		headers: headers(token)
-  	}
-	)
-	.then(response => response.json())
-	.then(responseData => {
+    BACKEND_URL + "/user/"+user_id,
+    {
+        method: 'GET', 
+        headers: headers(token)
+    }
+  )
+  .then(response => response.json())
+  .then(responseData => {
 
-  	return responseData;
-	})
-	.catch((error) => {
+    return responseData;
+  })
+  .catch((error) => {
     return {};
-    	// Error handling
-	});
+      // Error handling
+  });
 }
 
 export const updateUser = async (authData, userData) => {
