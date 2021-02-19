@@ -301,7 +301,7 @@ function createWindow() {
       title: "VideoWindow",
       alwaysOnTop: true,
       x: sWidth - 230,
-      y: sHeight,
+      y: sHeight - 200,
       webPreferences: {
         nodeIntegration: true,
         plugins: true,
