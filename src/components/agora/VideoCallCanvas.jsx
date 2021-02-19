@@ -246,7 +246,8 @@ const VideoCallCanvas = React.memo((props) => {
 
   useEffect(() => {
 
-      actions.user.getLoggedInUser({authData: authData})
+      actions.user.getLoggedInUser({authData: authData});
+      actions.team.getTeam({team_id: localStorage.getItem('current_team_id'), authData: authData});
 
   }, [actions, authData])
 
