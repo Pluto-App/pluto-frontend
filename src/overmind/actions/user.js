@@ -57,11 +57,11 @@ export const updateUser = async ({state, effects, actions}, {authData, userData}
 export const getTeamMembers = async ({state, actions, effects}, {authData: authData, teamId: teamId}) => {
 
     state.loadingUser = true
-    var userData = {}
+    var teamMembers = []
 
     try {
 
-      var teamMembers = await effects.user.getTeamMembers(authData, teamId)
+      teamMembers = await effects.user.getTeamMembers(authData, teamId)
       
       if(teamMembers){
         state.teamMembers = teamMembers;
@@ -76,5 +76,5 @@ export const getTeamMembers = async ({state, actions, effects}, {authData: authD
       state.error = error;
     }
 
-    return userData;
+    return teamMembers;
 }

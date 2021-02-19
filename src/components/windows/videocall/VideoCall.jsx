@@ -31,12 +31,12 @@ const VideoCall = React.memo((props) => {
 
   useEffect(() => {
 
-        if(state.currentTeamId){
+      if(state.currentTeam.id){
 
-          actions.team.getTeam({authData: authData, team_id: localStorage.getItem('current_team_id')})    
-        }
+        actions.team.getTeam({authData: authData, team_id: state.currentTeam.id})    
+      }
 
-  }, [actions, authData, state.currentTeamId])
+  }, [actions, authData, state.currentTeam.id])
 
   useEffect(() => {
 

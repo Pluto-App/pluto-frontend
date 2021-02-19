@@ -62,7 +62,7 @@ const UserListItem = React.memo((props) => {
         e.preventDefault();
         
         var reqData = {
-            team_id: state.currentTeamId,
+            team_id: state.currentTeam.id,
             user_id: user_id
         };
 

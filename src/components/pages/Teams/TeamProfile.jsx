@@ -17,7 +17,7 @@ export default function TeamProfile() {
 
         e.preventDefault();
         var teamData = {
-            id: state.currentTeamId,
+            id: state.currentTeam.id,
         }
        
         await actions.team.deleteTeam({authData: authData, teamData: teamData});

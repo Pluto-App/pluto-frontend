@@ -95,15 +95,6 @@ export default function HomePage() {
 
     }, [authData])
 
-    
-    useEffect(() => {
-
-        if(state.currentTeamId){
-            actions.team.getTeam({authData: authData, team_id: state.currentTeamId})    
-        }
-
-    }, [state.currentTeamId, state.teamUpdateReq])
-
     useEffect(() => {
 
         if(state.noTeams)
@@ -118,9 +109,7 @@ export default function HomePage() {
         window.require("electron").ipcRenderer.on('refresh', function (e, args) {
 
             actions.user.getLoggedInUser({authData: authData});
-            if(state.currentTeamId){
-                actions.team.getTeam({authData: authData, team_id: state.currentTeamId})    
-            }    
+            actions.team.getTeam({authData: authData, team_id: state.currentTeam.id});    
         });
 
     }, [])
@@ -128,7 +117,7 @@ export default function HomePage() {
     const addRoom = async (roomname) => {
 
         let roomData = {
-            team_id: state.currentTeamId,
+            team_id: state.currentTeam.id,
             name: roomname
         }
 
@@ -242,7 +231,7 @@ export default function HomePage() {
 
                 {
                     // Invite Modal HTML
-                    showInviteModal && state.currentTeamId ?
+                    showInviteModal && state.currentTeam.id ?
                         <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={inviteModalStyle}
                             onClick={(e) => {
                             }}>

@@ -25,6 +25,7 @@ const Settings = React.memo(() => {
 
     const [ activeSection, setActiveSection ] = useState('profile');
     const [ activeTeam, setActiveTeam ] = useState({});
+    const [ activeTeamUsers, setActiveTeamUsers ] = useState([]);
     
     const [ newTeam, setNewTeam ] = useState({});
     const [ userToRemove, setUserToRemove ] = useState({});
@@ -254,6 +255,7 @@ const Settings = React.memo(() => {
                                     onClick ={ async function() { 
                                         setActiveSection('team') 
                                         setActiveTeam(await actions.team.getTeam({authData: authData, team_id: team.id}))
+                                        setActiveTeamUsers(await actions.user.getTeamMembers({authData: authData, teamId: team.id}))
                                     }}
                                 >
                                     <div className="bg-white h-8 w-8 flex items-center justify-center mr-3 overflow-hidden">
@@ -486,7 +488,7 @@ const Settings = React.memo(() => {
 
                             <div className="">
                                 {
-                                    activeTeam.users && activeTeam.users.map(user => 
+                                    activeTeamUsers && activeTeamUsers.map(user => 
                                         <div 
                                             key={user.id}
                                             className='px-3 pt-2 pb-2 flex pointer settings-menu-item'

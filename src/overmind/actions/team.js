@@ -5,7 +5,7 @@ export const getTeam = async ({state, actions, effects}, {authData, team_id}) =>
 
 	state.loadingTeam = true
 
-	var teamData = await effects.team.getTeam(authData, team_id)
+	var teamData = await effects.team.getTeam(authData, team_id || state.currentTeam.id)
 
   if(teamData.id){
     
