@@ -1,7 +1,8 @@
 
 import { socket_live, events } from '../../components/sockets'
 
-export const getLoggedInUser = async ({state, actions, effects}, {authData: authData, params: params, setAuthData: setAuthData}) => {
+export const getLoggedInUser = async ({state, actions, effects}, {authData: authData, setAuthData: setAuthData, 
+    joinRooms: joinRooms, skipFetchTeam: skipFetchTeam}) => {
 
   	state.loadingUser = true
     var userData = {}
@@ -17,7 +18,7 @@ export const getLoggedInUser = async ({state, actions, effects}, {authData: auth
 
         state.userProfileData = userData;
 
-        if(userData.teamIds){
+        if(!skipFetchTeam && userData.teamIds){
           if(userData.teamIds.length == 0){
             state.noTeams = true;  
           } else {
@@ -26,7 +27,7 @@ export const getLoggedInUser = async ({state, actions, effects}, {authData: auth
           }
         }
 
-        if(userData.teams){
+        if(joinRooms && userData.teams){
           for(var team of userData.teams){
             socket_live.emit(events.joinRoom, { room: 't-' + team.tid, user_id: userData.id})
           }
@@ -51,7 +52,6 @@ export const getLoggedInUser = async ({state, actions, effects}, {authData: auth
 }
 
 export const getUser = async ({state, effects, actions}, {authData, user_id}) => {
-
   return await effects.user.getUser(authData, user_id); 
 }
 
@@ -79,6 +79,7 @@ export const getTeamMembers = async ({state, actions, effects}, {authData: authD
         state.teamMembers = teamMembers;
 
         for(var member of teamMembers){
+          state.onlineUsers[member.id] = member.online;
           state.teamMembersMap[member.id] = member;
         }
       }

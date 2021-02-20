@@ -69,6 +69,7 @@ export default function HomePage() {
     const [showInviteModal, toggleshowInviteModal] = useState(false);
     const [appInfo, updateAppInfo] = useState("No Teams");
     const [newRoomName, updateNewRoomName] = useState("");
+    const [addingRoom, setAddingRoom] = useState(false);
 
     useEffect(() => {
 
@@ -91,7 +92,7 @@ export default function HomePage() {
 
     useEffect(() => {
 
-        actions.user.getLoggedInUser({authData: authData, setAuthData: setAuthData})
+        actions.user.getLoggedInUser({authData: authData, setAuthData: setAuthData, joinRooms: true})
 
     }, [authData])
 
@@ -110,6 +111,10 @@ export default function HomePage() {
 
             actions.user.getLoggedInUser({authData: authData});
             actions.team.getTeam({authData: authData, team_id: state.currentTeam.id});    
+        });
+       
+       window.addEventListener('click', function(event) {
+            setAddingRoom(false)
         });
 
     }, [])
@@ -150,29 +155,32 @@ export default function HomePage() {
                         </div>
                         
                         <button className="text-white focus:outline-none btn-add" onClick={(e) => {
-                            e.preventDefault();
-                            actions.app.setAddingRoom(true)
+                            e.stopPropagation();
+                            setAddingRoom(true)
                         }}>
                         </button>
                     </div>
                     {
-                        state.addingRoom &&
+                        addingRoom &&
                         <div className="flex justify-center items-center hover:bg-gray-800">
                             <input className="shadow appearance-none border rounded w-full py-1 
                             px-5 text-gray-700 leading-tight focus:outline-none"
                                 style={{ width: "95%" }}
                                 onChange={handleChange}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }}
                                 onKeyUp={(e) => {
                                     if (e.keyCode === 13 || e.which === 13) {
                                         if (e.target.value === "") {
                                             ToastNotification('error', "Room name can't be empty")
                                         } else {
-                                            actions.app.setAddingRoom(false);
+                                            setAddingRoom(false);
                                             addRoom(e.target.value)
                                         }
                                     } else if(e.keyCode === 27 || e.which === 27) {
 
-                                        actions.app.setAddingRoom(false)
+                                        setAddingRoom(false)
                                     }
                                 }}
                                 name="roomname"

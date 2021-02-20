@@ -48,7 +48,7 @@ const UserListItem = React.memo((props) => {
         if(user.online)
             return '#5CFF59'
         else
-            return '#FF5959'
+            return '#9a9a9a'
     }
 
     const activeAppClick = (e, url) => {

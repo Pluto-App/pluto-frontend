@@ -10,9 +10,6 @@ export const getTeam = async ({state, actions, effects}, {authData, team_id}) =>
   if(teamData.id){
     
     state.currentTeam = teamData;
-
-    // Remove
-    state.currentTeam.users_in_call = {};
     
     actions.room.getTeamRooms({ authData: authData, teamId: teamData.id});
     actions.user.getTeamMembers({ authData: authData, teamId: teamData.id});

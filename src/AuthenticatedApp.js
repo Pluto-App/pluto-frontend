@@ -80,17 +80,15 @@ export default function App() {
       });
 
       socket_live.on(events.online, (user_id) => {
-
-        if(!state.onlineUsers || !state.onlineUsers[user_id]){
+        if(state.teamMembersMap && state.teamMembersMap[user_id] && !state.teamMembersMap[user_id].online){
           actions.app.setUserOnline(user_id);
-          actions.user.getTeamMembers({authData: authData, teamId: state.currentTeam.id});
         }
       });
 
       socket_live.on(events.offline, (user_id) => {
 
-        if(!state.teamMembersMap[user_id] || state.teamMembersMap[user_id].online){
-          actions.user.getTeamMembers({authData: authData, teamId: state.currentTeam.id});
+        if(state.teamMembersMap && state.teamMembersMap[user_id] && !state.teamMembersMap[user_id].online){
+          actions.app.setUserOffline(user_id);
         }
 
       });
@@ -120,15 +118,24 @@ export default function App() {
       });
 
       socket_live.on(events.updateTeam, (data) => {
-        setTimeout( () => {actions.team.getTeam({authData: authData, team_id: state.currentTeam.id})}, 1000);
+
+        if(data.tid == state.currentTeam.tid){
+          setTimeout( () => {actions.team.getTeam({authData: authData, team_id: state.currentTeam.id})}, 1000);
+        }
       });
 
       socket_live.on(events.updateTeamMembers, (data) => {
-        actions.user.getTeamMembers({authData: authData, team_id: state.currentTeam.id})
+        
+        if(data.tid == state.currentTeam.tid){
+          actions.user.getTeamMembers({authData: authData, team_id: state.currentTeam.id})
+        }
       });
 
       socket_live.on(events.updateTeamRooms, (data) => {
-        actions.room.getTeamRooms({authData: authData, team_id: state.currentTeam.id})
+
+        if(data.tid == state.currentTeam.tid){
+          actions.room.getTeamRooms({authData: authData, team_id: state.currentTeam.id})
+        }
       });
       
     }, [authData]
@@ -138,9 +145,9 @@ export default function App() {
 
     const interval = setInterval(() => {
       
-      socket_live.emit(events.online, state.userProfileData.id)
+      socket_live.emit(events.online, state.userProfileData)
 
-    }, 3000);
+    }, 2000);
     
     return () => clearInterval(interval);
   

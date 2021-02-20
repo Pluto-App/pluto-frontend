@@ -19,9 +19,11 @@ const MainBar = React.memo((props) => {
     }
 
     useEffect(() => {
-        window.onclick = function(event) {
+
+        window.addEventListener('click', () => {
             setShowOptions(false);
-        }
+        });
+
     },[])
 
 

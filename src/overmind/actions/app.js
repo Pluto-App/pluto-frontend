@@ -121,12 +121,12 @@ export const setError = async ({ state, effect }, error) => {
 
 export const setUserOnline = async ({ state, effect }, user_id) => {
 	
-	state.onlineUsers[user_id] = true;
+	state.teamMembersMap[user_id].online = true;
 }
 
 export const setUserOffline = async ({ state, effect }, user_id) => {
 
-	state.onlineUsers[user_id] = false;
+	state.teamMembersMap[user_id].online = false;
 }
 
 export const emitUpdateTeam = async ({ actions, state, effect }) => {
@@ -169,9 +169,10 @@ export const clearVideoCallData = async ({ state, effect }) => {
 
 	socket_live.emit(events.exitRoomVideoCall, 
 		{ 
-			tid: curent_team,
-			rid: call_channel_id.split('-')[1], 
-			uid: state.userProfileData.uid 
+			tid: 		curent_team,
+			rid: 		call_channel_id.split('-')[1], 
+			uid: 		state.userProfileData.uid ,
+			channel_id: call_channel_id
 		}
 	);
 	

@@ -1,3 +1,4 @@
+
 /* eslint-disable no-unused-vars */
 
 import React, { useEffect, useState, useContext } from 'react'
@@ -22,7 +23,7 @@ const RoomListItem = React.memo((props) => {
     const [room, setRoom] = useState(props.room);
 
     const [showMenu, toggleShowMenu] = useState(false);
-    const [startedEditing, updateEditStatus] = useState(false);
+    const [editingRoom, setEditingRoom] = useState(false);
     const [roomName, updateRoomName] = useState(room.name);
     const [hoverState, setHoverState] = useState(false);
     const [activeAppInfo, setActiveAppInfo] = useState({});
@@ -38,6 +39,10 @@ const RoomListItem = React.memo((props) => {
 
             setActiveAppInfo(appLogo(appData, state.userPreference));
         }, 5000)
+
+        window.addEventListener('click', function(event) {
+            setEditingRoom(false);
+        });
         
         return () => clearInterval(setActiveWin);
 
@@ -50,24 +55,7 @@ const RoomListItem = React.memo((props) => {
     },[ props.room ])
 
     const toggleEditRoomName = (e) => {
-        updateEditStatus(startedEditing => !startedEditing)
-    }
-
-    const customMenuStyle = {
-        "top": "75px",
-        "height": "105px",
-        "width": "240px",
-        "left": "55px",
-        "position": "absolute",
-        'background': '#25272C'
-    }
-
-    const customChatStyle = {
-        "top": "75px",
-        "height": "125",
-        "width": "225px",
-        "left": "55px",
-        "position": "absolute"
+        setEditingRoom(!editingRoom);
     }
 
     const startVideo = async (e, room_rid) => {
@@ -93,8 +81,6 @@ const RoomListItem = React.memo((props) => {
         
         var roomData = {id: room.id, name: name}
         await actions.room.updateRoom({ authData: authData, roomData: roomData})
-
-        //ToastNotification('error', "Only Owners can remove")
     }
 
     const removeRoomHandler = async (e) => {
@@ -133,6 +119,24 @@ const RoomListItem = React.memo((props) => {
         return userInfo ? userInfo.avatar : '';
     }
 
+
+    const customMenuStyle = {
+        "top": "75px",
+        "height": "105px",
+        "width": "240px",
+        "left": "55px",
+        "position": "absolute",
+        'background': '#25272C'
+    }
+
+    const customChatStyle = {
+        "top": "75px",
+        "height": "125",
+        "width": "225px",
+        "left": "55px",
+        "position": "absolute"
+    }
+
     return (
         <div id={room.id} className="room-list-item"
             onMouseEnter={(e) => {
@@ -143,13 +147,10 @@ const RoomListItem = React.memo((props) => {
             }}
         >
             {
-                startedEditing ?
+                editingRoom ?
                     <div className="flex justify-center items-center"
                         style={{ transition: "all .60s ease" }}
-                        onContextMenu={(e) => {
-                            e.preventDefault();
-                            toggleEditRoomName()
-                        }}>
+                    >
                         <input className="shadow appearance-none border rounded w-full py-1 px-5 text-gray-700 leading-tight focus:outline-none 
                         focus:shadow-outline"
                             style={{ width: "80%" }}
@@ -162,12 +163,12 @@ const RoomListItem = React.memo((props) => {
                             }
                             onKeyUp={(e) => {
                                 if (e.keyCode === 13 || e.which === 13) {
-                                    e.target.value === '' ? ToastNotification('error', "Room Name Empty !") : updateEditStatus(false)
+                                    e.target.value === '' ? ToastNotification('error', "Room Name Empty !") : setEditingRoom(false)
                                     updateRoomName(e.target.value)
                                     updateRoom(e.target.value)
                                 } else if(e.keyCode === 27 || e.which === 27) {
 
-                                    updateEditStatus(false);
+                                    setEditingRoom(false);
                                 }
                             }}
                             type="text"
@@ -240,7 +241,8 @@ const RoomListItem = React.memo((props) => {
                                         className="material-icons md-light md-inactive ml-2"
                                         style={{fontSize: '14px'}}
                                         onClick={(e) => {
-                                            toggleEditRoomName(e)
+                                            e.stopPropagation();
+                                            setEditingRoom(true);
                                         }}
                                     >
                                         edit
