@@ -476,7 +476,7 @@ const VideoCallCanvas = React.memo((props) => {
     finally {
 
     	actions.app.clearVideoCallData();
-      actions.app.emitUpdateTeam();
+      //actions.app.emitUpdateTeam();
     	var win = remote.getCurrentWindow();
     	win.destroy();
     }
