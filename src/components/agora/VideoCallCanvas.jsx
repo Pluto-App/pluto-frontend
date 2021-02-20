@@ -211,7 +211,10 @@ const VideoCallCanvas = React.memo((props) => {
       	
         AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
 
-      		socket_live.emit(events.joinRoom, { room: props.channel, user_id: props.uid});
+      		socket_live.emit(events.joinRoom, { room: props.channel, user_id: props.uid},
+            (data) => {
+              actions.app.emitUpdateTeam();
+            });
       		localStream = streamInit(uid, props.videoProfile);
 
       		localStream.init(() => {
@@ -223,7 +226,6 @@ const VideoCallCanvas = React.memo((props) => {
         		AgoraClient.publish(localStream, err => {
           			alert("Publish local stream error: " + err);
         		})
-            actions.app.emitUpdateTeam();
         	},
           	err => {
 
@@ -474,7 +476,6 @@ const VideoCallCanvas = React.memo((props) => {
     finally {
 
     	actions.app.clearVideoCallData();
-      actions.app.emitUpdateTeam();
     	var win = remote.getCurrentWindow();
     	win.destroy();
     }

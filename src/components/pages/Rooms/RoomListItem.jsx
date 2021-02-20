@@ -66,13 +66,18 @@ const RoomListItem = React.memo((props) => {
         let channel_id = 'rvc-' + room_rid;
         localStorage.setItem('call_channel_id', channel_id);
 
-        socket_live.emit(events.roomVideoCall, {
-            channel_id: 't-' + state.currentTeam.tid,
-            call_channel_id: channel_id,
-            room_id: room.id,
-            room_rid: room.rid,
-            user: state.userProfileData.uid
-        })
+        socket_live.emit(events.roomVideoCall, 
+            {
+                channel_id: 't-' + state.currentTeam.tid,
+                call_channel_id: channel_id,
+                room_id: room.id,
+                room_rid: room.rid,
+                user: state.userProfileData.uid
+            },
+            (data) => {
+                actions.app.emitUpdateTeam();
+            }
+        )
 
         window.require("electron").ipcRenderer.send('init-video-call-window', channel_id);
     }
