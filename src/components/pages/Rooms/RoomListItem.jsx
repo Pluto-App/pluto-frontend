@@ -73,9 +73,6 @@ const RoomListItem = React.memo((props) => {
                 room_id: room.id,
                 room_rid: room.rid,
                 user: state.userProfileData.uid
-            },
-            (data) => {
-                actions.app.emitUpdateTeam();
             }
         )
 

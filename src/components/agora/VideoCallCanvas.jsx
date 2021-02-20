@@ -455,7 +455,7 @@ const VideoCallCanvas = React.memo((props) => {
     actions.app.setVideoCallCompactMode(true);
   }
 
-	const handleExit = (e) => {
+	const handleExit = async (e) => {
     
     if (e && e.currentTarget.classList.contains('disabled')) {
     		return
@@ -476,6 +476,7 @@ const VideoCallCanvas = React.memo((props) => {
     finally {
 
     	actions.app.clearVideoCallData();
+      actions.app.emitUpdateTeam();
     	var win = remote.getCurrentWindow();
     	win.destroy();
     }

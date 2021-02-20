@@ -173,9 +173,6 @@ export const clearVideoCallData = async ({ actions, state, effect }) => {
 			rid: 		call_channel_id.split('-')[1], 
 			uid: 		state.userProfileData.uid ,
 			channel_id: call_channel_id
-		},
-		(data) => {
-			actions.app.emitUpdateTeam();
 		}
 	);
 	

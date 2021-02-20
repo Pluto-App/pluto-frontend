@@ -119,7 +119,7 @@ export default function App() {
       socket_live.on(events.updateTeam, (data) => {
 
         if(data.tid == state.currentTeam.tid){
-          setTimeout( () => {actions.team.getTeam({authData: authData, team_id: state.currentTeam.id})}, 500);
+          setTimeout( () => {actions.team.getTeam({authData: authData, team_id: state.currentTeam.id})}, 1000);
         }
       });
 
