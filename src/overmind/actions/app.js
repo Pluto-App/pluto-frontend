@@ -162,7 +162,7 @@ export const emitUpdateTeamMembers = async ({ actions, state, effect }) => {
 	}
 }
 
-export const clearVideoCallData = async ({ state, effect }) => {
+export const clearVideoCallData = async ({ actions, state, effect }) => {
 
 	var call_channel_id = localStorage.getItem('call_channel_id');
 	var curent_team = localStorage.getItem('current_team');

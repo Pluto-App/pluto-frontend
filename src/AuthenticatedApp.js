@@ -6,8 +6,6 @@ import OrgRegisterPage from './components/pages/Organization/OrgRegisterPage'
 import TeamRegisterPage from './components/pages/Teams/TeamRegisterPage'
 import RoomProfile from './components/pages/Rooms/RoomProfile'
 import TeamProfile from './components/pages/Teams/TeamProfile'
-import UserProfile from './components/pages/Users/UserProfile'
-import UserUpdate from './components/pages/Users/UserUpdate'
 import Settings from './components/pages/Settings'
 
 import VideoCall from './components/windows/videocall/VideoCall'
@@ -55,6 +53,7 @@ export default function App() {
   const logout = () => {
 
     actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+      socket_live.emit(events.offline, state.userProfileData)
       window.require("electron").ipcRenderer.send('resize-login');
     });
   }
@@ -102,11 +101,11 @@ export default function App() {
       });
 
       socket_live.on(events.roomVideoCall, (data) => {
-        actions.room.getTeamRooms({authData: authData, teamId: state.currentTeam.id});
+        //actions.room.getTeamRooms({authData: authData, teamId: state.currentTeam.id});
       });
 
       socket_live.on(events.exitRoomVideoCall, (data) => {
-        actions.room.getTeamRooms({authData: authData, teamId: state.currentTeam.id});
+        //actions.room.getTeamRooms({authData: authData, teamId: state.currentTeam.id});
       });
 
       socket_live.on(events.userScreenShare, (data) => {
@@ -191,14 +190,8 @@ export default function App() {
             <Route exact path="/team-profile">
               <TeamProfile />
             </Route>
-            <Route exact path="/user-profile">
-              <UserProfile />
-            </Route>
             <Route exact path="/room-profile">
               <RoomProfile />
-            </Route>
-            <Route exact path="/user-update">
-              <UserUpdate />
             </Route>
             <Route exact path="/video-call">
               <VideoCall />
