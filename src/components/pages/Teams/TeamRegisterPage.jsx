@@ -51,12 +51,12 @@ export default function TeamRegisterPage() {
             tid: teamCode
         }
 
-        if (teamCode.length == 12) {
+        if (teamCode.length == 12 || teamCode.length == 14) {
             await actions.team.addUser({authData: authData, reqData: reqData})
             history.push('/')
         }
         else {
-            ToastNotification('error', "Must be 12 letters.")
+            ToastNotification('error', "Team Code doesn't seem correct!")
         }
     }
 

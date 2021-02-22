@@ -78,7 +78,7 @@ const MainBar = React.memo((props) => {
                                     >add</i>
                                 </div>
                                 <div style={{width: '145px', paddingTop: '8px', float: 'right'}}>
-                                    Create Team
+                                    Add Team
                                 </div>
                             </div>
                         </div>

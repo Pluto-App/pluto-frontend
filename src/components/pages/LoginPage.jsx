@@ -43,13 +43,6 @@ const LoginPage = React.memo(() => {
     <div className="bg-black text-white flex flex-1 pt-20 px-10 justify-center main-container w-full" 
       style={{ height: "calc(100vh - 30px)" }}
     >
-      {/* <div className="text-center mb-3 font-italic font-bold text-xl">
-        <Image
-          img src={main} alt="Logo" className="text-center mb-3 font-italic font-bold text-xl"
-          height={30}
-          width={30}
-        />
-      </div> */}
       <div>
         <h2 className="text-center mb-3 font-italic font-bold text-xl">Pluto Office</h2>
         {
@@ -78,12 +71,6 @@ const LoginPage = React.memo(() => {
             </div>
         }
         
-        {/*
-          <p className="text-center mt-6 text-md"> Don't have an account? <br />
-            <a href="" onClick={openSignup} className="text-indigo-700 font-bold no-underline hover:text-indigo-400"
-              style={{ transition: "all .60s ease" }}>Sign Up</a>
-          </p>
-        */}
       </div>
     </div>
   );
