@@ -664,9 +664,10 @@ const VideoCallCanvas = React.memo((props) => {
         className={!state.videoCallCompactMode && state.streamingScreenShare? "flex-1" : ""}
         style={{
           position: state.streamingScreenShare ? 'relative' : '',
-          width: !state.videoCallCompactMode && state.streamingScreenShare ? "190px" : "",
+          width: !state.videoCallCompactMode && state.streamingScreenShare ? "185px" : "",
           height: !state.videoCallCompactMode && state.streamingScreenShare ? "100vh" : "",
-          marginLeft: state.streamingScreenShare ? "10px" : ""
+          marginLeft: !state.videoCallCompactMode && state.streamingScreenShare ? "5px" : "",
+          marginRight: !state.videoCallCompactMode && state.streamingScreenShare ? "10px" : ""
         }}
       >
         <div id="Dish">

@@ -351,7 +351,7 @@ function createWindow() {
     if (videoCallWindow) {
       previousVideoBounds = videoCallWindow.getBounds();
       videoCallWindow.setPosition(0,0);
-      videoCallWindow.setSize(sWidth - 100, sHeight - 100);
+      videoCallWindow.setSize(sWidth, sHeight);
       videoCallWindow.setResizable(true);
       videoCallWindow.setAlwaysOnTop(false);
     }
