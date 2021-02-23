@@ -28,7 +28,6 @@ export const setAddingRoom = async ({ state, effect }, value) => {
 }
 
 export const updateUserActiveWindowData = async ({ state, effect }, {user_id, active_window_data}) => {
-
 	state.usersActiveWindows[user_id] = active_window_data;
 }
 
