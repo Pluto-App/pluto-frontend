@@ -25,7 +25,6 @@ export const events = {
   updateTeamMembers:  'updateTeamMembers',
   updateTeamRooms:    'updateTeamRooms',
 
-  offline: "Offline",
   sleeping: "Sleeping",
   new_team: "New Team",
   new_room: "New Room",

@@ -53,6 +53,8 @@ export default function App() {
   const logout = () => {
 
     actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+
+      console.log('OFFLINE!');
       socket_live.emit(events.offline, state.userProfileData)
       window.require("electron").ipcRenderer.send('resize-login');
     });
@@ -85,8 +87,9 @@ export default function App() {
       });
 
       socket_live.on(events.offline, (user_id) => {
-
-        if(state.teamMembersMap && state.teamMembersMap[user_id] && !state.teamMembersMap[user_id].online){
+        console.log('offline: ' + user_id);
+        if(state.teamMembersMap && state.teamMembersMap[user_id] && state.teamMembersMap[user_id].online){
+          console.log('here');
           actions.app.setUserOffline(user_id);
         }
 
