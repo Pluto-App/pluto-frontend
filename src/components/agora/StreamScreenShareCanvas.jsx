@@ -111,12 +111,9 @@ const StreamScreenShareCanvas = React.memo((props) => {
   	}
 
   	const exitScreenShare = () => {
-  		
+
   		actions.app.endStreamingScreenShare();
   		actions.app.clearScreenShareData();
-
-  		// var window = remote.getCurrentWindow();
-    //   	window.close();
   	}
 
   	const viewingScreenShare = async () => {

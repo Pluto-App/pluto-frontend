@@ -571,6 +571,7 @@ const VideoCallCanvas = React.memo((props) => {
           i++;
       }
       if (h > Height) return false;
+      if (Increment > Width) return false;
       else return Increment;
   }
 
@@ -579,10 +580,10 @@ const VideoCallCanvas = React.memo((props) => {
     let Margin;
     let Scenary = document.getElementById('Dish');
 
-    if(state.videoCallCompactMode)
+    if(state.videoCallCompactMode || state.streamingScreenShare)
       Margin = 2;
     else
-      Margin = 20;
+      Margin = 10;
 
     if(Scenary){
       let Width = Scenary.offsetWidth - (Margin * 2);
@@ -602,7 +603,7 @@ const VideoCallCanvas = React.memo((props) => {
 
       max = max - (Margin * 2);
 
-      if(state.videoCallCompactMode){
+      if(state.videoCallCompactMode || state.streamingScreenShare ){
         max = Width - 4;
       }
 
@@ -662,14 +663,16 @@ const VideoCallCanvas = React.memo((props) => {
       <div id="Video"
         className={!state.videoCallCompactMode && state.streamingScreenShare? "flex-1" : ""}
         style={{
-          position: 'relative',
-          width: !state.videoCallCompactMode && state.streamingScreenShare ? "200px" : ""
+          position: state.streamingScreenShare ? 'relative' : '',
+          width: !state.videoCallCompactMode && state.streamingScreenShare ? "190px" : "",
+          height: !state.videoCallCompactMode && state.streamingScreenShare ? "100vh" : "",
+          marginLeft: state.streamingScreenShare ? "10px" : ""
         }}
       >
         <div id="Dish">
           <div style={{ 
               height: state.videoCallCompactMode ? '100%' : '',
-              display: state.videoCallCompactMode ? '' : 'flex'
+              display: state.videoCallCompactMode || state.streamingScreenShare ? '' : 'flex'
             }}
           >
             {
@@ -691,8 +694,8 @@ const VideoCallCanvas = React.memo((props) => {
                     className="ag-item-info"
                     style={{ 
                       display: stream.isVideoOn() ? 'flex' : 'none',
-                      bottom: state.videoCallCompactMode ? '5px' : '30px',
-                      right: state.videoCallCompactMode ? '5px' : '30px'
+                      bottom: state.videoCallCompactMode || state.streamingScreenShare ? '5px' : '30px',
+                      right: state.videoCallCompactMode || state.streamingScreenShare ? '5px' : '30px'
                     }}
                   >
                     <div style={{ display: "table", height: '30px'}}>
