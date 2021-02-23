@@ -599,8 +599,8 @@ function createWindow() {
       if(screenShareControlsWindow)
         screenShareControlsWindow.close();
 
-      if(streamScreenShareWindow)
-        streamScreenShareWindow.close();
+      // if(streamScreenShareWindow)
+      //   streamScreenShareWindow.close();
 
     } catch (error) {
       console.error(error);

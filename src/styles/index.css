@@ -72,6 +72,13 @@ body {
   align-items: center;
   justify-items: center;
 }
+
+#ag-screenshare-canvas {
+  height: 100%;
+  align-items: center;
+  justify-items: center;
+}
+
 .ag-item :first-child {
   border-radius: 0px;
 }
@@ -555,13 +562,27 @@ video {
    
    
 }
+
+#ScreenShareDish {
+  display: flex;
+  left: 0px;
+  bottom: 0px;
+  top: 0px;
+  right: 0px;
+  position: absolute;
+  align-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
 /* Camera */
 #Dish .ag-item {
 
     position: relative;
     vertical-align: middle;
     align-self: center;
-    border-radius: 10px;
     overflow: hidden;
     display: inline-block;
     box-shadow: 0px 12px 22px rgba(0, 0, 0, 0.4);

@@ -108,10 +108,6 @@ export default function App() {
         //actions.room.getTeamRooms({authData: authData, teamId: state.currentTeam.id});
       });
 
-      socket_live.on(events.userScreenShare, (data) => {
-        actions.app.userScreenShare(data);
-      });
-
       socket_live.on(events.viewScreenShare, (data) => {
         actions.app.updateScreenShareViewers(data);
       });

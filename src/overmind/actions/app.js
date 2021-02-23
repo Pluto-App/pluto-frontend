@@ -62,8 +62,11 @@ export const userScreenShare = async ({ state, effect }, data) => {
 	 	localStorage.setItem("screenshare_owner", data.sender_id);
 
 	 	state.streamingScreenShare = true;
-	 	window.require("electron").ipcRenderer.send('stream-screenshare', data.channel_id);	
 	}
+}
+
+export const endStreamingScreenShare = async ({ state, effect }, data) => {
+ 	state.streamingScreenShare = false;
 }
 
 export const updateScreenShareViewers = async ({ state, effect }, data) => {

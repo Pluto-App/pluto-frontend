@@ -112,9 +112,11 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
   	const exitScreenShare = () => {
   		
+  		actions.app.endStreamingScreenShare();
   		actions.app.clearScreenShareData();
-  		var window = remote.getCurrentWindow();
-      	window.close();
+
+  		// var window = remote.getCurrentWindow();
+    //   	window.close();
   	}
 
   	const viewingScreenShare = async () => {
@@ -246,18 +248,19 @@ const StreamScreenShareCanvas = React.memo((props) => {
           i++;
       }
       if (h > Height) return false;
+      if (Increment > Width) return false;
       else return Increment;
   	}
 
   	const Dish = () => {
 
-	    let Margin = 5;
-	    let Scenary = document.getElementById('Dish');
+	    let Margin = 0;
+	    let Scenary = document.getElementById('ScreenShareDish');
 
 	    if(Scenary){
 	      let Width = Scenary.offsetWidth - (Margin * 2);
 	      let Height = Scenary.offsetHeight - (Margin * 2);
-	      let Cameras = document.getElementsByClassName('Camera');
+	      let Cameras = document.getElementsByClassName('ScreenShareCamera');
 	      let max = 0;
 
 	      let i = 1;
@@ -278,35 +281,33 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
   	function setWidth(width, margin) {
 
-      let Cameras = document.getElementsByClassName('Camera');
+      let Cameras = document.getElementsByClassName('ScreenShareCamera');
       var resolution = screenShareResolution;
       var ratio = resolution.height/resolution.width;
 
       for (var s = 0; s < Cameras.length; s++) {
           Cameras[s].style.width = width + "px";
-          Cameras[s].style.margin = margin + "px";
+          Cameras[s].style.margin = 'auto';
           Cameras[s].style.height = (width * ratio) + "px";
       }
   	}
 
     return (
-		<div id="ag-canvas" style={{background: '#2F3136'}} >
-			<div id="Dish">
-				<div style={{ display: 'flex' }}>
-					<section style={{ width: 'auto', position: 'relative'}}>
-						<div id="ag-screen" className="ag-item Camera" tabIndex="0"
-							onMouseMove={ shareCursorData }
-							onDoubleClick={ shareCursorData }
-							onKeyUp={ shareCursorData }
-							onKeyDown={ shareCursorData }
-							onMouseDown={ shareCursorData }
-							onMouseUp={ shareCursorData }
-						>
-		    			</div>
-					</section>
-	    		</div>
+		<div id="ScreenShareDish" >
+			<div style={{ display: 'flex', width: '100%' }}>
+				<section style={{ width: '100%', position: 'relative'}}>
+					<div id="ag-screen" className="ag-item ScreenShareCamera" tabIndex="0"
+						onMouseMove={ shareCursorData }
+						onDoubleClick={ shareCursorData }
+						onKeyUp={ shareCursorData }
+						onKeyDown={ shareCursorData }
+						onMouseDown={ shareCursorData }
+						onMouseUp={ shareCursorData }
+					>
+	    			</div>
+				</section>
     		</div>
-      	</div>
+		</div>
 	);
 })
 

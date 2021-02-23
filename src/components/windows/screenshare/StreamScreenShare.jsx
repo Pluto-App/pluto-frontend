@@ -26,25 +26,15 @@ const StreamScreenShare = React.memo((props) => {
     });
 
     return (
-
-         <div className="font-sans w-full" style={{position: 'absolute'}}>
-      
-          <div className="flex" style={{ height: "100vh" }}>
-            <div className="bg-black flex-1 p-0 w-100">
-
-              <StreamScreenShareCanvas
-                videoProfile={config.videoProfile}
-                channel={config.channel}
-                transcode={config.transcode}
-                attendeeMode={config.attendeeMode}
-                baseMode={config.baseMode}
-                appId={config.appId}
-                uid={config.uid}
-              />
-          
-          </div>
-        </div>
-      </div>
+      <StreamScreenShareCanvas
+        videoProfile={config.videoProfile}
+        channel={config.channel}
+        transcode={config.transcode}
+        attendeeMode={config.attendeeMode}
+        baseMode={config.baseMode}
+        appId={config.appId}
+        uid={config.uid}
+      />
     )
 })
 
