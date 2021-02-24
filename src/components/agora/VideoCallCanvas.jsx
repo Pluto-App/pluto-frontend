@@ -250,6 +250,13 @@ const VideoCallCanvas = React.memo((props) => {
     });
 
     socket_live.on(events.userScreenShare, (data) => {
+
+      if (sharingScreen) {
+          window.require("electron").ipcRenderer.send('stop-screenshare');
+          setSharingScreen(false);
+      }
+
+      data['user'] = usersInCallRef.current[data.user_id];
       actions.app.userScreenShare(data);
       updateWindowSize();
     });
@@ -447,6 +454,7 @@ const VideoCallCanvas = React.memo((props) => {
 
   	if (sharingScreen) {
     		window.require("electron").ipcRenderer.send('stop-screenshare');
+        setSharingScreen(false);
   	} else {
       
     		window.require("electron").ipcRenderer.send('init-screenshare');
@@ -756,7 +764,6 @@ const VideoCallCanvas = React.memo((props) => {
                       usersInCall[stream.getId()] && usersInCall[stream.getId()].id &&
                       <ActiveWindowInfo user={usersInCall[stream.getId()]} user_id={usersInCall[stream.getId()].id}/>
                     }
-                    
                   </div>
 
                 </section>

@@ -292,8 +292,12 @@ const StreamScreenShareCanvas = React.memo((props) => {
     return (
 		<div id="ScreenShareDish" >
 			<div style={{ display: 'flex', width: '100%' }}>
-				<section style={{ width: '100%', position: 'relative'}}>
-					<div id="ag-screen" className="ag-item ScreenShareCamera" tabIndex="0"
+				<section style={{ 
+					width: '100%', 
+					position: 'relative',
+					border: '1px #636161 solid'
+				}}>
+					<div id="ag-screen" className="ScreenShareCamera" tabIndex="0"
 						onMouseMove={ shareCursorData }
 						onDoubleClick={ shareCursorData }
 						onKeyUp={ shareCursorData }
@@ -302,6 +306,26 @@ const StreamScreenShareCanvas = React.memo((props) => {
 						onMouseUp={ shareCursorData }
 					>
 	    			</div>
+                  
+                  	<div 
+                    	id='ag-item-info' 
+                    	className="ag-item-info"
+	                    style={{ 
+	                      display: 'flex',
+	                      bottom: '5px',
+	                      right: '5px'
+	                    }}
+                  	>
+	                    <div style={{ display: "table", height: '30px'}}>
+	                      <span className="text-gray-200 px-1" style={{ display: 'table-cell', verticalAlign: 'middle'}}>
+	                        {
+	                          state.screenShareUser ?
+	                          state.screenShareUser.name.split(' ')[0] + "'s Screen"
+	                          : ''
+	                        }
+	                      </span>
+	                    </div>
+                  </div>
 				</section>
     		</div>
 		</div>

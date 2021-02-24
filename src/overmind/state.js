@@ -29,6 +29,7 @@ export const state = {
 
     // Video Call
     streamingScreenShare: false,
+    screenShareUser: {},
     videoCallCompactMode: true,
 
     // App Data

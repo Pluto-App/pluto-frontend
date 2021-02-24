@@ -352,6 +352,7 @@ function createWindow() {
       previousVideoBounds = videoCallWindow.getBounds();
       videoCallWindow.setPosition(0,0);
       videoCallWindow.setSize(sWidth, sHeight);
+      videoCallWindow.setMinimumSize(800, 600);
       videoCallWindow.setResizable(true);
       videoCallWindow.setAlwaysOnTop(false);
     }
@@ -360,6 +361,7 @@ function createWindow() {
   ipcMain.on('collapse-video-call-window', (event, height) => {
 
     if (videoCallWindow) {
+      videoCallWindow.setMinimumSize(compactVideoWidth, height);
       videoCallWindow.setBounds({
         ...previousVideoBounds,
         height: height

@@ -61,6 +61,7 @@ export const userScreenShare = async ({ state, effect }, data) => {
 	 	localStorage.setItem("screenshare_owner", data.sender_id);
 
 	 	state.streamingScreenShare = true;
+	 	state.screenShareUser = data.user;
 	}
 }
 

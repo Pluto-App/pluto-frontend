@@ -78,7 +78,8 @@ const InitScreenShareCanvas = React.memo((props) => {
 	          			call_channel_id: 	localStorage.getItem("call_channel_id"),
 	          			resolution: 		overlayBounds,
 				 		channel_id: 		props.channel,
-				 		sender_id:  		state.userProfileData.uid
+				 		sender_id:  		state.userProfileData.uid,
+				 		user_id: 			state.userProfileData.id
 				 	});
 
 				 	localStorage.setItem('screenshare_channel_id', props.channel);
