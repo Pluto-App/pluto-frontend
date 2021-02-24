@@ -309,8 +309,11 @@ function createWindow() {
       }
     })
 
-    videoCallWindow.setVisibleOnAllWorkspaces(true);
+    //videoCallWindow.setAlwaysOnTop(true, "floating", 1);
+    //videoCallWindow.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
+
     videoCallWindow.setAlwaysOnTop(true, 'pop-up-menu');
+    //videoCallWindow.setVisibleOnAllWorkspaces(true);
     videoCallWindow.setMenu(null);
 
     const videoUrl = url.format({
@@ -504,7 +507,8 @@ function createWindow() {
           nodeIntegration: true,
           plugins: true,
           enableRemoteModule: true
-        }
+        },
+        show: false
       });
 
       const screenshareContainerUrl = url.format({
@@ -519,7 +523,15 @@ function createWindow() {
       screenShareContainerWindow.setIgnoreMouseEvents(true);
       screenShareContainerWindow.setSize(overlayBounds.width, overlayBounds.height);
       screenShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
+      screenShareContainerWindow.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
 
+      app.dock && app.dock.hide();
+      screenShareContainerWindow.show();
+      app.dock && app.dock.show();
+
+      screenShareContainerWindow.on('closed', () => {
+        screenShareContainerWindow = undefined;
+      })
 
       if (isDev) {
        
@@ -566,14 +578,12 @@ function createWindow() {
       screenShareControlsWindow.on('closed', () => {
 
         screenShareControlsWindow = undefined;
-        try{
 
-            screenShareContainerWindow.close();
-            initScreenShareWindow.close();
-
-        } catch (error) {
-          console.error(error);
-        }
+        if(initScreenShareWindow)
+          initScreenShareWindow.close();
+        if(screenShareContainerWindow)
+          screenShareContainerWindow.close();
+      
       })
 
       if (isDev) {
@@ -600,9 +610,6 @@ function createWindow() {
 
       if(screenShareControlsWindow)
         screenShareControlsWindow.close();
-
-      // if(streamScreenShareWindow)
-      //   streamScreenShareWindow.close();
 
     } catch (error) {
       console.error(error);

@@ -21824,15 +21824,19 @@ video {
   vertical-align: middle;
 }
 
+/* Details (optional) */
+
+/* Aspect Ratio Number */
+
 #ScreenShareDish .ag-item-info {
-    font-size: 12px;
-    font-family: Arial, Helvetica, sans-serif;
-    position: absolute;
-    font-weight: 100;
-    display: block;
-    opacity: 0.7;
-    background: black;
-    padding: 2px;
+  font-size: 12px;
+  font-family: Arial, Helvetica, sans-serif;
+  position: absolute;
+  font-weight: 100;
+  display: block;
+  opacity: 0.7;
+  background: black;
+  padding: 2px;
 }
 
 /* Camera */
