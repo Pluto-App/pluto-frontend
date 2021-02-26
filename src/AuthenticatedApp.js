@@ -4,8 +4,6 @@ import React, { useEffect, useState, useContext } from 'react'
 import HomePage from './components/pages/HomePage'
 import OrgRegisterPage from './components/pages/Organization/OrgRegisterPage'
 import TeamRegisterPage from './components/pages/Teams/TeamRegisterPage'
-import RoomProfile from './components/pages/Rooms/RoomProfile'
-import TeamProfile from './components/pages/Teams/TeamProfile'
 import Settings from './components/pages/Settings'
 
 import VideoCall from './components/windows/videocall/VideoCall'
@@ -50,19 +48,10 @@ export default function App() {
   const { state, actions } = useOvermind();
   const { authData, setAuthData } = useContext(AuthContext);
 
-  const logout = () => {
-
-    actions.auth.logOut({setAuthData: setAuthData}).then(() => {
-
-      socket_live.emit(events.offline, state.userProfileData)
-      window.require("electron").ipcRenderer.send('resize-login');
-    });
-  }
-
   useEffect(() => {
       if(state.error && state.error.message){
         
-        if(process && process.env.NODE_ENV == 'development') {
+        if(process && process.env.NODE_ENV === 'development') {
           alert(state.error);
           console.log(state.error);
         }
@@ -74,6 +63,15 @@ export default function App() {
     () => {
 
       loadProgressBar()
+
+      const logout = () => {
+
+        actions.auth.logOut({setAuthData: setAuthData}).then(() => {
+
+          socket_live.emit(events.offline, state.userProfileData)
+          window.require("electron").ipcRenderer.send('resize-login');
+        });
+      }
 
       window.require("electron").ipcRenderer.on('logout', function (e, args) {
         logout();
@@ -90,7 +88,6 @@ export default function App() {
           actions.app.setUserOffline(user_id);
           actions.app.updateUserActiveWindowData({user_id: user_id, active_window_data: {}})
         }
-
       });
 
       socket_live.on(events.activeWindowUpdate, (data) => {
@@ -115,27 +112,26 @@ export default function App() {
 
       socket_live.on(events.updateTeam, (data) => {
 
-        if(data.tid == state.currentTeam.tid){
+        if(data.tid === state.currentTeam.tid){
           setTimeout( () => {actions.team.getTeam({authData: authData, team_id: state.currentTeam.id})}, 500);
         }
       });
 
       socket_live.on(events.updateTeamMembers, (data) => {
         
-        if(data.tid == state.currentTeam.tid){
+        if(data.tid === state.currentTeam.tid){
           actions.user.getTeamMembers({authData: authData, team_id: state.currentTeam.id})
         }
       });
 
       socket_live.on(events.updateTeamRooms, (data) => {
 
-        if(data.tid == state.currentTeam.tid){
+        if(data.tid === state.currentTeam.tid){
           actions.room.getTeamRooms({authData: authData, team_id: state.currentTeam.id})
         }
       });
       
-    }, [authData]
-  );
+  }, []);
 
   useEffect(() => {
 
@@ -147,7 +143,7 @@ export default function App() {
     
     return () => clearInterval(interval);
   
-  }, []);
+  },[]);
 
   return (
     <HashRouter>
@@ -183,12 +179,6 @@ export default function App() {
             </Route>
             <Route exact path="/add-team">
               <TeamRegisterPage />
-            </Route>
-            <Route exact path="/team-profile">
-              <TeamProfile />
-            </Route>
-            <Route exact path="/room-profile">
-              <RoomProfile />
             </Route>
             <Route exact path="/video-call">
               <VideoCall />

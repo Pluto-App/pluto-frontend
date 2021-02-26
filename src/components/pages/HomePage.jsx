@@ -71,6 +71,21 @@ export default function HomePage() {
     const [newRoomName, updateNewRoomName] = useState("");
     const [addingRoom, setAddingRoom] = useState(false);
 
+    const addRoom = async (roomname) => {
+
+        let roomData = {
+            team_id: state.currentTeam.id,
+            name: roomname
+        }
+
+        await actions.room.addRoom({authData: authData, roomData: roomData});
+        actions.app.emitUpdateTeam();
+    }
+
+    const handleChange = async (e) => {
+        updateNewRoomName(e.target.value);
+    }
+
     useEffect(() => {
 
         const setActiveWin = setInterval(async () => {
@@ -87,25 +102,29 @@ export default function HomePage() {
         
         return () => clearInterval(setActiveWin);
 
-    }, [state.activeWindowApp])
+    }, [])
 
 
     useEffect(() => {
 
         actions.user.getLoggedInUser({authData: authData, setAuthData: setAuthData, joinRooms: true})
 
-    }, [authData])
+    }, [authData, actions, setAuthData])
 
     useEffect(() => {
 
         if(state.noTeams)
             history.push('/add-team');
 
-    }, [state.noTeams])
+    }, [state.noTeams, history])
 
     useEffect(() => {
 
         window.require("electron").ipcRenderer.send('resize-normal');
+
+    },[])
+
+    useEffect(() => {
 
         window.require("electron").ipcRenderer.on('refresh', function (e, args) {
 
@@ -117,22 +136,7 @@ export default function HomePage() {
             setAddingRoom(false)
         });
 
-    }, [])
-
-    const addRoom = async (roomname) => {
-
-        let roomData = {
-            team_id: state.currentTeam.id,
-            name: roomname
-        }
-
-        await actions.room.addRoom({authData: authData, roomData: roomData});
-        actions.app.emitUpdateTeam();
-    }
-
-    const handleChange = async (e) => {
-        updateNewRoomName(e.target.value);
-    }
+    },[authData])
 
     const inviteModalStyle = {
         "top": "46%",
@@ -243,7 +247,7 @@ export default function HomePage() {
                         <div className="items-center absolute rounded-sm bg-white mx-2 p-1 py-1" style={inviteModalStyle}
                             onClick={(e) => {
                             }}>
-                            <div class="flex w-full">
+                            <div className="flex w-full">
                                 <h4 className="font-bold text-xl text-gray-600 text-center mb-2 flex-1"> Add Teammates</h4>
                                 <h4
                                 className="text-gray-600 text-center px-2 pointer"
@@ -258,9 +262,11 @@ export default function HomePage() {
                             <textarea
                                 rows='3'
                                 id="InviteModalLink"
-                                value={'Team Code: ' + state.currentTeam.tid + '\n' + 'Download App: https://github.com/Pluto-App/pluto-desktop-releases/releases'}
+                                value={"Team Code: " + state.currentTeam.tid + "\nDownload App: https://github.com/Pluto-App/pluto-desktop-releases/releases"}
                                 style={{ resize: 'none'}}
-                                className="w-full shadow appearance-none border text-gray-200 rounded py-1 px-1 bg-gray-600" />
+                                className="w-full shadow appearance-none border text-gray-200 rounded py-1 px-1 bg-gray-600"
+                                readOnly
+                             />
                             <button
                                 className="bg-light-blue w-full rounded-sm flex justify-center text-white items-center
                                 text-white font-bold py-2 px-2 mt-2 focus:outline-none focus:shadow-outline"

@@ -1,6 +1,4 @@
 
-import { socket_live, events } from '../../components/sockets'
-
 export const getUserPreference = async ({state, effects}, {authData}) => {
 
 	var userPreference = await effects.userpreference.getUserPreference(authData, authData.user.id)
@@ -27,6 +25,6 @@ export const createUserPreference = async ({state, effects, actions}, {authData,
 
 export const updateUserPreference = async ({state, effects, actions}, {authData, userPreferenceData}) => {
 
-	var responseData = await effects.userpreference.updateUserPreference(authData, userPreferenceData);
+	await effects.userpreference.updateUserPreference(authData, userPreferenceData);
 	actions.app.emitUpdateTeam();
 }

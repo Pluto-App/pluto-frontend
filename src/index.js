@@ -4,7 +4,6 @@ import { hot } from 'react-hot-loader/root';
 import * as React from 'react'
 import { render } from 'react-dom'
 import { createOvermind } from 'overmind'
-import { Provider } from 'overmind-react'
 import { config } from './overmind'
 
 import './styles/tailwind.css';
@@ -15,7 +14,7 @@ import {AppProviders} from './context'
 
 const overmind = createOvermind(config)
 
-const NewOverMind = hot(overmind)
+hot(overmind)
 
 render(
 	<AppProviders>

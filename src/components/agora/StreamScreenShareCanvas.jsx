@@ -1,13 +1,8 @@
-import React, { useEffect, useState, useContext, useLayoutEffect } from 'react'
-import { merge } from 'lodash'
+import React, { useEffect, useState, useLayoutEffect } from 'react'
 import AgoraRTC from 'agora-rtc-sdk'
 
 import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
-
-import {AuthContext} from '../../context/AuthContext'
-
-const { remote } = window.require('electron');
 
 const StreamScreenShareCanvas = React.memo((props) => {
 
@@ -94,7 +89,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
   	}
 
   	const removeStream = (uid) => {
-	    streamList.map((item, index) => {
+	    streamList.forEach((item, index) => {
 	      if (item.getId() === uid) {
 	        item.close()
 	        let element = document.querySelector('#ag-item-' + uid)
@@ -131,7 +126,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
   	const shareCursorData = async (e) => {
 
-  		if(e.type != 'wheel')
+  		if(e.type !== 'wheel')
   			e.persist();
 
   		try {
@@ -155,7 +150,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
  				which: 		e.which  		
  			}
 
- 			if(e.type == 'wheel')
+ 			if(e.type === 'wheel')
  				eventData['direction'] = e.deltaY > 0 ? 'up' : 'down';
 
         	socket_live.emit(events.screenShareCursor, {
@@ -179,54 +174,6 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
   		shareCursorData(e);
   	}
-
-  	useLayoutEffect(() => {
- 		window.addEventListener("resize", Dish);
- 	}, [])
-
-    useEffect(() => {
-
-    	actions.app.setLoggedInUser();
-    	actions.app.setScreenSize();
-
-        AgoraClient.init(props.appId, () => {
-
-	      	subscribeStreamEvents();
-	      	
-	      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
-
-	      		socket_live.emit(events.joinRoom, props.channel);
-	        	viewingScreenShare();
-	      	})
-    	})
-
-    	document.getElementById("root").addEventListener("wheel", handleScroll);
-
-    	socket_live.on(events.screenShareSourceResize, (data) => {
-            setScreenShareResolution(data.resolution);
-        });
-
-    	return () => {
-      		document.getElementById("root").removeEventListener("wheel", handleScroll);
-    	};
-
-    }, [])
-
-    useEffect(() => {
-
-	    streamList.map((stream, index) => {	     
-	     	stream.play('ag-screen');
-	    })
-
-	    Dish();
-
-    }, [streamList])
-
-    useEffect(() => {
-
-	    Dish();
-
-    }, [screenShareResolution])
 
   	function Area(Increment, Count, Width, Height, Margin = 0) {
       
@@ -288,6 +235,54 @@ const StreamScreenShareCanvas = React.memo((props) => {
           Cameras[s].style.height = (width * ratio) + "px";
       }
   	}
+
+  	useLayoutEffect(() => {
+ 		window.addEventListener("resize", Dish);
+ 	},[])
+
+    useEffect(() => {
+
+    	actions.app.setLoggedInUser();
+    	actions.app.setScreenSize();
+
+        AgoraClient.init(props.appId, () => {
+
+	      	subscribeStreamEvents();
+	      	
+	      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
+
+	      		socket_live.emit(events.joinRoom, props.channel);
+	        	viewingScreenShare();
+	      	})
+    	})
+
+    	document.getElementById("root").addEventListener("wheel", handleScroll);
+
+    	socket_live.on(events.screenShareSourceResize, (data) => {
+            setScreenShareResolution(data.resolution);
+        });
+
+    	return () => {
+      		document.getElementById("root").removeEventListener("wheel", handleScroll);
+    	};
+
+    }, [])
+
+    useEffect(() => {
+
+	    streamList.forEach((stream, index) => {	     
+	     	stream.play('ag-screen');
+	    })
+
+	    Dish();
+
+    }, [streamList])
+
+    useEffect(() => {
+
+	    Dish();
+
+    }, [screenShareResolution])
 
     return (
 		<div id="ScreenShareDish" >

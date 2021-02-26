@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useOvermind } from '../../../overmind'
-const os = window.require('os');
-const { remote } = window.require('electron');
 
 // TODO Need to show some tooltip using Tailwind CSS ToolTip
 const MiniVideoCallTopBar = React.memo((props) => {

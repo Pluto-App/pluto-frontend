@@ -28,11 +28,11 @@ export default function App() {
 
     if(state.error && state.error.message){
 
-      if(process.env.NODE_ENV == 'development') {
+      if(process.env.NODE_ENV === 'development') {
         console.log(state.error);
       } 
 
-      if(process.env.REACT_APP_DEV_BUILD == 'true') {
+      if(process.env.REACT_APP_DEV_BUILD === 'true') {
         console.log('alert!');
         alert(state.error.stack);
       }
@@ -66,8 +66,7 @@ export default function App() {
       // }, 2000)
 
 
-    }, []
-  );
+  },[]);
 
   return (
     <Router>

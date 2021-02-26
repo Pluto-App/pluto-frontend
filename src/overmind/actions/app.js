@@ -1,7 +1,5 @@
 
 import { socket_live, events } from '../../components/sockets'
-import * as md5 from "md5";
-import * as Cookies from "js-cookie";
 
 import { toast } from 'react-toastify';
 import ToastNotification from '../../components/widgets/ToastNotification'
@@ -41,7 +39,7 @@ export const setElectronWindowScreenShareViewers = async ({ state, effect }, scr
 
 export const userVideoCall = async ({ state, effect }, data) => {
 
-	if(localStorage.getItem("call_channel_id") && localStorage.getItem("call_channel_id") == data.channel_id){
+	if(localStorage.getItem("call_channel_id") && localStorage.getItem("call_channel_id") === data.channel_id){
 		// Do nothing
 	} else {
 		localStorage.setItem("call_channel_id", data.channel_id);
@@ -55,7 +53,7 @@ export const userVideoCall = async ({ state, effect }, data) => {
 
 export const userScreenShare = async ({ state, effect }, data) => {
 
-	if(data.sender_id != state.userProfileData.uid){
+	if(data.sender_id !== state.userProfileData.uid){
 	 	localStorage.setItem("screenshare_channel_id", data.channel_id);
 	 	localStorage.setItem("screenshare_resolution", JSON.stringify(data.resolution));
 	 	localStorage.setItem("screenshare_owner", data.sender_id);
@@ -84,21 +82,21 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 		state.screenShareCursors[data.user.id] = data.cursor;
 
 	var remoteAccessEnabled = localStorage.getItem('remoteAccessEnabled');
-	if(remoteAccessEnabled && remoteAccessEnabled == 'true'){
+	if(remoteAccessEnabled && remoteAccessEnabled === 'true'){
 
-		if(data.event.type == 'click')
+		if(data.event.type === 'click')
 			window.require("electron").ipcRenderer.send('emit-click', data);
 		
-		else if(data.event.type == 'wheel')
+		else if(data.event.type === 'wheel')
 			window.require("electron").ipcRenderer.send('emit-scroll', data);
 
-		else if(data.event.type == 'mousedown')
+		else if(data.event.type === 'mousedown')
 			window.require("electron").ipcRenderer.send('emit-mousedown', data);
 
-		else if(data.event.type == 'mouseup')
+		else if(data.event.type === 'mouseup')
 			window.require("electron").ipcRenderer.send('emit-mouseup', data);
 
-		else if(data.event.type == 'keyup' || data.event.type == 'keydown')
+		else if(data.event.type === 'keyup' || data.event.type === 'keydown')
 			window.require("electron").ipcRenderer.send('emit-key', data);
 	}
 }
@@ -118,7 +116,7 @@ export const clearNotifications = async ({ state, effect }) => {
 
 export const setError = async ({ state, effect }, error) => {
 
-	if(error.message != state.error.message)
+	if(error.message !== state.error.message)
 		state.error = error
 }
 

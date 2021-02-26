@@ -8,7 +8,7 @@ import { appLogo } from '../../../utils/AppLogo';
 const ActiveWindowInfo = React.memo((props) => {
 
 
-  const { state, actions } = useOvermind();
+  const { state } = useOvermind();
   const [activeAppInfo, setActiveAppInfo] = useState({});
 
   const activeAppClick = (e, url) => {
@@ -24,7 +24,7 @@ const ActiveWindowInfo = React.memo((props) => {
       setActiveAppInfo(appLogo(state.usersActiveWindows[props.user.id], props.user.user_preference));    
     }
 
-  },[state.usersActiveWindows[props.user_id]])
+  },[state.usersActiveWindows[props.user.id]])
 
 
   return (
@@ -41,8 +41,9 @@ const ActiveWindowInfo = React.memo((props) => {
           >
             <div>
                 <img 
-                    src = { activeAppInfo.logo } 
-                    style = {{ borderRadius: '30%' }}
+                  alt = ""  
+                  src = { activeAppInfo.logo } 
+                  style = {{ borderRadius: '30%' }}
                 />
             </div>
           </a>

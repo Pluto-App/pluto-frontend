@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { useOvermind } from '../../../overmind'
+import React from 'react'
 const os = window.require('os');
 const { remote } = window.require('electron');
 
 // TODO Need to show some tooltip using Tailwind CSS ToolTip
 const MiniVideoCallTopBar = React.memo((props) => {
 
-  const { actions } = useOvermind();
-
-  const isWindows = os.platform() === 'win32';
   const isMac = os.platform() === "darwin";
 
   const minimize = () => {
@@ -19,13 +15,6 @@ const MiniVideoCallTopBar = React.memo((props) => {
   const close = () => {
     var win = remote.getCurrentWindow();
     win.destroy();
-  }
-
-  const openMenu = () => {
-    window.require("electron").ipcRenderer.send('display-app-menu', {
-      x : 10,
-      y : 20
-    });
   }
 
   return (

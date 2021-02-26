@@ -73,9 +73,9 @@ const MainBar = React.memo((props) => {
                             <div className="main-team-select-option" onClick={addTeam}>
                                 <div className="bg-black flex items-center justify-center text-2xl font-semibold 
                                 rounded-lg mb-1 overflow-hidden" style={{width: '45px', height: '45px', float: 'left'}}>
-                                    <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}
-                                        style={{ transition: "all .60s ease" }}
-                                    >add</i>
+                                    <i className="material-icons hover:bg-gray-700" style={{ fontSize: "18px", margin: "0" }}>
+                                        add
+                                    </i>
                                 </div>
                                 <div style={{width: '145px', paddingTop: '8px', float: 'right'}}>
                                     Add Team

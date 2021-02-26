@@ -46,8 +46,7 @@ const VideoCall = React.memo((props) => {
       actions.app.updateUserActiveWindowData(data);
     });
 
-    },[]
-  );
+  },[]);
 
 
   return (

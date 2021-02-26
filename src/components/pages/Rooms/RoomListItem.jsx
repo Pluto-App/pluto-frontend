@@ -46,7 +46,7 @@ const RoomListItem = React.memo((props) => {
         
         return () => clearInterval(setActiveWin);
 
-    },[])
+    },[room.users]);
 
     useEffect(() => {
 
@@ -120,7 +120,6 @@ const RoomListItem = React.memo((props) => {
 
         return userInfo ? userInfo.avatar : '';
     }
-
 
     const customMenuStyle = {
         "top": "75px",
@@ -198,6 +197,7 @@ const RoomListItem = React.memo((props) => {
                                     }}
                                 >
                                     <img 
+                                        alt = ""
                                         src={ activeAppInfo.logo } 
                                         style={{width: '40px', borderRadius: '30%'}} 
                                     />
@@ -345,9 +345,11 @@ const RoomListItem = React.memo((props) => {
                             
                             <div key={uid} style={{width: '25px', marginRight: '10px'}}>
                                 
-                                <img src={
-                                    userAvatar(uid)
-                                } style={{width: '100%', borderRadius: '12px'}} />
+                                <img 
+                                    alt = ""
+                                    src = { userAvatar(uid) } 
+                                    style={{width: '100%', borderRadius: '12px'}} 
+                                />
                                 
                             </div>
                         )

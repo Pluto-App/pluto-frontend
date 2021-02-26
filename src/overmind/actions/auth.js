@@ -18,7 +18,7 @@ export const googleLogin = async ({state, effects}, {setAuthData}) => {
             setAuthData(loginData);    
         
         } else {
-            throw('Login Failed! Please try again..');
+            throw(new Error('Login Failed! Please try again..'));
         }
         
     } catch (error){
@@ -31,7 +31,8 @@ export const googleLogin = async ({state, effects}, {setAuthData}) => {
 export const logOut = async ({state, effects}, {setAuthData}) => {
 
     localStorage.clear();
-
+    state.currentUser = {};
+    state.currentTeam = {};
     setAuthData({});
 }
 

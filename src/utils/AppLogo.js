@@ -50,7 +50,7 @@ export const appLogo = function(appData, userPreference) {
       appName = hostApp[url.hostname] ? hostApp[url.hostname] : appName;
 
       // Google Document or Google Sheet?
-      if(appName == 'googledocs|googlesheets') {
+      if(appName === 'googledocs|googlesheets') {
 
         var doc_type = url.pathname.split('/')[1]; 
 

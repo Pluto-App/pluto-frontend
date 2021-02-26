@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import * as Cookies from "js-cookie";
 import { css } from "@emotion/core";
 import { useOvermind } from '../../../overmind'

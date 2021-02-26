@@ -1,12 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useContext } from 'react'
 import { useOvermind } from '../../overmind'
-import { useHistory } from "react-router-dom";
-import Image from 'react-image-resizer';
 import { css } from "@emotion/core";
 import BeatLoader from "react-spinners/BeatLoader";
 import googleLogo from "../../assets/google.svg";
-import main from "../../assets/main.png";
 
 import {AuthContext} from '../../context/AuthContext'
 
@@ -21,9 +18,7 @@ const LoginPage = React.memo(() => {
     border-color: white;
   `;
 
-  let history = useHistory();
-
-  const { authData, setAuthData } = useContext(AuthContext);
+  const { setAuthData } = useContext(AuthContext);
   const { state, actions } = useOvermind();
 
   const googleSignInAction = (e) => {
@@ -32,11 +27,6 @@ const LoginPage = React.memo(() => {
     actions.auth.googleLogin({setAuthData: setAuthData}).then(() => {
       // No action required as of now.
     })
-  }
-
-  const openSignup = (e) => {
-    e.preventDefault();
-    window.require("electron").shell.openExternal('https://joinpluto.netlify.app/');
   }
 
   return (

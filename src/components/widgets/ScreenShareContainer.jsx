@@ -27,7 +27,7 @@ const ScreenShareContainer = React.memo((props) => {
         if(sourceInfo){
             let [sourceType, sourceId] = sourceInfo.split(':');
         
-            if(sourceType == 'window'){
+            if(sourceType === 'window'){
                 const followScreenShareSource = setInterval(async () => {
 
                     var overlayBounds = await window.require("electron").ipcRenderer.sendSync('screenshare-source-bounds', 
@@ -35,7 +35,7 @@ const ScreenShareContainer = React.memo((props) => {
 
                     if(overlaySize && overlayBounds) {
                         localStorage.setItem('screenshare_resolution', JSON.stringify(overlayBounds));
-                        if(overlaySize.width != overlayBounds.width || overlaySize.height != overlayBounds.height){
+                        if(overlaySize.width !== overlayBounds.width || overlaySize.height !== overlayBounds.height){
                             overlaySize = {
                                 width: overlayBounds.width, height: overlayBounds.height
                             };
@@ -63,11 +63,11 @@ const ScreenShareContainer = React.memo((props) => {
             actions.app.updateScreenShareCursor(data);
         });
 
-    }, [])
+    })
 
     useEffect(() => {
         actions.app.setScreenSize();
-    }, [])
+    },[])
 
     useEffect(() => {
 

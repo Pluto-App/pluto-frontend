@@ -1,24 +1,20 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { merge } from 'lodash'
 import AgoraRTC from 'agora-rtc-sdk'
 
 import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 
 import {AuthContext} from '../../context/AuthContext'
-
-import { windowManager } from "node-window-manager";
 const { remote } = window.require('electron');
 
 const InitScreenShareCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
-	const { authData, setAuthData } = useContext(AuthContext);
+	const { authData } = useContext(AuthContext);
 
 	const AgoraClient = AgoraRTC.createClient({ mode: props.transcode, codec: "vp8" });
 
 	var localStream = {};
-	const [ screenShareState, setScreenShareState ] = useState({ ready: false});
 
 	const [ screenSources, setScreenSources ] = useState([]);
 
@@ -43,17 +39,6 @@ const InitScreenShareCanvas = React.memo((props) => {
   		var window = remote.getCurrentWindow();
       	window.close();
   	}
-
-    useEffect(() => {
-
-    	actions.app.setScreenSize();
-
-    	AgoraRTC.getScreenSources(function(err, sources) {
-
-		    setScreenSources(sources);
-		})
-
-    }, [])
 
     const initScreenShare = (sourceInfo) => {
 
@@ -85,15 +70,12 @@ const InitScreenShareCanvas = React.memo((props) => {
 				 	localStorage.setItem('screenshare_channel_id', props.channel);
 				 	localStorage.setItem('screenshare_source', sourceInfo);
 	          		window.require('electron').ipcRenderer.send('sharing-screen', overlayBounds);
-
-	          		setScreenShareState({ ready: true })
 	        	},
 
 	          	err => {
 
 	            	alert("No Access to media stream", err)
 	            	exitScreenShare();
-	            	setScreenShareState({ ready: true })
 	          	})
 	      	})
     	})
@@ -101,17 +83,20 @@ const InitScreenShareCanvas = React.memo((props) => {
 
     useEffect(() => {
 
+    	actions.app.setScreenSize();
+
+    	AgoraRTC.getScreenSources(function(err, sources) {
+
+		    setScreenSources(sources);
+		})
+
+    },[])
+
+    useEffect(() => {
+
         actions.user.getLoggedInUser({authData: authData})
 
     }, [actions, authData])
-
-    const style = {
-  		display: 'grid',
-  		alignItems: 'center',
-  		justifyItems: 'center',
-  		gridTemplateRows: 'repeat(1, auto)',
-  		gridTemplateColumns: 'repeat(1, auto)'
-    }
 
     return (
 		<div>

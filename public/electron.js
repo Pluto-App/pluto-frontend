@@ -217,6 +217,11 @@ function createWindow() {
       await systemPreferences.askForMediaAccess('microphone')
   })
 
+  ipcMain.on('refresh-app', async (event, arg) => {
+    
+    mainWindow.webContents.send('refresh', {});
+  })
+
 
   ipcMain.on(`display-app-menu`, function (e, args) {
     if (isWindows && mainWindow) {

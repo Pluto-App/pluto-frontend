@@ -1,8 +1,7 @@
 
 import { socket_live, events } from '../../components/sockets'
 
-export const getLoggedInUser = async ({state, actions, effects}, {authData: authData, setAuthData: setAuthData, 
-    joinRooms: joinRooms, skipFetchTeam: skipFetchTeam}) => {
+export const getLoggedInUser = async ({state, actions, effects}, { authData, setAuthData, joinRooms, skipFetchTeam }) => {
 
   	state.loadingUser = true
     var userData = {}
@@ -19,11 +18,19 @@ export const getLoggedInUser = async ({state, actions, effects}, {authData: auth
         state.userProfileData = userData;
 
         if(!skipFetchTeam && userData.teamIds){
-          if(userData.teamIds.length == 0){
+          if(userData.teamIds.length === 0){
             state.noTeams = true;  
           } else {
             state.noTeams = false;
-            actions.team.getTeam({authData: authData, team_id: userData.teamIds[0]})
+
+            var teamId;
+            if(state.currentTeam && state.currentTeam.id && userData.teamIds.includes(state.currentTeam.id)){
+              teamId = state.currentTeam.id
+            } else {
+              teamId = userData.teamIds[0];
+            }
+
+            actions.team.getTeam({authData: authData, team_id: teamId})
           }
         }
 
@@ -58,15 +65,15 @@ export const getUser = async ({state, effects, actions}, {authData, user_id}) =>
 
 export const updateUser = async ({state, effects, actions}, {authData, userData}) => {
 
-    var userData = await effects.user.updateUser(authData, userData)
-    state.userProfileData.name = userData.name;
+    var resonseData = await effects.user.updateUser(authData, userData)
+    state.userProfileData.name = resonseData.name;
 
     var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    currentUser.user = userData;
+    currentUser.user = resonseData;
     localStorage.setItem('currentUser', JSON.stringify(currentUser));
 }
 
-export const getTeamMembers = async ({state, actions, effects}, {authData: authData, teamId: teamId}) => {
+export const getTeamMembers = async ({state, actions, effects}, {authData, teamId}) => {
 
     state.loadingUser = true
     var teamMembers = []

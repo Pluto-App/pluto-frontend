@@ -54,7 +54,7 @@ const UserListItem = React.memo((props) => {
     const activeAppClick = (e, url) => {
         e.preventDefault();
         if(url){
-            window.require("electron").shell.openExternal(url.href);
+            window.require("electron").shell.openExternal(url);
         }
     }
 
@@ -104,7 +104,7 @@ const UserListItem = React.memo((props) => {
 
         setUser(props.user);
         
-    },[ props.user ])
+    },[ props.user])
 
     return (
         <div className="flex py-0 justify-between p-1 pl-1 members-list-item" id={user.id} onClick={(e) => {
@@ -125,18 +125,18 @@ const UserListItem = React.memo((props) => {
                 <div 
                     className="text-white px-1 font-bold tracking-wide text-xs pointer" 
                     data-tip={
-                        user.uid != state.userProfileData.uid && !state.teamMembersMap[state.userProfileData.id].in_call && !user.in_call ? 
+                        user.uid !== state.userProfileData.uid && !state.teamMembersMap[state.userProfileData.id].in_call && !user.in_call ? 
                         'Click to Talk!' : ''
                     }
                     data-place="left"
                     style={{minWidth: '100px'}}
                     onClick={(e) => {
-                        if(user.uid != state.userProfileData.uid && !state.teamMembersMap[state.userProfileData.id].in_call && !user.in_call)
+                        if(user.uid !== state.userProfileData.uid && !state.teamMembersMap[state.userProfileData.id].in_call && !user.in_call)
                             startVideo(e, user.uid);
                     }}
                 >
                     {user.name}
-                    {user.uid == state.userProfileData.uid && ' •'}
+                    {user.uid === state.userProfileData.uid && ' •'}
 
                     {
                         user.in_call && 
@@ -161,11 +161,12 @@ const UserListItem = React.memo((props) => {
                     } 
                 </div>
                 <div className="items-center h-6 w-6 flex overflow-hidden">
-                    <a>
+                    <span>
                        { activeAppInfo.logo ? 
 
                             <div>
-                                <img 
+                                <img
+                                    alt = "" 
                                     src = { activeAppInfo.logo } 
                                     style = {{ borderRadius: '30%' }}
                                 />
@@ -173,7 +174,7 @@ const UserListItem = React.memo((props) => {
                             :
                             <div></div>
                         }
-                    </a>
+                    </span>
                 </div>
             </div>
         </div>

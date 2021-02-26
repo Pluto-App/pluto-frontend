@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useRef, useContext } from 'react'
+import React from 'react'
 import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 
 const Cursor = React.memo((props) => {
 
-    const { state, actions } = useOvermind();
+    const { state } = useOvermind();
 
     const cursorPosition = {
         left: props.user && state.screenShareCursors[props.user.id] ? state.screenShareCursors[props.user.id]['x'] : 0,

@@ -1,5 +1,3 @@
-import { derived } from 'overmind'
-
 export const state = {
     teamowner: "",
     signedUp: false,

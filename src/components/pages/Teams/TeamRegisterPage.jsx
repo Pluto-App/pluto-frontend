@@ -33,12 +33,12 @@ export default function TeamRegisterPage() {
             name: teamName
         }
 
-        if (teamName !== "" && teamName.length >= 4) {
+        if (teamName !== "" && teamName.length >= 3) {
             await actions.team.createTeam({authData: authData, teamData: teamData})
             history.push('/')
         }
         else {
-            ToastNotification('error', "Must be 4 letters or more.")
+            ToastNotification('error', "Must be 3 letters or more.")
         }
     }
 
@@ -51,7 +51,7 @@ export default function TeamRegisterPage() {
             tid: teamCode
         }
 
-        if (teamCode.length == 12 || teamCode.length == 14) {
+        if (teamCode.length === 12 || teamCode.length === 14) {
             await actions.team.addUser({authData: authData, reqData: reqData})
             history.push('/')
         }
