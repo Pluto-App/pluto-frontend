@@ -36,7 +36,7 @@ const runApplescript = require('run-applescript');
 // TODO Add support for App Signing.
 
 const minWidth = 350;
-const minHeight = 400;
+const minHeight = 475;
 
 const robotKeyMap = {
   'arrowup'     : 'up',

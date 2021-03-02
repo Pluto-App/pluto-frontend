@@ -183,7 +183,7 @@ export const clearVideoCallData = async ({ actions, state, effect }) => {
 }
 
 export const clearScreenShareData = async ({ state, effect }) => {
-
+	state.screenShareViewers = {};
 	deleteScreenShareData();
 }
 

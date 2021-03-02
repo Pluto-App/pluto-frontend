@@ -26,3 +26,24 @@ export const googleLogin = async (loginData) => {
     	// Error handling
 	});
 }
+
+export const loginViaCode = async (loginData) => {
+
+  return fetch(
+
+    BACKEND_URL + "/login-via-code",
+     {
+          method: 'POST',
+          headers: headers(),
+          body: JSON.stringify(loginData)
+     }
+  )
+  .then(response => response.json())
+  .then(responseData => {
+    return responseData;
+  })
+  .catch((error) => {
+    return {};
+      // Error handling
+  });
+}

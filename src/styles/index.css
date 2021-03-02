@@ -62,6 +62,12 @@ body {
   border-color: black;
 }
 
+button:disabled,
+button[disabled]{
+  cursor: not-allowed;
+}
+
+
 /**
  * From Agora OpenAgoraWWeb-React GitHub Repo
  * Base CSS.

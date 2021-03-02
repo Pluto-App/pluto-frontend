@@ -62,6 +62,18 @@ export const getUser = async ({state, effects, actions}, {authData, user_id}) =>
   return await effects.user.getUser(authData, user_id); 
 }
 
+export const registerUser = async ({state, effects, actions}, {userData}) => {
+
+  var responseData = await effects.user.registerUser(userData);
+  return responseData;
+}
+
+export const resendLoginCode = async ({state, effects, actions}, {userData}) => {
+
+  var responseData = await effects.user.resendLoginCode(userData);
+  return responseData;
+}
+
 
 export const updateUser = async ({state, effects, actions}, {authData, userData}) => {
 

@@ -24,6 +24,12 @@ body {
   margin: 0;
 }
 
+button:disabled,
+button[disabled]{
+  cursor: not-allowed;
+}
+
+
 /**
  * Render the `main` element consistently in IE.
  */

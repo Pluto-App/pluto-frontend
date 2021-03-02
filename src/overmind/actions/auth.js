@@ -28,6 +28,30 @@ export const googleLogin = async ({state, effects}, {setAuthData}) => {
     }
 }
 
+export const loginViaCode = async ({state, effects}, {userData, setAuthData}) => {
+
+    try {
+
+        var loginData = await effects.auth.loginViaCode(userData);
+
+        if(loginData.user){
+            localStorage.setItem('currentUser', JSON.stringify(loginData));
+            state.userProfileData = loginData.user;
+
+            window.require("electron").ipcRenderer.send('resize-normal');
+            setAuthData(loginData);    
+        
+        } else {
+            throw(new Error('Login Failed! Please try again..'));
+        }
+        
+    } catch (error){
+        
+        state.error = error;
+        ToastNotification('error', error);
+    }
+}
+
 export const logOut = async ({state, effects}, {setAuthData}) => {
 
     localStorage.clear();
