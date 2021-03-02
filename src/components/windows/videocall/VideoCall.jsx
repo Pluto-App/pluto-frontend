@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import * as Cookies from "js-cookie";
 import { css } from "@emotion/core";
-import { AGORA_APP_ID } from "../../../agora.config";
 import { useOvermind } from '../../../overmind'
 
 import { socket_live, events } from '../../sockets'
@@ -25,7 +24,7 @@ const VideoCall = React.memo((props) => {
       channel: channel_id,
       transcode:  Cookies.get("transcode") || "interop",
       baseMode:  Cookies.get("baseMode") || "avc",
-      appId : AGORA_APP_ID,
+      appId : process.env.REACT_APP_AGORA_APP_ID,
       uid: user_id
   });
 
