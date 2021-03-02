@@ -59,4 +59,5 @@ yarn-error.log*
 .env
 .env.local
 .env.dev
+.env.prod
 electron-builder.env
