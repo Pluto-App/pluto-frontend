@@ -74,7 +74,10 @@ const RoomListItem = React.memo((props) => {
                 room_rid: room.rid,
                 user: state.userProfileData.uid
             }
-        )
+        );
+
+        actions.app.setUserInCall(state.userProfileData.id);
+        actions.app.setUserInRoom(room.id, state.userProfileData.uid);
 
         window.require("electron").ipcRenderer.send('init-video-call-window', channel_id);
     }
@@ -117,8 +120,9 @@ const RoomListItem = React.memo((props) => {
 
     const userAvatar = (uid) => {
         var userInfo = state.teamMembers.find(user => user.uid === uid);
-
-        return userInfo ? userInfo.avatar : '';
+        var avatar = userInfo ? userInfo.avatar : '';
+        console.log(avatar);
+        return avatar;
     }
 
     const customMenuStyle = {
@@ -179,13 +183,15 @@ const RoomListItem = React.memo((props) => {
                     :
                     <div className="flex py-0 justify-between p-1" id={room.id} 
                         style={{ 
-                            background: (!room.users ||
-                                                !(room.users.includes(state.userProfileData.uid))) ? '' : '#202225'
+                            background: (
+                                !state.teamRoomsMap[room.id] || 
+                                !(state.teamRoomsMap[room.id].users || []).includes(state.userProfileData.uid) 
+                            ) ? '' : '#202225'
                         }}
                     >
                         <div className="flex justify-start p-2" style={{ width: '100%'}}>
                             {
-                                Object.keys(room.users || []).length > 0 && activeAppInfo.logo ?
+                                Object.keys((state.teamRoomsMap[room.id] || {}).users || []).length > 0 && activeAppInfo.logo ?
 
                                 <div className="flex" 
                                     style={{
@@ -336,12 +342,12 @@ const RoomListItem = React.memo((props) => {
 
             }
             {
-                (room.users || []).length > 0 &&
+                ((state.teamRoomsMap[room.id] || {}).users || []).length > 0 &&
                 <div className="flex px-3 p-2" 
                     style={{}}
                 >   
                     {
-                        (room.users || []).map((uid) => 
+                        ((state.teamRoomsMap[room.id] || {}).users || []).map((uid) => 
                             
                             <div key={uid} style={{width: '25px', marginRight: '10px'}}>
                                 

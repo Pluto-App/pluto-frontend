@@ -32,6 +32,7 @@ export const state = {
 
     // App Data
     teamRooms: [],
+    teamRoomsMap: {},
     teamMembers: [],
     teamMembersMap: {},
     onlineUsers: {},

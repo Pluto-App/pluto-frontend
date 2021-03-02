@@ -53,8 +53,9 @@ const UserListItem = React.memo((props) => {
 
     const activeAppClick = (e, url) => {
         e.preventDefault();
-        if(url){
-            window.require("electron").shell.openExternal(url);
+        if(url && url.href){
+            console.log(url);
+            window.require("electron").shell.openExternal( url.href);
         }
     }
 
@@ -83,6 +84,8 @@ const UserListItem = React.memo((props) => {
                 receiver: user.uid,
                 sender: state.userProfileData.uid
             });
+
+            actions.app.setUserInCall(state.userProfileData.id);
 
             window.require("electron").ipcRenderer.send('init-video-call-window', channel_id);
 

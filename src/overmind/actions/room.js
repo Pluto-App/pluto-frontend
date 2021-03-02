@@ -26,5 +26,12 @@ export const deleteRoom = async ({state, effects, actions}, {authData, roomData}
 export const getTeamRooms = async ({state, effects}, {authData, teamId}) => {
 
     var teamRooms = await effects.room.getTeamRooms(authData, teamId)
-    state.teamRooms = teamRooms;
+
+    if(teamRooms){
+      state.teamRooms = teamRooms;
+
+      for(var room of teamRooms){
+        state.teamRoomsMap[room.id] = room;
+      }
+    }
 }

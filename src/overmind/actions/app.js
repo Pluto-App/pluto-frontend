@@ -25,6 +25,38 @@ export const setAddingRoom = async ({ state, effect }, value) => {
     state.addingRoom = value;
 }
 
+export const setUserInCall = async ({ state, effect }, user_id) => {
+	
+	if(state.teamMembersMap[user_id])
+    	state.teamMembersMap[user_id].in_call = true;
+}
+
+export const unsetUserInCall = async ({ state, effect }, user_id) => {
+	
+	if(state.teamMembersMap[user_id])
+    	state.teamMembersMap[user_id].in_call = false;
+}
+
+export const setUserInRoom = async ({ state, effect }, room_id, user_uid) => {
+
+	if(state.teamRoomsMap[room_id] && !(state.teamRoomsMap[room_id].users || []).includes(user_uid))  {
+		if(!state.teamRoomsMap[room_id].users)
+			state.teamRoomsMap[room_id].users = [];
+
+    	state.teamRoomsMap[room_id].users.push(user_uid);
+	}
+}
+
+export const unsetUserInRoom = async ({ state, effect }, room_id, user_uid) => {
+
+	if(state.teamRoomsMap[room_id] && state.teamRoomsMap[room_id].users){
+		var index = state.teamRoomsMap[room_id].users.indexOf(user_uid);
+		if (index > -1) {
+		  state.teamRoomsMap[room_id].users.splice(index, 1);
+		}
+	}
+}
+
 export const updateUserActiveWindowData = async ({ state, effect }, {user_id, active_window_data}) => {
 	state.usersActiveWindows[user_id] = active_window_data;
 }
@@ -167,11 +199,17 @@ export const clearVideoCallData = async ({ actions, state, effect }) => {
 
 	var call_channel_id = localStorage.getItem('call_channel_id');
 	var curent_team = localStorage.getItem('current_team');
+	var rid = call_channel_id.split('-')[1];
 
+	const room_id = state.teamRooms.find(room => room.rid === rid);
+
+	unsetUserInRoom(room_id, state.userProfileData.uid);
+	unsetUserInCall(state.userProfileData.id);
+	
 	socket_live.emit(events.exitRoomVideoCall, 
 		{ 
 			tid: 		curent_team,
-			rid: 		call_channel_id.split('-')[1], 
+			rid: 		rid, 
 			uid: 		state.userProfileData.uid ,
 			teams: 		state.userProfileData.teams,
 			channel_id: call_channel_id

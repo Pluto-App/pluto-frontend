@@ -137,6 +137,13 @@ export default function App() {
 
     const interval = setInterval(() => {
       
+      var user_id = state.userProfileData.id;
+      if(state.teamMembersMap && state.teamMembersMap[user_id] && 
+        !state.teamMembersMap[user_id].online){
+
+        actions.app.setUserOnline(user_id);
+      }
+
       socket_live.emit(events.online, state.userProfileData)
 
     }, 2000);

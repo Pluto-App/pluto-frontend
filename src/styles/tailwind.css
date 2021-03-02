@@ -24,12 +24,6 @@ body {
   margin: 0;
 }
 
-button:disabled,
-button[disabled]{
-  cursor: not-allowed;
-}
-
-
 /**
  * Render the `main` element consistently in IE.
  */
@@ -21298,6 +21292,11 @@ body {
 
 .border-blackblack {
   border-color: black;
+}
+
+button:disabled,
+button[disabled]{
+  cursor: not-allowed;
 }
 
 /**
