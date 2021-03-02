@@ -23,13 +23,17 @@ const appLogos = {
   'googlecalendar': { name: 'Google Calendar', logo: logos(logos_path + 'googlecalendar.png') } ,
   'googlemeet':     { name: 'Google Meet', logo: logos(logos_path + 'googlemeet.png') } ,
   'googlecloud':    { name: 'Google Cloud', logo: logos(logos_path + 'googlecloud.png') } ,
+  'microsoftword':  { name: 'Microsoft Word', logo: logos(logos_path + 'word.png') } ,
   'sublimetext':    { name: 'Sublime Text', logo: logos(logos_path + 'sublimetext.png') } ,
   'stackoverflow':  { name: 'Stack Overflow', logo: logos(logos_path + 'stackoverflow.png') } ,
   'slack':          { name: 'Slack', logo: logos(logos_path + 'slack.png') } ,
+  'skype':          { name: 'Skype', logo: logos(logos_path + 'skype.png') } ,
   'taskable':       { name: 'Taskable', logo: logos(logos_path + 'taskable.png') } ,
   'terminal':       { name: 'Terminal', logo: logos(logos_path + 'terminal.png') } ,
+  'telegram':       { name: 'Telegram', logo: logos(logos_path + 'telegram.png') } ,
   'trello':         { name: 'Trello', logo: logos(logos_path + 'trello.png') } ,
-  'zoom':           { name: 'Zoom', logo: logos(logos_path + 'zoom.png') } 
+  'xcode':          { name: 'XCode', logo: logos(logos_path + 'xcode.png') } , 
+  'zoom.us':           { name: 'Zoom', logo: logos(logos_path + 'zoom.png') } 
 }
 
 const hostApp = {
@@ -55,7 +59,7 @@ const hostApp = {
   'stackoverflow.com':  'stackoverflow',
   'taskablehq.com':     'taskable',
   'trello.com':         'trello',
-  'zoom.us':            'zoom'
+  'zoom.us':            'zoom.us'
 }
   
 export const appLogo = function(appData, userPreference) {
@@ -74,8 +78,6 @@ export const appLogo = function(appData, userPreference) {
       if (!/^https?:\/\//i.test(url)) {
           url = 'http://' + url;
       }
-      
-      console.log(url.hostname);
 
       appName = hostApp[url.hostname] ? hostApp[url.hostname] : appName;
 

@@ -121,7 +121,6 @@ const RoomListItem = React.memo((props) => {
     const userAvatar = (uid) => {
         var userInfo = state.teamMembers.find(user => user.uid === uid);
         var avatar = userInfo ? userInfo.avatar : '';
-        console.log(avatar);
         return avatar;
     }
 

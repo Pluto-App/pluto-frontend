@@ -865,6 +865,10 @@ app.on('activate', () => {
   }
 })
 
+app.setLoginItemSettings({
+  openAtLogin: true
+})
+
 // Exit cleanly on request from parent process in development mode.
 if (isDev) {
   if (process.platform === 'win32') {
