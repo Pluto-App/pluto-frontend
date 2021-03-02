@@ -18,23 +18,6 @@ import { socket_live, events } from '../sockets'
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://127.0.0.1:3000";
 
-// TODO Move Active Win info to user profile (not necessary?)
-// FIXME Add Active Win Support. The package fails to build. Search Alternatives. 
-const RoomList = ((rooms) => {
-
-    const roomlist = rooms.map((room) =>
-        <RoomListItem
-            room={room}
-            key={room.id}
-        />
-    )
-
-    return (
-        <div>
-            {roomlist}
-        </div>
-    );
-})
 
 const MembersList = (
     ({users}) => {
@@ -107,7 +90,13 @@ export default function HomePage() {
 
     useEffect(() => {
 
-        actions.user.getLoggedInUser({authData: authData, setAuthData: setAuthData, joinRooms: true})
+        let isMounted = true;
+
+        if(isMounted){
+            actions.user.getLoggedInUser({authData: authData, setAuthData: setAuthData, joinRooms: true})    
+        }
+
+        return () => { isMounted = false };
 
     }, [authData, actions, setAuthData])
 
@@ -120,22 +109,20 @@ export default function HomePage() {
 
     useEffect(() => {
 
-        window.require("electron").ipcRenderer.send('resize-normal');
-
-    },[])
-
-    useEffect(() => {
+        let isMounted = true;
 
         window.require("electron").ipcRenderer.on('refresh', function (e, args) {
-
-            actions.user.getLoggedInUser({authData: authData});
-            actions.team.getTeam({authData: authData, team_id: state.currentTeam.id});    
+            if(isMounted){
+                actions.user.getLoggedInUser({authData: authData});
+                actions.team.getTeam({authData: authData, team_id: state.currentTeam.id});
+            }
         });
        
        window.addEventListener('click', function(event) {
             setAddingRoom(false)
         });
 
+       return () => { isMounted = false };
     },[authData])
 
     const inviteModalStyle = {
@@ -195,16 +182,17 @@ export default function HomePage() {
                         </div>
                     }
                     <div className="" style={{ minHeight: "80px", maxHeight: "225px", overflowY: "scroll" }}>
-                        {
-                            !state.loadingCurrentTeam ?
-                                RoomList(state.teamRooms) :
-                                <BeatLoader
-                                    css={override}
-                                    size={10}
-                                    color={"white"}
-                                    loading={state.loadingCurrentTeam}
-                                />
-                        }
+                        <div className='rooms-list'>
+                            {
+                                !state.loadingCurrentTeam &&
+                                state.teamRooms.map((room) =>
+                                    <RoomListItem
+                                        room={room}
+                                        key={room.id}
+                                    />
+                                )
+                            }
+                        </div>
                     </div>
                 </div>
 
@@ -214,16 +202,17 @@ export default function HomePage() {
                             TEAM MATES
                         </div>
                     </div>
-                    {
-                        !state.loadingCurrentTeam ?
-                            MembersList({users: state.teamMembers}) :
-                            <BeatLoader
-                                css={override}
-                                size={10}
-                                color={"white"}
-                                loading={state.loadingCurrentTeam}
-                            />
-                    }
+                    <div className='members-list'>
+                        {
+                            !state.loadingCurrentTeam &&
+                            state.teamMembers.map((user) =>
+                                 <UserListItem
+                                    key={user.id}
+                                    user={user}
+                                />
+                            )
+                        }
+                    </div>
                 </div>
 
                 <div className="pin-b pb-4 center" style={{position: 'absolute', bottom: '20px', left: 'calc(100vw/2 - 120px)'}}>

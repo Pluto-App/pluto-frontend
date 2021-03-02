@@ -165,12 +165,12 @@ const UserListItem = React.memo((props) => {
             >
                 <div style={{ fontSize: '12px', color: '#74767A', marginRight: '5px'}}>  
                     {
-                        activeAppInfo.logo ? activeAppInfo.name : ''
+                        user.online && activeAppInfo.logo ? activeAppInfo.name : ''
                     } 
                 </div>
                 <div className="items-center h-6 w-6 flex overflow-hidden">
                     <span>
-                       { activeAppInfo.logo ? 
+                       { user.online && activeAppInfo.logo ? 
 
                             <div>
                                 <img

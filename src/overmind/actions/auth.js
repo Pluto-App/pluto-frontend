@@ -9,7 +9,6 @@ export const googleLogin = async ({state, effects}, {setAuthData}) => {
         state.userProfileData = await googleSignIn();
 
         var loginData = await effects.auth.googleLogin(state.userProfileData);
-        console.log(loginData.user);
         
         if(loginData.user){
             localStorage.setItem('currentUser', JSON.stringify(loginData));

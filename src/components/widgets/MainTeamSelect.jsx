@@ -20,10 +20,13 @@ const MainBar = React.memo((props) => {
 
     useEffect(() => {
 
-        window.addEventListener('click', () => {
-            setShowOptions(false);
-        });
+        const updateShowOptions = () => {
+             setShowOptions(false);
+        }
 
+        window.addEventListener('click', updateShowOptions);
+
+        return () => { window.removeEventListener('click', updateShowOptions); };        
     },[])
 
 
@@ -56,7 +59,6 @@ const MainBar = React.memo((props) => {
                                         e.preventDefault()
                                         actions.team.getTeam({team_id: team.id, authData: authData}).then(() => {
                                             setShowOptions(false);
-                                            history.push('/')
                                         })
                                     }}
                                 >

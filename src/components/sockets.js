@@ -1,8 +1,7 @@
 import socketIOClient from "socket.io-client";
 
 // TODO Do we need other events?
-export const socket_live = socketIOClient(process.env.REACT_APP_BACKEND_URL);
-//export const backend_live = socketIOClient(process.env.REACT_APP_BACKEND_URL);
+export const socket_live = socketIOClient(process.env.REACT_APP_SOCKET_URL);
 
 export const events = {
 

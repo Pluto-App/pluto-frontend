@@ -130,6 +130,10 @@ export default function App() {
           actions.room.getTeamRooms({authData: authData, team_id: state.currentTeam.id})
         }
       });
+
+      return () => { 
+        socket_live.removeAllListeners();
+      };
       
   }, []);
 

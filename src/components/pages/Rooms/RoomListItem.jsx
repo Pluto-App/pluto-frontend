@@ -346,9 +346,9 @@ const RoomListItem = React.memo((props) => {
                     style={{}}
                 >   
                     {
-                        ((state.teamRoomsMap[room.id] || {}).users || []).map((uid) => 
+                        ((state.teamRoomsMap[room.id] || {}).users || []).map((uid, index) => 
                             
-                            <div key={uid} style={{width: '25px', marginRight: '10px'}}>
+                            <div key={index} style={{width: '25px', marginRight: '10px'}}>
                                 
                                 <img 
                                     alt = ""
