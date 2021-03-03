@@ -387,9 +387,6 @@ function createWindow() {
       var bounds = videoCallWindow.getBounds();
       videoCallWindow.setMinimumSize(videoCallWindow.getSize()[0], height);
       
-      console.log(height);
-      console.log(bounds.height);
-
       var newY = bounds.y - (height - bounds.height);
 
       var newBounds = {
@@ -397,9 +394,6 @@ function createWindow() {
         height: height,
         y: newY
       };
-
-      console.log('new');
-      console.log(newBounds)
 
       videoCallWindow.setBounds(newBounds);
     }
