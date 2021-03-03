@@ -197,6 +197,10 @@ function createWindow() {
     mainWindow.webContents.send('logout', {});
   })
 
+  ipcMain.on('exit-user-call', (event, room_id) => {
+    mainWindow.webContents.send('exitUserCall', room_id);
+  })
+
   ipcMain.on('resize-login', (event, arg) => {
     mainWindow.setMinimumSize(minWidth, minHeight);
     mainWindow.setSize(minWidth, minHeight);
@@ -206,6 +210,7 @@ function createWindow() {
     mainWindow.setSize(minWidth, 700);
     mainWindow.setMinimumSize(minWidth, 700);
     mainWindow.center();
+    console.log('RESIZE');
   })
 
   ipcMain.on('media-access', async (event, arg) => {
@@ -314,11 +319,8 @@ function createWindow() {
       }
     })
 
-    //videoCallWindow.setAlwaysOnTop(true, "floating", 1);
-    //videoCallWindow.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
 
     videoCallWindow.setAlwaysOnTop(true, 'pop-up-menu');
-    //videoCallWindow.setVisibleOnAllWorkspaces(true);
     videoCallWindow.setMenu(null);
 
     const videoUrl = url.format({

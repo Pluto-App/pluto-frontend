@@ -488,8 +488,12 @@ const VideoCallCanvas = React.memo((props) => {
     
     finally {
 
+      var call_channel_id = localStorage.getItem('call_channel_id');
+      var rid = call_channel_id.split('-')[1];
+      window.require("electron").ipcRenderer.send('exit-user-call', rid);
+
     	actions.app.clearVideoCallData();
-      //actions.app.emitUpdateTeam();
+      actions.app.emitUpdateTeam();
     	var win = remote.getCurrentWindow();
     	win.destroy();
     }

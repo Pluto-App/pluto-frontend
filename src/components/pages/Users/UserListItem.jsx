@@ -147,7 +147,7 @@ const UserListItem = React.memo((props) => {
                     {user.uid === state.userProfileData.uid && ' •'}
 
                     {
-                        user.in_call && 
+                        state.teamMembersMap[user.id] && state.teamMembersMap[user.id].in_call && 
                         <i className="material-icons md-light md-inactive" 
                             style={{ fontSize: "16px", paddingLeft: '2px' }}>
                             call
@@ -165,12 +165,13 @@ const UserListItem = React.memo((props) => {
             >
                 <div style={{ fontSize: '12px', color: '#74767A', marginRight: '5px'}}>  
                     {
-                        user.online && activeAppInfo.logo ? activeAppInfo.name : ''
+                        state.teamMembersMap[user.id] && state.teamMembersMap[user.id].online && 
+                            activeAppInfo.logo ? activeAppInfo.name : ''
                     } 
                 </div>
                 <div className="items-center h-6 w-6 flex overflow-hidden">
                     <span>
-                       { user.online && activeAppInfo.logo ? 
+                       { state.teamMembersMap[user.id] && state.teamMembersMap[user.id].online && activeAppInfo.logo ? 
 
                             <div>
                                 <img

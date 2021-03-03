@@ -18,28 +18,11 @@ import { socket_live, events } from '../sockets'
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://127.0.0.1:3000";
 
-
-const MembersList = (
-    ({users}) => {
-        const teamMemberList = Object.entries(users).map(([id, member]) =>
-            <UserListItem
-                key={member.id}
-                user={member}
-            />
-        )
-
-        return (
-            <div className='members-list'>
-                {teamMemberList}
-            </div>
-        );
-    }
-);
-
 export default function HomePage() {
 
     let history = useHistory();
     const { authData, setAuthData } = useContext(AuthContext);
+
 
     const override = css`
         display: block;
@@ -53,6 +36,7 @@ export default function HomePage() {
     const [appInfo, updateAppInfo] = useState("No Teams");
     const [newRoomName, updateNewRoomName] = useState("");
     const [addingRoom, setAddingRoom] = useState(false);
+    const [componentMounted, setComponentMounted] = useState(false);
 
     const addRoom = async (roomname) => {
 
@@ -71,6 +55,8 @@ export default function HomePage() {
 
     useEffect(() => {
 
+        setComponentMounted(true);
+
         const setActiveWin = setInterval(async () => {
             try {
             
@@ -81,9 +67,21 @@ export default function HomePage() {
                 if(process.env.REACT_APP_DEV_BUILD)
                     console.log(error);
             }
-        }, 2000)
+        }, 2000);
+
+        window.require("electron").ipcRenderer.on('exitUserCall', function (e, rid) {
+            var room_rid = rid;
+            const room = state.teamRooms.find(room => room.rid === room_rid) || {};
+            actions.app.unsetUserInCall(state.userProfileData.id);
+            actions.app.unsetUserInRoom({room_id: room.id, user_uid: state.userProfileData.uid});
+        });
+
+        window.require("electron").ipcRenderer.send('resize-normal');
         
-        return () => clearInterval(setActiveWin);
+        return () => {
+            clearInterval(setActiveWin);
+            setComponentMounted(false);
+        }
 
     }, [])
 
@@ -110,6 +108,9 @@ export default function HomePage() {
     useEffect(() => {
 
         let isMounted = true;
+        const updateeAddingRoom = () => {
+             setAddingRoom(false)
+        };
 
         window.require("electron").ipcRenderer.on('refresh', function (e, args) {
             if(isMounted){
@@ -118,11 +119,12 @@ export default function HomePage() {
             }
         });
        
-       window.addEventListener('click', function(event) {
-            setAddingRoom(false)
-        });
+       window.addEventListener('click', updateeAddingRoom);
 
-       return () => { isMounted = false };
+        return () => { 
+            isMounted = false;
+            window.removeEventListener('click', updateeAddingRoom);
+        };
     },[authData])
 
     const inviteModalStyle = {
@@ -184,7 +186,7 @@ export default function HomePage() {
                     <div className="" style={{ minHeight: "80px", maxHeight: "225px", overflowY: "scroll" }}>
                         <div className='rooms-list'>
                             {
-                                !state.loadingCurrentTeam &&
+                                !state.loadingCurrentTeam && componentMounted &&
                                 state.teamRooms.map((room) =>
                                     <RoomListItem
                                         room={room}

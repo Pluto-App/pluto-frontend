@@ -33,11 +33,12 @@ export const setUserInCall = async ({ state, effect }, user_id) => {
 
 export const unsetUserInCall = async ({ state, effect }, user_id) => {
 	
-	if(state.teamMembersMap[user_id])
+	if(state.teamMembersMap[user_id]){
     	state.teamMembersMap[user_id].in_call = false;
+	}
 }
 
-export const setUserInRoom = async ({ state, effect }, room_id, user_uid) => {
+export const setUserInRoom = async ({ state, effect }, {room_id, user_uid}) => {
 
 	if(state.teamRoomsMap[room_id] && !(state.teamRoomsMap[room_id].users || []).includes(user_uid))  {
 		if(!state.teamRoomsMap[room_id].users)
@@ -47,7 +48,7 @@ export const setUserInRoom = async ({ state, effect }, room_id, user_uid) => {
 	}
 }
 
-export const unsetUserInRoom = async ({ state, effect }, room_id, user_uid) => {
+export const unsetUserInRoom = async ({ state, effect }, {room_id, user_uid}) => {
 
 	if(state.teamRoomsMap[room_id] && state.teamRoomsMap[room_id].users){
 		var index = state.teamRoomsMap[room_id].users.indexOf(user_uid);
@@ -61,9 +62,6 @@ export const updateUserActiveWindowData = async ({ state, effect }, {user_id, ac
 	state.usersActiveWindows[user_id] = active_window_data;
 }
 
-// ToDo: This is not NEEDED!
-// This can be fixed by listening to right room on socket in ScreenShareContainer
-// 
 export const setElectronWindowScreenShareViewers = async ({ state, effect }, screenShareViewers) => {
 
 	state.screenShareViewers = screenShareViewers;
@@ -202,9 +200,6 @@ export const clearVideoCallData = async ({ actions, state, effect }) => {
 	var rid = call_channel_id.split('-')[1];
 
 	const room_id = state.teamRooms.find(room => room.rid === rid);
-
-	unsetUserInRoom(room_id, state.userProfileData.uid);
-	unsetUserInCall(state.userProfileData.id);
 	
 	socket_live.emit(events.exitRoomVideoCall, 
 		{ 

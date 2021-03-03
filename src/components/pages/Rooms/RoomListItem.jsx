@@ -40,17 +40,30 @@ const RoomListItem = React.memo((props) => {
             setActiveAppInfo(appLogo(appData, state.userPreference));
         }, 5000)
 
-        window.addEventListener('click', function(event) {
+        const updateEditingRoom = () => {
             setEditingRoom(false);
-        });
-        
-        return () => clearInterval(setActiveWin);
+        }
 
-    },[room.users]);
+        window.addEventListener('click', updateEditingRoom);
+        
+        return () => {
+            clearInterval(setActiveWin);
+            window.removeEventListener('click', updateEditingRoom);
+        };
+
+    },[state.teamRoomsMap[room.id].users]);
 
     useEffect(() => {
 
-        setRoom(props.room);
+        var isMounted = true;
+
+        if(isMounted){
+            setRoom(props.room);    
+        }
+
+        return () => {
+            isMounted = false;
+        }
         
     },[ props.room ])
 
@@ -77,7 +90,7 @@ const RoomListItem = React.memo((props) => {
         );
 
         actions.app.setUserInCall(state.userProfileData.id);
-        actions.app.setUserInRoom(room.id, state.userProfileData.uid);
+        actions.app.setUserInRoom({room_id: room.id, user_uid: state.userProfileData.uid});
 
         window.require("electron").ipcRenderer.send('init-video-call-window', channel_id);
     }
