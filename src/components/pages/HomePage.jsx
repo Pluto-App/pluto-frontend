@@ -183,7 +183,7 @@ export default function HomePage() {
                                 autoFocus />
                         </div>
                     }
-                    <div className="" style={{ minHeight: "80px", maxHeight: "225px", overflowY: "scroll" }}>
+                    <div className="" style={{ minHeight: "80px", maxHeight: "180px", overflowY: "scroll" }}>
                         <div className='rooms-list'>
                             {
                                 !state.loadingCurrentTeam && componentMounted &&
@@ -196,6 +196,12 @@ export default function HomePage() {
                             }
                         </div>
                     </div>
+                    {
+                        state.teamRooms.length > 4 &&
+                        <div className="center">
+                            <i className="material-icons md-light md-inactive mr-2">expand_more</i>
+                        </div>
+                    }
                 </div>
 
                 <div className="members-list-container" style={{ height: "relative" }}>
@@ -215,6 +221,14 @@ export default function HomePage() {
                             )
                         }
                     </div>
+
+                    {
+                        state.teamMembers.length > 6 &&
+                        <div className="center">
+                            <i className="material-icons md-light md-inactive mr-2">expand_more</i>
+                        </div>
+                    }
+
                 </div>
 
                 <div className="pin-b pb-4 center" style={{position: 'absolute', bottom: '20px', left: 'calc(100vw/2 - 120px)'}}>

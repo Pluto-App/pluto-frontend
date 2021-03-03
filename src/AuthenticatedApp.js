@@ -106,7 +106,7 @@ export default function App() {
 
         if(data.tid === state.currentTeam.tid){
           
-          setTimeout( () => {actions.team.getTeam({authData: authData, team_id: state.currentTeam.id})}, 1000);
+          setTimeout( () => {actions.team.getTeam({authData: authData, team_id: state.currentTeam.id})}, 500);
         }
       });
 
@@ -156,10 +156,6 @@ export default function App() {
         
         <Route exact path="/init-screenshare">
           <InitScreenShare />
-        </Route>
-
-        <Route exact path="/stream-screenshare">
-          <StreamScreenShare />
         </Route>
 
         <Route exact path="/screenshare-container">

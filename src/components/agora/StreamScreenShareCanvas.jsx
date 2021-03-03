@@ -153,6 +153,8 @@ const StreamScreenShareCanvas = React.memo((props) => {
  			if(e.type === 'wheel')
  				eventData['direction'] = e.deltaY > 0 ? 'up' : 'down';
 
+ 			console.log('sharing info');
+
         	socket_live.emit(events.screenShareCursor, {
 		 		channel_id: 		props.channel,
 		 		screenshare_owner: 	localStorage.getItem("screenshare_owner"),

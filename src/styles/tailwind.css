@@ -21944,11 +21944,11 @@ video {
 }
 
 .rooms-list-container {
-  padding-top: 15px;
+  padding-top: 5px;
 }
 
 .members-list-container {
-  padding-top: 15px;
+  padding-top: 5px;
 }
 
 .members-list-item:hover {
@@ -21957,6 +21957,9 @@ video {
 
 .btn-add:before {
   content: '\FF0B';
+  top: -2px;
+  position: relative;
+  font-size: 14px
 }
 
 .btn-add {

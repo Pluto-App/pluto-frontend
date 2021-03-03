@@ -440,56 +440,6 @@ function createWindow() {
     }
   })
 
-  ipcMain.on('stream-screenshare', (event, arg) => {
-
-    if(streamScreenShareWindow){
-      try{
-        streamScreenShareWindow.close();
-      } catch (error) {
-        console.error(error);
-      }
-
-      if(videoCallWindow){
-
-        videoCallWindow.setPosition(sWidth - 270, sHeight - 870)
-      }
-    }
-
-    streamScreenShareWindow = new BrowserWindow({
-        width: 1088,
-        height: 720,
-        show: false,
-        frame: true,
-        title: "ScreenShare",
-        webPreferences: {
-          nodeIntegration: true,
-          plugins: true,
-          enableRemoteModule: true
-        }
-    });
-
-    streamScreenShareWindow.setMenu(null);
-
-    const screenShareWindowUrl = url.format({
-      pathname: path.join(__dirname, '../build/index.html'),
-      hash: '/stream-screenshare',
-      protocol: 'file:',
-      slashes: true
-    });
-
-    streamScreenShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-screenshare' : screenShareWindowUrl);
-    streamScreenShareWindow.show();
-
-    streamScreenShareWindow.on('closed', () => {
-      streamScreenShareWindow = undefined;
-    })
-
-    if (isDev) {
-      // streamScreenShareWindow.webContents.openDevTools();
-    }
-
-  })
-
   ipcMain.on('sharing-screen', (event, overlayBounds) => {
 
     if(initScreenShareWindow) {
