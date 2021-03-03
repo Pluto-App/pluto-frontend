@@ -264,40 +264,51 @@ const VideoCallCanvas = React.memo((props) => {
 
   useEffect(() => {
 
-    if(isMac){
-      window.require('electron').ipcRenderer.send('media-access');      
+    if(state.userProfileData.id){
+
+      if(isMac){
+        window.require('electron').ipcRenderer.send('media-access');      
+      }
+
+      AgoraClient.init(props.appId, () => {
+          
+          subscribeStreamEvents();
+          
+          AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
+
+            socket_live.emit(events.joinRoom, { room: props.channel, user_id: props.uid},
+              (data) => {
+                actions.app.emitUpdateTeam();
+              });
+            localStream = streamInit(uid, props.videoProfile);
+
+            localStream.init(() => {
+              
+              localStream.muteVideo();
+              localStream.muteAudio();
+
+              addStream(localStream, true)
+              AgoraClient.publish(localStream, err => {
+                  alert("Publish local stream error: " + err);
+              })
+            },
+              err => {
+
+                alert("No Access to media stream", err)
+              })
+          })
+      })
+
+      return () => {
+        handleExit();
+      }
     }
+    
+  },[state.userProfileData.id])
 
-    AgoraClient.init(props.appId, () => {
-      	
-        subscribeStreamEvents();
-      	
-        AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
+  useEffect(() => {
 
-      		socket_live.emit(events.joinRoom, { room: props.channel, user_id: props.uid},
-            (data) => {
-              actions.app.emitUpdateTeam();
-            });
-      		localStream = streamInit(uid, props.videoProfile);
-
-      		localStream.init(() => {
-            
-            localStream.muteVideo();
-            localStream.muteAudio();
-
-      			addStream(localStream, true)
-        		AgoraClient.publish(localStream, err => {
-          			alert("Publish local stream error: " + err);
-        		})
-        	},
-          	err => {
-
-            	alert("No Access to media stream", err)
-          	})
-      	})
-  	})
-
-  	// Load and Resize Event
+    // Load and Resize Event
     window.addEventListener("load", function (event) {
         Dish();
         window.onresize = Dish;
@@ -321,10 +332,6 @@ const VideoCallCanvas = React.memo((props) => {
       actions.app.userScreenShare(data);
       updateWindowSize();
     });
-
-    return () => {
-      handleExit();
-    }
 
   },[])
 
@@ -759,8 +766,6 @@ const VideoCallCanvas = React.memo((props) => {
           </div>
         </div>  
       </div>
-
-      
 
       <div className={state.videoCallCompactMode ? "ag-btn-group-compact" : "ag-btn-group"} 
           style={{background: 'rgba(34, 36, 37, 0.8)', height: '45px', position: 'absolute', bottom: '0'}}

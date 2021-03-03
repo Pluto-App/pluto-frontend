@@ -161,7 +161,7 @@ export const setUserOffline = async ({ state, effect }, user_id) => {
 
 export const emitUpdateTeam = async ({ actions, state, effect }) => {
 
-	for( var team of state.userProfileData.teams){
+	for( var team of state.userProfileData.teams || [] ){
 		socket_live.emit(events.updateTeam, 
 			{ 
 				tid: team.tid
