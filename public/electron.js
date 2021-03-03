@@ -210,7 +210,6 @@ function createWindow() {
     mainWindow.setSize(minWidth, 700);
     mainWindow.setMinimumSize(minWidth, 700);
     mainWindow.center();
-    console.log('RESIZE');
   })
 
   ipcMain.on('media-access', async (event, arg) => {
