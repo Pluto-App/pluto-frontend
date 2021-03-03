@@ -60,10 +60,11 @@ const ScreenShareContainer = React.memo((props) => {
         });
 
         socket_live.on(events.screenShareCursor, (data) => {
+            console.log('updating cursor');
             actions.app.updateScreenShareCursor(data);
         });
 
-    })
+    },[])
 
     useEffect(() => {
         actions.app.setScreenSize();
@@ -88,7 +89,7 @@ const ScreenShareContainer = React.memo((props) => {
 
             {
                 Object.keys(state.screenShareViewers).map(key => 
-                    <Cursor user={state.screenShareViewers[key]}></Cursor>
+                    <Cursor key={key} user={state.screenShareViewers[key]}></Cursor>
                 )
             }
 

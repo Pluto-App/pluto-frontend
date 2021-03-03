@@ -312,6 +312,7 @@ function createWindow() {
       alwaysOnTop: true,
       x: sWidth - 230,
       y: sHeight - 200,
+      maximizable: false,
       webPreferences: {
         nodeIntegration: true,
         plugins: true,
@@ -352,7 +353,7 @@ function createWindow() {
     })
 
     if (isDev) {
-       videoCallWindow.webContents.openDevTools();
+       // videoCallWindow.webContents.openDevTools();
     }
   });
 
@@ -542,7 +543,7 @@ function createWindow() {
 
       if (isDev) {
        
-        // screenShareContainerWindow.webContents.openDevTools();
+        screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls
