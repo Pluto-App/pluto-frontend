@@ -107,7 +107,6 @@ export const updateScreenShareViewers = async ({ state, effect }, data) => {
 }
 
 export const updateScreenShareCursor = async ({ state, effect }, data) => {
-
 	if(data.user)
 		state.screenShareCursors[data.user.id] = data.cursor;
 
