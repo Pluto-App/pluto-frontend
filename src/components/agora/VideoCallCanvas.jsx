@@ -241,18 +241,22 @@ const VideoCallCanvas = React.memo((props) => {
     updateWindowSize();
   }
 
+  const getHeight = () => {
+    let videoElements = document.getElementsByClassName('ag-video-on').length
+    let userDetailsElements = document.getElementsByClassName('user-details').length
+    let screenShareElement = document.getElementById('ag-screen') ? 1 : 0;
+
+
+    let height = 70 + (videoElements*123) + (userDetailsElements*60) + (screenShareElement * 123);
+
+    return height;
+  }
+
   const updateWindowSize = () => {
 
     if(state.videoCallCompactMode){
-      
-      let videoElements = document.getElementsByClassName('ag-video-on').length
-      let userDetailsElements = document.getElementsByClassName('user-details').length
-      let screenShareElement = document.getElementById('ag-screen') ? 1 : 0;
 
-
-      let height = 70 + (videoElements*123) + (userDetailsElements*60) + (screenShareElement * 123);
-
-      window.require("electron").ipcRenderer.send('set-video-player-height', height);
+      window.require("electron").ipcRenderer.send('set-video-player-height', getHeight());
     }
 
     Dish();
@@ -453,11 +457,8 @@ const VideoCallCanvas = React.memo((props) => {
 	}
 
   const handleCollapse = async (e) => {
-    
-    let no = document.getElementsByClassName('ag-item').length
-    let height = 75 + (no*120);
 
-    window.require("electron").ipcRenderer.send('collapse-video-call-window', height);
+    window.require("electron").ipcRenderer.send('collapse-video-call-window', getHeight());
     actions.app.setVideoCallCompactMode(true);
   }
 

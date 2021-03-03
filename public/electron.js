@@ -19,7 +19,6 @@ let mainWindow
 let videoCallWindow
 
 let initScreenShareWindow
-let streamScreenShareWindow
 let screenShareContainerWindow
 let screenShareControlsWindow
 
@@ -341,9 +340,6 @@ function createWindow() {
           if(screenShareControlsWindow)
             screenShareControlsWindow.close();
 
-          if(streamScreenShareWindow)
-            streamScreenShareWindow.close();
-
         } catch (error) {
           console.error(error);
         }
@@ -361,16 +357,18 @@ function createWindow() {
     if (videoCallWindow) {
       previousVideoBounds = videoCallWindow.getBounds();
       videoCallWindow.setPosition(0,0);
-      videoCallWindow.setSize(sWidth, sHeight);
-      videoCallWindow.setMinimumSize(800, 600);
       videoCallWindow.setResizable(true);
+      videoCallWindow.setSize(sWidth - 100, sHeight - 100);
+      videoCallWindow.setMinimumSize(800, 600);
       videoCallWindow.setAlwaysOnTop(false);
+      videoCallWindow.center();
     }
   });
 
   ipcMain.on('collapse-video-call-window', (event, height) => {
 
     if (videoCallWindow) {
+      
       videoCallWindow.setMinimumSize(compactVideoWidth, height);
       videoCallWindow.setBounds({
         ...previousVideoBounds,
@@ -388,13 +386,22 @@ function createWindow() {
 
       var bounds = videoCallWindow.getBounds();
       videoCallWindow.setMinimumSize(videoCallWindow.getSize()[0], height);
-      var newY = bounds.y - (height - bounds.height) ;
+      
+      console.log(height);
+      console.log(bounds.height);
 
-      videoCallWindow.setBounds({
+      var newY = bounds.y - (height - bounds.height);
+
+      var newBounds = {
         ...bounds,
         height: height,
         y: newY
-      });
+      };
+
+      console.log('new');
+      console.log(newBounds)
+
+      videoCallWindow.setBounds(newBounds);
     }
   })
 

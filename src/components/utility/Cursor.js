@@ -42,7 +42,7 @@ const Cursor = React.memo((props) => {
 
     return (
         <span className="w-full flex" style={cursorStyle}>
-            <span class="material-icons" style={arrowStyle}>
+            <span className="material-icons" style={arrowStyle}>
                 north_west
             </span>
             <span style={textStyle}>{props.user ? props.user.name : 'Remote User'}</span>

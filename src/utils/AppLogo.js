@@ -11,6 +11,7 @@ const appLogos = {
   'discord':        { name: 'Discord', logo: logos(logos_path + 'discord.png') },
   'dropbox':        { name: 'Dropbox', logo: logos(logos_path + 'dropbox.png') },
   'electron':       { name: 'Electron', logo: logos(logos_path + 'electron.png') },
+  'excel':          { name: 'Excel', logo: logos(logos_path + 'excel.png') },
   'figma':          { name: 'Figma', logo: logos(logos_path + 'figma.png')  },
   'github':         { name: 'GitHub', logo: logos(logos_path + 'github.png') } ,
   'gitlab':         { name: 'GitLab', logo: logos(logos_path + 'gitlab.png') } ,
@@ -23,7 +24,8 @@ const appLogos = {
   'googlecalendar': { name: 'Google Calendar', logo: logos(logos_path + 'googlecalendar.png') } ,
   'googlemeet':     { name: 'Google Meet', logo: logos(logos_path + 'googlemeet.png') } ,
   'googlecloud':    { name: 'Google Cloud', logo: logos(logos_path + 'googlecloud.png') } ,
-  'microsoftword':  { name: 'Microsoft Word', logo: logos(logos_path + 'word.png') } ,
+  'microsoftword':  { name: 'Word', logo: logos(logos_path + 'word.png') } ,
+  'microsoftpowerpoint':  { name: 'PowerPoint', logo: logos(logos_path + 'powerpoint.png') } ,
   'sublimetext':    { name: 'Sublime Text', logo: logos(logos_path + 'sublimetext.png') } ,
   'stackoverflow':  { name: 'Stack Overflow', logo: logos(logos_path + 'stackoverflow.png') } ,
   'slack':          { name: 'Slack', logo: logos(logos_path + 'slack.png') } ,
@@ -61,6 +63,11 @@ const hostApp = {
   'trello.com':         'trello',
   'zoom.us':            'zoom.us'
 }
+
+const windowsAppsMap = {
+  'winword': 'microsoftword',
+  'powerpnt': 'microsoftpowerpoint'
+}
   
 export const appLogo = function(appData, userPreference) {
 
@@ -71,6 +78,10 @@ export const appLogo = function(appData, userPreference) {
     var appName = appData.owner.name.toLowerCase().replace(/ /g,'').replace('.exe','');
     var url = appData.url;
     var logo;
+
+    if(!appLogos[appName] && windowsAppsMap[appName]){
+      appName = windowsAppsMap[appName];
+    }
 
     if(url) {
       url = new URL(url);
