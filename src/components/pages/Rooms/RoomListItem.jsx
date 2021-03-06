@@ -145,15 +145,7 @@ const RoomListItem = React.memo((props) => {
         "position": "absolute",
         'background': '#25272C'
     }
-
-    const customChatStyle = {
-        "top": "75px",
-        "height": "125",
-        "width": "225px",
-        "left": "55px",
-        "position": "absolute"
-    }
-
+    
     return (
         <div id={room.id} className="room-list-item"
             onMouseEnter={(e) => {

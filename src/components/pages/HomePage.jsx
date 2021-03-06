@@ -33,6 +33,7 @@ export default function HomePage() {
     const { state, actions } = useOvermind();
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showInviteModal, toggleshowInviteModal] = useState(false);
+    const [showRatingModal, setShowRatingModal] = useState(false);
     const [appInfo, updateAppInfo] = useState("No Teams");
     const [newRoomName, updateNewRoomName] = useState("");
     const [addingRoom, setAddingRoom] = useState(false);
@@ -47,6 +48,19 @@ export default function HomePage() {
 
         await actions.room.addRoom({authData: authData, roomData: roomData});
         actions.app.emitUpdateTeam();
+    }
+
+    const rateApp = async (e) => {
+        console.log(e.target.dataset.value);
+
+         let ratingData = {
+            rating: e.target.dataset.value,
+            user_id: state.userProfileData.id,
+            user_uid: state.userProfileData.uid,
+        }
+
+        await actions.rating.createRating({authData: authData, ratingData: ratingData});
+        setShowRatingModal(false);
     }
 
     const handleChange = async (e) => {
@@ -74,6 +88,10 @@ export default function HomePage() {
             const room = state.teamRooms.find(room => room.rid === room_rid) || {};
             actions.app.unsetUserInCall(state.userProfileData.id);
             actions.app.unsetUserInRoom({room_id: room.id, user_uid: state.userProfileData.uid});
+
+            if(Math.random() > 0.5){
+                setShowRatingModal(true);
+            }
         });
 
         window.require("electron").ipcRenderer.send('resize-normal');
@@ -84,7 +102,6 @@ export default function HomePage() {
         }
 
     }, [])
-
 
     useEffect(() => {
 
@@ -130,6 +147,15 @@ export default function HomePage() {
     const inviteModalStyle = {
         "top": "46%",
         "width": "calc(100vw - 17px)"
+    }
+
+    const ratingModalStyle = {
+        "top": "calc(100vh/2 - 75px)",
+        "height": "95px",
+        "width": "240px",
+        "left": "55px",
+        "position": "absolute",
+        'background': '#25272C'
     }
 
     return (
@@ -288,6 +314,31 @@ export default function HomePage() {
                             >{!copySuccess ? "Copy Invite" : "Copied !!"}</button>
                         </div> :
                         <div></div>
+                }
+
+                {
+                    showRatingModal &&
+                    <div className="items-center absolute rounded-lg mx-1 p-1 py-1" style={ratingModalStyle}>
+
+                        <div className="items-center px-2">
+                            <p className="text-grey font-bold tracking-wide text-xs center mt-2 mb-2">
+                                How was your experience?
+                            </p>
+
+                            <div className="mt-4 center rating">
+                                {[5,4,3,2,1].map((x, i) =>
+                                    <span
+                                        className="pointer"
+                                        style={{fontSize: '18px'}}
+                                        data-value={x}
+                                        onClick={(e) => {rateApp(e)}}
+                                    >
+                                      ☆
+                                    </span>
+                               )}
+                            </div>
+                        </div>
+                    </div>
                 }
             </div>
         </div>

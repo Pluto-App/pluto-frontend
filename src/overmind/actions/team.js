@@ -34,7 +34,6 @@ export const createTeam = async ({state, effects}, {authData, teamData}) => {
   // These states don't really do anything for now: Jan 2nd
 	state.addingTeam = true
 	var responseData = await effects.team.createTeam(authData, teamData);
-  console.log(responseData);
   state.currentTeam = responseData;
 	state.addingTeam = false
 
