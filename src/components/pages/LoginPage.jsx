@@ -43,7 +43,7 @@ const LoginPage = React.memo(() => {
         setEmailAdded(true);
         setCodeSent(true);
 
-        setTimeout(() => setEnableResend(true), 120000);
+        setTimeout(() => setEnableResend(true), 60000);
       }
     })
   }
@@ -53,7 +53,7 @@ const LoginPage = React.memo(() => {
     actions.user.resendLoginCode({userData: userData}).then((responseData) => {
       if(responseData && responseData.status == 'success'){
         setEnableResend(false);
-        setTimeout(() => setEnableResend(true), 120000);
+        setTimeout(() => setEnableResend(true), 60000);
       }
     })
   }

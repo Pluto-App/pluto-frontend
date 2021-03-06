@@ -195,7 +195,6 @@ const VideoCallCanvas = React.memo((props) => {
     })
 	}
 
-
   const toggleVideoView = (stream, action) => {
 
     var uid = stream.getId();
@@ -394,7 +393,6 @@ const VideoCallCanvas = React.memo((props) => {
     updateWindowSize();
 
   },[numActiveVideo, state.streamingScreenShare])
-
 
  	const handleCamera = (e) => {
 
@@ -663,7 +661,7 @@ const VideoCallCanvas = React.memo((props) => {
       }
       
       <div id="Video"
-        className={!state.videoCallCompactMode && state.streamingScreenShare? "flex-1" : ""}
+        className={!state.videoCallCompactMode && state.streamingScreenShare ? "flex-1" : ""}
         style={{
           position: state.streamingScreenShare ? 'relative' : '',
           width: !state.videoCallCompactMode && state.streamingScreenShare ? "185px" : "",

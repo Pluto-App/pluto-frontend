@@ -143,7 +143,7 @@ export default function App() {
 
       socket_live.emit(events.online, state.userProfileData)
 
-    }, 1000);
+    }, 2000);
     
     return () => clearInterval(interval);
   

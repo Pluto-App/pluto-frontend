@@ -348,7 +348,7 @@ function createWindow() {
     })
 
     if (isDev) {
-       // videoCallWindow.webContents.openDevTools();
+       videoCallWindow.webContents.openDevTools();
     }
   });
 
@@ -493,7 +493,7 @@ function createWindow() {
 
       if (isDev) {
        
-        screenShareContainerWindow.webContents.openDevTools();
+        //screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls

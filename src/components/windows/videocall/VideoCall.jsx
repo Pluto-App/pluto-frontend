@@ -49,7 +49,7 @@ const VideoCall = React.memo((props) => {
 
 
   return (
-    <div className="font-sans w-full" style={{position: 'absolute', top: '25px'}}>
+    <div className="font-sans w-full" style={{position: 'fixed', top: '25px'}}>
       
       <div className="flex" style={{ height: "calc(100vh - 25px)" }}>
         <div className="bg-black flex-1 p-0 w-100">

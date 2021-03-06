@@ -1,3 +1,4 @@
+
 export const state = {
     teamowner: "",
     signedUp: false,
@@ -23,7 +24,7 @@ export const state = {
     addingRoom: false,
     loadingTeam: false,
     error: {},
-    noTeam: false,
+    noTeams: false,
 
     // Video Call
     streamingScreenShare: false,

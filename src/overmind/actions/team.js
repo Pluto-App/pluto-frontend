@@ -35,7 +35,8 @@ export const createTeam = async ({state, effects}, {authData, teamData}) => {
 	state.addingTeam = true
 	var responseData = await effects.team.createTeam(authData, teamData);
   state.currentTeam = responseData;
-	state.addingTeam = false
+  state.noTeams = false;
+	state.addingTeam = false;
 
   return teamData;
 }

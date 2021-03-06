@@ -180,7 +180,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
   	function Area(Increment, Count, Width, Height, Margin = 0) {
       
       var resolution = screenShareResolution;
-      var ratio = resolution.height/resolution.width;
+      var ratio = screenShareResolution ? resolution.height/resolution.width : 1.33;
 
       let w = 0;
       let i = 0;
@@ -229,7 +229,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
       let Cameras = document.getElementsByClassName('ScreenShareCamera');
       var resolution = screenShareResolution;
-      var ratio = resolution.height/resolution.width;
+      var ratio = screenShareResolution ? resolution.height/resolution.width : 1.33;
 
       for (var s = 0; s < Cameras.length; s++) {
           Cameras[s].style.width = width + "px";
@@ -316,7 +316,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	                    <div style={{ display: "table", height: '30px'}}>
 	                      <span className="text-gray-200 px-1" style={{ display: 'table-cell', verticalAlign: 'middle'}}>
 	                        {
-	                          state.screenShareUser ?
+	                          state.screenShareUser && state.screenShareUser.name ?
 	                          state.screenShareUser.name.split(' ')[0] + "'s Screen"
 	                          : ''
 	                        }
