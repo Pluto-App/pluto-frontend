@@ -241,6 +241,7 @@ const VideoCallCanvas = React.memo((props) => {
   }
 
   const getHeight = () => {
+
     let videoElements = document.getElementsByClassName('ag-video-on').length
     let userDetailsElements = document.getElementsByClassName('user-details').length
     let screenShareElement = document.getElementById('ag-screen') ? 1 : 0;
@@ -269,11 +270,13 @@ const VideoCallCanvas = React.memo((props) => {
         window.require('electron').ipcRenderer.send('media-access');      
       }
 
-      AgoraClient.init(props.appId, () => {
+      AgoraClient.init(props.appId, async () => {
           
           subscribeStreamEvents();
-          
-          AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
+          const agoraAccessToken = await actions.auth.getAgoraAccessToken({ requestParams: {channel: props.channel}});
+          console.log(agoraAccessToken);
+
+          AgoraClient.join(agoraAccessToken, props.channel, props.uid, (uid) => {
 
             socket_live.emit(events.joinRoom, { room: props.channel, user_id: props.uid},
               (data) => {
@@ -296,6 +299,9 @@ const VideoCallCanvas = React.memo((props) => {
                 alert("No Access to media stream", err)
               })
           })
+      }, function(err) {
+          console.log("client init failed ", err);
+          // Error handling
       })
 
       return () => {

@@ -51,7 +51,6 @@ export default function HomePage() {
     }
 
     const rateApp = async (e) => {
-        console.log(e.target.dataset.value);
 
          let ratingData = {
             rating: e.target.dataset.value,
@@ -331,6 +330,7 @@ export default function HomePage() {
                                         className="pointer"
                                         style={{fontSize: '18px'}}
                                         data-value={x}
+                                        key={x}
                                         onClick={(e) => {rateApp(e)}}
                                     >
                                       ☆

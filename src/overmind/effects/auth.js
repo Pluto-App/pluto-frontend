@@ -47,3 +47,24 @@ export const loginViaCode = async (loginData) => {
       // Error handling
   });
 }
+
+export const getAgoraAccessToken = async (requestParams) => {
+
+  return fetch(
+
+    BACKEND_URL + "/agora-access-token" ,
+     {
+          method: 'POST',
+          headers: headers(),
+          body: JSON.stringify(requestParams)
+     }
+  )
+  .then(response => response.json())
+  .then(responseData => {
+    return responseData;
+  })
+  .catch((error) => {
+    return {};
+      // Error handling
+  });
+}

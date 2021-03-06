@@ -60,4 +60,19 @@ export const logOut = async ({state, effects}, {setAuthData}) => {
     setAuthData({});
 }
 
+export const getAgoraAccessToken = async ({state, effects}, {requestParams}) => {
+
+    try {
+
+        var agoraAccessToken = await effects.auth.getAgoraAccessToken(requestParams);
+        return agoraAccessToken.token;
+      
+        
+    } catch (error){
+        
+        state.error = error;
+        ToastNotification('error', error);
+    }
+}
+
 

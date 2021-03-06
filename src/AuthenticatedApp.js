@@ -135,8 +135,7 @@ export default function App() {
     const interval = setInterval(() => {
       
       var user_id = state.userProfileData.id;
-      if(state.teamMembersMap && state.teamMembersMap[user_id] && 
-        !state.teamMembersMap[user_id].online){
+      if(state.teamMembersMap && state.teamMembersMap[user_id]){
 
         actions.app.setUserOnline(user_id);
       }
