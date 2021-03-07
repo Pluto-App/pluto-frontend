@@ -532,7 +532,7 @@ const Settings = React.memo(() => {
                                             </div>
 
                                             {
-                                                activeTeam.owner_id === user.id && 
+                                                activeTeam.owner_id == user.id && 
                                                 <div
                                                     className="ml-1 justify-center items-center text-white"
                                                     style={{ 
