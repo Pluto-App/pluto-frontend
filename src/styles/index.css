@@ -88,9 +88,9 @@ button[disabled]{
 .ag-item :first-child {
   border-radius: 0px;
 }
+
 .ag-item {
   border-radius: 6px;
-  border: 2px #00b6ed solid;
   background: url("../assets/avatar.png") center no-repeat;
   height: 100%;
   width: 100%;
@@ -555,6 +555,7 @@ video {
 /* Container */
 #Dish {
     display: flex;
+    height: calc(100vh - 70px);
     left: 0px;
     bottom: 0px;
     top: 0px;
@@ -604,9 +605,7 @@ video {
     align-self: center;
     overflow: hidden;
     display: inline-block;
-    box-shadow: 0px 12px 22px rgba(0, 0, 0, 0.4);
     background: #fff;
-    animation: show 0.4s ease;
 
 }
 

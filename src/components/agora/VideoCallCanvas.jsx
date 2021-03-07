@@ -597,7 +597,7 @@ const VideoCallCanvas = React.memo((props) => {
     if(state.videoCallCompactMode || state.streamingScreenShare)
       Margin = 2;
     else
-      Margin = 10;
+      Margin = 2;
 
     if(Scenary){
       let Width = Scenary.offsetWidth - (Margin * 2);
@@ -626,12 +626,54 @@ const VideoCallCanvas = React.memo((props) => {
   }
 
   function setWidth(width, margin) {
-      let Cameras = document.getElementsByClassName('Camera');
-      for (var s = 0; s < Cameras.length; s++) {
-          Cameras[s].style.width = width + "px";
-          Cameras[s].style.margin = margin + "px";
-          Cameras[s].style.height = (width * 0.75) + "px";
+
+    let Scenary = document.getElementById('Dish');
+    let Width = Scenary.offsetWidth;
+    let Cameras = document.getElementsByClassName('Camera');
+    let numPerRow;
+    var videoWidth;
+
+    switch(Cameras.length) {
+      
+      case 1:
+        numPerRow = 1
+        break;
+      
+      case 2:
+        numPerRow = 2
+        break;
+
+      case 3:
+        if(Width > 800)
+          numPerRow = 3
+        else
+          numPerRow = 2
+        break;
+
+      case 4:
+        numPerRow = 2
+        break;
+      
+      default:
+        if(Width > 800)
+          numPerRow = 3
+        else
+          numPerRow = 2
+        break;
+    }
+
+    for (var s = 0; s < Cameras.length; s++) {
+
+      if(state.videoCallCompactMode || state.streamingScreenShare){
+        Cameras[s].style.width = width + "px";
+      } else {
+        Cameras[s].style.width = (Width/numPerRow - 5) +'px';
       }
+
+      // Cameras[s].style.margin = margin + "px";
+      Cameras[s].style.margin = "auto";
+      Cameras[s].style.height = (width * 0.75) + "px";
+    }
   }
 
   return (
@@ -679,91 +721,94 @@ const VideoCallCanvas = React.memo((props) => {
         <div id="Dish">
           <div style={{ 
               height: state.videoCallCompactMode ? '100%' : '',
-              display: state.videoCallCompactMode || state.streamingScreenShare ? '' : 'flex'
+              display: state.videoCallCompactMode || state.streamingScreenShare ? '' : 'flex',
+              flexWrap: 'wrap'
             }}
           >
             {
               streamList.map(stream =>
-                <section style={{ width: 'auto', position: 'relative'}} key={stream.getId()}>
+                <section className="flex-1 center" style={{ width: '100%', position: 'relative', margin: '2px'}} key={stream.getId()}>
 
-                  <div 
-                    id={'ag-item-' + stream.getId()} 
-                    className={stream.isVideoOn() ? 'ag-item Camera ag-video-on' : 'ag-item Camera'}
-                    style={{ 
-                      height: '120px',
-                      display: stream.isVideoOn() ? 'block' : 'none'
-                    }}
-                  >
-                  </div>
-                  
-                  <div 
-                    id={'ag-item-info-' + stream.getId()} 
-                    className="ag-item-info"
-                    style={{ 
-                      display: stream.isVideoOn() ? 'flex' : 'none',
-                      bottom: state.videoCallCompactMode || state.streamingScreenShare ? '5px' : '30px',
-                      right: state.videoCallCompactMode || state.streamingScreenShare ? '5px' : '30px'
-                    }}
-                  >
-                    <div style={{ display: "table", height: '30px'}}>
-                      <span className="text-gray-200 px-1" style={{ display: 'table-cell', verticalAlign: 'middle'}}>
-                        {
-                          usersInCall[stream.getId()] ?
-                          usersInCall[stream.getId()].name.split(' ')[0]
-                          : ''
-                        }
-                      </span>
-                    </div>
-                    <div className="pointer items-center flex overflow-hidden" 
-                      style={{ display: 'table'}}
+                  <div style={{ 
+                    display:  state.videoCallCompactMode || state.streamingScreenShare ? '' : 'inline-block'
+                  }}>
+                    <div 
+                      id={'ag-item-' + stream.getId()} 
+                      className={stream.isVideoOn() ? 'ag-item Camera ag-video-on' : 'ag-item Camera'}
+                      style={{ 
+                        height: '120px',
+                        display: stream.isVideoOn() ? 'block' : 'none'
+                      }}
                     >
-                      {
-                        usersInCall[stream.getId()] && usersInCall[stream.getId()].id &&
-                        <ActiveWindowInfo user={usersInCall[stream.getId()]} user_id={usersInCall[stream.getId()].id} videoOn={true}/>
-                      }
                     </div>
-                  </div>
-
-                  <div 
-                    id={'user-details-' + stream.getId()} 
-                    className={stream.isVideoOn() ? '' : 'user-details'}
-                    style={{ 
-                      height: '50px',
-                      display: stream.isVideoOn() ? 'none' : 'flex',
-                      margin: '10px'
-                    }}
-                  >
-                    <div style={{display: 'table'}}>
-                      <div className="rounded-full"
-                        style={{display: 'table-cell', verticalAlign: 'middle', height: '50px'}}
-                      >
-                        <img 
-                          style={{height: '30px'}}
-                          src={
-                            usersInCall[stream.getId()] ?
-                            usersInCall[stream.getId()].avatar
-                            : ''
-                          } 
-                        alt="" />
-                      </div>
-                    </div>
-                    <div className="text-white px-1 font-bold "
-                      style={{display: 'table', height: '50px', marginLeft: '10px'}}
+                    
+                    <div 
+                      id={'ag-item-info-' + stream.getId()} 
+                      className="ag-item-info"
+                      style={{ 
+                        display: stream.isVideoOn() ? 'flex' : 'none',
+                        bottom: state.videoCallCompactMode || state.streamingScreenShare ? '5px' : '10px'
+                      }}
                     >
-                        <span style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px' }}>
+                      <div style={{ display: "table", height: '30px'}}>
+                        <span className="text-gray-200 px-1" style={{ display: 'table-cell', verticalAlign: 'middle'}}>
                           {
                             usersInCall[stream.getId()] ?
                             usersInCall[stream.getId()].name.split(' ')[0]
                             : ''
                           }
                         </span>
+                      </div>
+                      <div className="pointer items-center flex overflow-hidden" 
+                        style={{ display: 'table'}}
+                      >
+                        {
+                          usersInCall[stream.getId()] && usersInCall[stream.getId()].id &&
+                          <ActiveWindowInfo user={usersInCall[stream.getId()]} user_id={usersInCall[stream.getId()].id} videoOn={true}/>
+                        }
+                      </div>
                     </div>
-                    {
-                      usersInCall[stream.getId()] && usersInCall[stream.getId()].id &&
-                      <ActiveWindowInfo user={usersInCall[stream.getId()]} user_id={usersInCall[stream.getId()].id}/>
-                    }
-                  </div>
 
+                    <div 
+                      id={'user-details-' + stream.getId()} 
+                      className={stream.isVideoOn() ? '' : 'user-details'}
+                      style={{ 
+                        height: '50px',
+                        display: stream.isVideoOn() ? 'none' : 'flex',
+                        margin: '10px'
+                      }}
+                    >
+                      <div style={{display: 'table'}}>
+                        <div className="rounded-full"
+                          style={{display: 'table-cell', verticalAlign: 'middle', height: '50px'}}
+                        >
+                          <img 
+                            style={{height: '30px'}}
+                            src={
+                              usersInCall[stream.getId()] ?
+                              usersInCall[stream.getId()].avatar
+                              : ''
+                            } 
+                          alt="" />
+                        </div>
+                      </div>
+                      <div className="text-white px-1 font-bold "
+                        style={{display: 'table', height: '50px', marginLeft: '10px'}}
+                      >
+                          <span style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px' }}>
+                            {
+                              usersInCall[stream.getId()] ?
+                              usersInCall[stream.getId()].name.split(' ')[0]
+                              : ''
+                            }
+                          </span>
+                      </div>
+                      {
+                        usersInCall[stream.getId()] && usersInCall[stream.getId()].id &&
+                        <ActiveWindowInfo user={usersInCall[stream.getId()]} user_id={usersInCall[stream.getId()].id}/>
+                      }
+                    </div>
+                  </div>
                 </section>
               )
             }
