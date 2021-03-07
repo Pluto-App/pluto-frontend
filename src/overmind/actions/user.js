@@ -74,7 +74,6 @@ export const resendLoginCode = async ({state, effects, actions}, {userData}) => 
   return responseData;
 }
 
-
 export const updateUser = async ({state, effects, actions}, {authData, userData}) => {
 
     var resonseData = await effects.user.updateUser(authData, userData)

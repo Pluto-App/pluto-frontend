@@ -38,7 +38,7 @@ export const createTeam = async ({state, effects}, {authData, teamData}) => {
   state.noTeams = false;
 	state.addingTeam = false;
 
-  return teamData;
+  return responseData;
 }
 
 export const updateTeam = async ({state, effects}, {authData, teamData}) => {

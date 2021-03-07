@@ -27,7 +27,7 @@ const Settings = React.memo(() => {
     const [ activeTeam, setActiveTeam ] = useState({});
     const [ activeTeamUsers, setActiveTeamUsers ] = useState([]);
     
-    const [ newTeam, setNewTeam ] = useState({});
+    const [ newTeam, setNewTeam ] = useState({name: ''});
     const [ userToRemove, setUserToRemove ] = useState({});
 
     const [ confirmTeamDelete, setConfirmTeamDelete ] = useState(false);
