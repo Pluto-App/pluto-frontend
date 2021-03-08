@@ -358,7 +358,6 @@ const RoomListItem = React.memo((props) => {
                 <div className="flex px-3 p-2" 
                     style={{}}
                 >   
-                    <ReactTooltip effect="solid" place="top" delayShow={500} />
                     {
                         ((state.teamRoomsMap[room.id] || {}).users || []).map((uid, index) => 
                             
@@ -367,7 +366,7 @@ const RoomListItem = React.memo((props) => {
                                 style={{width: '25px', marginRight: '10px'}}
                                 data-tip={ userName(uid) }
                             >
-                                
+                                <ReactTooltip effect="solid" place="top" delayShow={500} />
                                 <img 
                                     alt = ""
                                     src = { userAvatar(uid) } 
