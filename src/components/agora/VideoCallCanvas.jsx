@@ -246,7 +246,6 @@ const VideoCallCanvas = React.memo((props) => {
     let userDetailsElements = document.getElementsByClassName('user-details').length
     let screenShareElement = document.getElementById('ag-screen') ? 1 : 0;
 
-
     let height = 70 + (videoElements*123) + (userDetailsElements*60) + (screenShareElement * 123);
 
     return height;
@@ -654,12 +653,15 @@ const VideoCallCanvas = React.memo((props) => {
         numPerRow = 2
         break;
       
-      default:
+      case (Cameras.length == 5 || Cameras.length == 6):
         if(Width > 800)
           numPerRow = 3
         else
           numPerRow = 2
         break;
+
+      default:
+        numPerRow = 3
     }
 
     for (var s = 0; s < Cameras.length; s++) {
@@ -722,22 +724,37 @@ const VideoCallCanvas = React.memo((props) => {
           <div style={{ 
               height: state.videoCallCompactMode ? '100%' : '',
               display: state.videoCallCompactMode || state.streamingScreenShare ? '' : 'flex',
-              flexWrap: 'wrap'
+              flexWrap: 'wrap',
+              overflowY: 'scroll'
             }}
           >
             {
               streamList.map(stream =>
-                <section className="flex-1 center" style={{ width: '100%', position: 'relative', margin: '2px'}} key={stream.getId()}>
+                <section className="flex-1 center" 
+                  style={{ 
+                    width: '100%', 
+                    position: 'relative', 
+                    margin: '2px',
+                    cursor: stream.isVideoOn() ? 'pointer' : ''
+                  }} 
+                  key={stream.getId()}
+                >
 
-                  <div style={{ 
-                    display:  state.videoCallCompactMode || state.streamingScreenShare ? '' : 'inline-block'
-                  }}>
+                  <div 
+                    style={{ 
+                      display:  state.videoCallCompactMode || state.streamingScreenShare ? '' : 'inline-block',
+                    }}
+                    >
                     <div 
                       id={'ag-item-' + stream.getId()} 
                       className={stream.isVideoOn() ? 'ag-item Camera ag-video-on' : 'ag-item Camera'}
                       style={{ 
                         height: '120px',
                         display: stream.isVideoOn() ? 'block' : 'none'
+                      }}
+                      onClick={() => {
+                          if(state.videoCallCompactMode)
+                            handleExpand()
                       }}
                     >
                     </div>
@@ -773,9 +790,10 @@ const VideoCallCanvas = React.memo((props) => {
                       id={'user-details-' + stream.getId()} 
                       className={stream.isVideoOn() ? '' : 'user-details'}
                       style={{ 
-                        height: '50px',
-                        display: stream.isVideoOn() ? 'none' : 'flex',
-                        margin: '10px'
+                        height:   '50px',
+                        display:  stream.isVideoOn() ? 'none' : 'flex',
+                        width:    state.videoCallCompactMode || state.streamingScreenShare ? '' : '180px',
+                        margin:   '10px'
                       }}
                     >
                       <div style={{display: 'table'}}>
@@ -792,8 +810,12 @@ const VideoCallCanvas = React.memo((props) => {
                           alt="" />
                         </div>
                       </div>
-                      <div className="text-white px-1 font-bold "
+                      <div className="text-white px-1 font-bold pointer"
                         style={{display: 'table', height: '50px', marginLeft: '10px'}}
+                        onClick={() => {
+                            if(state.videoCallCompactMode)
+                              handleExpand()
+                        }}
                       >
                           <span style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px' }}>
                             {

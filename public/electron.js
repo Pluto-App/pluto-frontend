@@ -382,13 +382,16 @@ function createWindow() {
 
   ipcMain.on('set-video-player-height', (event, height) => {
     if(videoCallWindow){
+      
+      if(height > (sHeight - 125))
+        height = sHeight - 125;
+
       var resizeDisabled = videoCallWindow.isResizable() == true;
 
       var bounds = videoCallWindow.getBounds();
       videoCallWindow.setMinimumSize(videoCallWindow.getSize()[0], height);
       
-      var newY = bounds.y - (height - bounds.height);
-
+      var newY = bounds.y - Math.abs(height - bounds.height);
       var newBounds = {
         ...bounds,
         height: height,

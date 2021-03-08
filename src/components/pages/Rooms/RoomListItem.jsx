@@ -7,6 +7,8 @@ import { useHistory } from "react-router-dom"
 import ToastNotification from '../../widgets/ToastNotification';
 import * as Cookies from "js-cookie";
 import * as md5 from "md5";
+import ReactTooltip from 'react-tooltip';
+
 import { socket_live, events } from '../../sockets';
 
 import { appLogo } from '../../../utils/AppLogo';
@@ -135,6 +137,12 @@ const RoomListItem = React.memo((props) => {
         var userInfo = state.teamMembers.find(user => user.uid === uid);
         var avatar = userInfo ? userInfo.avatar : '';
         return avatar;
+    }
+
+    const userName = (uid) => {
+        var userInfo = state.teamMembers.find(user => user.uid === uid);
+        var name = userInfo ? userInfo.name : '';
+        return name;
     }
 
     const customMenuStyle = {
@@ -350,15 +358,20 @@ const RoomListItem = React.memo((props) => {
                 <div className="flex px-3 p-2" 
                     style={{}}
                 >   
+                    <ReactTooltip effect="solid" place="top" delayShow={500} />
                     {
                         ((state.teamRoomsMap[room.id] || {}).users || []).map((uid, index) => 
                             
-                            <div key={index} style={{width: '25px', marginRight: '10px'}}>
+                            <div 
+                                key={index} 
+                                style={{width: '25px', marginRight: '10px'}}
+                                data-tip={ userName(uid) }
+                            >
                                 
                                 <img 
                                     alt = ""
                                     src = { userAvatar(uid) } 
-                                    style={{width: '100%', borderRadius: '12px'}} 
+                                    style={{ width: '100%', borderRadius: '12px', cursor: 'pointer' }}
                                 />
                                 
                             </div>
