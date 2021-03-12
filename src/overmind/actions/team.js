@@ -65,6 +65,7 @@ export const addUser = async ({state, effects}, {authData, reqData}) => {
 
     state.loadingTeam = true;
     await effects.team.addUser(authData, reqData);
+    actions.app.emitUpdateTeam();
     state.noTeams = false;
     state.loadingTeam = false;
 }
