@@ -28,11 +28,7 @@ const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
 
 const activeWin = require('active-win');
-// const activeWin = require('active-win-with-url');
 const runApplescript = require('run-applescript');
-
-// TODO Now we can add external window for settings.
-// TODO Add support for App Signing.
 
 const minWidth = 350;
 const minHeight = 475;
@@ -318,7 +314,6 @@ function createWindow() {
       }
     })
 
-
     videoCallWindow.setAlwaysOnTop(true, 'pop-up-menu');
     videoCallWindow.setMenu(null);
 
@@ -381,6 +376,7 @@ function createWindow() {
   });
 
   ipcMain.on('set-video-player-height', (event, height) => {
+
     if(videoCallWindow){
       
       if(height > (sHeight - 125))
@@ -391,7 +387,17 @@ function createWindow() {
       var bounds = videoCallWindow.getBounds();
       videoCallWindow.setMinimumSize(videoCallWindow.getSize()[0], height);
       
-      var newY = bounds.y - Math.abs(height - bounds.height);
+      var newY = bounds.y;
+
+      if(height > bounds.height){
+
+        newY = bounds.y - (height - bounds.height);
+    
+      } else {
+
+        newY = bounds.y + (bounds.height - height);
+      }
+
       var newBounds = {
         ...bounds,
         height: height,
