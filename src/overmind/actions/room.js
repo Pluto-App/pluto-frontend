@@ -29,7 +29,7 @@ export const getTeamRooms = async ({state, effects}, {authData, teamId}) => {
 
     if(teamRooms){
       state.teamRooms = teamRooms;
-
+      state.teamRoomsMap = {};
       for(var room of teamRooms){
         state.teamRoomsMap[room.id] = room;
       }

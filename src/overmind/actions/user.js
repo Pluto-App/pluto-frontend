@@ -95,7 +95,9 @@ export const getTeamMembers = async ({state, actions, effects}, {authData, teamI
       teamMembers = await effects.user.getTeamMembers(authData, teamId)
       
       if(teamMembers){
+        
         state.teamMembers = teamMembers;
+        state.teamMembersMap = {};
 
         for(var member of teamMembers){
           state.onlineUsers[member.id] = member.online;
@@ -103,6 +105,7 @@ export const getTeamMembers = async ({state, actions, effects}, {authData, teamI
         }
 
         var user_id = state.userProfileData.id;
+
         if(state.teamMembersMap && state.teamMembersMap[user_id]){
 
           actions.app.setUserOnline(user_id);
