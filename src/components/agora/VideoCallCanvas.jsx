@@ -643,40 +643,8 @@ const VideoCallCanvas = React.memo((props) => {
     let Scenary = document.getElementById('Dish');
     let Width = Scenary.offsetWidth;
     let Cameras = document.getElementsByClassName('Camera');
-    let numPerRow;
+    let numPerRow = Math.ceil(Math.sqrt(Cameras.length));
     var videoWidth;
-
-    switch(Cameras.length) {
-      
-      case 1:
-        numPerRow = 1
-        break;
-      
-      case 2:
-        numPerRow = 2
-        break;
-
-      case 3:
-        if(Width > 800)
-          numPerRow = 3
-        else
-          numPerRow = 2
-        break;
-
-      case 4:
-        numPerRow = 2
-        break;
-      
-      case (Cameras.length == 5 || Cameras.length == 6):
-        if(Width > 800)
-          numPerRow = 3
-        else
-          numPerRow = 2
-        break;
-
-      default:
-        numPerRow = 3
-    }
 
     for (var s = 0; s < Cameras.length; s++) {
 
@@ -686,7 +654,6 @@ const VideoCallCanvas = React.memo((props) => {
         Cameras[s].style.width = (Width/numPerRow - 5) +'px';
       }
 
-      // Cameras[s].style.margin = margin + "px";
       Cameras[s].style.margin = "auto";
       Cameras[s].style.height = (width * 0.75) + "px";
     }
@@ -746,6 +713,7 @@ const VideoCallCanvas = React.memo((props) => {
             }}
           >
             {
+              //Array(6).fill(0).map((x, i) =>
               streamList.map(stream =>
                 <section className="flex-1 center" 
                   style={{ 
@@ -850,9 +818,10 @@ const VideoCallCanvas = React.memo((props) => {
                   </div>
                 </section>
               )
+              //)
             }
           </div>
-        </div>  
+        </div>
       </div>
 
       <div className={state.videoCallCompactMode ? "ag-btn-group-compact" : "ag-btn-group"} 

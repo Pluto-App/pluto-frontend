@@ -79,7 +79,7 @@ export default function HomePage() {
                 if(process.env.REACT_APP_DEV_BUILD)
                     console.log(error);
             }
-        }, 2000);
+        }, 3000);
 
         window.require("electron").ipcRenderer.on('exitUserCall', function (e, rid) {
             var room_rid = rid;
