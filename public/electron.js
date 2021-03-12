@@ -206,8 +206,8 @@ function createWindow() {
   })
 
   ipcMain.on('resize-normal', (event, arg) => {
-    mainWindow.setSize(minWidth, 700);
-    mainWindow.setMinimumSize(minWidth, 700);
+    mainWindow.setSize(minWidth, 690);
+    mainWindow.setMinimumSize(minWidth, 690);
     mainWindow.center();
   })
 

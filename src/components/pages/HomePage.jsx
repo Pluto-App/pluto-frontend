@@ -23,7 +23,6 @@ export default function HomePage() {
     let history = useHistory();
     const { authData, setAuthData } = useContext(AuthContext);
 
-
     const override = css`
         display: block;
         margin: 0 auto;
@@ -212,10 +211,10 @@ export default function HomePage() {
                         <div className='rooms-list'>
                             {
                                 !state.loadingCurrentTeam && componentMounted &&
-                                state.teamRooms.map((room) =>
+                                Object.keys(state.teamRoomsMap).map((room_id) =>
                                     <RoomListItem
-                                        room={room}
-                                        key={room.id}
+                                        room={state.teamRoomsMap[room_id]}
+                                        key={room_id}
                                     />
                                 )
                             }
@@ -238,10 +237,10 @@ export default function HomePage() {
                     <div className='members-list'>
                         {
                             !state.loadingCurrentTeam &&
-                            state.teamMembers.map((user) =>
+                            Object.keys(state.teamMembersMap).map((user_id) =>
                                  <UserListItem
-                                    key={user.id}
-                                    user={user}
+                                    user={state.teamMembersMap[user_id]}
+                                    key={user_id}
                                 />
                             )
                         }

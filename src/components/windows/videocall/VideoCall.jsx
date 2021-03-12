@@ -20,10 +20,7 @@ const VideoCall = React.memo((props) => {
 
   const [ config, setConfig ] = useState({
       videoProfile: "720p_1",
-      mode: "live",
       channel: call_data.call_channel_id,
-      transcode: "interop",
-      baseMode: "avc",
       appId : process.env.REACT_APP_AGORA_APP_ID,
       user_id: user.id,
       user_uid: user.uid
@@ -36,7 +33,6 @@ const VideoCall = React.memo((props) => {
     });
 
   },[]);
-
 
   return (
     <div className="font-sans w-full" style={{position: 'fixed', top: '25px'}}>

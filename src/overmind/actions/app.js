@@ -73,6 +73,11 @@ export const userVideoCall = async ({ state, effect }, data) => {
 		// Do nothing
 	} else {
 		
+		var call_data = {
+			call_channel_id: data.channel_id
+		};
+
+		localStorage.setItem("call_data", JSON.stringify(call_data));
 		localStorage.setItem("call_channel_id", data.channel_id);
 	 	socket_live.emit(events.joinRoom, data.channel_id);
 

@@ -12,7 +12,6 @@ export const events = {
 
   userVideoCall:            'userVideoCall',
   roomVideoCall:            'roomVideoCall',
-  inVideoCall:              'inVideoCall',
   userScreenShare:          'userScreenShare',
   viewScreenShare:          'viewScreenShare',
   screenShareCursor:        'screenShareCursor',

@@ -104,6 +104,7 @@ const UserListItem = React.memo((props) => {
     useEffect(() => {
 
         if(user){
+            
             var preference = state.teamMembersMap[user.id].user_preference;
             setActiveAppInfo(appLogo(state.usersActiveWindows[user.id], preference));    
         }

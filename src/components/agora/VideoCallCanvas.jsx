@@ -285,16 +285,23 @@ const VideoCallCanvas = React.memo((props) => {
 
               addStream(localStream, true);
 
-              const interval = setInterval(() => {
+              socket_live.emit(events.joinRoom, { room: props.config.channel, user_id: props.config.user_id},
+                (data) => {
+                  if(data.created){
+                    actions.app.emitUpdateTeam();  
+                  }
+              });
 
-                socket_live.emit(events.joinRoom, { room: props.config.channel, user_id: props.config.user_id},
-                  (data) => {
-                    if(data.created){
-                      actions.app.emitUpdateTeam();  
-                    }
-                });
+              // const interval = setInterval(() => {
 
-              }, 2000);
+              //   socket_live.emit(events.joinRoom, { room: props.config.channel, user_id: props.config.user_id},
+              //     (data) => {
+              //       if(data.created){
+              //         actions.app.emitUpdateTeam();  
+              //       }
+              //   });
+
+              // }, 2000);
 
               AgoraClient.publish(localStream, err => {
                   alert("Publish local stream error: " + err);

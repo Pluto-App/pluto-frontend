@@ -60,7 +60,7 @@ export const getLoggedInUser = async ({state, actions, effects}, { authData, set
 }
 
 export const getUser = async ({state, effects, actions}, {authData, user_id}) => {
-  return await effects.user.getUser(authData, user_id); 
+  return await effects.user.getUser(authData, user_id);
 }
 
 export const registerUser = async ({state, effects, actions}, {userData}) => {
