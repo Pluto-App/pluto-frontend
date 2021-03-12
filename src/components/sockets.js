@@ -12,6 +12,7 @@ export const events = {
 
   userVideoCall:            'userVideoCall',
   roomVideoCall:            'roomVideoCall',
+  inVideoCall:              'inVideoCall',
   userScreenShare:          'userScreenShare',
   viewScreenShare:          'viewScreenShare',
   screenShareCursor:        'screenShareCursor',
@@ -24,19 +25,4 @@ export const events = {
   updateTeamMembers:  'updateTeamMembers',
   updateTeamRooms:    'updateTeamRooms',
 
-  sleeping: "Sleeping",
-  new_team: "New Team",
-  new_room: "New Room",
-  team_switch: "Team Switch",
-  remove_room: "Remove Room",
-  room_switch: "Room Switch",
-  audio_call: "Audio Call",
-  video_call: "Video Call",
-  ping: "ping",
-  pong: "pong",
-  remove_member: "Remove Member",
-  room_welcome: "Room Welcome",
-  user_join: "User Joined",
-  room_broadcast: "Room Broacast",
-  new_team_mate: "New Team Mate"
 }

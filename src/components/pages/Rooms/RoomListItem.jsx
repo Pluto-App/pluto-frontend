@@ -73,28 +73,31 @@ const RoomListItem = React.memo((props) => {
         setEditingRoom(!editingRoom);
     }
 
-    const startVideo = async (e, room_rid) => {
+    const startVideo = async () => {
 
         if(localStorage.getItem('call_channel_id'))
             await actions.app.clearVideoCallData();
 
-        let channel_id = 'rvc-' + room_rid;
-        localStorage.setItem('call_channel_id', channel_id);
+        let call_channel_id = 'rvc-' + room.rid;
+        let call_data = {
+            channel_id: 't-' + state.currentTeam.tid,
+            call_channel_id: call_channel_id,
+            user_id: state.userProfileData.id,
+            user_uid: state.userProfileData.uid,
+            receiver_id: room.id,
+            receiver_rid: room.rid
+            
+        };
 
-        socket_live.emit(events.roomVideoCall, 
-            {
-                channel_id: 't-' + state.currentTeam.tid,
-                call_channel_id: channel_id,
-                room_id: room.id,
-                room_rid: room.rid,
-                user: state.userProfileData.uid
-            }
-        );
+        localStorage.setItem('call_channel_id', call_channel_id);
+        localStorage.setItem('call_data', JSON.stringify(call_data));
+
+        socket_live.emit(events.roomVideoCall, call_data);
 
         actions.app.setUserInCall(state.userProfileData.id);
         actions.app.setUserInRoom({room_id: room.id, user_uid: state.userProfileData.uid});
 
-        window.require("electron").ipcRenderer.send('init-video-call-window', channel_id);
+        window.require("electron").ipcRenderer.send('init-video-call-window', call_channel_id);
     }
 
     const updateRoom = async (name) => {
@@ -249,7 +252,7 @@ const RoomListItem = React.memo((props) => {
                                             !state.teamMembersMap[state.userProfileData.id] ||
                                             !state.teamMembersMap[state.userProfileData.id].in_call
                                         )
-                                            startVideo(e, room.rid)
+                                            startVideo()
                                     }}
                                 >
                                     {roomName}
@@ -284,7 +287,7 @@ const RoomListItem = React.memo((props) => {
                                     <button className="text-white focus:outline-none bg-light-blue btn-join-room" 
                                         style={{width: '60px', fontSize: '14px'}}
                                         onClick={(e) => {
-                                            startVideo(e,room.rid);
+                                            startVideo();
                                         }}
                                     >
                                         Join

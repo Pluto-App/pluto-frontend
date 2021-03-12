@@ -133,12 +133,6 @@ export default function App() {
   useEffect(() => {
 
     const interval = setInterval(() => {
-      
-      var user_id = state.userProfileData.id;
-      if(state.teamMembersMap && state.teamMembersMap[user_id]){
-
-        actions.app.setUserOnline(user_id);
-      }
 
       socket_live.emit(events.online, state.userProfileData)
 

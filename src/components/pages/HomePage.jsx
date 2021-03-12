@@ -52,7 +52,7 @@ export default function HomePage() {
 
     const rateApp = async (e) => {
 
-         let ratingData = {
+        let ratingData = {
             rating: e.target.dataset.value,
             user_id: state.userProfileData.id,
             user_uid: state.userProfileData.uid,
@@ -292,7 +292,7 @@ export default function HomePage() {
                             <textarea
                                 rows='3'
                                 id="InviteModalLink"
-                                value={"Team Code: " + state.currentTeam.tid + "\nDownload App: https://github.com/Pluto-App/pluto-desktop-releases/releases"}
+                                value={"Team Code: " + state.currentTeam.tid + "\nDownload App: https://bit.ly/3cap6Y9"}
                                 style={{ resize: 'none'}}
                                 className="w-full shadow appearance-none border text-gray-200 rounded py-1 px-1 bg-gray-600"
                                 readOnly

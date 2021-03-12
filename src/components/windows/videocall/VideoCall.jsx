@@ -15,31 +15,21 @@ const VideoCall = React.memo((props) => {
 
   const { authData } = useContext(AuthContext);
   
-  const user_id = JSON.parse(localStorage.getItem('currentUser')).user.id;
-  const channel_id = localStorage.getItem('call_channel_id');
+  const user        = JSON.parse(localStorage.getItem('currentUser')).user;
+  const call_data   = JSON.parse(localStorage.getItem('call_data'));
 
   const [ config, setConfig ] = useState({
-      videoProfile: "1080p_1",
+      videoProfile: "720p_1",
       mode: "live",
-      channel: channel_id,
-      transcode:  Cookies.get("transcode") || "interop",
-      baseMode:  Cookies.get("baseMode") || "avc",
+      channel: call_data.call_channel_id,
+      transcode: "interop",
+      baseMode: "avc",
       appId : process.env.REACT_APP_AGORA_APP_ID,
-      uid: user_id
+      user_id: user.id,
+      user_uid: user.uid
   });
 
   useEffect(() => {
-
-      if(state.currentTeam.id){
-
-        actions.team.getTeam({authData: authData, team_id: state.currentTeam.id})    
-      }
-
-  }, [actions, authData, state.currentTeam.id])
-
-  useEffect(() => {
-
-    socket_live.emit('join_room',{ room: channel_id, user_id: user_id });
 
     socket_live.on(events.activeWindowUpdate, (data) => {
       actions.app.updateUserActiveWindowData(data);
@@ -54,12 +44,7 @@ const VideoCall = React.memo((props) => {
       <div className="flex" style={{ height: "calc(100vh - 25px)" }}>
         <div className="bg-black flex-1 p-0 w-100">
           <VideoCallCanvas
-            videoProfile={config.videoProfile}
-            channel={config.channel}
-            transcode={config.transcode}
-            baseMode={config.baseMode}
-            appId={config.appId}
-            uid={ config.uid }
+            config={ config }
           />
         </div>
       </div>

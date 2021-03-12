@@ -269,26 +269,33 @@ const VideoCallCanvas = React.memo((props) => {
         window.require('electron').ipcRenderer.send('media-access');      
       }
 
-      AgoraClient.init(props.appId, async () => {
+      AgoraClient.init(props.config.appId, async () => {
           
           subscribeStreamEvents();
-          const agoraAccessToken = await actions.auth.getAgoraAccessToken({ requestParams: {channel: props.channel}});
-          console.log(agoraAccessToken);
+          const agoraAccessToken = await actions.auth.getAgoraAccessToken({ requestParams: {channel: props.config.channel}});
 
-          AgoraClient.join(agoraAccessToken, props.channel, props.uid, (uid) => {
-
-            socket_live.emit(events.joinRoom, { room: props.channel, user_id: props.uid},
-              (data) => {
-                actions.app.emitUpdateTeam();
-              });
-            localStream = streamInit(uid, props.videoProfile);
+          AgoraClient.join(agoraAccessToken, props.config.channel, props.config.user_id, (user_id) => {
+      
+            localStream = streamInit(user_id, props.config.videoProfile);
 
             localStream.init(() => {
               
               localStream.muteVideo();
               localStream.muteAudio();
 
-              addStream(localStream, true)
+              addStream(localStream, true);
+
+              const interval = setInterval(() => {
+
+                socket_live.emit(events.joinRoom, { room: props.config.channel, user_id: props.config.user_id},
+                  (data) => {
+                    if(data.created){
+                      actions.app.emitUpdateTeam();  
+                    }
+                });
+
+              }, 2000);
+
               AgoraClient.publish(localStream, err => {
                   alert("Publish local stream error: " + err);
               })

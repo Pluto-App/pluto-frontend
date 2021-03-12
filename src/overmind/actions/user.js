@@ -13,7 +13,7 @@ export const getLoggedInUser = async ({state, actions, effects}, { authData, set
       if(userData.id){
         actions.userpreference.getUserPreference({ authData: authData});
 
-        socket_live.emit('join_room', userData.uid);
+        socket_live.emit(events.joinRoom, userData.uid);
 
         state.userProfileData = userData;
 
@@ -38,7 +38,8 @@ export const getLoggedInUser = async ({state, actions, effects}, { authData, set
           for(var team of userData.teams){
             socket_live.emit(events.joinRoom, { room: 't-' + team.tid, user_id: userData.id})
           }
-        }  
+        }
+
       } else {
 
         if(setAuthData) {
@@ -99,6 +100,12 @@ export const getTeamMembers = async ({state, actions, effects}, {authData, teamI
         for(var member of teamMembers){
           state.onlineUsers[member.id] = member.online;
           state.teamMembersMap[member.id] = member;
+        }
+
+        var user_id = state.userProfileData.id;
+        if(state.teamMembersMap && state.teamMembersMap[user_id]){
+
+          actions.app.setUserOnline(user_id);
         }
       }
       

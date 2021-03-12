@@ -72,6 +72,7 @@ export const userVideoCall = async ({ state, effect }, data) => {
 	if(localStorage.getItem("call_channel_id") && localStorage.getItem("call_channel_id") === data.channel_id){
 		// Do nothing
 	} else {
+		
 		localStorage.setItem("call_channel_id", data.channel_id);
 	 	socket_live.emit(events.joinRoom, data.channel_id);
 
@@ -221,6 +222,7 @@ export const clearScreenShareData = async ({ state, effect }) => {
 
 const deleteScreenShareData = () => {
 
+	localStorage.removeItem('call_data');
 	localStorage.removeItem('attendeeMode');
 	localStorage.removeItem('screenshare_channel_id');
 	localStorage.removeItem('screenshare_owner');

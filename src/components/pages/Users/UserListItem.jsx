@@ -71,23 +71,30 @@ const UserListItem = React.memo((props) => {
         history.push('/');
     }
 
-    const startVideo = (e, receiver_uid) => {
+    const startVideo = () => {
 
-        if (receiver_uid !== state.userProfileData.uid) {
+        if (user.uid !== state.userProfileData.uid) {
 
-            let channel_id = 'uvc-'+ receiver_uid + '-' + state.userProfileData.uid;
+            let call_channel_id = 'uvc-'+ user.uid + '-' + state.userProfileData.uid;
 
-            localStorage.setItem('call_channel_id', channel_id);
+            let call_data = {
+                call_channel_id: call_channel_id,
+                user_id: state.userProfileData.id,
+                user_uid: state.userProfileData.uid,
+                receiver_id: user.id,
+                receiver_rid: user.uid
+            };
 
-            socket_live.emit(events.userVideoCall, {
-                channel_id: channel_id,
-                receiver: user.uid,
-                sender: state.userProfileData.uid
-            });
+            localStorage.setItem('call_channel_id', call_channel_id);
+            localStorage.setItem('call_data', JSON.stringify(call_data));
+
+            socket_live.emit(events.userVideoCall, 
+                call_data
+            );
 
             actions.app.setUserInCall(state.userProfileData.id);
 
-            window.require("electron").ipcRenderer.send('init-video-call-window', channel_id);
+            window.require("electron").ipcRenderer.send('init-video-call-window', call_channel_id);
 
         } else {
             ToastNotification('error', "Can't start VC with self 😠")
@@ -140,7 +147,7 @@ const UserListItem = React.memo((props) => {
                             (state.teamMembersMap[state.userProfileData.id] && !state.teamMembersMap[state.userProfileData.id].in_call) && 
                             !user.in_call
                         )
-                            startVideo(e, user.uid);
+                            startVideo();
                     }}
                 >
                     {user.name}
