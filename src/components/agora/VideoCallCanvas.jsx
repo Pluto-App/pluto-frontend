@@ -331,9 +331,13 @@ const VideoCallCanvas = React.memo((props) => {
     }, false);
 
     window.require("electron").ipcRenderer.on('stop-screenshare', function (e, args) {
-      socket_live.emit(events.endScreenShare, {
+
+      if(!state.streamingScreenShare){
+        socket_live.emit(events.endScreenShare, {
             channel_id: 'scr-' + localStorage.getItem('call_channel_id')
-        });
+        });  
+      }
+      
       actions.app.setSharingScreen(false);
     });
 

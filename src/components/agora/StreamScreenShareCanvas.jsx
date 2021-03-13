@@ -86,6 +86,9 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	    		[stream].concat(streamList)
     		)
 	    }
+	    
+	    if(state.screenShareUser.id != state.userProfileData.id)
+	    	actions.app.setStreamingScreenShare(true);
   	}
 
   	const removeStream = (uid) => {
@@ -109,8 +112,8 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
   	const exitScreenShare = () => {
 
-  		actions.app.endStreamingScreenShare();
-  		actions.app.clearScreenShareData();
+  		actions.app.setStreamingScreenShare(false);
+  		//actions.app.clearScreenShareData();
   	}
 
   	const viewingScreenShare = async () => {

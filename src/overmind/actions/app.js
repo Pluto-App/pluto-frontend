@@ -89,18 +89,18 @@ export const userVideoCall = async ({ state, effect }, data) => {
 
 export const userScreenShare = async ({ state, effect }, data) => {
 
+	state.screenShareUser = data.user;
 	if(data.sender_id !== state.userProfileData.uid){
-
-		if(state.sharingScreen){
-			window.require("electron").ipcRenderer.send('stop-screenshare');
-		}
 
 	 	localStorage.setItem("screenshare_channel_id", data.channel_id);
 	 	localStorage.setItem("screenshare_resolution", JSON.stringify(data.resolution));
 	 	localStorage.setItem("screenshare_owner", data.sender_id);
 
 	 	state.streamingScreenShare = true;
-	 	state.screenShareUser = data.user;
+
+		if(state.sharingScreen){
+			window.require("electron").ipcRenderer.send('stop-screenshare');
+		}
 	}
 }
 
@@ -108,9 +108,10 @@ export const setSharingScreen = async ({ state, effect }, value) => {
  	state.sharingScreen = value;
 }
 
-export const endStreamingScreenShare = async ({ state, effect }, data) => {
- 	state.streamingScreenShare = false;
+export const setStreamingScreenShare = async ({ state, effect }, value) => {
+ 	state.streamingScreenShare = value;
 }
+
 
 export const updateScreenShareViewers = async ({ state, effect }, data) => {
 
@@ -231,6 +232,8 @@ export const clearVideoCallData = async ({ actions, state, effect }) => {
 
 export const clearScreenShareData = async ({ state, effect }) => {
 	state.screenShareViewers = {};
+	state.streamingScreenShare = false;
+	state.screenShareUser = {};
 	deleteScreenShareData();
 }
 
