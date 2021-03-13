@@ -14,14 +14,14 @@ const StreamScreenShare = React.memo((props) => {
     
     const [ screenShareState, setScreeenShareState] = useState({options: 'show', status: 'stopped'});
     const [ config, setConfig ] = useState({
-        videoProfile: "1080p_1",
+        videoProfile: "720p_1",
         mode: "live",
         backgroundColor: '#2e2c29',
         channel:  screenShareChannel || 'scr-' + localStorage.getItem('call_channel_id'),
         transcode:  "interop",
         attendeeMode: 'audience',
         baseMode: "avc",
-        appId : AGORA_APP_ID,
+        appId : process.env.REACT_APP_AGORA_APP_ID,
         uid:  undefined
     });
 

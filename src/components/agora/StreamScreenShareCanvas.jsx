@@ -86,6 +86,9 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	    		[stream].concat(streamList)
     		)
 	    }
+	    
+	    if(state.screenShareUser.id != state.userProfileData.id)
+	    	actions.app.setStreamingScreenShare(true);
   	}
 
   	const removeStream = (uid) => {
@@ -102,13 +105,15 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	        setStreamList(tempList)
 	      }
 	    })
-	    exitScreenShare();
+
+	    if(streamList.length == 0)
+	    	exitScreenShare();
   	}
 
   	const exitScreenShare = () => {
 
-  		actions.app.endStreamingScreenShare();
-  		actions.app.clearScreenShareData();
+  		actions.app.setStreamingScreenShare(false);
+  		//actions.app.clearScreenShareData();
   	}
 
   	const viewingScreenShare = async () => {
@@ -152,8 +157,6 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
  			if(e.type === 'wheel')
  				eventData['direction'] = e.deltaY > 0 ? 'up' : 'down';
-
- 			console.log('sharing info');
 
         	socket_live.emit(events.screenShareCursor, {
 		 		channel_id: 		props.channel,
@@ -247,11 +250,12 @@ const StreamScreenShareCanvas = React.memo((props) => {
     	actions.app.setLoggedInUser();
     	actions.app.setScreenSize();
 
-        AgoraClient.init(props.appId, () => {
+        AgoraClient.init(props.appId, async () => {
 
 	      	subscribeStreamEvents();
-	      	
-	      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
+	      	const agoraAccessToken = await actions.auth.getAgoraAccessToken({ requestParams: {channel: props.channel}});
+
+	      	AgoraClient.join(agoraAccessToken, props.channel, props.uid, (uid) => {
 
 	      		socket_live.emit(events.joinRoom, props.channel);
 	        	viewingScreenShare();

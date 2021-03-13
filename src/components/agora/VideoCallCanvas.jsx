@@ -47,8 +47,6 @@ const VideoCallCanvas = React.memo((props) => {
     needWindowUpdate = false;  
   }
 
-	const [ sharingScreen, setSharingScreen ] = useState(false);
-
 	const streamInit = (uid, videoProfile, config) => {
 
 	    let defaultConfig = {
@@ -333,18 +331,17 @@ const VideoCallCanvas = React.memo((props) => {
     }, false);
 
     window.require("electron").ipcRenderer.on('stop-screenshare', function (e, args) {
-      socket_live.emit(events.endScreenShare, {
+
+      if(!state.streamingScreenShare){
+        socket_live.emit(events.endScreenShare, {
             channel_id: 'scr-' + localStorage.getItem('call_channel_id')
-        });
-      setSharingScreen(false);
+        });  
+      }
+      
+      actions.app.setSharingScreen(false);
     });
 
     socket_live.on(events.userScreenShare, (data) => {
-
-      if (sharingScreen) {
-          window.require("electron").ipcRenderer.send('stop-screenshare');
-          setSharingScreen(false);
-      }
 
       data['user'] = usersInCallRef.current[data.user_id];
       actions.app.userScreenShare(data);
@@ -470,13 +467,15 @@ const VideoCallCanvas = React.memo((props) => {
 
 	const handleScreenShare = async (e) => {
 
-  	if (sharingScreen) {
+  	if (state.sharingScreen) {
+
     		window.require("electron").ipcRenderer.send('stop-screenshare');
-        setSharingScreen(false);
+        actions.app.setSharingScreen(false);
+
   	} else {
       
     		window.require("electron").ipcRenderer.send('init-screenshare');
-    		setSharingScreen(true);
+        actions.app.setSharingScreen(true);
   	}
 	}
 
@@ -565,7 +564,7 @@ const VideoCallCanvas = React.memo((props) => {
       	style={{opacity: 1}}
   	>
     	<i className="material-icons focus:outline-none md-light" id="screen-share" style={{ fontSize: "30px" }} >
-        { sharingScreen ? 'stop_screen_share' : 'screen_share' }
+        { state.sharingScreen ? 'stop_screen_share' : 'screen_share' }
       </i>
   	</span>
   )
