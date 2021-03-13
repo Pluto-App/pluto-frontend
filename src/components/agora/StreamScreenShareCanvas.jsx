@@ -247,11 +247,12 @@ const StreamScreenShareCanvas = React.memo((props) => {
     	actions.app.setLoggedInUser();
     	actions.app.setScreenSize();
 
-        AgoraClient.init(props.appId, () => {
+        AgoraClient.init(props.appId, async () => {
 
 	      	subscribeStreamEvents();
-	      	
-	      	AgoraClient.join(props.appId, props.channel, props.uid, (uid) => {
+	      	const agoraAccessToken = await actions.auth.getAgoraAccessToken({ requestParams: {channel: props.channel}});
+
+	      	AgoraClient.join(agoraAccessToken, props.channel, props.uid, (uid) => {
 
 	      		socket_live.emit(events.joinRoom, props.channel);
 	        	viewingScreenShare();

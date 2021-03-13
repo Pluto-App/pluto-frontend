@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import * as Cookies from "js-cookie";
 import { css } from "@emotion/core";
-import { AGORA_APP_ID } from "../../../agora.config";
 import { useOvermind } from '../../../overmind'
 import InitScreenShareCanvas from "../../agora/InitScreenShareCanvas";
 
@@ -14,13 +13,13 @@ const ScreenShare = React.memo((props) => {
     
     const [ screenShareState, setScreeenShareState] = useState({options: 'show', status: 'stopped'});
     const [ config, setConfig ] = useState({
-        videoProfile: "1080p_1",
+        videoProfile: "720p_1",
         mode: "live",
         channel:  screenShareChannel || 'scr-' + localStorage.getItem('call_channel_id'),
         transcode:  Cookies.get("transcode") || "interop",
         attendeeMode: "screen",
         baseMode:  Cookies.get("baseMode") || "avc",
-        appId : AGORA_APP_ID,
+        appId : process.env.REACT_APP_AGORA_APP_ID,
         uid:  undefined
     });
 
