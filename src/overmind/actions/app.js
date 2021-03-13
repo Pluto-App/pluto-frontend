@@ -89,7 +89,7 @@ export const userVideoCall = async ({ state, effect }, data) => {
 
 export const userScreenShare = async ({ state, effect }, data) => {
 
-	if(data.sender_id !== state.userProfileData.uid){
+	if(data.sender_id === state.userProfileData.uid){
 	 	localStorage.setItem("screenshare_channel_id", data.channel_id);
 	 	localStorage.setItem("screenshare_resolution", JSON.stringify(data.resolution));
 	 	localStorage.setItem("screenshare_owner", data.sender_id);
@@ -97,6 +97,10 @@ export const userScreenShare = async ({ state, effect }, data) => {
 	 	state.streamingScreenShare = true;
 	 	state.screenShareUser = data.user;
 	}
+}
+
+export const setSharingScreen = async ({ state, effect }, value) => {
+ 	state.sharingScreen = value;
 }
 
 export const endStreamingScreenShare = async ({ state, effect }, data) => {
