@@ -106,7 +106,7 @@ export default function HomePage() {
         let isMounted = true;
 
         if(isMounted){
-            actions.user.getLoggedInUser({authData: authData, setAuthData: setAuthData, joinRooms: true})    
+            actions.user.getLoggedInUser({authData: authData, setAuthData: setAuthData})    
         }
 
         return () => { isMounted = false };

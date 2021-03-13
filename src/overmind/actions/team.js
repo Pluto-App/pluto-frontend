@@ -49,19 +49,17 @@ export const updateTeam = async ({state, effects}, {authData, teamData}) => {
 
 export const deleteTeam = async ({state, effects}, {authData, teamData}) => {
 
-  // These states don't really do anything for now: Jan 2nd
-  state.deletingTeam = true;
   await effects.team.deleteTeam(authData, teamData);
-  state.deletingTeam = false;
 }
 
-export const removeUser = async ({state, effects}, {authData, reqData}) => {
+export const removeUser = async ({state, actions, effects}, {authData, reqData}) => {
 
     await effects.team.removeUser(authData, reqData);
     state.teamUpdateReq = true
+    actions.app.emitUpdateTeam();
 }
 
-export const addUser = async ({state, effects}, {authData, reqData}) => {
+export const addUser = async ({state, actions, effects}, {authData, reqData}) => {
 
     state.loadingTeam = true;
     await effects.team.addUser(authData, reqData);

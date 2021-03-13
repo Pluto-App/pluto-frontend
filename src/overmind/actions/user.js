@@ -1,7 +1,7 @@
 
 import { socket_live, events } from '../../components/sockets'
 
-export const getLoggedInUser = async ({state, actions, effects}, { authData, setAuthData, joinRooms, skipFetchTeam }) => {
+export const getLoggedInUser = async ({state, actions, effects}, { authData, setAuthData}) => {
 
   	state.loadingUser = true
     var userData = {}
@@ -17,7 +17,7 @@ export const getLoggedInUser = async ({state, actions, effects}, { authData, set
 
         state.userProfileData = userData;
 
-        if(!skipFetchTeam && userData.teamIds){
+        if(userData.teamIds){
           if(userData.teamIds.length === 0){
             state.noTeams = true;  
           } else {
@@ -34,7 +34,7 @@ export const getLoggedInUser = async ({state, actions, effects}, { authData, set
           }
         }
 
-        if(joinRooms && userData.teams){
+        if(userData.teams){
           for(var team of userData.teams){
             socket_live.emit(events.joinRoom, { room: 't-' + team.tid, user_id: userData.id})
           }
