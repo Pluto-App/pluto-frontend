@@ -45,7 +45,7 @@ const ScreenShareControls = React.memo((props) => {
   }
 
   return (
-    <>
+    <div>
       <div id="controls-topbar" style={controlsTopBarStyle}>
         <i className="material-icons md-light md-inactive mr-2" style={{'font-size': '16px'}}>drag_handle</i>
       </div>
@@ -104,7 +104,7 @@ const ScreenShareControls = React.memo((props) => {
           }    
         </div>
     </div>
-    </>
+    </div>
   )
 })
 

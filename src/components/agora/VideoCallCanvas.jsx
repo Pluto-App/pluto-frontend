@@ -477,6 +477,7 @@ const VideoCallCanvas = React.memo((props) => {
       
     		window.require("electron").ipcRenderer.send('init-screenshare');
     		setSharingScreen(true);
+        
   	}
 	}
 

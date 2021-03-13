@@ -70,6 +70,8 @@ const InitScreenShareCanvas = React.memo((props) => {
 				 	localStorage.setItem('screenshare_channel_id', props.channel);
 				 	localStorage.setItem('screenshare_source', sourceInfo);
 	          		window.require('electron').ipcRenderer.send('sharing-screen', overlayBounds);
+	          		actions.app.endStreamingScreenShare();
+      				actions.app.clearScreenShareData();
 	        	},
 
 	          	err => {
