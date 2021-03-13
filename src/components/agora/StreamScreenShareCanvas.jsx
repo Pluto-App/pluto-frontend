@@ -102,7 +102,9 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	        setStreamList(tempList)
 	      }
 	    })
-	    exitScreenShare();
+
+	    if(streamList.length == 0)
+	    	exitScreenShare();
   	}
 
   	const exitScreenShare = () => {
