@@ -77,6 +77,18 @@ export default function App() {
         logout();
       });
 
+      const setActiveWin = setInterval(async () => {
+          try {
+          
+              const activeWinAppData = await window.require("electron").ipcRenderer.sendSync('active-win');
+              actions.app.setActiveWinInfo(activeWinAppData);
+
+          } catch (error) {
+              if(process.env.REACT_APP_DEV_BUILD)
+                  console.log(error);
+          }
+      }, 3000);
+
       socket_live.on(events.online, (user_id) => {
         if(state.teamMembersMap && state.teamMembersMap[user_id] && !state.teamMembersMap[user_id].online){
           actions.app.setUserOnline(user_id);
@@ -125,7 +137,9 @@ export default function App() {
       });
 
       return () => { 
+
         socket_live.removeAllListeners();
+        clearInterval(setActiveWin);
       };
       
   }, []);

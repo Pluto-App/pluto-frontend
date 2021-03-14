@@ -1,6 +1,6 @@
 {
-  "name": "pluto",
-  "productName": "pluto",
+  "name": "Pluto",
+  "productName": "Pluto",
   "version": "0.1.0",
   "main": "public/electron.js",
   "author": "Pluto Dev Team <plutoapp.devs@gmail.com>",
