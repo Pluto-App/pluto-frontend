@@ -69,18 +69,6 @@ export default function HomePage() {
 
         setComponentMounted(true);
 
-        const setActiveWin = setInterval(async () => {
-            try {
-            
-                const activeWinAppData = await window.require("electron").ipcRenderer.sendSync('active-win');
-                actions.app.setActiveWinInfo(activeWinAppData);
-
-            } catch (error) {
-                if(process.env.REACT_APP_DEV_BUILD)
-                    console.log(error);
-            }
-        }, 3000);
-
         window.require("electron").ipcRenderer.on('exitUserCall', function (e, rid) {
             var room_rid = rid;
             const room = state.teamRooms.find(room => room.rid === room_rid) || {};
@@ -95,7 +83,6 @@ export default function HomePage() {
         window.require("electron").ipcRenderer.send('resize-normal');
         
         return () => {
-            clearInterval(setActiveWin);
             setComponentMounted(false);
         }
 

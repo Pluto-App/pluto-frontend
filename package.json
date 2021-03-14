@@ -63,7 +63,7 @@
   "build": {
     "appId": "com.pluto.office",
     "compression": "normal",
-    "productName": "pluto",
+    "productName": "Pluto",
     "copyright": "MIT",
     "afterSign": "src/scripts/notarize.js",
     "extraResources": [
