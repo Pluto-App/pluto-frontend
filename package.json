@@ -1,6 +1,6 @@
 {
-  "name": "Pluto",
-  "productName": "Pluto",
+  "name": "pluto",
+  "productName": "pluto",
   "version": "0.1.0",
   "main": "public/electron.js",
   "author": "Pluto Dev Team <plutoapp.devs@gmail.com>",
@@ -63,7 +63,7 @@
   "build": {
     "appId": "com.pluto.office",
     "compression": "normal",
-    "productName": "pluto",
+    "productName": "Pluto",
     "copyright": "MIT",
     "afterSign": "src/scripts/notarize.js",
     "extraResources": [
