@@ -96,11 +96,12 @@
       "publish": {
         "provider": "github",
         "releaseType": "release"
-      }
+      },
+      "target": ["dmg", "zip"]
     },
     "dmg": {
-      "internetEnabled": "true",
-      "sign": "false",
+      "internetEnabled": true,
+      "sign": false,
       "title": "${productName}_mac_${version}",
       "contents": [
         {
