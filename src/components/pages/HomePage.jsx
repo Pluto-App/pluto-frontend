@@ -278,7 +278,7 @@ export default function HomePage() {
                             <textarea
                                 rows='3'
                                 id="InviteModalLink"
-                                value={"Team Code: " + state.currentTeam.tid + "\nDownload App: https://bit.ly/3cap6Y9"}
+                                value={"Team Code: " + state.currentTeam.tid + "\nDownload App: https://plutohq.in/download"}
                                 style={{ resize: 'none'}}
                                 className="w-full shadow appearance-none border text-gray-200 rounded py-1 px-1 bg-gray-600"
                                 readOnly
