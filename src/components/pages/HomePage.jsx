@@ -23,12 +23,6 @@ export default function HomePage() {
     let history = useHistory();
     const { authData, setAuthData } = useContext(AuthContext);
 
-    const override = css`
-        display: block;
-        margin: 0 auto;
-        border-color: white;
-    `;
-
     const { state, actions } = useOvermind();
     const [copySuccess, togglecopySuccess] = useState(false);
     const [showInviteModal, toggleshowInviteModal] = useState(false);

@@ -8,12 +8,15 @@ import ToastNotification from '../../widgets/ToastNotification';
 import * as Cookies from "js-cookie";
 import * as md5 from "md5";
 import ReactTooltip from 'react-tooltip';
+import useAudio from '../../audio';
 
 import { socket_live, events } from '../../sockets';
 
 import { appLogo } from '../../../utils/AppLogo';
 
-import { AuthContext } from '../../../context/AuthContext'
+import { AuthContext } from '../../../context/AuthContext';
+
+const sounds = require.context('../../../assets/sounds', true);
 
 const RoomListItem = React.memo((props) => {
 
@@ -29,6 +32,7 @@ const RoomListItem = React.memo((props) => {
     const [roomName, updateRoomName] = useState(room.name);
     const [hoverState, setHoverState] = useState(false);
     const [activeAppInfo, setActiveAppInfo] = useState({});
+    const [initCallSound, toggleInitCallSound] = useAudio(sounds('./init_call.wav'));
 
     useEffect(() => {
 
@@ -98,6 +102,8 @@ const RoomListItem = React.memo((props) => {
         actions.app.setUserInRoom({room_id: room.id, user_uid: state.userProfileData.uid});
 
         window.require("electron").ipcRenderer.send('init-video-call-window', call_channel_id);
+
+        toggleInitCallSound();
     }
 
     const updateRoom = async (name) => {

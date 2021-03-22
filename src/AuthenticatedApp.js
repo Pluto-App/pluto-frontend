@@ -37,6 +37,9 @@ import {
   resetPermissions
 } from 'mac-screen-capture-permissions';
 
+import useAudio from './components/audio';
+
+const sounds = require.context('./assets/sounds', true);
 
 export default function App() {
 
@@ -47,6 +50,7 @@ export default function App() {
 
   const { state, actions } = useOvermind();
   const { authData, setAuthData } = useContext(AuthContext);
+  const [ receiveCallSound, toggleReceiveCallSound] = useAudio(sounds('./receive_call.wav'));
 
   useEffect(() => {
       if(state.error && state.error.message){
@@ -107,6 +111,7 @@ export default function App() {
       });
 
       socket_live.on(events.userVideoCall, (data) => {
+        toggleReceiveCallSound();
         actions.app.userVideoCall(data);
       });
 

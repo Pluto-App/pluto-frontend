@@ -10,6 +10,9 @@ import {AuthContext} from '../../context/AuthContext'
 import ActiveWindowInfo from "../widgets/VideoCall/ActiveWindowInfo";
 import StreamScreenShare from "../windows/screenshare/StreamScreenShare";
 
+import useAudio from '../audio';
+
+const sounds = require.context('../../assets/sounds', true);
 
 const { remote } = window.require('electron');
 const os = window.require('os');
@@ -40,6 +43,7 @@ const VideoCallCanvas = React.memo((props) => {
   usersInCallRef.current = usersInCall;
 
   const [ numActiveVideo, setNumActiveVideo ] = useState(0);
+  const [ endCallSound, toggleEndCallSound] = useAudio(sounds('./end_call.wav'));
 
   if(needWindowUpdate){
 
@@ -494,6 +498,8 @@ const VideoCallCanvas = React.memo((props) => {
 
 	const handleExit = async (e) => {
     
+    toggleEndCallSound();
+
     if (e && e.currentTarget.classList.contains('disabled')) {
     		return
     }
@@ -518,8 +524,10 @@ const VideoCallCanvas = React.memo((props) => {
 
     	actions.app.clearVideoCallData();
       actions.app.emitUpdateTeam();
-    	var win = remote.getCurrentWindow();
-    	win.destroy();
+
+      var win = remote.getCurrentWindow();
+      setTimeout( () => {win.destroy()}, 400);
+    	
     }
 	}
 
