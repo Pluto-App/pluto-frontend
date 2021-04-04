@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 
 import HomePage from './components/pages/HomePage'
-import OrgRegisterPage from './components/pages/Organization/OrgRegisterPage'
 import TeamRegisterPage from './components/pages/Teams/TeamRegisterPage'
 import Settings from './components/pages/Settings'
 
@@ -194,9 +193,6 @@ export default function App() {
             </Route>
             <Route exact path="/video-call">
               <VideoCall />
-            </Route>
-            <Route exact path="/add-org">
-              <OrgRegisterPage />
             </Route>
           </Switch>
           <ToastContainer />

@@ -6,7 +6,6 @@ import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import ToastNotification from '../../widgets/ToastNotification';
 import * as Cookies from "js-cookie";
-import * as md5 from "md5";
 import ReactTooltip from 'react-tooltip';
 import useAudio from '../../audio';
 
@@ -130,7 +129,7 @@ const RoomListItem = React.memo((props) => {
             userid: state.userProfileData.userid,
             roomid: room.id
         })
-        let id = md5(room.id);
+        let id = room.rid;
         Cookies.set("channel", id);
         socket_live.emit(events.video_call, {
             recieverid: room.id,

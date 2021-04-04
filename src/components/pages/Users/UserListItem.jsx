@@ -14,8 +14,6 @@ import { appLogo } from '../../../utils/AppLogo';
 
 import { AuthContext } from '../../../context/AuthContext'
 
-import * as md5 from "md5";
-
 const sounds = require.context('../../../assets/sounds', true);
 const logos = require.context('../../../assets/logos', true);
 

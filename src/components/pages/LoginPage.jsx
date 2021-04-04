@@ -1,8 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useContext, useState, useEffect } from 'react'
 import { useOvermind } from '../../overmind'
-import { css } from "@emotion/core";
-import BeatLoader from "react-spinners/BeatLoader";
 import googleLogo from "../../assets/google.svg";
 
 import {AuthContext} from '../../context/AuthContext'
@@ -11,12 +9,6 @@ import {AuthContext} from '../../context/AuthContext'
 // TODO Secure the Google Login. 
 
 const LoginPage = React.memo(() => {
-
-  const override = css`
-    display: block;
-    margin: 0 auto;
-    border-color: white;
-  `;
 
   const { setAuthData } = useContext(AuthContext);
   const { state, actions } = useOvermind();
