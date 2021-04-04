@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
 import * as Cookies from "js-cookie";
-import { css } from "@emotion/core";
 import { useOvermind } from '../../../overmind'
 import InitScreenShareCanvas from "../../agora/InitScreenShareCanvas";
 

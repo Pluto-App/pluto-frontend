@@ -6,10 +6,7 @@ import { useHistory } from "react-router-dom"
 import ManagementBar from "../widgets/ManagementBar"
 import UserListItem from "./Users/UserListItem"
 import RoomListItem from "./Rooms/RoomListItem"
-import { css } from "@emotion/core";
-import BeatLoader from "react-spinners/BeatLoader";
 import ToastNotification from '../widgets/ToastNotification'
-import { sha224 } from 'js-sha256'
 
 import { AuthContext } from '../../context/AuthContext'
 
@@ -22,12 +19,6 @@ export default function HomePage() {
 
     let history = useHistory();
     const { authData, setAuthData } = useContext(AuthContext);
-
-    const override = css`
-        display: block;
-        margin: 0 auto;
-        border-color: white;
-    `;
 
     const { state, actions } = useOvermind();
     const [copySuccess, togglecopySuccess] = useState(false);

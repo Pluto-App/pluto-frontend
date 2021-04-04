@@ -2,8 +2,6 @@ import React, { useState, useContext } from 'react'
 import { useOvermind } from '../../../overmind'
 import { useHistory } from "react-router-dom"
 import BackButton from '../../widgets/BackButton'
-import { css } from "@emotion/core";
-import BeatLoader from "react-spinners/BeatLoader";
 import ToastNotification from '../../widgets/ToastNotification';
 
 import {AuthContext} from '../../../context/AuthContext'
@@ -16,11 +14,11 @@ export default function TeamRegisterPage() {
     const [teamName, setTeamName] = useState('');
     const [teamCode, setTeamCode] = useState('');
 
-    const override = css`
-        display: block;
-        margin: 0 auto;
-        border-color: green;
-    `;
+    const override = {
+        display: 'block',
+        margin: '0 auto',
+        borderColor: 'green'
+    }
 
     const { state, actions } = useOvermind();
 
@@ -92,19 +90,13 @@ export default function TeamRegisterPage() {
                             onChange={(e) => { setTeamName(e.target.value) }}
                             autoFocus />
                     </div>
-                    {!state.addingTeam ?
+                    {
                         <div className="flex items-center justify-between">
                             <button className="bg-indigo-500 w-full hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded 
                                 focus:outline-none focus:shadow-outline" type="button" onClick={createTeam}>
                                 Create Team
                             </button>
-                        </div> :
-                        <BeatLoader
-                            css={override}
-                            size={10}
-                            color={"white"}
-                            loading={state.addingTeam}
-                        />
+                        </div> 
                     }
                 </form>
 
@@ -128,20 +120,12 @@ export default function TeamRegisterPage() {
                             onChange={(e) => { setTeamCode(e.target.value) }}
                             autoFocus />
                     </div>
-                    {!state.joiningTeam ?
-                        <div className="flex items-center justify-between">
-                            <button className="bg-pink-500 w-full hover:bg-pink-700 text-white font-bold py-2 px-4 rounded 
-                                focus:outline-none focus:shadow-outline" type="button" onClick={joinTeam}>
-                                Join Team
-                            </button>
-                        </div> :
-                        <BeatLoader
-                            css={override}
-                            size={10}
-                            color={"white"}
-                            loading={state.joiningTeam}
-                        />
-                    }
+                    <div className="flex items-center justify-between">
+                        <button className="bg-pink-500 w-full hover:bg-pink-700 text-white font-bold py-2 px-4 rounded 
+                            focus:outline-none focus:shadow-outline" type="button" onClick={joinTeam}>
+                            Join Team
+                        </button>
+                    </div> 
                 </form>
 
                  {

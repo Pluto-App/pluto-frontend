@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 
 import HomePage from './components/pages/HomePage'
-import OrgRegisterPage from './components/pages/Organization/OrgRegisterPage'
 import TeamRegisterPage from './components/pages/Teams/TeamRegisterPage'
 import Settings from './components/pages/Settings'
 
@@ -37,6 +36,9 @@ import {
   resetPermissions
 } from 'mac-screen-capture-permissions';
 
+import useAudio from './components/audio';
+
+const sounds = require.context('./assets/sounds', true);
 
 export default function App() {
 
@@ -47,6 +49,7 @@ export default function App() {
 
   const { state, actions } = useOvermind();
   const { authData, setAuthData } = useContext(AuthContext);
+  const [ receiveCallSound, toggleReceiveCallSound] = useAudio(sounds('./receive_call.wav'));
 
   useEffect(() => {
       if(state.error && state.error.message){
@@ -107,6 +110,7 @@ export default function App() {
       });
 
       socket_live.on(events.userVideoCall, (data) => {
+        toggleReceiveCallSound();
         actions.app.userVideoCall(data);
       });
 
@@ -189,9 +193,6 @@ export default function App() {
             </Route>
             <Route exact path="/video-call">
               <VideoCall />
-            </Route>
-            <Route exact path="/add-org">
-              <OrgRegisterPage />
             </Route>
           </Switch>
           <ToastContainer />
