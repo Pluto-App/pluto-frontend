@@ -502,7 +502,7 @@ function createWindow() {
 
       if (isDev) {
        
-        //screenShareContainerWindow.webContents.openDevTools();
+        screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls
@@ -554,7 +554,7 @@ function createWindow() {
       })
 
       if (isDev) {
-        // screenShareControlsWindow.webContents.openDevTools();
+        screenShareControlsWindow.webContents.openDevTools();
       }
     }
   })
@@ -689,6 +689,19 @@ function createWindow() {
 
     robot.moveMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
     robot.mouseClick();
+    robot.moveMouse(originalPos.x, originalPos.y);
+
+  })
+
+  ipcMain.on('emit-right-click', async (event, arg) => {
+
+    console.log('right click!');
+
+    originalPos = robot.getMousePos();
+    var screenShareBounds = screenShareContainerWindow.getBounds();
+
+    robot.moveMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
+    robot.mouseClick('right');
     robot.moveMouse(originalPos.x, originalPos.y);
 
   })

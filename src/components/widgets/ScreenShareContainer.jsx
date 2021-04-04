@@ -77,7 +77,7 @@ const ScreenShareContainer = React.memo((props) => {
     }, [actions, authData])
 
     const containerStyle = {
-        border: 'blue 3px solid',
+        border: '#434190 5px solid',
         position: 'absolute',
         top: 0,
         bottom: 0,

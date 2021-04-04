@@ -129,8 +129,12 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 	var remoteAccessEnabled = localStorage.getItem('remoteAccessEnabled');
 	if(remoteAccessEnabled && remoteAccessEnabled === 'true'){
 
-		if(data.event.type === 'click')
-			window.require("electron").ipcRenderer.send('emit-click', data);
+		if(data.event.type === 'click'){
+			if(data.event.witch === 3)
+				window.require("electron").ipcRenderer.send('emit-right-click', data);
+			else
+				window.require("electron").ipcRenderer.send('emit-click', data);
+		}
 		
 		else if(data.event.type === 'wheel')
 			window.require("electron").ipcRenderer.send('emit-scroll', data);
