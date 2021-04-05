@@ -267,10 +267,6 @@ const VideoCallCanvas = React.memo((props) => {
 
     if(state.userProfileData.id){
 
-      if(isMac){
-        window.require('electron').ipcRenderer.send('media-access');      
-      }
-
       AgoraClient.init(props.config.appId, async () => {
           
           subscribeStreamEvents();

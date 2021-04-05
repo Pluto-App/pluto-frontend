@@ -77,7 +77,7 @@ if (isWindows) {
 
 }
 
-async function getTabUrl (activeWinInfo){
+async function getTabUrl(activeWinInfo){
 
   var url = activeWinInfo ? activeWinInfo.url : undefined;
 
@@ -118,6 +118,24 @@ async function getTabUrl (activeWinInfo){
   }
 
   return url;
+}
+
+async function getMediaAccess() {
+
+  if(systemPreferences.getMediaAccessStatus('screen') != 'granted')
+    await systemPreferences.askForMediaAccess('screen')
+
+  if(systemPreferences.getMediaAccessStatus('camera') != 'granted')
+    await systemPreferences.askForMediaAccess('camera');
+
+  if(systemPreferences.getMediaAccessStatus('microphone') != 'granted')
+    await systemPreferences.askForMediaAccess('microphone')
+
+  if(isDev) {
+    console.log('screen access: ' + systemPreferences.getMediaAccessStatus('screen'));
+    console.log('camera access: ' + systemPreferences.getMediaAccessStatus('camera'));
+    console.log('microphone access: ' + systemPreferences.getMediaAccessStatus('microphone'));
+  }
 }
 
 function createWindow() {
@@ -174,6 +192,9 @@ function createWindow() {
   if(isWindows)
     scaleFactor = primaryDisplay.scaleFactor;
 
+  if(isMac)
+    getMediaAccess();
+
   ipcMain.on('active-win', async (event, arg) => {
 
     const activeWinInfo = await activeWin()
@@ -209,11 +230,7 @@ function createWindow() {
 
   ipcMain.on('media-access', async (event, arg) => {
 
-    if(systemPreferences.getMediaAccessStatus('camera') != 'granted')
-      await systemPreferences.askForMediaAccess('camera')
 
-    if(systemPreferences.getMediaAccessStatus('microphone') != 'granted')
-      await systemPreferences.askForMediaAccess('microphone')
   })
 
   ipcMain.on('refresh-app', async (event, arg) => {

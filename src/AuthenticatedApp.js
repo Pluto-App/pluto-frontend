@@ -28,24 +28,13 @@ import {
   Route
 } from "react-router-dom";
 
-import {AuthContext} from './context/AuthContext'
-
-import {
-  hasScreenCapturePermission,
-  hasPromptedForPermission,
-  resetPermissions
-} from 'mac-screen-capture-permissions';
+import {AuthContext} from './context/AuthContext';
 
 import useAudio from './components/audio';
 
 const sounds = require.context('./assets/sounds', true);
 
 export default function App() {
-
-  if(!hasScreenCapturePermission()){
-    resetPermissions({bundleId: 'com.pluto.office'})
-    hasScreenCapturePermission()
-  };
 
   const { state, actions } = useOvermind();
   const { authData, setAuthData } = useContext(AuthContext);
