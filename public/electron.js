@@ -27,7 +27,14 @@ let settingsPage
 const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
 
-const activeWin = require('active-win');
+var activeWinPath;
+if (isDev) 
+  activeWinPath = path.join(app.getAppPath(), 'src/active-window');
+else
+  activeWinPath = path.join(app.getAppPath(), '..', 'src/active-window');
+
+const activeWin = require(activeWinPath);
+// const activeWin = require('active-win');
 const runApplescript = require('run-applescript');
 
 const minWidth = 350;
@@ -228,9 +235,10 @@ function createWindow() {
     mainWindow.center();
   })
 
-  ipcMain.on('media-access', async (event, arg) => {
+  ipcMain.on('check-media-access', async (event, arg) => {
 
-
+    event.returnValue = systemPreferences.getMediaAccessStatus('camera') == 'granted' &&
+      systemPreferences.getMediaAccessStatus('microphone') == 'granted'  
   })
 
   ipcMain.on('refresh-app', async (event, arg) => {
