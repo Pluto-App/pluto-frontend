@@ -32,7 +32,7 @@ const ActiveWindowInfo = React.memo((props) => {
         style={{ display: 'table', marginLeft: '5px', height: '30px', width: '30px' }}
       > 
         {
-          activeAppInfo.logo?
+          activeAppInfo.logo ?
           <a 
             style={{ display: 'table-cell', verticalAlign: 'middle', fontSize: '14px', height: props.videoOn ? '30px' : '50px' }}
             onClick={(e) => {

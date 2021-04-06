@@ -305,10 +305,21 @@ const VideoCallCanvas = React.memo((props) => {
                   alert("Publish local stream error: " + err);
               })
             },
-              err => {
+            async (err) => {
 
-                alert("No Access to media stream", err)
-              })
+              var hasMediaAccess = await window.require("electron").ipcRenderer.sendSync('check-media-access');
+              
+              if(!hasMediaAccess){
+                
+                alert("No Access to camera or microphone!");  
+              
+              } else {
+
+                 alert("Unexpected Error!\n " + JSON.stringify(err));
+              }
+
+              actions.app.setError(err);
+            })
           })
       }, function(err) {
           console.log("client init failed ", err);

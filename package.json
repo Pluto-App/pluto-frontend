@@ -9,13 +9,13 @@
   "description": "Virtual Office App for Organizations",
   "repository": "github:Pluto-App/pluto-desktop-releases",
   "dependencies": {
-    "active-win": "^6.2.0",
     "agora-rtc-sdk": "^3.1.1",
     "axios": "^0.21.1",
     "axios-progress-bar": "^1.2.0",
     "electron-is-dev": "^1.2.0",
     "electron-log": "^4.3.1",
     "electron-updater": "^4.3.5",
+    "ffi-napi": "^4.0.3",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.15",
     "node-window-manager": "^2.2.4",
@@ -43,8 +43,8 @@
     "copyright": "MIT",
     "afterSign": "src/scripts/notarize.js",
     "extraResources": [
-      "src/scripts",
-      "src/dlls"
+      "src/dlls",
+      "src/active-window"
     ],
     "files": [
       "build/**/*",
