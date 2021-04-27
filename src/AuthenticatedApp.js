@@ -30,15 +30,15 @@ import {
 
 import {AuthContext} from './context/AuthContext';
 
-import useAudio from './components/audio';
+import useSound from 'use-sound';
 
-const sounds = require.context('./assets/sounds', true);
+import receiveCallSound from './assets/sounds/receive_call.wav';
 
 export default function App() {
 
   const { state, actions } = useOvermind();
   const { authData, setAuthData } = useContext(AuthContext);
-  const [ receiveCallSound, toggleReceiveCallSound] = useAudio(sounds('./receive_call.wav'));
+  const [playReceiveCallSound] = useSound(receiveCallSound);
 
   useEffect(() => {
       if(state.error && state.error.message){
@@ -99,7 +99,7 @@ export default function App() {
       });
 
       socket_live.on(events.userVideoCall, (data) => {
-        toggleReceiveCallSound();
+        playReceiveCallSound();
         actions.app.userVideoCall(data);
       });
 
