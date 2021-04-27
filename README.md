@@ -61,3 +61,9 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/an
 ### Advanced Configuration
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+
+### Bundle stdlib with swift binary
+
+`install_name_tool -rpath /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx @executable_path/../../../swift-libs active-window/main`
+
+Refer: https://forums.swift.org/t/bundle-stdlib-with-swift-binary/43653

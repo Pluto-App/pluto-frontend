@@ -1,7 +1,7 @@
 {
   "name": "pluto",
   "productName": "pluto",
-  "version": "0.1.1",
+  "version": "0.1.0",
   "license": "apache",
   "main": "public/electron.js",
   "author": "Pluto Dev Team <plutoapp.devs@gmail.com>",
@@ -33,7 +33,8 @@
     "run-applescript": "^4.0.0",
     "socket.io-client": "^2.3.1",
     "tailwindcss": "^1.4.6",
-    "url": "^0.11.0"
+    "url": "^0.11.0",
+    "use-sound": "^2.1.0"
   },
   "homepage": "./",
   "build": {
