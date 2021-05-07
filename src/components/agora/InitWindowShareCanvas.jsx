@@ -7,12 +7,12 @@ import { socket_live, events } from '../sockets'
 import {AuthContext} from '../../context/AuthContext'
 const { remote } = window.require('electron');
 
-const InitScreenShareCanvas = React.memo((props) => {
+const InitWindowShareCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
 	const { authData } = useContext(AuthContext);
 
-	const AgoraClient = AgoraRTC.createClient({ mode: props.transcode, codec: "vp8" });
+	const AgoraClient = AgoraRTC.createClient({ mode: props.config.transcode, codec: "vp8" });
 
 	var localStream = {};
 
@@ -40,17 +40,17 @@ const InitScreenShareCanvas = React.memo((props) => {
       	window.close();
   	}
 
-    const initScreenShare = (sourceInfo) => {
+    const initWindowShare = (sourceInfo) => {
 
-        AgoraClient.init(props.appId, async () => {
+        AgoraClient.init(props.config.appId, async () => {
 	      	
-	      	const agoraAccessToken = await actions.auth.getAgoraAccessToken({ requestParams: {channel: props.channel}});
+	      	const agoraAccessToken = await actions.auth.getAgoraAccessToken({ requestParams: {channel: props.config.channel}});
 
-	      	AgoraClient.join(agoraAccessToken, props.channel, props.uid, (uid) => {
+	      	AgoraClient.join(agoraAccessToken, props.config.channel, props.config.user_uid, (uid) => {
 
-	      		socket_live.emit(events.joinRoom, props.channel);
+	      		socket_live.emit(events.joinRoom, props.config.channel);
 
-        		localStream = streamInit(uid, props.videoProfile, sourceInfo);
+        		localStream = streamInit(uid, props.config.videoProfile, sourceInfo);
 
         		localStream.init( async () => {
 
@@ -58,20 +58,20 @@ const InitScreenShareCanvas = React.memo((props) => {
               			alert("Publish local stream error: " + err);
             		})
 
-            		var overlayBounds = await window.require("electron").ipcRenderer.sendSync('screenshare-source-bounds', 
+            		var overlayBounds = await window.require("electron").ipcRenderer.sendSync('windowshare-source-bounds', 
             								sourceInfo);
 
-				 	socket_live.emit(events.userScreenShare, {
+				 	socket_live.emit(events.userWindowShare, {
 	          			call_channel_id: 	localStorage.getItem("call_channel_id"),
+	          			channel_id: 		props.config.channel,
 	          			resolution: 		overlayBounds,
-				 		channel_id: 		props.channel,
-				 		sender_id:  		state.userProfileData.uid,
-				 		user_id: 			state.userProfileData.id
+				 		user_uid:  			props.config.user_uid,
+				 		user_id: 			props.config.user_id
 				 	});
 
-				 	localStorage.setItem('screenshare_channel_id', props.channel);
-				 	localStorage.setItem('screenshare_source', sourceInfo);
-	          		//window.require('electron').ipcRenderer.send('sharing-screen', overlayBounds);
+				 	localStorage.setItem('windowshare_channel_id', props.config.channel);
+				 	localStorage.setItem('windowshare_source', sourceInfo);
+	          		window.require('electron').ipcRenderer.send('sharing-window', overlayBounds);
 	        	},
 
 	          	err => {
@@ -88,8 +88,9 @@ const InitScreenShareCanvas = React.memo((props) => {
     	actions.app.setScreenSize();
 
     	AgoraRTC.getScreenSources(function(err, sources) {
-
-		    setScreenSources(sources);
+			
+			var windowSources = sources.filter(function(source) { return source.display_id === ''; });
+		    setScreenSources(windowSources);
 		})
 
     },[])
@@ -103,7 +104,7 @@ const InitScreenShareCanvas = React.memo((props) => {
     return (
 		<div>
 			<div className="mb-4 text-lg px-3 center">
-				Select Screen/Window to share..
+				Select Window to share..
 			</div>
 			{
 				screenSources.map(source => 
@@ -114,7 +115,7 @@ const InitScreenShareCanvas = React.memo((props) => {
                         style={{
                             width: '33%', float: 'left', listStyle: 'none'
                         }}
-                        onClick={() =>{initScreenShare(source.id)}}
+                        onClick={() =>{initWindowShare(source.id)}}
                     >
                     	<div className="w-full">
                     		 <div 
@@ -140,4 +141,4 @@ const InitScreenShareCanvas = React.memo((props) => {
 	);
 })
 
-export default InitScreenShareCanvas;
+export default InitWindowShareCanvas;

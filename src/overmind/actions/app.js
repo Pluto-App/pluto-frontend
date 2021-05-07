@@ -67,6 +67,11 @@ export const setElectronWindowScreenShareViewers = async ({ state, effect }, scr
 	state.screenShareViewers = screenShareViewers;
 }
 
+export const setElectronWindowWindowShareViewers = async ({ state, effect }, windowShareViewers) => {
+
+	state.windowShareViewers = windowShareViewers;
+}
+
 export const userVideoCall = async ({ state, effect }, data) => {
 
 	if(localStorage.getItem("call_channel_id") && localStorage.getItem("call_channel_id") === data.call_channel_id){
@@ -104,8 +109,27 @@ export const userScreenShare = async ({ state, effect }, data) => {
 	}
 }
 
+export const userWindowShare = async ({ state, effect }, data) => {
+
+	state.screenShareUser = data.user;
+	if(data.user_uid !== state.userProfileData.uid){
+
+		var windowshare_resolutions = JSON.parse(localStorage.getItem('windowshare_resolutions')) || {};
+		windowshare_resolutions[data.user_uid] = data.resolution;
+
+		localStorage.setItem("windowshare_resolutions", JSON.stringify(windowshare_resolutions));
+
+	 	state.streamingWindowShare = true;
+	 	window.require("electron").ipcRenderer.send('streaming-windowshare', data);
+	}
+}
+
 export const setSharingScreen = async ({ state, effect }, value) => {
  	state.sharingScreen = value;
+}
+
+export const setSharingWindow = async ({ state, effect }, value) => {
+ 	state.sharingWindow = value;
 }
 
 export const setStreamingScreenShare = async ({ state, effect }, value) => {
