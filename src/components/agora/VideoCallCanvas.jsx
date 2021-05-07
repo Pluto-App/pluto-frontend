@@ -282,14 +282,7 @@ const VideoCallCanvas = React.memo((props) => {
 
               addStream(localStream, true);
 
-              // socket_live.emit(events.joinRoom, { room: props.config.channel, user_id: props.config.user_id},
-              //   (data) => {
-              //     if(data.created){
-              //       actions.app.emitUpdateTeam();  
-              //     }
-              // });
-
-              const interval = setInterval(() => {
+              //const interval = setInterval(() => {
 
                 socket_live.emit(events.joinRoom, { room: props.config.channel, user_id: props.config.user_id},
                   (data) => {
@@ -298,7 +291,7 @@ const VideoCallCanvas = React.memo((props) => {
                     }
                 });
 
-              }, 2000);
+              //}, 2000);
 
               AgoraClient.publish(localStream, err => {
                   alert("Publish local stream error: " + err);
@@ -356,6 +349,12 @@ const VideoCallCanvas = React.memo((props) => {
       data['user'] = usersInCallRef.current[data.user_id];
       actions.app.userScreenShare(data);
       updateWindowSize();
+    });
+
+    socket_live.on(events.userWindowShare, (data) => {
+
+      data['user'] = usersInCallRef.current[data.user_id];
+      actions.app.userWindowShare(data);
     });
 
   },[])
@@ -489,6 +488,20 @@ const VideoCallCanvas = React.memo((props) => {
   	}
 	}
 
+  const handleMultiWindowShare = async (e) => {
+
+    if (state.sharingWindow) {
+
+        window.require("electron").ipcRenderer.send('stop-windowshare');
+        actions.app.setSharingWindow(false);
+
+    } else {
+      
+        window.require("electron").ipcRenderer.send('init-windowshare');
+        actions.app.setSharingWindow(true);
+    }
+  }
+
   const handleCollapse = async (e) => {
 
     window.require("electron").ipcRenderer.send('collapse-video-call-window', getHeight());
@@ -583,6 +596,17 @@ const VideoCallCanvas = React.memo((props) => {
   	</span>
   )
 
+    const multiWindowShareBtn = (
+     <span
+      onClick={handleMultiWindowShare}
+      className='ag-btn exitBtn'
+      title="Multi Window Share"
+      style={{opacity: 1}}
+    >
+      <i className="material-icons focus:outline-none md-light" id="compare" style={{ fontSize: "30px" }} >compare</i>
+    </span>
+  )
+
   const collapseBtn = (
 
     !state.videoCallCompactMode ?
@@ -592,7 +616,7 @@ const VideoCallCanvas = React.memo((props) => {
         title="Collapse Video Call"
         style={{opacity: 1}}
       >
-        <i className="material-icons focus:outline-none md-light" id="screen-share" style={{ fontSize: "30px" }} >fullscreen_exit</i>
+        <i className="material-icons focus:outline-none md-light" style={{ fontSize: "30px" }} >fullscreen_exit</i>
       </span>
 
       : ''
@@ -844,6 +868,7 @@ const VideoCallCanvas = React.memo((props) => {
           {videoControlBtn}
           {audioControlBtn}
           {screenShareBtn}
+          {multiWindowShareBtn}
           {collapseBtn}
       </div>
     </div>

@@ -12,6 +12,10 @@ import StreamScreenShare from './components/windows/screenshare/StreamScreenShar
 import ScreenShareContainer from './components/widgets/ScreenShareContainer'
 import ScreenShareControls from './components/windows/screenshare/ScreenShareControls'
 
+import InitWindowShare from './components/windows/windowshare/InitWindowShare'
+import WindowShareContainer from './components/widgets/WindowShareContainer'
+import StreamWindowShare from './components/windows/windowshare/StreamWindowShare'
+
 import TopBar from './components/widgets/Topbar'
 import ToastNotification from './components/widgets/ToastNotification'
 
@@ -158,8 +162,20 @@ export default function App() {
           <InitScreenShare />
         </Route>
 
+        <Route exact path="/init-windowshare">
+          <InitWindowShare />
+        </Route>
+
+        <Route exact path="/stream-windowshare">
+          <StreamWindowShare />
+        </Route>
+
         <Route exact path="/screenshare-container">
           <ScreenShareContainer />
+        </Route>
+
+        <Route exact path="/windowshare-container">
+          <WindowShareContainer />
         </Route>
 
         <Route exact path="/screenshare-controls">

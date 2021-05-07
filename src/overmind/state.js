@@ -29,6 +29,7 @@ export const state = {
     // Video Call
     streamingScreenShare: false,
     sharingScreen: false,
+    sharingWindow: false,
     screenShareUser: {},
     videoCallCompactMode: true,
 
@@ -51,5 +52,7 @@ export const state = {
     usersActiveWindows: {},
     screenShareViewers: {},
     screenShareCursors: {},
+    windowShareViewers: {},
+    windowShareCursors: {},
     screenSize: {}
 }

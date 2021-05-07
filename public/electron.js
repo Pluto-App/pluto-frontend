@@ -22,6 +22,10 @@ let initScreenShareWindow
 let screenShareContainerWindow
 let screenShareControlsWindow
 
+let initWindowShareWindow
+let windowShareContainerWindow
+let streamWindowShareWindow
+
 let settingsPage
 
 const isWindows = process.platform === 'win32'
@@ -360,6 +364,15 @@ function createWindow() {
           if(screenShareControlsWindow)
             screenShareControlsWindow.close();
 
+          if(initWindowShareWindow)
+            initWindowShareWindow.close();
+
+          if(windowShareContainerWindow)
+            windowShareContainerWindow.close();
+
+          if(streamWindowShareWindow)
+            streamWindowShareWindow.close();
+
         } catch (error) {
           console.error(error);
         }
@@ -368,7 +381,7 @@ function createWindow() {
     })
 
     if (isDev) {
-       videoCallWindow.webContents.openDevTools();
+       // videoCallWindow.webContents.openDevTools();
     }
   });
 
@@ -433,11 +446,67 @@ function createWindow() {
     }
   })
 
+  ipcMain.on('init-windowshare', (event, arg) => {
+
+    if(initWindowShareWindow){
+      try{
+        initWindowShareWindow.hide();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    initWindowShareWindow = new BrowserWindow({
+        width: 650,
+        height: 650,
+        frame: true,
+        title: "WindowShare",
+        resizable: false,
+        webPreferences: {
+          nodeIntegration: true,
+          plugins: true,
+          enableRemoteModule: true
+        }
+    });
+
+    initWindowShareWindow.setMenu(null);
+
+    const windowShareWindowUrl = url.format({
+      pathname: path.join(__dirname, '../build/index.html'),
+      hash: '/init-windowshare',
+      protocol: 'file:',
+      slashes: true
+    });
+
+    initWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/init-windowshare' : windowShareWindowUrl);
+
+    initWindowShareWindow.on('closed', () => {
+      initWindowShareWindow = undefined;
+    })
+
+    if (isDev) {
+      initWindowShareWindow.webContents.openDevTools();
+    }
+  })
+
+  ipcMain.on('stop-windowshare', (event, arg) => {
+
+    videoCallWindow.webContents.send('stop-windowshare', {});
+    try{
+
+      if(initWindowShareWindow)
+        initWindowShareWindow.close();  
+
+    } catch (error) {
+      console.error(error);
+    }
+  })
+
   ipcMain.on('init-screenshare', (event, arg) => {
 
     if(initScreenShareWindow){
       try{
-        initScreenShareWindow.close();
+        initScreenShareWindow.hide();
       } catch (error) {
         console.error(error);
       }
@@ -476,11 +545,117 @@ function createWindow() {
     }
   })
 
+  ipcMain.on('sharing-window', (event, overlayBounds) => {
+
+    if(initWindowShareWindow) {
+
+      initWindowShareWindow.hide();
+
+      windowShareContainerWindow = new BrowserWindow({
+        x: overlayBounds.x,
+        y: overlayBounds.y,
+        hasShadow: false,
+        transparent: true,
+        frame: false,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        closeable: false,
+        alwaysOnTop: true,
+        focusable: false,
+        enableLargerThanScreen: true,
+        webPreferences: {
+          nodeIntegration: true,
+          plugins: true,
+          enableRemoteModule: true
+        },
+        show: false
+      });
+
+      const windowshareContainerUrl = url.format({
+        pathname: path.join(__dirname, '../build/index.html'),
+        hash: '/windowshare-container',
+        protocol: 'file:',
+        slashes: true
+      })
+
+      windowShareContainerWindow.setVisibleOnAllWorkspaces(true);
+      windowShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/windowshare-container' : screenshareContainerUrl);
+      windowShareContainerWindow.setIgnoreMouseEvents(true);
+      windowShareContainerWindow.setSize(overlayBounds.width, overlayBounds.height);
+      windowShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
+      windowShareContainerWindow.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
+
+      app.dock && app.dock.hide();
+      windowShareContainerWindow.show();
+      app.dock && app.dock.show();
+
+      windowShareContainerWindow.on('closed', () => {
+        windowShareContainerWindow = undefined;
+      })
+
+      if (isDev) {
+       
+        // windowShareContainerWindow.webContents.openDevTools();
+      }
+    }
+  })
+
+  ipcMain.on('streaming-windowshare', (event, args) => {
+
+    console.log(args);
+
+    streamWindowShareWindow = new BrowserWindow({
+        width: args.resolution.width,
+        height: args.resolution.height,
+        frame: true,
+        title: "WindowShare",
+        resizable: true,
+        webPreferences: {
+          nodeIntegration: true,
+          plugins: true,
+          enableRemoteModule: true
+        }
+    });
+
+    streamWindowShareWindow.setMenu(null);
+
+    const streamWindowShareWindowUrl = url.format({
+      pathname: path.join(__dirname, '../build/index.html'),
+      hash: '/stream-windowshare',
+      protocol: 'file:',
+      slashes: true
+    });
+
+    streamWindowShareWindow.data = {
+        user_id: args.user_id,
+        user_uid: args.user_uid
+    };
+
+    streamWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-windowshare' : streamWindowShareWindow);
+
+    streamWindowShareWindow.on('closed', () => {
+      streamWindowShareWindow = undefined;
+    })
+
+    if (isDev) {
+      streamWindowShareWindow.webContents.openDevTools();
+    }
+  })
+
+  ipcMain.on('update-windowshare-container-bounds', (event, overlayBounds) => {
+
+    if(windowShareContainerWindow){
+
+      windowShareContainerWindow.setBounds(overlayBounds);
+    }
+  })
+
   ipcMain.on('sharing-screen', (event, overlayBounds) => {
 
     if(initScreenShareWindow) {
 
-      initScreenShareWindow.hide();
+      initScreenShareWindow.close();
 
       screenShareContainerWindow = new BrowserWindow({
         x: overlayBounds.x,
@@ -630,6 +805,15 @@ function createWindow() {
     }
 
       event.returnValue = overlayBounds;
+  })
+
+  // Make and use common methods for screenshare/windowshare wherever possible
+  ipcMain.on('windowshare-source-bounds', async (event, sourceInfo) => {
+
+    var [sourceType, sourceId] = sourceInfo.split(':');
+    var overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds();
+    console.log(overlayBounds);
+    event.returnValue = overlayBounds;
   })
 
   var menu = Menu.buildFromTemplate([

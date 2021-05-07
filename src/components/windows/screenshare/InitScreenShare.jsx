@@ -4,13 +4,12 @@ import * as Cookies from "js-cookie";
 import { useOvermind } from '../../../overmind'
 import InitScreenShareCanvas from "../../agora/InitScreenShareCanvas";
 
-const ScreenShare = React.memo((props) => {
+const InitScreenShare = React.memo((props) => {
 
   const { state, actions } = useOvermind();
 
     const screenShareChannel = localStorage.getItem('screenshare_channel_id');
     
-    const [ screenShareState, setScreeenShareState] = useState({options: 'show', status: 'stopped'});
     const [ config, setConfig ] = useState({
         videoProfile: "720p_1",
         mode: "live",
@@ -42,4 +41,4 @@ const ScreenShare = React.memo((props) => {
     )
 })
 
-export default ScreenShare;
+export default InitScreenShare;
