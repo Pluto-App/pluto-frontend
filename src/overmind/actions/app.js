@@ -62,14 +62,14 @@ export const updateUserActiveWindowData = async ({ state, effect }, {user_id, ac
 	state.usersActiveWindows[user_id] = active_window_data;
 }
 
-export const setElectronWindowScreenShareViewers = async ({ state, effect }, screenShareViewers) => {
+export const setElectronScreenShareViewers = async ({ state, effect }, screenShareViewers) => {
 
 	state.screenShareViewers = screenShareViewers;
 }
 
-export const setElectronWindowWindowShareViewers = async ({ state, effect }, windowShareViewers) => {
+export const setElectronWindowShareViewers = async ({ state, effect }, channel_id, windowShareViewers) => {
 
-	state.windowShareViewers = windowShareViewers;
+	state.windowShareViewers[channel_id] = windowShareViewers;
 }
 
 export const userVideoCall = async ({ state, effect }, data) => {
@@ -112,7 +112,7 @@ export const userScreenShare = async ({ state, effect }, data) => {
 export const userWindowShare = async ({ state, effect }, data) => {
 
 	state.screenShareUser = data.user;
-	if(data.user_uid !== state.userProfileData.uid){
+	if(data.user_uid === state.userProfileData.uid){
 
 		var windowshare_resolutions = JSON.parse(localStorage.getItem('windowshare_resolutions')) || {};
 		windowshare_resolutions[data.user_uid] = data.resolution;
@@ -146,6 +146,15 @@ export const updateScreenShareViewers = async ({ state, effect }, data) => {
 	localStorage.setItem('screenShareViewers', JSON.stringify(state.screenShareViewers));
 }
 
+export const updateWindowShareViewers = async ({ state, effect }, channel_id, data) => {
+
+	if(data.user)
+		state.windowShareViewers[channel_id][data.user.uid] = data.user;
+
+	// HACK to pass data to other electron windows.
+	localStorage.setItem('windowShareViewers', JSON.stringify(state.windowShareViewers));
+}
+
 export const updateScreenShareCursor = async ({ state, effect }, data) => {
 	if(data.user)
 		state.screenShareCursors[data.user.id] = data.cursor;
@@ -172,6 +181,31 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 		else if(data.event.type === 'keyup' || data.event.type === 'keydown')
 			window.require("electron").ipcRenderer.send('emit-key', data);
 	}
+}
+
+export const updateWindowShareCursor = async ({ state, effect }, channel_id, data) => {
+
+	if(data.user)
+		state.windowShareCursors[channel_id][data.user.id] = data.cursor;	
+
+		if(data.event.type === 'click'){
+			if(data.event.witch === 3)
+				window.require("electron").ipcRenderer.send('emit-right-click', data);
+			else
+				window.require("electron").ipcRenderer.send('emit-click', data);
+		}
+		
+		else if(data.event.type === 'wheel')
+			window.require("electron").ipcRenderer.send('emit-scroll', data);
+
+		else if(data.event.type === 'mousedown')
+			window.require("electron").ipcRenderer.send('emit-mousedown', data);
+
+		else if(data.event.type === 'mouseup')
+			window.require("electron").ipcRenderer.send('emit-mouseup', data);
+
+		else if(data.event.type === 'keyup' || data.event.type === 'keydown')
+			window.require("electron").ipcRenderer.send('emit-key', data);
 }
 
 export const setScreenSize = async ({ state, effect }) => {

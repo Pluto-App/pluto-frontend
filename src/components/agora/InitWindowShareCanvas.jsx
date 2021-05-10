@@ -71,7 +71,12 @@ const InitWindowShareCanvas = React.memo((props) => {
 
 				 	localStorage.setItem('windowshare_channel_id', props.config.channel);
 				 	localStorage.setItem('windowshare_source', sourceInfo);
-	          		window.require('electron').ipcRenderer.send('sharing-window', overlayBounds);
+
+
+	          		window.require('electron').ipcRenderer.send('sharing-window', {
+	          			'overlayBounds': overlayBounds,
+	          			'channel_id': props.config.channel
+	          		});
 	        	},
 
 	          	err => {
