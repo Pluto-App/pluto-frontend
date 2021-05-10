@@ -18,8 +18,8 @@ const WindowShareContainer = React.memo((props) => {
 
         const setWindowShareViewers = setInterval(async () => {
 
-            let windowShareViewers = JSON.parse(localStorage.getItem("windowShareViewers") || {})[currentWindow.channel_id] || []
-            actions.app.setElectronWindowShareViewers(currentWindow.channel_id, windowShareViewers);
+            let windowShareViewers = JSON.parse(localStorage.getItem("windowShareViewers") || "{}")[currentWindow.data.channel_id] || []
+            actions.app.setElectronWindowShareViewers({ channel_id: currentWindow.data.channel_id, windowShareViewers: windowShareViewers});
 
         }, 100)
 
@@ -42,7 +42,7 @@ const WindowShareContainer = React.memo((props) => {
                         socket_live.emit(events.windowShareSourceResize, {
                             call_channel_id:    localStorage.getItem("call_channel_id"),
                             resolution:         overlayBounds,
-                            channel_id:         currentWindow.channel_id,
+                            channel_id:         currentWindow.data.channel_id,
                             user_uid:           state.userProfileData.uid,
                             user_id:            state.userProfileData.id
                         });
@@ -54,12 +54,9 @@ const WindowShareContainer = React.memo((props) => {
             }, 2000)    
         }
 
-        socket_live.on(events.viewWindowShare, (data) => {
-            actions.app.updateWindowShareViewers(currentWindow.channel_id, data);
-        });
 
         socket_live.on(events.windowShareCursor, (data) => {
-            actions.app.updateWindowShareCursor(currentWindow.channel_id, data);
+            actions.app.updateWindowShareCursor({ channel_id: currentWindow.data.channel_id, data: data});
         });
 
     },[])
@@ -86,9 +83,11 @@ const WindowShareContainer = React.memo((props) => {
         <div className="window-share-container" style={containerStyle}>
 
             {
-                Object.keys(state.windowShareViewers[currentWindow.channel_id]).map(key => 
+                Object.keys(state.windowShareViewers[currentWindow.data.channel_id] || {} ).map(key => 
 
-                    <Cursor key={key} user={(state.windowShareViewers[currentWindow.channel_id] || {})[key]}></Cursor>
+                    <Cursor key={key} channel_id={currentWindow.data.channel_id} 
+                        user={(state.windowShareViewers[currentWindow.data.channel_id] || {})[key]}>
+                    </Cursor>
                 )
             }
 
