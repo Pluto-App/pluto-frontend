@@ -7,18 +7,19 @@ import { AuthContext } from '../../context/AuthContext'
 
 
 var overlaySize = {};
-
+const { remote } = window.require('electron');
 const WindowShareContainer = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
     const { authData, setAuthData } = useContext(AuthContext);
+    var currentWindow = remote.getCurrentWindow();
 
 	useEffect(() => {
 
         const setWindowShareViewers = setInterval(async () => {
 
-            let windowShareViewers = JSON.parse(localStorage.getItem("windowShareViewers")) || []
-            actions.app.setElectronWindowWindowShareViewers(windowShareViewers);
+            let windowShareViewers = JSON.parse(localStorage.getItem("windowShareViewers") || {})[currentWindow.channel_id] || []
+            actions.app.setElectronWindowShareViewers(currentWindow.channel_id, windowShareViewers);
 
         }, 100)
 
@@ -41,7 +42,7 @@ const WindowShareContainer = React.memo((props) => {
                         socket_live.emit(events.windowShareSourceResize, {
                             call_channel_id:    localStorage.getItem("call_channel_id"),
                             resolution:         overlayBounds,
-                            channel_id:         localStorage.getItem("screenshare_channel_id"),
+                            channel_id:         currentWindow.channel_id,
                             user_uid:           state.userProfileData.uid,
                             user_id:            state.userProfileData.id
                         });
@@ -54,11 +55,11 @@ const WindowShareContainer = React.memo((props) => {
         }
 
         socket_live.on(events.viewWindowShare, (data) => {
-            actions.app.updateWindowShareViewers(data);
+            actions.app.updateWindowShareViewers(currentWindow.channel_id, data);
         });
 
         socket_live.on(events.windowShareCursor, (data) => {
-            actions.app.updateWindowShareCursor(data);
+            actions.app.updateWindowShareCursor(currentWindow.channel_id, data);
         });
 
     },[])
@@ -85,8 +86,9 @@ const WindowShareContainer = React.memo((props) => {
         <div className="window-share-container" style={containerStyle}>
 
             {
-                Object.keys(state.windowShareViewers).map(key => 
-                    <Cursor key={key} user={state.windowShareViewers[key]}></Cursor>
+                Object.keys(state.windowShareViewers[currentWindow.channel_id]).map(key => 
+
+                    <Cursor key={key} user={(state.windowShareViewers[currentWindow.channel_id] || {})[key]}></Cursor>
                 )
             }
 

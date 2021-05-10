@@ -20,7 +20,7 @@ const ScreenShareContainer = React.memo((props) => {
         const setScreenShareViewers = setInterval(async () => {
 
             let screenShareViewers = JSON.parse(localStorage.getItem("screenShareViewers")) || []
-            actions.app.setElectronWindowScreenShareViewers(screenShareViewers);
+            actions.app.setElectronScreenShareViewers(screenShareViewers);
 
         }, 100)
 

@@ -16,6 +16,7 @@ export const events = {
   userWindowShare:          'userWindowShare',
   viewScreenShare:          'viewScreenShare',
   screenShareCursor:        'screenShareCursor',
+  windowShareCursor:        'windowShareCursor',
   exitRoomVideoCall:        'exitRoomVideoCall',
   endScreenShare:           'endScreenShare',
   screenShareSourceResize:  'screenShareSourceResize',

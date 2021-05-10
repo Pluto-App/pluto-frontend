@@ -545,15 +545,15 @@ function createWindow() {
     }
   })
 
-  ipcMain.on('sharing-window', (event, overlayBounds) => {
+  ipcMain.on('sharing-window', (event, args) => {
 
     if(initWindowShareWindow) {
 
       initWindowShareWindow.hide();
 
       windowShareContainerWindow = new BrowserWindow({
-        x: overlayBounds.x,
-        y: overlayBounds.y,
+        x: args.overlayBounds.x,
+        y: args.overlayBounds.y,
         hasShadow: false,
         transparent: true,
         frame: false,
@@ -579,6 +579,10 @@ function createWindow() {
         slashes: true
       })
 
+      windowShareContainerWindow.data = {
+          channel_id: args.channel_id
+      };
+
       windowShareContainerWindow.setVisibleOnAllWorkspaces(true);
       windowShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/windowshare-container' : screenshareContainerUrl);
       windowShareContainerWindow.setIgnoreMouseEvents(true);
@@ -602,8 +606,6 @@ function createWindow() {
   })
 
   ipcMain.on('streaming-windowshare', (event, args) => {
-
-    console.log(args);
 
     streamWindowShareWindow = new BrowserWindow({
         width: args.resolution.width,
@@ -812,7 +814,6 @@ function createWindow() {
 
     var [sourceType, sourceId] = sourceInfo.split(':');
     var overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds();
-    console.log(overlayBounds);
     event.returnValue = overlayBounds;
   })
 
