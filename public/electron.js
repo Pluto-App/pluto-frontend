@@ -485,7 +485,7 @@ function createWindow() {
     })
 
     if (isDev) {
-      initWindowShareWindow.webContents.openDevTools();
+      // initWindowShareWindow.webContents.openDevTools();
     }
   })
 
@@ -506,7 +506,7 @@ function createWindow() {
 
     if(initScreenShareWindow){
       try{
-        initScreenShareWindow.hide();
+        initScreenShareWindow.close();
       } catch (error) {
         console.error(error);
       }
@@ -586,7 +586,7 @@ function createWindow() {
       windowShareContainerWindow.setVisibleOnAllWorkspaces(true);
       windowShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/windowshare-container' : screenshareContainerUrl);
       windowShareContainerWindow.setIgnoreMouseEvents(true);
-      windowShareContainerWindow.setSize(overlayBounds.width, overlayBounds.height);
+      windowShareContainerWindow.setSize(args.overlayBounds.width, args.overlayBounds.height);
       windowShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
       windowShareContainerWindow.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
 
@@ -596,11 +596,14 @@ function createWindow() {
 
       windowShareContainerWindow.on('closed', () => {
         windowShareContainerWindow = undefined;
+
+        if(initWindowShareWindow)
+          initWindowShareWindow.close();
       })
 
       if (isDev) {
        
-        // windowShareContainerWindow.webContents.openDevTools();
+        windowShareContainerWindow.webContents.openDevTools();
       }
     }
   })
@@ -657,7 +660,7 @@ function createWindow() {
 
     if(initScreenShareWindow) {
 
-      initScreenShareWindow.close();
+      initScreenShareWindow.hide();
 
       screenShareContainerWindow = new BrowserWindow({
         x: overlayBounds.x,
@@ -895,9 +898,9 @@ function createWindow() {
   ipcMain.on('emit-click', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    var screenShareBounds = screenShareContainerWindow.getBounds();
+    var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
+    robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
     robot.mouseClick();
     robot.moveMouse(originalPos.x, originalPos.y);
 
@@ -908,9 +911,9 @@ function createWindow() {
     console.log('right click!');
 
     originalPos = robot.getMousePos();
-    var screenShareBounds = screenShareContainerWindow.getBounds();
+    var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
+    robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
     robot.mouseClick('right');
     robot.moveMouse(originalPos.x, originalPos.y);
 
@@ -919,9 +922,9 @@ function createWindow() {
   ipcMain.on('emit-scroll', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    var screenShareBounds = screenShareContainerWindow.getBounds();
+    var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
+    robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
 
     switch(arg.event.direction) {
       case 'up':
@@ -939,11 +942,11 @@ function createWindow() {
   ipcMain.on('emit-drag', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    var screenShareBounds = screenShareContainerWindow.getBounds();
+    var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse((screenShareBounds.x + arg.event.start_x) * scaleFactor, (screenShareBounds.y + arg.event.start_y) * scaleFactor);
+    robot.moveMouse((containerBounds.x + arg.event.start_x) * scaleFactor, (containerBounds.y + arg.event.start_y) * scaleFactor);
     robot.mouseToggle("down");
-    robot.dragMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
+    robot.dragMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
     robot.mouseToggle("up");
     
     robot.moveMouse(originalPos.x, originalPos.y);
@@ -952,9 +955,9 @@ function createWindow() {
   ipcMain.on('emit-mousedown', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    var screenShareBounds = screenShareContainerWindow.getBounds();
+    var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
+    robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
     robot.mouseToggle("down");
     //robot.moveMouse(originalPos.x, originalPos.y);
 
@@ -963,9 +966,9 @@ function createWindow() {
   ipcMain.on('emit-mouseup', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    var screenShareBounds = screenShareContainerWindow.getBounds();
+    var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
+    robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
     robot.mouseToggle("up"); 
     //robot.moveMouse(originalPos.x, originalPos.y);
   })

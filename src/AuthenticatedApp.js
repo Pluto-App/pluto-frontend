@@ -38,11 +38,13 @@ import useSound from 'use-sound';
 
 import receiveCallSound from './assets/sounds/receive_call.wav';
 
+const { remote } = window.require('electron');
 export default function App() {
 
   const { state, actions } = useOvermind();
   const { authData, setAuthData } = useContext(AuthContext);
   const [playReceiveCallSound] = useSound(receiveCallSound);
+  var currentWindow = remote.getCurrentWindow();
 
   useEffect(() => {
       if(state.error && state.error.message){
@@ -109,6 +111,10 @@ export default function App() {
 
       socket_live.on(events.viewScreenShare, (data) => {
         actions.app.updateScreenShareViewers(data);
+      });
+
+      socket_live.on(events.viewWindowShare, (data) => {
+        actions.app.updateWindowShareViewers(data);
       });
 
       socket_live.on(events.updateTeam, (data) => {

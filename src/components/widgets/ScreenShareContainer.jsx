@@ -55,10 +55,6 @@ const ScreenShareContainer = React.memo((props) => {
             }    
         }
 
-        socket_live.on(events.viewScreenShare, (data) => {
-            actions.app.updateScreenShareViewers(data);
-        });
-
         socket_live.on(events.screenShareCursor, (data) => {
             console.log('updating cursor');
             actions.app.updateScreenShareCursor(data);

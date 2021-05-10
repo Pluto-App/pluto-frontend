@@ -2,13 +2,15 @@
 import React from 'react'
 import { useOvermind } from '../../overmind'
 
-const Cursor = React.memo((props) => {
+const WindowShareCursor = React.memo((props) => {
 
     const { state } = useOvermind();
 
+    var cursorData = (state.windowShareCursors[props.channel_id] || {})[props.user.id];
+
     const cursorPosition = {
-        left: props.user && state.screenShareCursors[props.user.id] ? state.screenShareCursors[props.user.id]['x'] : 0,
-        top: props.user && state.screenShareCursors[props.user.id] ? state.screenShareCursors[props.user.id]['y'] : 0,
+        left: props.user && cursorData ? cursorData['x'] : 0,
+        top: props.user && cursorData ? cursorData['y'] : 0,
     }
 
     const cursorColor = props.user ? props.user.color : 'blue';
@@ -49,4 +51,4 @@ const Cursor = React.memo((props) => {
     )
 })
 
-export default Cursor;
+export default WindowShareCursor;
