@@ -169,8 +169,8 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
  			}
 
- 			if(e.type == 'keyup' || e.type == 'keydown')
- 				console.log(e);
+ 			// if(e.type == 'keyup' || e.type == 'keydown')
+ 			// 	console.log(e);
 
  			var data = {
 		 		channel_id: 		props.config.channel,
@@ -318,8 +318,9 @@ const StreamWindowShareCanvas = React.memo((props) => {
 					<div id="ag-screen" className="ScreenShareCamera" tabIndex="0"
 						onMouseMove={ shareCursorData }
 						onDoubleClick={ shareCursorData }
-						onKeyUp={ shareCursorData }
-						onKeyDown={ shareCursorData }
+						// onKeyUp={ shareCursorData }
+						// onKeyDown={ shareCursorData }
+						onKeyPress={ shareCursorData }
 						onMouseDown={ shareCursorData }
 						onMouseUp={ shareCursorData }
 					>

@@ -162,11 +162,10 @@ function getModsArray(event) {
   }
 
   if(event.shiftKey) {
-    mods.push('banana'); 
+    mods.push('shift'); 
   }
 
   return mods;
-
 }
 
 function createWindow() {
@@ -922,21 +921,8 @@ function createWindow() {
     var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
     robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
-
-    // switch(arg.event.direction) {
-    //   case 'up':
-    //     robot.scrollMouse(0, -5);
-    //     break;
-    //   case 'down':
-    //     robot.scrollMouse(0, 5);
-    //     break;
-    //   default:
-    //     // code block
-    // }
-
     robot.scrollMouse(arg.event.deltaX, arg.event.deltaY);
 
-    // robot.moveMouse(originalPos.x, originalPos.y);
   })
 
   ipcMain.on('emit-mousedown', async (event, arg) => {
@@ -945,8 +931,6 @@ function createWindow() {
     var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
     robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
-
-    console.log(arg.event);
 
     if(arg.event.which == 3)
       robot.mouseToggle("down", 'right');
@@ -975,21 +959,27 @@ function createWindow() {
   ipcMain.on('emit-key', async (event, arg) => {
 
     var rawKey = arg.event.key.toLowerCase();
-    var key = robotKeyMap[rawKey] || arg.event.key
+    // var key = robotKeyMap[rawKey] || rawKey;
+    var keyAscii = arg.event.which || arg.event.keyCode;
+    // var isChar = (keyAscii >= 65 && keyAscii <= 90) || (keyAscii <= 31 || keyAscii >= 127); 
+
+    // console.log(arg.event);
+
+    // var key = robotKeyMap[rawKey] || !isChar ? String.fromCharCode(keyAscii) : rawKey;
+
+    var key = robotKeyMap[rawKey] || String.fromCharCode(keyAscii);
 
     var mods = getModsArray(arg.event);
 
-    console.log(arg.event);
-
-    if(arg.event.type == 'keyup'){
+    // if(arg.event.type == 'keyup'){
       
-      robot.keyToggle(key, 'up', mods);
+    //   robot.keyToggle(key, 'up', mods);
 
-    } else if(arg.event.type == 'keydown') {
+    // } else if(arg.event.type == 'keydown') {
       
-      robot.keyToggle(key, 'down', mods);
+    //   robot.keyToggle(key, 'down', mods);
 
-    }
+    // }
 
 
     // if(robotMods.includes(key)){

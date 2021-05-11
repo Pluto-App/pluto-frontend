@@ -204,7 +204,7 @@ export const updateWindowShareCursor = async ({ state, effect }, {channel_id, da
 	else if(data.event.type === 'mouseup')
 		window.require("electron").ipcRenderer.send('emit-mouseup', data);
 
-	else if(data.event.type === 'keyup' || data.event.type === 'keydown')
+	else if(data.event.type === 'keyup' || data.event.type === 'keydown' || data.event.type === 'keypress')
 		window.require("electron").ipcRenderer.send('emit-key', data);
 }
 
