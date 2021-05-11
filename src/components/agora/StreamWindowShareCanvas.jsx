@@ -301,13 +301,30 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
     }, [screenShareResolution])
 
+    const controlsTopBarStyle = {
+	    'height': '25px',
+	    'backgroundColor': 'transparent',
+	    'WebkitUserSelect': 'none',
+	    'WebkitAppRegion': 'drag',
+    	'width': '100%',
+    	'position': 'fixed',
+    	'top': 0,
+    	'zIndex': 100
+  	}
+
+  	const streamContainerStyle = { 
+  		// display: 'flex', width: '100%', position: 'fixed', top: 0,
+  		// 'border': '5px solid ' + '#' + Math.floor(Math.random()*16770000).toString(16)
+  	}
+
     return (
-		<div id="ScreenShareDish" >
-			<div style={{ display: 'flex', width: '100%' }}>
+		<div id="ScreenShareDish">
+			<div id="controls-topbar" style={controlsTopBarStyle}>
+	      	</div>
+			<div style={streamContainerStyle}>
 				<section style={{ 
 					width: '100%', 
-					position: 'relative',
-					border: '1px #636161 solid'
+					position: 'relative'
 				}}>
 					<div id="ag-screen" className="ScreenShareCamera" tabIndex="0"
 						onMouseMove={ shareCursorData }
@@ -316,6 +333,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 						onKeyDown={ shareCursorData }
 						onMouseDown={ shareCursorData }
 						onMouseUp={ shareCursorData }
+						style={{border: '5px solid ' + '#' + Math.floor(Math.random()*16770000).toString(16)}}
 					>
 	    			</div>
                   
