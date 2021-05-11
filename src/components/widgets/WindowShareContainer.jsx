@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
-import Cursor from '../utility/Cursor'
+import WindowShareCursor from '../utility/WindowShareCursor'
 import { AuthContext } from '../../context/AuthContext'
 
 
@@ -85,9 +85,9 @@ const WindowShareContainer = React.memo((props) => {
             {
                 Object.keys(state.windowShareViewers[currentWindow.data.channel_id] || {} ).map(key => 
 
-                    <Cursor key={key} channel_id={currentWindow.data.channel_id} 
+                    <WindowShareCursor key={key} channel_id={currentWindow.data.channel_id} 
                         user={(state.windowShareViewers[currentWindow.data.channel_id] || {})[key]}>
-                    </Cursor>
+                    </WindowShareCursor>
                 )
             }
 

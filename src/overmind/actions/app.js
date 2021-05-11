@@ -188,7 +188,7 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 export const updateWindowShareCursor = async ({ state, effect }, {channel_id, data}) => {
 
 	if(data.user)
-		state.screenShareCursors[data.user.id] = data.cursor;
+		state.windowShareCursors[channel_id + '-' + data.user.id] = data.cursor;
 
 	data.container = 'window';
 	if(data.event.type === 'click'){
