@@ -156,7 +156,9 @@ const StreamWindowShareCanvas = React.memo((props) => {
  				type: 		e.type ||(e.nativeEvent ? e.nativeEvent.type : undefined),
  				key:  		e.key || (e.nativeEvent ? e.nativeEvent.key : undefined),
  				keyCode: 	e.keyCode || (e.nativeEvent ? e.nativeEvent.keyCode : undefined),
- 				which: 		e.which || (e.nativeEvent ? e.nativeEvent.which : undefined)		
+ 				which: 		e.which || (e.nativeEvent ? e.nativeEvent.which : undefined),
+ 				deltaX: 	e.deltaX,
+ 				deltaY: 	e.deltaY	
  			}
 
  			if(e.type === 'wheel')
