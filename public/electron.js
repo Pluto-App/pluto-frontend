@@ -637,7 +637,7 @@ function createWindow() {
     streamWindowShareWindow = new BrowserWindow({
         width: args.resolution.width,
         height: args.resolution.height,
-        frame: true,
+        frame: false,
         title: "WindowShare",
         resizable: true,
         webPreferences: {
