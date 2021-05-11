@@ -927,16 +927,19 @@ function createWindow() {
 
     robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
 
-    switch(arg.event.direction) {
-      case 'up':
-        robot.scrollMouse(0, -5);
-        break;
-      case 'down':
-        robot.scrollMouse(0, 5);
-        break;
-      default:
-        // code block
-    }
+    // switch(arg.event.direction) {
+    //   case 'up':
+    //     robot.scrollMouse(0, -5);
+    //     break;
+    //   case 'down':
+    //     robot.scrollMouse(0, 5);
+    //     break;
+    //   default:
+    //     // code block
+    // }
+
+    robot.scrollMouse(arg.event.deltaX, arg.event.deltaY);
+
     // robot.moveMouse(originalPos.x, originalPos.y);
   })
 
