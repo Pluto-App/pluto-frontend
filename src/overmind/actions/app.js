@@ -111,7 +111,6 @@ export const userScreenShare = async ({ state, effect }, data) => {
 
 export const userWindowShare = async ({ state, effect }, data) => {
 
-	state.screenShareUser = data.user;
 	if(data.user_uid !== state.userProfileData.uid){
 
 		var windowshare_resolutions = JSON.parse(localStorage.getItem('windowshare_resolutions')) || {};
@@ -134,6 +133,10 @@ export const setSharingWindow = async ({ state, effect }, value) => {
 
 export const setStreamingScreenShare = async ({ state, effect }, value) => {
  	state.streamingScreenShare = value;
+}
+
+export const setStreamingWindowShare = async ({ state, effect }, value) => {
+ 	state.streamingWindowShare = value;
 }
 
 
@@ -192,7 +195,7 @@ export const updateWindowShareCursor = async ({ state, effect }, {channel_id, da
 
 	data.container = 'window';
 	if(data.event.type === 'click'){
-		if(data.event.witch === 3)
+		if(data.event.which === 3)
 			window.require("electron").ipcRenderer.send('emit-right-click', data);
 		else
 			window.require("electron").ipcRenderer.send('emit-click', data);

@@ -90,8 +90,8 @@ const StreamWindowShareCanvas = React.memo((props) => {
     		)
 	    }
 	    
-	    if(state.screenShareUser.id != state.userProfileData.id)
-	    	actions.app.setStreamingScreenShare(true);
+	    if(props.config.owner.id != state.userProfileData.id)
+	    	actions.app.setStreamingWindowShare(true);
   	}
 
   	const removeStream = (uid) => {
@@ -110,13 +110,14 @@ const StreamWindowShareCanvas = React.memo((props) => {
 	    })
 
 	    if(streamList.length == 0)
-	    	exitScreenShare();
+	    	exitWindowShare();
   	}
 
-  	const exitScreenShare = () => {
+  	const exitWindowShare = () => {
 
-  		actions.app.setStreamingScreenShare(false);
-  		//actions.app.clearScreenShareData();
+  		actions.app.setStreamingWindowShare(false);
+  		currentWindow.close();
+  		//actions.app.clearWindowShareData();
   	}
 
   	const viewingWindowShare = async () => {
@@ -326,8 +327,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 	                    <div style={{ display: "table", height: '30px'}}>
 	                      <span className="text-gray-200 px-1" style={{ display: 'table-cell', verticalAlign: 'middle'}}>
 	                        {
-	                          state.screenShareUser && state.screenShareUser.name ?
-	                          state.screenShareUser.name.split(' ')[0] + "'s Screen"
+	                          props.config.owner.name ? props.config.owner.name.split(' ')[0] + "'s Screen"
 	                          : ''
 	                        }
 	                      </span>
