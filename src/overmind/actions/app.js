@@ -111,7 +111,7 @@ export const userScreenShare = async ({ state, effect }, data) => {
 
 export const userWindowShare = async ({ state, effect }, data) => {
 
-	if(data.user_uid === state.userProfileData.uid){
+	if(data.user_uid !== state.userProfileData.uid){
 
 		var windowshare_resolutions = JSON.parse(localStorage.getItem('windowshare_resolutions')) || {};
 		windowshare_resolutions[data.user_uid] = data.resolution;

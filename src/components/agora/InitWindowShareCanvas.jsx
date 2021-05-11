@@ -75,7 +75,8 @@ const InitWindowShareCanvas = React.memo((props) => {
 
 	          		window.require('electron').ipcRenderer.send('sharing-window', {
 	          			'overlayBounds': overlayBounds,
-	          			'channel_id': props.config.channel
+	          			'channel_id': props.config.channel,
+	          			'sourceInfo': sourceInfo
 	          		});
 	        	},
 

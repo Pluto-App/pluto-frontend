@@ -607,6 +607,9 @@ function createWindow() {
           channel_id: args.channel_id
       };
 
+      var [sourceType, sourceId] = args.sourceInfo.split(':');
+      windowManager.getWindows().find(o => o.id == sourceId).bringToTop();
+
       windowShareContainerWindow.setVisibleOnAllWorkspaces(true);
       windowShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/windowshare-container' : screenshareContainerUrl);
       windowShareContainerWindow.setIgnoreMouseEvents(true);
