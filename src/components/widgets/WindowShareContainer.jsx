@@ -54,7 +54,6 @@ const WindowShareContainer = React.memo((props) => {
             }, 2000)    
         }
 
-
         socket_live.on(events.windowShareCursor, (data) => {
             actions.app.updateWindowShareCursor({ channel_id: currentWindow.data.channel_id, data: data});
         });
@@ -83,10 +82,10 @@ const WindowShareContainer = React.memo((props) => {
         <div className="window-share-container" style={containerStyle}>
 
             {
-                Object.keys(state.windowShareViewers[currentWindow.data.channel_id] || {} ).map(key => 
+                Object.keys(state.windowShareViewers[currentWindow.data.channel_id] || {} ).map(user_id => 
 
-                    <WindowShareCursor key={key} channel_id={currentWindow.data.channel_id} 
-                        user={(state.windowShareViewers[currentWindow.data.channel_id] || {})[key]}>
+                    <WindowShareCursor key={user_id} channel_id={currentWindow.data.channel_id} 
+                        user={(state.windowShareViewers[currentWindow.data.channel_id] || {})[user_id]}>
                     </WindowShareCursor>
                 )
             }

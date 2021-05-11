@@ -46,7 +46,9 @@ const WindowShareCursor = React.memo((props) => {
             <span className="material-icons" style={arrowStyle}>
                 north_west
             </span>
-            <span style={textStyle}>{props.user ? props.user.name : 'Remote User'}</span>
+            <span style={textStyle}>
+                {props.user ? props.user.name : 'Remote User'}
+            </span>
         </span>
     )
 })

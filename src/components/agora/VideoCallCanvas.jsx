@@ -353,7 +353,7 @@ const VideoCallCanvas = React.memo((props) => {
 
     socket_live.on(events.userWindowShare, (data) => {
 
-      data['user'] = usersInCallRef.current[data.user_id];
+      data['owner'] = usersInCallRef.current[data.user_id];
       actions.app.userWindowShare(data);
     });
 

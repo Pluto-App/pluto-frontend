@@ -113,10 +113,6 @@ export default function App() {
         actions.app.updateScreenShareViewers(data);
       });
 
-      socket_live.on(events.viewWindowShare, (data) => {
-        actions.app.updateWindowShareViewers(data);
-      });
-
       socket_live.on(events.updateTeam, (data) => {
 
         if(data.tid === state.currentTeam.tid){

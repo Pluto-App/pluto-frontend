@@ -27,7 +27,8 @@ const StreamWindowShare = React.memo((props) => {
         baseMode: "avc",
         appId : process.env.REACT_APP_AGORA_APP_ID,
         user_id: currentWindow.data.user_id,
-        user_uid: currentWindow.data.user_uid
+        user_uid: currentWindow.data.user_uid,
+        owner: currentWindow.data.owner
      });
 
     return (

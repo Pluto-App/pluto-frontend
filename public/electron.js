@@ -634,7 +634,8 @@ function createWindow() {
 
     streamWindowShareWindow.data = {
         user_id: args.user_id,
-        user_uid: args.user_uid
+        user_uid: args.user_uid,
+        owner: args.owner
     };
 
     streamWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-windowshare' : streamWindowShareWindow);
