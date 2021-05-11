@@ -959,27 +959,31 @@ function createWindow() {
   ipcMain.on('emit-key', async (event, arg) => {
 
     var rawKey = arg.event.key.toLowerCase();
-    // var key = robotKeyMap[rawKey] || rawKey;
-    var keyAscii = arg.event.which || arg.event.keyCode;
+    var key = robotKeyMap[rawKey] || rawKey;
+    // var keyAscii = arg.event.which || arg.event.keyCode;
     // var isChar = (keyAscii >= 65 && keyAscii <= 90) || (keyAscii <= 31 || keyAscii >= 127); 
 
     // console.log(arg.event);
 
     // var key = robotKeyMap[rawKey] || !isChar ? String.fromCharCode(keyAscii) : rawKey;
 
-    var key = robotKeyMap[rawKey] || String.fromCharCode(keyAscii);
+    if(arg.event.type == 'keyup')
+      console.log(arg.event);
+
+    //var key = robotKeyMap[rawKey] || String.fromCharCode(keyAscii);
 
     var mods = getModsArray(arg.event);
 
-    // if(arg.event.type == 'keyup'){
-      
-    //   robot.keyToggle(key, 'up', mods);
 
-    // } else if(arg.event.type == 'keydown') {
+    if(arg.event.type == 'keyup'){
       
-    //   robot.keyToggle(key, 'down', mods);
+      robot.keyToggle(key, 'up', mods);
 
-    // }
+    } else if(arg.event.type == 'keydown') {
+      
+      robot.keyToggle(key, 'down', mods);
+
+    }
 
 
     // if(robotMods.includes(key)){
