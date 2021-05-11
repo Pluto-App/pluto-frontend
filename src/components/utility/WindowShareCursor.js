@@ -6,7 +6,7 @@ const WindowShareCursor = React.memo((props) => {
 
     const { state } = useOvermind();
 
-    var cursorData = (state.windowShareCursors[props.channel_id] || {})[props.user.id];
+    var cursorData = state.windowShareCursors[props.channel_id + '-' + props.user.id];
 
     const cursorPosition = {
         left: props.user && cursorData ? cursorData['x'] : 0,
