@@ -194,14 +194,8 @@ export const updateWindowShareCursor = async ({ state, effect }, {channel_id, da
 		state.windowShareCursors[channel_id + '-' + data.user.id] = data.cursor;
 
 	data.container = 'window';
-	if(data.event.type === 'click'){
-		if(data.event.which === 3)
-			window.require("electron").ipcRenderer.send('emit-right-click', data);
-		else
-			window.require("electron").ipcRenderer.send('emit-click', data);
-	}
-	
-	else if(data.event.type === 'wheel')
+
+	if(data.event.type === 'wheel')
 		window.require("electron").ipcRenderer.send('emit-scroll', data);
 
 	else if(data.event.type === 'mousedown')
