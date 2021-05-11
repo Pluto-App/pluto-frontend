@@ -56,11 +56,16 @@ const robotKeyMap = {
   'tab'         : 'tab',
   'shift'       : 'shift',
   'alt'         : 'alt',
-  'command'     : 'command'
+  'command'     : 'command',
+  '>'           : '.',
+  '<'           : ',',
+  ':'           : ';',
+  '{'           : '[',
+  '}'           : ']',
+  '?'           : '/',
+  '|'           : '\\'
 };
 
-const robotMods = ['shift','control','alt'];
-var currentMods = [];
 var primaryDisplay;
 var sWidth;
 var sHeight;
@@ -960,20 +965,17 @@ function createWindow() {
 
     var rawKey = arg.event.key.toLowerCase();
     var key = robotKeyMap[rawKey] || rawKey;
-    // var keyAscii = arg.event.which || arg.event.keyCode;
-    // var isChar = (keyAscii >= 65 && keyAscii <= 90) || (keyAscii <= 31 || keyAscii >= 127); 
+    var keyCode = arg.event.which || arg.event.keyCode;
 
-    // console.log(arg.event);
+    key = keyCode >= 48 && keyCode <= 57 ? String.fromCharCode(keyCode) : key;
 
-    // var key = robotKeyMap[rawKey] || !isChar ? String.fromCharCode(keyAscii) : rawKey;
+    if(keyCode == 222)
+      key = "'";
 
-    if(arg.event.type == 'keyup')
-      console.log(arg.event);
-
-    //var key = robotKeyMap[rawKey] || String.fromCharCode(keyAscii);
+    if(keyCode == 192)
+      key = '`';
 
     var mods = getModsArray(arg.event);
-
 
     if(arg.event.type == 'keyup'){
       
@@ -984,42 +986,6 @@ function createWindow() {
       robot.keyToggle(key, 'down', mods);
 
     }
-
-
-    // if(robotMods.includes(key)){
-      
-    //   if(arg.event.type == 'keyup'){
-
-    //     if(currentMods.indexOf(key) != -1)
-    //       currentMods.splice(currentMods.indexOf(key), 1);
-
-    //     robot.keyToggle(key,'up');
-      
-    //   } else if(arg.event.type == 'keydown'){
-
-    //     if(currentMods.indexOf(key) == -1)
-    //       currentMods.push(key)
-
-    //     robot.keyToggle(key,'down');
-    //   }
-
-    // }  else if(arg.event.type == 'keydown'){
-
-    //   if(Object.keys(robotKeyMap).includes(rawKey)){
-
-    //     robot.keyTap(key, currentMods);
-      
-    //   } else {
-    //     if(currentMods.includes('control')){
-
-    //       robot.keyTap(key.toLowerCase(), currentMods);
-
-    //     } else {
-
-    //       robot.typeString(key);
-    //     }
-    //   }
-    // }
   })
 }
 
