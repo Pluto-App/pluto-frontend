@@ -896,30 +896,6 @@ function createWindow() {
     }
   ])
 
-  ipcMain.on('emit-click', async (event, arg) => {
-
-    originalPos = robot.getMousePos();
-    var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
-
-    robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
-    robot.mouseClick();
-    robot.moveMouse(originalPos.x, originalPos.y);
-
-  })
-
-  ipcMain.on('emit-right-click', async (event, arg) => {
-
-    console.log('right click!');
-
-    originalPos = robot.getMousePos();
-    var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
-
-    robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
-    robot.mouseClick('right');
-    robot.moveMouse(originalPos.x, originalPos.y);
-
-  })
-
   ipcMain.on('emit-scroll', async (event, arg) => {
 
     originalPos = robot.getMousePos();
@@ -943,27 +919,17 @@ function createWindow() {
     // robot.moveMouse(originalPos.x, originalPos.y);
   })
 
-  ipcMain.on('emit-drag', async (event, arg) => {
-
-    originalPos = robot.getMousePos();
-    var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
-
-    robot.moveMouse((containerBounds.x + arg.event.start_x) * scaleFactor, (containerBounds.y + arg.event.start_y) * scaleFactor);
-    robot.mouseToggle("down");
-    robot.dragMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
-    robot.mouseToggle("up");
-    
-    robot.moveMouse(originalPos.x, originalPos.y);
-  })
-
   ipcMain.on('emit-mousedown', async (event, arg) => {
 
     originalPos = robot.getMousePos();
     var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
     robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
-    robot.mouseToggle("down");
-    //robot.moveMouse(originalPos.x, originalPos.y);
+
+    if(arg.event.which == 3)
+      robot.mouseToggle("down", 'right');
+    else
+      robot.mouseToggle("down", 'left');
 
   })
 
@@ -973,8 +939,11 @@ function createWindow() {
     var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
     robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
-    robot.mouseToggle("up"); 
-    //robot.moveMouse(originalPos.x, originalPos.y);
+    
+    if(arg.event.which == 3)
+      robot.mouseToggle("up", 'right');
+    else
+      robot.mouseToggle("up", 'left');
   })
 
 
