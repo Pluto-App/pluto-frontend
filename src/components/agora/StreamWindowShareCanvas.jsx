@@ -138,8 +138,6 @@ const StreamWindowShareCanvas = React.memo((props) => {
   		if(e.type !== 'wheel')
   			e.persist();
 
-  		e.preventDefault();
-
   		try {
 
             var rect = e.target.getBoundingClientRect();
@@ -168,9 +166,6 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
  			}
 
- 			if(e.type == 'keyup')
- 				console.log(e);
-
  			var data = {
 		 		channel_id: 		props.config.channel,
 		 		windowshare_owner: 	props.config.channel.split('-')[1],
@@ -183,7 +178,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 	 			event: 	eventData
 		 	};
 
-        	socket_live.emit(events.windowShareCursor, data);	
+        	socket_live.emit(events.windowShareCursor, data);
 
         } catch (error) {
         	console.log(error);
