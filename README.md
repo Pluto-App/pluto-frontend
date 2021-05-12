@@ -19,7 +19,7 @@ Local electron app starts with backend connection to ```prod``` backend.
 > 1. build the code
 > 2. bundle the app
 
-### `npm run build`
+### `npm run prod-build`
 
 Builds the app for production to the `build` folder.<br />
 It correctly bundles React in production mode and optimizes the build for the best performance.
