@@ -24,7 +24,7 @@ let screenShareControlsWindow
 
 let initWindowShareWindow
 let windowShareContainerWindow
-let streamWindowShareWindow
+let streamWindowShareWindows = [];
 
 let settingsPage
 
@@ -394,8 +394,12 @@ function createWindow() {
           if(windowShareContainerWindow)
             windowShareContainerWindow.close();
 
-          if(streamWindowShareWindow)
-            streamWindowShareWindow.close();
+          for (var streamWindowShareWindow of streamWindowShareWindows) {
+            if(streamWindowShareWindow)
+              streamWindowShareWindow.close();
+          }
+
+          streamWindowShareWindows = [];
 
         } catch (error) {
           console.error(error);
@@ -405,7 +409,7 @@ function createWindow() {
     })
 
     if (isDev) {
-       // videoCallWindow.webContents.openDevTools();
+       videoCallWindow.webContents.openDevTools();
     }
   });
 
@@ -518,8 +522,11 @@ function createWindow() {
     videoCallWindow.webContents.send('stop-windowshare', {});
     try{
 
+      if(windowShareContainerWindow)
+        windowShareContainerWindow.close();
+
       if(initWindowShareWindow)
-        initWindowShareWindow.close();  
+        initWindowShareWindow.close();
 
     } catch (error) {
       console.error(error);
@@ -637,7 +644,7 @@ function createWindow() {
 
   ipcMain.on('streaming-windowshare', (event, args) => {
 
-    streamWindowShareWindow = new BrowserWindow({
+    var streamWindowShareWindow = new BrowserWindow({
         width: args.resolution.width,
         height: args.resolution.height,
         frame: false,
@@ -649,6 +656,8 @@ function createWindow() {
           enableRemoteModule: true
         }
     });
+
+    streamWindowShareWindows.push(streamWindowShareWindow);
 
     streamWindowShareWindow.setMenu(null);
 
