@@ -5,6 +5,7 @@ import * as team from './team'
 import * as room from './room'
 import * as userpreference from './userpreference'
 import * as rating from './rating'
+import * as videocall from './videocall'
 
 export {
 	auth,
@@ -13,5 +14,6 @@ export {
   	team,
   	room,
   	userpreference,
-  	rating
+  	rating,
+  	videocall
 }

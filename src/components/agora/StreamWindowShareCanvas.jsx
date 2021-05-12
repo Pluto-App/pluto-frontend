@@ -12,7 +12,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 	const AgoraClient = AgoraRTC.createClient({ mode: props.config.transcode, codec: "vp8" });
 	var currentWindow = remote.getCurrentWindow();
 	const windowshare_resolutions = JSON.parse(localStorage.getItem('windowshare_resolutions'))
-	const [screenShareResolution, setScreenShareResolution] = useState(windowshare_resolutions[currentWindow.data.user_uid]);
+	const [windowShareResolution, setWindowShareResolution] = useState(windowshare_resolutions[currentWindow.data.user_uid]);
 
 	const [ streamList, setStreamList ] = useState([]);
 
@@ -148,8 +148,8 @@ const StreamWindowShareCanvas = React.memo((props) => {
       		var yPercentage = y/rect.height;
 
             var cursorData = {
-            	x: xPercentage * screenShareResolution.width,
-            	y: yPercentage * screenShareResolution.height
+            	x: xPercentage * windowShareResolution.width,
+            	y: yPercentage * windowShareResolution.height
             }
 
             var eventData = {
@@ -193,8 +193,8 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
   	function Area(Increment, Count, Width, Height, Margin = 0) {
       
-      var resolution = screenShareResolution;
-      var ratio = screenShareResolution ? resolution.height/resolution.width : 1.33;
+      var resolution = windowShareResolution;
+      var ratio = windowShareResolution ? resolution.height/resolution.width : 1.33;
 
       let w = 0;
       let i = 0;
@@ -242,8 +242,8 @@ const StreamWindowShareCanvas = React.memo((props) => {
   	function setWidth(width, margin) {
 
       let Cameras = document.getElementsByClassName('ScreenShareCamera');
-      var resolution = screenShareResolution;
-      var ratio = screenShareResolution ? resolution.height/resolution.width : 1.33;
+      var resolution = windowShareResolution;
+      var ratio = windowShareResolution ? resolution.height/resolution.width : 1.33;
 
       for (var s = 0; s < Cameras.length; s++) {
           Cameras[s].style.width = width + "px";
@@ -275,8 +275,8 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
     	document.getElementById("root").addEventListener("wheel", handleScroll);
 
-    	socket_live.on(events.screenShareSourceResize, (data) => {
-            setScreenShareResolution(data.resolution);
+    	socket_live.on(events.windowShareSourceResize, (data) => {
+            setWindowShareResolution(data.resolution);
         });
 
     	return () => {
@@ -299,7 +299,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
 	    Dish();
 
-    }, [screenShareResolution])
+    }, [windowShareResolution])
 
     const controlsTopBarStyle = {
 	    'height': '25px',

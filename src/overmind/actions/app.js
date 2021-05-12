@@ -315,6 +315,12 @@ const deleteScreenShareData = () => {
 
 const deleteWindowShareData = () => {
 
+	socket_live.emit(events.endWindowShare, 
+		{ 
+			channel_id: localStorage.getItem('windowshare_channel_id')
+		}
+	);
+
 	localStorage.removeItem('windowshare_sources');
 	localStorage.removeItem('windowshare_resolution');
 	localStorage.removeItem('windowShareViewers');

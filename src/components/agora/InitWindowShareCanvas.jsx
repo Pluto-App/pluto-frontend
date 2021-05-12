@@ -33,9 +33,9 @@ const InitWindowShareCanvas = React.memo((props) => {
     	return stream
   	}
 
-  	const exitScreenShare = () => {
+  	const exitWindowShare = () => {
   		
-  		actions.app.clearScreenShareData();
+  		actions.app.clearWindowShareData();
   		var window = remote.getCurrentWindow();
       	window.close();
   	}
@@ -83,7 +83,7 @@ const InitWindowShareCanvas = React.memo((props) => {
 	          	err => {
 
 	            	alert("No Access to media stream", err)
-	            	exitScreenShare();
+	            	exitWindowShare();
 	          	})
 	      	})
     	})

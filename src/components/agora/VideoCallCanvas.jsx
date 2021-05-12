@@ -312,6 +312,21 @@ const VideoCallCanvas = React.memo((props) => {
 
               actions.app.setError(err);
             })
+
+            setTimeout(async function(){ 
+              var currentWindowShares = await actions.videocall.getCurrentWindowShares({authData: authData, 
+               callChannelId: props.config.channel});
+
+              for(var windowShare of currentWindowShares){
+                console.log(windowShare);
+                var owner = usersInCallRef.current[windowShare.user_id];
+
+                if(owner) {
+                  windowShare['owner'] = owner;
+                  actions.app.userWindowShare(windowShare);   
+                }
+              }
+            }, 3000);
           })
       }, function(err) {
           console.log("client init failed ", err);
@@ -342,6 +357,15 @@ const VideoCallCanvas = React.memo((props) => {
       }
       
       actions.app.setSharingScreen(false);
+    });
+
+    window.require("electron").ipcRenderer.on('stop-windowshare', function (e, args) {
+
+      socket_live.emit(events.endWindowShare, {
+          channel_id: localStorage.getItem('windowshare_channel_id')
+      });
+      
+      actions.app.setSharingWindow(false);
     });
 
     socket_live.on(events.userScreenShare, (data) => {
@@ -601,7 +625,7 @@ const VideoCallCanvas = React.memo((props) => {
       onClick={handleMultiWindowShare}
       className='ag-btn exitBtn'
       title="Multi Window Share"
-      style={{opacity: 1}}
+      style={{opacity: 1, textDecoration: state.sharingWindow ? 'line-through' : ''}}
     >
       <i className="material-icons focus:outline-none md-light" id="compare" style={{ fontSize: "30px" }} >compare</i>
     </span>
