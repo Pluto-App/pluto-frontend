@@ -289,6 +289,7 @@ export const clearVideoCallData = async ({ actions, state, effect }) => {
 	);
 	
 	deleteScreenShareData();
+	deleteWindowShareData();
 	localStorage.removeItem('call_channel_id');
 }
 
@@ -310,4 +311,12 @@ const deleteScreenShareData = () => {
 	localStorage.removeItem('screenShareViewers');
 	localStorage.removeItem('screenShareCursors');
 	localStorage.removeItem('remoteAccessEnabled');
+}
+
+const deleteWindowShareData = () => {
+
+	localStorage.removeItem('windowshare_sources');
+	localStorage.removeItem('windowshare_resolution');
+	localStorage.removeItem('windowShareViewers');
+	localStorage.removeItem('windowShareCursors');
 }
