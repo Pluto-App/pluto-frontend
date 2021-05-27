@@ -241,10 +241,6 @@ const StreamScreenShareCanvas = React.memo((props) => {
       }
   	}
 
-  	useLayoutEffect(() => {
- 		window.addEventListener("resize", Dish());
- 	},[])
-
     useEffect(() => {
 
     	actions.app.setLoggedInUser();
@@ -287,6 +283,9 @@ const StreamScreenShareCanvas = React.memo((props) => {
     useEffect(() => {
 
 	    Dish();
+	    window.addEventListener("resize", Dish);
+
+	    return () => window.removeEventListener("resize", Dish);
 
     }, [screenShareResolution])
 

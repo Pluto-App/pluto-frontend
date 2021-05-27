@@ -5,15 +5,15 @@ import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 
 const { remote } = window.require('electron');
+const currentWindow = remote.getCurrentWindow();
+const windowshare_resolutions = JSON.parse(localStorage.getItem('windowshare_resolutions'));
+
 const StreamWindowShareCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
 
 	const AgoraClient = AgoraRTC.createClient({ mode: props.config.transcode, codec: "vp8" });
-	var currentWindow = remote.getCurrentWindow();
-	const windowshare_resolutions = JSON.parse(localStorage.getItem('windowshare_resolutions'))
 	const [windowShareResolution, setWindowShareResolution] = useState(windowshare_resolutions[currentWindow.data.user_uid]);
-
 	const [ streamList, setStreamList ] = useState([]);
 
 	const subscribeStreamEvents = () => {
@@ -235,7 +235,8 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
 	      max = max - (Margin * 2);
 
-	      setWidth(max, Margin);  
+	      setWidth(max, Margin);
+	      console.log('DISH CALLED!');
 	    }
   	}
 
@@ -251,10 +252,6 @@ const StreamWindowShareCanvas = React.memo((props) => {
           Cameras[s].style.height = (width * ratio) + "px";
       }
   	}
-
-  	useLayoutEffect(() => {
- 		window.addEventListener("resize", Dish());
- 	},[])
 
     useEffect(() => {
 
@@ -277,6 +274,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
     	socket_live.on(events.windowShareSourceResize, (data) => {
             setWindowShareResolution(data.resolution);
+            currentWindow.setSize(data.resolution.width, data.resolution.height);
         });
 
     	return () => {
@@ -298,6 +296,9 @@ const StreamWindowShareCanvas = React.memo((props) => {
     useEffect(() => {
 
 	    Dish();
+	    window.addEventListener("resize", Dish);
+
+	    return () => window.removeEventListener("resize", Dish);
 
     }, [windowShareResolution])
 

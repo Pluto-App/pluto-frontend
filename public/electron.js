@@ -396,7 +396,7 @@ function createWindow() {
             windowShareContainerWindow.close();
 
           for (var streamWindowShareWindow of streamWindowShareWindows) {
-            if(streamWindowShareWindow)
+            if(streamWindowShareWindow && !streamWindowShareWindow.isDestroyed())
               streamWindowShareWindow.close();
           }
 
