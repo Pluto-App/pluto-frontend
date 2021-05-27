@@ -4,6 +4,7 @@ const isDev = require('electron-is-dev');
 const url = require('url')
 const robot = require('robotjs');
 const { windowManager } = require("node-window-manager");
+const allWindows = require('all-windows');
 
 const ffi = require('ffi-napi');
 const { autoUpdater } = require('electron-updater');
@@ -843,7 +844,20 @@ function createWindow() {
     
     } else {
 
-      overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+      var overlayBounds;
+      if(isMac) {
+
+        var windowsList = await allWindows();
+        for (var win of windowsList) {
+          if(win.id == sourceId) {
+            overlayBounds = win.bounds;
+            break;
+          }
+        }
+
+      } else {
+        windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+      } 
     }
 
       event.returnValue = overlayBounds;
@@ -853,7 +867,23 @@ function createWindow() {
   ipcMain.on('windowshare-source-bounds', async (event, sourceInfo) => {
 
     var [sourceType, sourceId] = sourceInfo.split(':');
-    var overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds();
+
+    var overlayBounds;
+    if(isMac) {
+
+      var windowsList = await allWindows();
+      for (var win of windowsList) {
+        if(win.id == sourceId) {
+          overlayBounds = win.bounds;
+          break;
+        }
+      }
+
+    } else {
+
+      overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds();
+    }
+    
     event.returnValue = overlayBounds;
   })
 
