@@ -242,7 +242,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
   	}
 
   	useLayoutEffect(() => {
- 		window.addEventListener("resize", Dish);
+ 		window.addEventListener("resize", Dish());
  	},[])
 
     useEffect(() => {

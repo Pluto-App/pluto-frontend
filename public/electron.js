@@ -644,45 +644,49 @@ function createWindow() {
 
   ipcMain.on('streaming-windowshare', (event, args) => {
 
-    var streamWindowShareWindow = new BrowserWindow({
-        width: args.resolution.width,
-        height: args.resolution.height,
-        frame: false,
-        title: "WindowShare",
-        resizable: true,
-        webPreferences: {
-          nodeIntegration: true,
-          plugins: true,
-          enableRemoteModule: true
-        }
-    });
+    if(args.resolution) {
 
-    streamWindowShareWindows.push(streamWindowShareWindow);
+      var streamWindowShareWindow = new BrowserWindow({
+          width: args.resolution.width,
+          height: args.resolution.height,
+          frame: false,
+          title: "WindowShare",
+          resizable: true,
+          webPreferences: {
+            nodeIntegration: true,
+            plugins: true,
+            enableRemoteModule: true
+          }
+      });
 
-    streamWindowShareWindow.setMenu(null);
+      streamWindowShareWindows.push(streamWindowShareWindow);
 
-    const streamWindowShareWindowUrl = url.format({
-      pathname: path.join(__dirname, '../build/index.html'),
-      hash: '/stream-windowshare',
-      protocol: 'file:',
-      slashes: true
-    });
+      streamWindowShareWindow.setMenu(null);
 
-    streamWindowShareWindow.data = {
-        user_id: args.user_id,
-        user_uid: args.user_uid,
-        owner: args.owner
-    };
+      const streamWindowShareWindowUrl = url.format({
+        pathname: path.join(__dirname, '../build/index.html'),
+        hash: '/stream-windowshare',
+        protocol: 'file:',
+        slashes: true
+      });
 
-    streamWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-windowshare' : streamWindowShareWindow);
+      streamWindowShareWindow.data = {
+          user_id: args.user_id,
+          user_uid: args.user_uid,
+          owner: args.owner
+      };
 
-    streamWindowShareWindow.on('closed', () => {
-      streamWindowShareWindow = undefined;
-    })
+      streamWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-windowshare' : streamWindowShareWindow);
 
-    if (isDev) {
-      streamWindowShareWindow.webContents.openDevTools();
+      streamWindowShareWindow.on('closed', () => {
+        streamWindowShareWindow = undefined;
+      })
+
+      if (isDev) {
+        streamWindowShareWindow.webContents.openDevTools();
+      }  
     }
+    
   })
 
   ipcMain.on('update-windowshare-container-bounds', (event, overlayBounds) => {
@@ -877,20 +881,28 @@ function createWindow() {
           break;
         }
       }
-
     } else {
 
       overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds();
     }
 
-    const activeWindow = windowManager.getActiveWindow();
+    var activeWinInfo;
+
+    if(isMac) {
+      activeWinInfo = await activeWin();
+
+    } else {
+      //console.log('windowshare-source-bounds windowManager getActiveWindow start');
+      activeWinInfo = windowManager.getActiveWindow();
+      //console.log('windowshare-source-bounds windowManager getActiveWindow end');  
+    }
     
+
     if(windowShareContainerWindow) {
-      if(activeWindow.id != sourceId){
+      if(activeWinInfo.id != sourceId){
         //windowShareContainerWindow.hide()
         //console.log('hide');
-      }
-      else {
+      } else {
         windowShareContainerWindow.showInactive();
         //windowShareContainerWindow.moveTop();
         //console.log('show');
