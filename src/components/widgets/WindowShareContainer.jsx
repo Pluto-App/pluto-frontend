@@ -51,7 +51,7 @@ const WindowShareContainer = React.memo((props) => {
                     window.require("electron").ipcRenderer.send('update-windowshare-container-bounds',overlayBounds);
                 }
 
-            }, 2000)    
+            }, 1000)    
         }
 
         socket_live.on(events.windowShareCursor, (data) => {
