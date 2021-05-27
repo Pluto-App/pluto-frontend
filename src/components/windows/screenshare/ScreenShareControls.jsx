@@ -24,21 +24,21 @@ const ScreenShareControls = React.memo((props) => {
 
   const controlsContainerStyle = {
     'display': 'flex',
-    'background-color': '#2F3136',
+    'backgroundColor': '#2F3136',
     'height': 'calc(100vh - 20px)'
   }
 
   const controlsButtonStyle = {
     'font-size': '12px',
     'transition': 'all .60s ease',
-    'white-space': 'nowrap'
+    'whiteSpace': 'nowrap'
   }
 
   const controlsTopBarStyle = {
     'height': '20px',
-    'text-align': 'right',
+    'textAlign': 'right',
     'color': 'white',
-    'background-color': '#202225',
+    'backgroundColor': '#202225',
     '-webkit-user-select': 'none',
     '-webkit-app-region': 'drag'
   }
