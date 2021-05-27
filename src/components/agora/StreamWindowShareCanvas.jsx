@@ -116,7 +116,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
   	const exitWindowShare = () => {
 
   		actions.app.setStreamingWindowShare(false);
-  		currentWindow.close();
+  		currentWindow.destroy();
   		//actions.app.clearWindowShareData();
   	}
 
