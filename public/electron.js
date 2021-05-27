@@ -593,7 +593,7 @@ function createWindow() {
         maximizable: false,
         resizable: false,
         closeable: false,
-        alwaysOnTop: true,
+        alwaysOnTop: false,
         focusable: false,
         enableLargerThanScreen: true,
         webPreferences: {
@@ -622,11 +622,11 @@ function createWindow() {
       windowShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/windowshare-container' : screenshareContainerUrl);
       windowShareContainerWindow.setIgnoreMouseEvents(true);
       windowShareContainerWindow.setSize(args.overlayBounds.width, args.overlayBounds.height);
-      windowShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
+      // windowShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
       windowShareContainerWindow.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
 
       app.dock && app.dock.hide();
-      windowShareContainerWindow.show();
+      windowShareContainerWindow.showInactive();
       app.dock && app.dock.show();
 
       windowShareContainerWindow.on('closed', () => {
@@ -638,7 +638,7 @@ function createWindow() {
 
       if (isDev) {
        
-        windowShareContainerWindow.webContents.openDevTools();
+        //windowShareContainerWindow.webContents.openDevTools();
       }
     }
   })
@@ -883,7 +883,18 @@ function createWindow() {
 
       overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds();
     }
+
+    const activeWindow = windowManager.getActiveWindow();
     
+    if(windowShareContainerWindow) {
+      if(activeWindow.id != sourceId){
+        //windowShareContainerWindow.hide()
+      }
+      else {
+        windowShareContainerWindow.showInactive()
+      }
+    }
+
     event.returnValue = overlayBounds;
   })
 
