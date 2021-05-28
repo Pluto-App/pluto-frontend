@@ -30,7 +30,6 @@ let streamWindowShareWindows = [];
 let settingsPage
 
 let user_color;
-let call_data;
 
 const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
@@ -42,6 +41,7 @@ else
   activeWinPath = path.join(app.getAppPath(), '..', 'src/active-window');
 
 const activeWin = require(activeWinPath);
+// const activeWin = require('active-win');
 const runApplescript = require('run-applescript');
 
 const minWidth = 350;
@@ -213,7 +213,7 @@ function createWindow() {
   if (isDev) {
     // Open the DevTools.
     // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on('closed', () => {
@@ -223,7 +223,7 @@ function createWindow() {
 
   });
 
-  primaryDisplay = screen.getPrimarPyDisplay();
+  primaryDisplay = screen.getPrimaryDisplay();
   sWidth = primaryDisplay.bounds.width;
   sHeight = primaryDisplay.bounds.height;
 
@@ -241,8 +241,9 @@ function createWindow() {
       if(isMac){
         activeWinInfo = await activeWin()  
       } else {
-        activeWinInfo = {};
+        activeWinInfo = {}
       }
+      
     
       if(activeWinInfo && activeWinInfo.owner && activeWinInfo.owner.name){
         
@@ -287,11 +288,6 @@ function createWindow() {
   ipcMain.on('set-user-color', async (event, args) => {
 
     user_color = args.user_color;
-  })
-
-  ipcMain.on('set-call-data', async (event, args) => {
-
-    call_data = args.call_data;
   })
 
   ipcMain.on('refresh-app', async (event, arg) => {
@@ -363,7 +359,7 @@ function createWindow() {
     })
   });
 
-  ipcMain.on('init-video-call-window', (event, args) => {
+  ipcMain.on('init-video-call-window', (event, data) => {
 
     if (videoCallWindow) {
       try{
@@ -402,11 +398,6 @@ function createWindow() {
       slashes: true
     })
 
-    videoCallWindow.data = {
-        call_data: args.call_data,
-        call_channel_id: args.call_channel_id
-    };
-
     videoCallWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/video-call' : videoUrl);
 
     videoCallWindow.on('closed', () => {
@@ -439,7 +430,7 @@ function createWindow() {
     })
 
     if (isDev) {
-       //videoCallWindow.webContents.openDevTools();
+       videoCallWindow.webContents.openDevTools();
     }
   });
 
@@ -537,8 +528,7 @@ function createWindow() {
     });
 
     initWindowShareWindow.data = {
-        user_color: user_color,
-        call_data: call_data
+        user_color: user_color
     };
 
     initWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/init-windowshare' : windowShareWindowUrl);
@@ -671,7 +661,7 @@ function createWindow() {
 
       if (isDev) {
        
-        windowShareContainerWindow.webContents.openDevTools();
+        //windowShareContainerWindow.webContents.openDevTools();
       }
     }
   })
@@ -709,8 +699,7 @@ function createWindow() {
           user_uid: args.user_uid,
           owner: args.owner,
           owner_color: args.owner_color,
-          user_color: user_color,
-          call_data: call_data
+          user_color: user_color
       };
 
       streamWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-windowshare' : streamWindowShareWindowUrl);
@@ -785,7 +774,7 @@ function createWindow() {
 
       if (isDev) {
        
-        // screenShareContainerWindow.webContents.openDevTools();
+        screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls
@@ -837,7 +826,7 @@ function createWindow() {
       })
 
       if (isDev) {
-        // screenShareControlsWindow.webContents.openDevTools();
+        screenShareControlsWindow.webContents.openDevTools();
       }
     }
   })
