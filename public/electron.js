@@ -42,7 +42,6 @@ else
   activeWinPath = path.join(app.getAppPath(), '..', 'src/active-window');
 
 const activeWin = require(activeWinPath);
-const activeWinLib = require('active-win');
 const runApplescript = require('run-applescript');
 
 const minWidth = 350;
@@ -224,7 +223,7 @@ function createWindow() {
 
   });
 
-  primaryDisplay = screen.getPrimaryDisplay();
+  primaryDisplay = screen.getPrimarPyDisplay();
   sWidth = primaryDisplay.bounds.width;
   sHeight = primaryDisplay.bounds.height;
 
@@ -242,7 +241,7 @@ function createWindow() {
       if(isMac){
         activeWinInfo = await activeWin()  
       } else {
-        activeWinInfo = await activeWinLib();
+        activeWinInfo = {};
       }
     
       if(activeWinInfo && activeWinInfo.owner && activeWinInfo.owner.name){
