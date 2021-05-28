@@ -34,11 +34,11 @@ const Settings = React.memo(() => {
     const [ confirmUserRemoval, setConfirmUserRemoval ] = useState(false);
     const [ confirmLeaveTeam, setConfirmLeaveTeam ] = useState(false);
     
-    const [ currentUser, setCurrentUser ] = useState(JSON.parse(localStorage.getItem('currentUser')).user);
+    const [ currentUser, setCurrentUser ] = useState(authData.user);
     const [ userPreference, setUserPreference ] = useState(JSON.parse(localStorage.getItem('userPreference')) || state.userPreference);
     
     const [ hoverUser, setHoverUser ] = useState();
-    const [ userName, setUserName ] = useState(JSON.parse(localStorage.getItem('currentUser')).user.name);
+    const [ userName, setUserName ] = useState(authData.user.name);
 
     const logout = (e) => {
         

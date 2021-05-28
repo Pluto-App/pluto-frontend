@@ -103,7 +103,8 @@ const RoomListItem = React.memo((props) => {
         actions.app.setUserInCall(state.userProfileData.id);
         actions.app.setUserInRoom({room_id: room.id, user_uid: state.userProfileData.uid});
 
-        ipcRenderer.send('init-video-call-window', call_channel_id);
+        ipcRenderer.send('set-call-data', {call_data: call_data});
+        ipcRenderer.send('init-video-call-window', {call_channel_id: call_channel_id, call_data: call_data});
 
         playInitCallSound();
     }
