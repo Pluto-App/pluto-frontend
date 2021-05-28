@@ -1,14 +1,28 @@
 /* eslint-disable no-unused-vars */
-import React from 'react'
+import React, {useState} from 'react'
 import { useOvermind } from '../../overmind'
+import { socket_live, events } from '../sockets'
 
 const Cursor = React.memo((props) => {
 
     const { state } = useOvermind();
+    const [ cursorPos, setCursorPos ] = useState({})
+
+    socket_live.on(events.windowShareCursor, (data) => {
+        if(data.user.id == props.user.id){
+            //setCursorPos({x: data.cursor.x, y: data.cursor.y})
+        }
+        //actions.app.updateWindowShareCursor({ channel_id: currentWindow.data.channel_id, data: data});
+    });
+
+    // const cursorPosition = {
+    //     left: props.user && state.screenShareCursors[props.user.id] ? state.screenShareCursors[props.user.id]['x'] : 0,
+    //     top: props.user && state.screenShareCursors[props.user.id] ? state.screenShareCursors[props.user.id]['y'] : 0,
+    // }
 
     const cursorPosition = {
-        left: props.user && state.screenShareCursors[props.user.id] ? state.screenShareCursors[props.user.id]['x'] : 0,
-        top: props.user && state.screenShareCursors[props.user.id] ? state.screenShareCursors[props.user.id]['y'] : 0,
+        left: cursorPos.x || 0,
+        top: cursorPos.y || 0,
     }
 
     const cursorColor = props.user ? props.user.color : 'blue';
