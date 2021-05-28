@@ -30,6 +30,7 @@ let streamWindowShareWindows = [];
 let settingsPage
 
 let user_color;
+let call_data;
 
 const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
@@ -290,6 +291,11 @@ function createWindow() {
     user_color = args.user_color;
   })
 
+  ipcMain.on('set-call-data', async (event, args) => {
+
+    call_data = args.call_data;
+  })
+
   ipcMain.on('refresh-app', async (event, arg) => {
     
     mainWindow.webContents.send('refresh', {});
@@ -533,7 +539,8 @@ function createWindow() {
     });
 
     initWindowShareWindow.data = {
-        user_color: user_color
+        user_color: user_color,
+        call_data: call_data
     };
 
     initWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/init-windowshare' : windowShareWindowUrl);
