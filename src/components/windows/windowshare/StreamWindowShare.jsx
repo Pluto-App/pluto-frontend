@@ -29,6 +29,7 @@ const StreamWindowShare = React.memo((props) => {
         user_id: currentWindow.data.user_id,
         user_uid: currentWindow.data.user_uid,
         owner: currentWindow.data.owner,
+        owner_color: currentWindow.data.owner_color,
         user_color: currentWindow.data.user_color
      });
 

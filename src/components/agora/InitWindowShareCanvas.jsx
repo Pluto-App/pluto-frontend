@@ -67,7 +67,7 @@ const InitWindowShareCanvas = React.memo((props) => {
 	          			resolution: 		overlayBounds,
 				 		user_uid:  			props.config.user_uid,
 				 		user_id: 			props.config.user_id,
-				 		user_color: 		props.config.user_color
+				 		owner_color: 		props.config.user_color
 				 	});
 
 				 	localStorage.setItem('windowshare_channel_id', props.config.channel);

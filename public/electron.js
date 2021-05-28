@@ -528,7 +528,7 @@ function createWindow() {
     });
 
     initWindowShareWindow.data = {
-        user_color: args.user_color
+        user_color: user_color
     };
 
     initWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/init-windowshare' : windowShareWindowUrl);
@@ -698,6 +698,7 @@ function createWindow() {
           user_id: args.user_id,
           user_uid: args.user_uid,
           owner: args.owner,
+          owner_color: args.owner_color,
           user_color: user_color
       };
 

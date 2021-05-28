@@ -334,7 +334,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 						onKeyDown={ shareCursorData }
 						onMouseDown={ shareCursorData }
 						onMouseUp={ shareCursorData }
-						style={{border: '5px solid ' + props.config.user_color}}
+						style={{border: '5px solid ' + props.config.owner_color}}
 					>
 	    			</div>
                   

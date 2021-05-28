@@ -21,8 +21,6 @@ var streamState = {};
 var needWindowUpdate = false;
 
 const AgoraClient = AgoraRTC.createClient({ mode: 'interop', codec: "vp8" });
-const user_color = '#' + Math.floor(Math.random()*16770000).toString(16);
-
 
 const VideoCallCanvas = React.memo((props) => {
 
@@ -284,7 +282,7 @@ const VideoCallCanvas = React.memo((props) => {
 
               addStream(localStream, true);
 
-              ipcRenderer.send('set-user-color', {user_color: user_color});
+              ipcRenderer.send('set-user-color', {user_color: '#' + Math.floor(Math.random()*16770000).toString(16)});
 
               //const interval = setInterval(() => {
 
@@ -525,7 +523,7 @@ const VideoCallCanvas = React.memo((props) => {
 
     } else {
       
-        ipcRenderer.send('init-windowshare', {user_color: user_color});
+        ipcRenderer.send('init-windowshare');
         actions.app.setSharingWindow(true);
     }
   }
