@@ -618,7 +618,7 @@ function createWindow() {
       windowManager.getWindows().find(o => o.id == sourceId).bringToTop();
 
       windowShareContainerWindow.setVisibleOnAllWorkspaces(true);
-      windowShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/windowshare-container' : screenshareContainerUrl);
+      windowShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/windowshare-container' : windowshareContainerUrl);
       windowShareContainerWindow.setIgnoreMouseEvents(true);
       windowShareContainerWindow.setSize(args.overlayBounds.width, args.overlayBounds.height);
       //windowShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
