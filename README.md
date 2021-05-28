@@ -1,48 +1,69 @@
 ![Build/release Mac OSX Latest](https://github.com/Pluto-App/plutoapp-new-frontend/workflows/Build/release%20Mac%20OSX%20Latest/badge.svg?branch=master)
 
 ## Available Scripts
-### `npm run local`
+
+```Yarn``` is also available.
+
+In the project directory, you can run:
+
+### `npm install`
+
+Installs all ```npm``` packages needed for development.
+
+### `npm start`
+
+Runs the app in the development mode.<br />
+Opens as ```electron``` app. 
+
+The page will reload if you make edits.<br />
+You will also see any lint errors in the console.
+
+### `npm run start-local`
 
 Local electron app starts with backend connection to ```localhost```. 
 
-### `npm run dev`
+### `npm run start-prod`
 
-Local electron app starts with backend connection to ```dev``` backend. 
+Local electron app starts with backend connection to ```heroku``` backend. 
 
-### `npm run prod`
-
-Local electron app starts with backend connection to ```prod``` backend. 
-
-## Building the app
-
-> To build the app you'll have to
-> 1. build the code
-> 2. bundle the app
-
-### `npm run prod-build`
+### `npm run build`
 
 Builds the app for production to the `build` folder.<br />
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
-### `npm run dev-build`
-Builds the dev version of the app
+The build is minified and the filenames include the hashes.<br />
+Your app is ready to be deployed!
 
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run windows`
+Post-install on ```npm install``` build some ```electron``` modules. You might need ```node-gyp``` for that.
+
+### `npm run win-release`
 
 First build the app with ```npm run build``` and then run this command for building for ```Windows```.
 
-### `npm run mac`
+### `npm run mac-release`
 
 First build the app with ```npm run build``` and then run this command for building for ```Mac```.
 
+### `npm run linux-release`
 
+First build the app with ```npm run build``` and then run this command for building for ```Ubuntu```.
 
+### Code Splitting
 
-### `npm run windows-release`
+This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
 
-Releases the app on github for windows
+### Analyzing the Bundle Size
 
-### `npm run mac-release`
+This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
 
-Releases the app on github for mac
+### Advanced Configuration
+
+This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+
+### Bundle stdlib with swift binary
+
+`install_name_tool -rpath /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx @executable_path/../../../swift-libs active-window/main`
+
+Refer: https://forums.swift.org/t/bundle-stdlib-with-swift-binary/43653

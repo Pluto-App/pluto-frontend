@@ -938,7 +938,7 @@ function createWindow() {
       ],
     },
     {
-      label: 'File 📁',
+      label: 'File �',
       submenu: [
         {
           label: 'Share File',
@@ -962,7 +962,7 @@ function createWindow() {
       ]
     },
     {
-      label: 'Refersh 🔄',
+      label: 'Refersh �',
       submenu: [
         {
           label: 'Reset',
