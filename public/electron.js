@@ -344,9 +344,16 @@ function createWindow() {
     call_data = args.call_data;
   })
 
+  ipcMain.on('set-call-data', async (event, args) => {
+
+    call_data = args.call_data;
+  })
+
   ipcMain.on('refresh-app', async (event, arg) => {
+    
     mainWindow.webContents.send('refresh', {});
-  });
+  })
+
 
   ipcMain.on(`display-app-menu`, function (e, args) {
     if (isWindows && mainWindow) {
@@ -576,7 +583,7 @@ function createWindow() {
     });
 
     initWindowShareWindow.data = {
-      user_color: user_color,
+        user_color: user_color,
         call_data: call_data
     };
 
