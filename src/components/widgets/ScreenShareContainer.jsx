@@ -1,5 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useContext } from 'react'
+import styled from "styled-components";
+
 import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 import Cursor from '../utility/Cursor'
@@ -76,16 +78,15 @@ const ScreenShareContainer = React.memo((props) => {
 
     }, [actions, authData])
 
-    const containerStyle = {
-        border: '#434190 5px solid',
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        width: '100%'
-    }
-
+    const StyledContainer = styled.div`
+        border: 7px solid ${({theme}) => theme.colors.sharedWindowPrimary};
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+    `
     return (
-        <div className="screen-share-container" style={containerStyle}>
+        <StyledContainer className="screen-share-container">
 
             {
                 Object.keys(state.screenShareViewers).map(key => 
@@ -93,7 +94,7 @@ const ScreenShareContainer = React.memo((props) => {
                 )
             }
 
-        </div>
+        </StyledContainer>
     )
 })
 

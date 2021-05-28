@@ -33,6 +33,7 @@
     "robotjs": "github:octalmage/robotjs#master",
     "run-applescript": "^4.0.0",
     "socket.io-client": "^2.3.1",
+    "styled-components": "^5.3.0",
     "tailwindcss": "^1.4.6",
     "url": "^0.11.0"
   },
