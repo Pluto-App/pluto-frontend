@@ -18,6 +18,8 @@ import useSound from 'use-sound';
 import initCallSound from '../../../assets/sounds/init_call.mp3';
 const logos = require.context('../../../assets/logos', true);
 
+const { ipcRenderer } = window.require("electron");
+
 const UserListItem = React.memo((props) => {
 
     let history = useHistory();
@@ -96,7 +98,7 @@ const UserListItem = React.memo((props) => {
 
             actions.app.setUserInCall(state.userProfileData.id);
 
-            window.require("electron").ipcRenderer.send('init-video-call-window', call_channel_id);
+            ipcRenderer.send('init-video-call-window', call_channel_id);
             
             playInitCallSound();
 

@@ -38,7 +38,7 @@ import useSound from 'use-sound';
 
 import receiveCallSound from './assets/sounds/receive_call.wav';
 
-const { remote } = window.require('electron');
+const { remote, ipcRenderer } = window.require('electron');
 export default function App() {
 
   const { state, actions } = useOvermind();
@@ -67,18 +67,18 @@ export default function App() {
         actions.auth.logOut({setAuthData: setAuthData}).then(() => {
 
           socket_live.emit(events.offline, state.userProfileData)
-          window.require("electron").ipcRenderer.send('resize-login');
+          ipcRenderer.send('resize-login');
         });
       }
 
-      window.require("electron").ipcRenderer.on('logout', function (e, args) {
+      ipcRenderer.on('logout', function (e, args) {
         logout();
       });
 
       const setActiveWin = setInterval(async () => {
           try {
           
-              const activeWinAppData = await window.require("electron").ipcRenderer.sendSync('active-win');
+              const activeWinAppData = await ipcRenderer.sendSync('active-win');
               actions.app.setActiveWinInfo(activeWinAppData);
 
           } catch (error) {

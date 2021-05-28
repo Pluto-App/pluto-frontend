@@ -13,7 +13,7 @@ import { AuthContext } from '../../context/AuthContext'
 import { socket_live, events } from '../sockets'
 
 import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://127.0.0.1:3000";
+const { ipcRenderer } = window.require('electron');
 
 export default function HomePage() {
 
@@ -60,7 +60,7 @@ export default function HomePage() {
 
         setComponentMounted(true);
 
-        window.require("electron").ipcRenderer.on('exitUserCall', function (e, rid) {
+        ipcRenderer.on('exitUserCall', function (e, rid) {
             var room_rid = rid;
             const room = state.teamRooms.find(room => room.rid === room_rid) || {};
             actions.app.unsetUserInCall(state.userProfileData.id);
@@ -71,7 +71,7 @@ export default function HomePage() {
             }
         });
 
-        window.require("electron").ipcRenderer.send('resize-normal');
+        ipcRenderer.send('resize-normal');
         
         return () => {
             setComponentMounted(false);
@@ -105,7 +105,7 @@ export default function HomePage() {
              setAddingRoom(false)
         };
 
-        window.require("electron").ipcRenderer.on('refresh', function (e, args) {
+        ipcRenderer.on('refresh', function (e, args) {
             if(isMounted){
                 actions.user.getLoggedInUser({authData: authData});
                 actions.team.getTeam({authData: authData, team_id: state.currentTeam.id});

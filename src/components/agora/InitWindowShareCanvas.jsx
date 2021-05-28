@@ -58,7 +58,7 @@ const InitWindowShareCanvas = React.memo((props) => {
               			alert("Publish local stream error: " + err);
             		})
 
-            		var overlayBounds = await window.require("electron").ipcRenderer.sendSync('windowshare-source-bounds', 
+            		var overlayBounds = await ipcRenderer.sendSync('windowshare-source-bounds', 
             								sourceInfo);
 
 				 	socket_live.emit(events.userWindowShare, {

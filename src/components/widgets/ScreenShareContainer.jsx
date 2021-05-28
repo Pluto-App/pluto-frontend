@@ -10,6 +10,8 @@ import { AuthContext } from '../../context/AuthContext'
 
 var overlaySize = {};
 
+const { ipcRenderer } = window.require("electron");
+
 const ScreenShareContainer = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
@@ -32,7 +34,7 @@ const ScreenShareContainer = React.memo((props) => {
             if(sourceType === 'window'){
                 const followScreenShareSource = setInterval(async () => {
 
-                    var overlayBounds = await window.require("electron").ipcRenderer.sendSync('screenshare-source-bounds', 
+                    var overlayBounds = await ipcRenderer.sendSync('screenshare-source-bounds', 
                                             sourceInfo);
 
                     if(overlaySize && overlayBounds) {
@@ -50,7 +52,7 @@ const ScreenShareContainer = React.memo((props) => {
                             });
                         }
                         
-                        window.require("electron").ipcRenderer.send('update-screenshare-container-bounds',overlayBounds);
+                        ipcRenderer.send('update-screenshare-container-bounds',overlayBounds);
                     }
 
                 }, 2000)    

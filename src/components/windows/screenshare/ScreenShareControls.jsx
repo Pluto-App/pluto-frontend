@@ -5,7 +5,7 @@ import { useOvermind } from '../../../overmind'
 
 import { socket_live, events } from '../../sockets'
 
-const { remote } = window.require('electron');
+const { remote, ipcRenderer } = window.require('electron');
 
 const ScreenShareControls = React.memo((props) => {
 
@@ -19,7 +19,7 @@ const ScreenShareControls = React.memo((props) => {
 
   const stopScreenShare = () => {
 
-    window.require("electron").ipcRenderer.send('stop-screenshare');
+    ipcRenderer.send('stop-screenshare');
   }
 
   const controlsContainerStyle = {

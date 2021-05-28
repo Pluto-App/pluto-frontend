@@ -58,7 +58,7 @@ const InitScreenShareCanvas = React.memo((props) => {
               			alert("Publish local stream error: " + err);
             		})
 
-            		var overlayBounds = await window.require("electron").ipcRenderer.sendSync('screenshare-source-bounds', 
+            		var overlayBounds = await ipcRenderer.sendSync('screenshare-source-bounds', 
             								sourceInfo);
 
 				 	socket_live.emit(events.userScreenShare, {
