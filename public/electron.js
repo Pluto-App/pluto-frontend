@@ -359,7 +359,7 @@ function createWindow() {
     })
   });
 
-  ipcMain.on('init-video-call-window', (event, data) => {
+  ipcMain.on('init-video-call-window', (event, args) => {
 
     if (videoCallWindow) {
       try{
@@ -390,6 +390,11 @@ function createWindow() {
 
     videoCallWindow.setAlwaysOnTop(true, 'pop-up-menu');
     videoCallWindow.setMenu(null);
+
+    videoCallWindow.data = {
+      call_data: args.call_data,
+      call_channel_id: args.call_channel_id
+    }
 
     const videoUrl = url.format({
       pathname: path.join(__dirname, '../build/index.html'),
