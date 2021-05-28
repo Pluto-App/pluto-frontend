@@ -214,7 +214,7 @@ function createWindow() {
   if (isDev) {
     // Open the DevTools.
     // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on('closed', () => {
@@ -441,7 +441,7 @@ function createWindow() {
     })
 
     if (isDev) {
-       videoCallWindow.webContents.openDevTools();
+       //videoCallWindow.webContents.openDevTools();
     }
   });
 
@@ -673,7 +673,7 @@ function createWindow() {
 
       if (isDev) {
        
-        //windowShareContainerWindow.webContents.openDevTools();
+        windowShareContainerWindow.webContents.openDevTools();
       }
     }
   })
@@ -787,7 +787,7 @@ function createWindow() {
 
       if (isDev) {
        
-        screenShareContainerWindow.webContents.openDevTools();
+        // screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls
@@ -839,7 +839,7 @@ function createWindow() {
       })
 
       if (isDev) {
-        screenShareControlsWindow.webContents.openDevTools();
+        // screenShareControlsWindow.webContents.openDevTools();
       }
     }
   })

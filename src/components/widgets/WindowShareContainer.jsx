@@ -56,9 +56,9 @@ const WindowShareContainer = React.memo((props) => {
             }, 200)    
         }
 
-        socket_live.on(events.windowShareCursor, (data) => {
-            actions.app.updateWindowShareCursor({ channel_id: currentWindow.data.channel_id, data: data});
-        });
+        // socket_live.on(events.windowShareCursor, (data) => {
+        //     actions.app.updateWindowShareCursor({ channel_id: currentWindow.data.channel_id, data: data});
+        // });
 
     },[])
 
