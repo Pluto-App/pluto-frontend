@@ -75,7 +75,7 @@ export const setElectronWindowShareViewers = async ({ state, effect }, {channel_
 }
 
 export const userVideoCall = async ({ state, effect }, data) => {
-
+		
 	if(localStorage.getItem("call_channel_id") && localStorage.getItem("call_channel_id") === data.call_channel_id){
 		// Do nothing
 	} else {
@@ -84,11 +84,13 @@ export const userVideoCall = async ({ state, effect }, data) => {
 			call_channel_id: data.call_channel_id
 		};
 
-		localStorage.setItem("call_data", JSON.stringify(call_data));
-		localStorage.setItem("call_channel_id", data.call_channel_id);
-	 	socket_live.emit(events.joinRoom, data.channel_id);
+		localStorage.setItem('call_channel_id', data.call_channel_id);
+    	localStorage.setItem('call_data', JSON.stringify(call_data));
 
-	    ipcRenderer.send('init-video-call-window', data.call_channel_id);	
+	 	socket_live.emit(events.joinRoom, data.call_channel_id);
+
+	 	ipcRenderer.send('set-call-data', {call_data: call_data});
+	    ipcRenderer.send('init-video-call-window', {call_data: call_data, call_channel_id: data.call_channel_id});	
 	}
  	
     ToastNotification('success', `Incoming VC`);
@@ -272,9 +274,8 @@ export const emitUpdateTeamMembers = async ({ actions, state, effect }) => {
 	}
 }
 
-export const clearVideoCallData = async ({ actions, state, effect }) => {
+export const clearVideoCallData = async ({ actions, state, effect }, {call_channel_id}) => {
 
-	var call_channel_id = localStorage.getItem('call_channel_id');
 	var curent_team = localStorage.getItem('current_team');
 	var rid = call_channel_id.split('-')[1];
 
@@ -292,7 +293,6 @@ export const clearVideoCallData = async ({ actions, state, effect }) => {
 	
 	deleteScreenShareData();
 	deleteWindowShareData();
-	localStorage.removeItem('call_channel_id');
 }
 
 export const clearScreenShareData = async ({ state, effect }) => {

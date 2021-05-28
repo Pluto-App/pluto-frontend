@@ -43,7 +43,7 @@ export default function App() {
 
   const { state, actions } = useOvermind();
   const { authData, setAuthData } = useContext(AuthContext);
-  const [playReceiveCallSound] = useSound(receiveCallSound);
+  const [ playReceiveCallSound ] = useSound(receiveCallSound);
   var currentWindow = remote.getCurrentWindow();
 
   useEffect(() => {

@@ -42,7 +42,7 @@ const VideoCallCanvas = React.memo((props) => {
   usersInCallRef.current = usersInCall;
 
   const [ numActiveVideo, setNumActiveVideo ] = useState(0);
-  const [playEndCallSound] = useSound(endCallSound);
+  const [ playEndCallSound ] = useSound(endCallSound);
 
   if(needWindowUpdate){
 
@@ -354,7 +354,7 @@ const VideoCallCanvas = React.memo((props) => {
 
       if(!state.streamingScreenShare){
         socket_live.emit(events.endScreenShare, {
-            channel_id: 'scr-' + localStorage.getItem('call_channel_id')
+            channel_id: 'scr-' + props.config.channel
         });  
       }
       
@@ -563,11 +563,11 @@ const VideoCallCanvas = React.memo((props) => {
     
     finally {
 
-      var call_channel_id = localStorage.getItem('call_channel_id');
+      var call_channel_id = props.config.channel;
       var rid = call_channel_id.split('-')[1];
       ipcRenderer.send('exit-user-call', rid);
 
-    	actions.app.clearVideoCallData();
+    	actions.app.clearVideoCallData({call_channel_id: call_channel_id});
       actions.app.emitUpdateTeam();
 
       var win = remote.getCurrentWindow();
