@@ -48,7 +48,7 @@ if (isDev) activeWinPath = path.join(app.getAppPath(), 'src/active-window');
 else activeWinPath = path.join(app.getAppPath(), '..', 'src/active-window');
 
 const activeWin = require(activeWinPath);
-// const activeWin = require('active-win');
+const activeWinLib = require('active-win');
 const runApplescript = require('run-applescript');
 
 const minWidth = 350;
@@ -259,7 +259,7 @@ function createWindow() {
       if (isMac) {
         activeWinInfo = await activeWin();
       } else {
-        activeWinInfo = {};
+        activeWinInfo = {}
       }
 
       if (activeWinInfo && activeWinInfo.owner && activeWinInfo.owner.name) {
