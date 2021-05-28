@@ -397,17 +397,17 @@ function createWindow() {
     videoCallWindow.setAlwaysOnTop(true, 'pop-up-menu');
     videoCallWindow.setMenu(null);
 
-    videoCallWindow.data = {
-      call_data: args.call_data,
-      call_channel_id: args.call_channel_id
-    }
-
     const videoUrl = url.format({
       pathname: path.join(__dirname, '../build/index.html'),
       hash: '/video-call',
       protocol: 'file:',
       slashes: true
     })
+
+    videoCallWindow.data = {
+      call_data: args.call_data,
+      call_channel_id: args.call_channel_id
+    }
 
     videoCallWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/video-call' : videoUrl);
 
@@ -711,7 +711,8 @@ function createWindow() {
           user_uid: args.user_uid,
           owner: args.owner,
           owner_color: args.owner_color,
-          user_color: user_color
+          user_color: user_color,
+          call_data: call_data
       };
 
       streamWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-windowshare' : streamWindowShareWindowUrl);

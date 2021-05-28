@@ -77,7 +77,7 @@ export const setElectronWindowShareViewers = async ({ state, effect }, {channel_
 export const userVideoCall = async ({ state, effect }, data) => {
 		
 	if(localStorage.getItem("call_channel_id") && localStorage.getItem("call_channel_id") === data.call_channel_id){
-		// Do nothing
+
 	} else {
 		
 		var call_data = {
@@ -276,6 +276,7 @@ export const emitUpdateTeamMembers = async ({ actions, state, effect }) => {
 
 export const clearVideoCallData = async ({ actions, state, effect }, {call_channel_id}) => {
 
+	localStorage.removeItem('call_channel_id');
 	var curent_team = localStorage.getItem('current_team');
 	var rid = call_channel_id.split('-')[1];
 
