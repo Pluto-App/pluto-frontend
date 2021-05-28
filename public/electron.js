@@ -237,7 +237,13 @@ function createWindow() {
 
     try{
 
-      const activeWinInfo = await activeWin()
+      var activeWinInfo;
+      if(isMac){
+        activeWinInfo = await activeWin()  
+      } else {
+        activeWinInfo = {}
+      }
+      
     
       if(activeWinInfo && activeWinInfo.owner && activeWinInfo.owner.name){
         
