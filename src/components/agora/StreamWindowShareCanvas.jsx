@@ -274,7 +274,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
     	socket_live.on(events.windowShareSourceResize, (data) => {
             setWindowShareResolution(data.resolution);
-            currentWindow.setSize(data.resolution.width, data.resolution.height);
+            // currentWindow.setSize(data.resolution.width, data.resolution.height);
         });
 
     	return () => {
