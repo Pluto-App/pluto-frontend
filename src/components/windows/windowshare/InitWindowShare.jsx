@@ -6,6 +6,9 @@ import InitWindowShareCanvas from "../../agora/InitWindowShareCanvas";
 
 import { getWindowShareChannel } from '../../../utils/Util';
 
+const { remote } = window.require('electron');
+const currentWindow = remote.getCurrentWindow();
+
 const InitWindowShare = React.memo((props) => {
 
   const { state, actions } = useOvermind();
@@ -24,7 +27,8 @@ const InitWindowShare = React.memo((props) => {
         baseMode: "avc",
         appId : process.env.REACT_APP_AGORA_APP_ID,
         user_id: user.id,
-        user_uid: user.uid
+        user_uid: user.uid,
+        user_color: currentWindow.data.user_color
     });
 
     return (

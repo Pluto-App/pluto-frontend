@@ -5,7 +5,7 @@ import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 
 import {AuthContext} from '../../context/AuthContext'
-const { remote } = window.require('electron');
+const { remote, ipcRenderer } = window.require('electron');
 
 const InitScreenShareCanvas = React.memo((props) => {
 
@@ -71,7 +71,7 @@ const InitScreenShareCanvas = React.memo((props) => {
 
 				 	localStorage.setItem('screenshare_channel_id', props.channel);
 				 	localStorage.setItem('screenshare_source', sourceInfo);
-	          		window.require('electron').ipcRenderer.send('sharing-screen', overlayBounds);
+	          		ipcRenderer.send('sharing-screen', overlayBounds);
 	        	},
 
 	          	err => {

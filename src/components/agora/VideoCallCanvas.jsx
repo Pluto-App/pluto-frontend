@@ -13,7 +13,7 @@ import StreamScreenShare from "../windows/screenshare/StreamScreenShare";
 import useSound from 'use-sound';
 import endCallSound from '../../assets/sounds/end_call.wav';
 
-const { remote } = window.require('electron');
+const { remote, ipcRenderer } = window.require('electron');
 const os = window.require('os');
 
 var localStream = {};
@@ -21,6 +21,8 @@ var streamState = {};
 var needWindowUpdate = false;
 
 const AgoraClient = AgoraRTC.createClient({ mode: 'interop', codec: "vp8" });
+const user_color = '#' + Math.floor(Math.random()*16770000).toString(16);
+
 
 const VideoCallCanvas = React.memo((props) => {
 
@@ -256,7 +258,7 @@ const VideoCallCanvas = React.memo((props) => {
 
     if(state.videoCallCompactMode){
 
-      window.require("electron").ipcRenderer.send('set-video-player-height', getHeight());
+      ipcRenderer.send('set-video-player-height', getHeight());
     }
 
     Dish();
@@ -282,6 +284,8 @@ const VideoCallCanvas = React.memo((props) => {
 
               addStream(localStream, true);
 
+              ipcRenderer.send('set-user-color', {user_color: user_color});
+
               //const interval = setInterval(() => {
 
                 socket_live.emit(events.joinRoom, { room: props.config.channel, user_id: props.config.user_id},
@@ -299,7 +303,7 @@ const VideoCallCanvas = React.memo((props) => {
             },
             async (err) => {
 
-              var hasMediaAccess = await window.require("electron").ipcRenderer.sendSync('check-media-access');
+              var hasMediaAccess = await ipcRenderer.sendSync('check-media-access');
               
               if(!hasMediaAccess){
                 
@@ -348,7 +352,7 @@ const VideoCallCanvas = React.memo((props) => {
         window.onresize = Dish;
     }, false);
 
-    window.require("electron").ipcRenderer.on('stop-screenshare', function (e, args) {
+   ipcRenderer.on('stop-screenshare', function (e, args) {
 
       if(!state.streamingScreenShare){
         socket_live.emit(events.endScreenShare, {
@@ -359,7 +363,7 @@ const VideoCallCanvas = React.memo((props) => {
       actions.app.setSharingScreen(false);
     });
 
-    window.require("electron").ipcRenderer.on('stop-windowshare', function (e, args) {
+    ipcRenderer.on('stop-windowshare', function (e, args) {
 
       socket_live.emit(events.endWindowShare, {
           channel_id: localStorage.getItem('windowshare_channel_id')
@@ -502,12 +506,12 @@ const VideoCallCanvas = React.memo((props) => {
 
   	if (state.sharingScreen) {
 
-    		window.require("electron").ipcRenderer.send('stop-screenshare');
+    		ipcRenderer.send('stop-screenshare');
         actions.app.setSharingScreen(false);
 
   	} else {
       
-    		window.require("electron").ipcRenderer.send('init-screenshare');
+    		ipcRenderer.send('init-screenshare');
         actions.app.setSharingScreen(true);
   	}
 	}
@@ -516,26 +520,26 @@ const VideoCallCanvas = React.memo((props) => {
 
     if (state.sharingWindow) {
 
-        window.require("electron").ipcRenderer.send('stop-windowshare');
+        ipcRenderer.send('stop-windowshare');
         actions.app.setSharingWindow(false);
 
     } else {
       
-        window.require("electron").ipcRenderer.send('init-windowshare');
+        ipcRenderer.send('init-windowshare', {user_color: user_color});
         actions.app.setSharingWindow(true);
     }
   }
 
   const handleCollapse = async (e) => {
 
-    window.require("electron").ipcRenderer.send('collapse-video-call-window', getHeight());
+    ipcRenderer.send('collapse-video-call-window', getHeight());
     actions.app.setVideoCallCompactMode(true);
   }
 
   const handleExpand = () => {
 
     actions.app.setVideoCallCompactMode(false);
-    window.require("electron").ipcRenderer.send('expand-video-call-window');
+    ipcRenderer.send('expand-video-call-window');
 
   }
 
@@ -563,7 +567,7 @@ const VideoCallCanvas = React.memo((props) => {
 
       var call_channel_id = localStorage.getItem('call_channel_id');
       var rid = call_channel_id.split('-')[1];
-      window.require("electron").ipcRenderer.send('exit-user-call', rid);
+      ipcRenderer.send('exit-user-call', rid);
 
     	actions.app.clearVideoCallData();
       actions.app.emitUpdateTeam();

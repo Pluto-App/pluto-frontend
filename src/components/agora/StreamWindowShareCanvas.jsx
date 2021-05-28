@@ -128,7 +128,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 	 			id: 	state.loggedInUser.id,
 	 			uid: 	state.loggedInUser.uid,
 	 			name: 	state.loggedInUser.name,
-	 			color:  '#' + Math.floor(Math.random()*16770000).toString(16)
+	 			color:  props.config.user_color
 	 		}
 	 	});
   	}
@@ -334,7 +334,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 						onKeyDown={ shareCursorData }
 						onMouseDown={ shareCursorData }
 						onMouseUp={ shareCursorData }
-						style={{border: '5px solid ' + '#' + Math.floor(Math.random()*16770000).toString(16)}}
+						style={{border: '5px solid ' + props.config.user_color}}
 					>
 	    			</div>
                   

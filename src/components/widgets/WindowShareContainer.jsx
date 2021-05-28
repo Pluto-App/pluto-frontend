@@ -8,11 +8,13 @@ import { AuthContext } from '../../context/AuthContext'
 
 var overlaySize = {};
 const { remote } = window.require('electron');
+const currentWindow = remote.getCurrentWindow();
+
 const WindowShareContainer = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
     const { authData, setAuthData } = useContext(AuthContext);
-    var currentWindow = remote.getCurrentWindow();
+    
 
 	useEffect(() => {
 

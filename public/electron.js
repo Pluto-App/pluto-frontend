@@ -29,6 +29,8 @@ let streamWindowShareWindows = [];
 
 let settingsPage
 
+let user_color;
+
 const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
 
@@ -233,14 +235,21 @@ function createWindow() {
 
   ipcMain.on('active-win', async (event, arg) => {
 
-    const activeWinInfo = await activeWin()
-    
-    if(activeWinInfo && activeWinInfo.owner && activeWinInfo.owner.name){
-      
-      activeWinInfo.url = await getTabUrl(activeWinInfo);
-      event.returnValue = activeWinInfo
+    try{
 
-    } else {
+      const activeWinInfo = await activeWin()
+    
+      if(activeWinInfo && activeWinInfo.owner && activeWinInfo.owner.name){
+        
+        activeWinInfo.url = await getTabUrl(activeWinInfo);
+        event.returnValue = activeWinInfo
+
+      } else {
+        event.returnValue = "None"
+      }
+
+    } catch (error) {
+      console.error(error);
       event.returnValue = "None"
     }
   })
@@ -268,6 +277,11 @@ function createWindow() {
 
     event.returnValue = systemPreferences.getMediaAccessStatus('camera') == 'granted' &&
       systemPreferences.getMediaAccessStatus('microphone') == 'granted'  
+  })
+
+  ipcMain.on('set-user-color', async (event, args) => {
+
+    user_color = args.user_color;
   })
 
   ipcMain.on('refresh-app', async (event, arg) => {
@@ -475,7 +489,7 @@ function createWindow() {
     }
   })
 
-  ipcMain.on('init-windowshare', (event, arg) => {
+  ipcMain.on('init-windowshare', (event, args) => {
 
     if(initWindowShareWindow){
       try{
@@ -506,6 +520,10 @@ function createWindow() {
       protocol: 'file:',
       slashes: true
     });
+
+    initWindowShareWindow.data = {
+        user_color: args.user_color
+    };
 
     initWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/init-windowshare' : windowShareWindowUrl);
 
@@ -673,7 +691,8 @@ function createWindow() {
       streamWindowShareWindow.data = {
           user_id: args.user_id,
           user_uid: args.user_uid,
-          owner: args.owner
+          owner: args.owner,
+          user_color: user_color
       };
 
       streamWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-windowshare' : streamWindowShareWindowUrl);
