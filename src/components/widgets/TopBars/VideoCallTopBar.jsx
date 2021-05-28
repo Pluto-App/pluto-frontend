@@ -1,6 +1,8 @@
 import React from 'react'
 import { useOvermind } from '../../../overmind'
 
+const { ipcRenderer } = window.require("electron");
+
 // TODO Need to show some tooltip using Tailwind CSS ToolTip
 const MiniVideoCallTopBar = React.memo((props) => {
 
@@ -9,7 +11,7 @@ const MiniVideoCallTopBar = React.memo((props) => {
   const expand = () => {
 
     actions.app.setVideoCallCompactMode(false);
-    window.require("electron").ipcRenderer.send('expand-video-call-window');
+    ipcRenderer.send('expand-video-call-window');
 
   }
 

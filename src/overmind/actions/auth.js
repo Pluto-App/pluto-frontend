@@ -2,6 +2,8 @@
 import { googleSignIn } from '../../auth/authhandle'
 import ToastNotification from '../../components/widgets/ToastNotification'
 
+const { ipcRenderer } = window.require('electron');
+
 export const googleLogin = async ({state, effects}, {setAuthData}) => {
 
     try {
@@ -14,7 +16,7 @@ export const googleLogin = async ({state, effects}, {setAuthData}) => {
             localStorage.setItem('currentUser', JSON.stringify(loginData));
             state.userProfileData = loginData.user;
 
-            window.require("electron").ipcRenderer.send('resize-normal');
+            ipcRenderer.send('resize-normal');
             setAuthData(loginData);    
         
         } else {
@@ -38,7 +40,7 @@ export const loginViaCode = async ({state, effects}, {userData, setAuthData}) =>
             localStorage.setItem('currentUser', JSON.stringify(loginData));
             state.userProfileData = loginData.user;
 
-            window.require("electron").ipcRenderer.send('resize-normal');
+            ipcRenderer.send('resize-normal');
             setAuthData(loginData);    
         
         } else {

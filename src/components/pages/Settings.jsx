@@ -9,7 +9,7 @@ import { supportedApps } from '../../utils/AppLogo';
 import {AuthContext} from '../../context/AuthContext'
 
 const os = window.require('os');
-const { remote } = window.require('electron');
+const { remote, ipcRenderer } = window.require('electron');
 
 const Settings = React.memo(() => {
 
@@ -44,7 +44,7 @@ const Settings = React.memo(() => {
         
         e.preventDefault();
         
-        window.require("electron").ipcRenderer.send('logout');
+        ipcRenderer.send('logout');
         var curentWindow = window.require("electron").remote.getCurrentWindow();
         curentWindow.destroy(); 
     }
@@ -115,7 +115,7 @@ const Settings = React.memo(() => {
                 setActiveSection('profile');     
             }
 
-            window.require("electron").ipcRenderer.send('refresh-app');
+            ipcRenderer.send('refresh-app');
             ToastNotification('success', "Team Deleted!")  
         }
     }

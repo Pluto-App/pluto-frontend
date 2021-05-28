@@ -5,7 +5,7 @@ import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 
 import {AuthContext} from '../../context/AuthContext'
-const { remote } = window.require('electron');
+const { remote, ipcRenderer } = window.require('electron');
 
 const InitWindowShareCanvas = React.memo((props) => {
 
@@ -58,7 +58,7 @@ const InitWindowShareCanvas = React.memo((props) => {
               			alert("Publish local stream error: " + err);
             		})
 
-            		var overlayBounds = await window.require("electron").ipcRenderer.sendSync('windowshare-source-bounds', 
+            		var overlayBounds = await ipcRenderer.sendSync('windowshare-source-bounds', 
             								sourceInfo);
 
 				 	socket_live.emit(events.userWindowShare, {
@@ -66,14 +66,15 @@ const InitWindowShareCanvas = React.memo((props) => {
 	          			channel_id: 		props.config.channel,
 	          			resolution: 		overlayBounds,
 				 		user_uid:  			props.config.user_uid,
-				 		user_id: 			props.config.user_id
+				 		user_id: 			props.config.user_id,
+				 		owner_color: 		props.config.user_color
 				 	});
 
 				 	localStorage.setItem('windowshare_channel_id', props.config.channel);
 				 	localStorage.setItem('windowshare_source', sourceInfo);
 
 
-	          		window.require('electron').ipcRenderer.send('sharing-window', {
+	          		ipcRenderer.send('sharing-window', {
 	          			'overlayBounds': overlayBounds,
 	          			'channel_id': props.config.channel,
 	          			'sourceInfo': sourceInfo

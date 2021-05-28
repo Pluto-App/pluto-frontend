@@ -4,6 +4,8 @@ import { socket_live, events } from '../../components/sockets'
 import { toast } from 'react-toastify';
 import ToastNotification from '../../components/widgets/ToastNotification'
 
+const { ipcRenderer } = window.require("electron");
+
 export const setLoggedInUser = async ({ state, effect }) => {
 
 	state.loggedInUser = JSON.parse(localStorage.getItem('currentUser')).user
@@ -86,7 +88,7 @@ export const userVideoCall = async ({ state, effect }, data) => {
 		localStorage.setItem("call_channel_id", data.call_channel_id);
 	 	socket_live.emit(events.joinRoom, data.channel_id);
 
-	    window.require("electron").ipcRenderer.send('init-video-call-window', data.call_channel_id);	
+	    ipcRenderer.send('init-video-call-window', data.call_channel_id);	
 	}
  	
     ToastNotification('success', `Incoming VC`);
@@ -104,7 +106,7 @@ export const userScreenShare = async ({ state, effect }, data) => {
 	 	state.streamingScreenShare = true;
 
 		if(state.sharingScreen){
-			window.require("electron").ipcRenderer.send('stop-screenshare');
+			ipcRenderer.send('stop-screenshare');
 		}
 	}
 }
@@ -119,7 +121,7 @@ export const userWindowShare = async ({ state, effect }, data) => {
 		localStorage.setItem("windowshare_resolutions", JSON.stringify(windowshare_resolutions));
 
 	 	state.streamingWindowShare = true;
-	 	window.require("electron").ipcRenderer.send('streaming-windowshare', data);
+	 	ipcRenderer.send('streaming-windowshare', data);
 	}
 }
 
@@ -169,22 +171,22 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 
 		if(data.event.type === 'click'){
 			if(data.event.witch === 3)
-				window.require("electron").ipcRenderer.send('emit-right-click', data);
+				ipcRenderer.send('emit-right-click', data);
 			else
-				window.require("electron").ipcRenderer.send('emit-click', data);
+				ipcRenderer.send('emit-click', data);
 		}
 		
 		else if(data.event.type === 'wheel')
-			window.require("electron").ipcRenderer.send('emit-scroll', data);
+			ipcRenderer.send('emit-scroll', data);
 
 		else if(data.event.type === 'mousedown')
-			window.require("electron").ipcRenderer.send('emit-mousedown', data);
+			ipcRenderer.send('emit-mousedown', data);
 
 		else if(data.event.type === 'mouseup')
-			window.require("electron").ipcRenderer.send('emit-mouseup', data);
+			ipcRenderer.send('emit-mouseup', data);
 
 		else if(data.event.type === 'keyup' || data.event.type === 'keydown')
-			window.require("electron").ipcRenderer.send('emit-key', data);
+			ipcRenderer.send('emit-key', data);
 	}
 }
 
@@ -196,21 +198,21 @@ export const updateWindowShareCursor = async ({ state, effect }, {channel_id, da
 	data.container = 'window';
 
 	if(data.event.type === 'wheel')
-		window.require("electron").ipcRenderer.send('emit-scroll', data);
+		ipcRenderer.send('emit-scroll', data);
 
 	else if(data.event.type === 'mousedown')
-		window.require("electron").ipcRenderer.send('emit-mousedown', data);
+		ipcRenderer.send('emit-mousedown', data);
 
 	else if(data.event.type === 'mouseup')
-		window.require("electron").ipcRenderer.send('emit-mouseup', data);
+		ipcRenderer.send('emit-mouseup', data);
 
 	else if(data.event.type === 'keyup' || data.event.type === 'keydown')
-		window.require("electron").ipcRenderer.send('emit-key', data);
+		ipcRenderer.send('emit-key', data);
 }
 
 export const setScreenSize = async ({ state, effect }) => {
 
-	state.screenSize = await window.require("electron").ipcRenderer.sendSync('screen-size');
+	state.screenSize = await ipcRenderer.sendSync('screen-size');
 }
 
 export const setAppOnlineStatus = async ({ state, effect }, status) => {

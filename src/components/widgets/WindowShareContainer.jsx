@@ -7,12 +7,14 @@ import { AuthContext } from '../../context/AuthContext'
 
 
 var overlaySize = {};
-const { remote } = window.require('electron');
+const { remote, ipcRenderer } = window.require('electron');
+const currentWindow = remote.getCurrentWindow();
+
 const WindowShareContainer = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
     const { authData, setAuthData } = useContext(AuthContext);
-    var currentWindow = remote.getCurrentWindow();
+    
 
 	useEffect(() => {
 
@@ -29,7 +31,7 @@ const WindowShareContainer = React.memo((props) => {
         
             const followWindowShareSource = setInterval(async () => {
 
-                var overlayBounds = await window.require("electron").ipcRenderer.sendSync('windowshare-source-bounds', 
+                var overlayBounds = await ipcRenderer.sendSync('windowshare-source-bounds', 
                                         sourceInfo);
 
                 if(overlaySize && overlayBounds) {
@@ -48,7 +50,7 @@ const WindowShareContainer = React.memo((props) => {
                         });
                     }
                     
-                    window.require("electron").ipcRenderer.send('update-windowshare-container-bounds',overlayBounds);
+                    ipcRenderer.send('update-windowshare-container-bounds',overlayBounds);
                 }
 
             }, 200)    

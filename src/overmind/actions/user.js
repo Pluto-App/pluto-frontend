@@ -1,6 +1,8 @@
 
 import { socket_live, events } from '../../components/sockets'
 
+const { ipcRenderer } = window.require("electron");
+
 export const getLoggedInUser = async ({state, actions, effects}, { authData, setAuthData}) => {
 
   	state.loadingUser = true
@@ -44,7 +46,7 @@ export const getLoggedInUser = async ({state, actions, effects}, { authData, set
 
         if(setAuthData) {
           actions.auth.logOut({setAuthData: setAuthData}).then(() => {
-              window.require("electron").ipcRenderer.send('logout');
+              ipcRenderer.send('logout');
           });  
         }
       }

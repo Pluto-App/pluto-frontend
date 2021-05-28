@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom"
 
 import MainTeamSelect from './MainTeamSelect';
 
+const { ipcRenderer } = window.require("electron");
+
 const MainBar = React.memo((props) => {
 
     let history = useHistory();
@@ -45,7 +47,7 @@ const MainBar = React.memo((props) => {
                             className="text-white hover:bg-gray-900 py-1 focus:outline-none rounded-lg p-1" 
                             onClick={(e) => {
                                 e.preventDefault();
-                                window.require("electron").ipcRenderer.send('open-settings', state.userProfileData.userid);
+                                ipcRenderer.send('open-settings', state.userProfileData.userid);
                             }}
                         >
                             <i className="material-icons md-light md-inactive" style={{ fontSize: "16px", margin: "0" }}>settings</i>

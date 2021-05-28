@@ -18,6 +18,8 @@ import { AuthContext } from '../../../context/AuthContext';
 import useSound from 'use-sound';
 import initCallSound from '../../../assets/sounds/init_call.mp3';
 
+const { ipcRenderer } = window.require('electron');
+
 const RoomListItem = React.memo((props) => {
 
     // TODO Notify when new room created. Add to list room info.  
@@ -101,7 +103,7 @@ const RoomListItem = React.memo((props) => {
         actions.app.setUserInCall(state.userProfileData.id);
         actions.app.setUserInRoom({room_id: room.id, user_uid: state.userProfileData.uid});
 
-        window.require("electron").ipcRenderer.send('init-video-call-window', call_channel_id);
+        ipcRenderer.send('init-video-call-window', call_channel_id);
 
         playInitCallSound();
     }
@@ -138,7 +140,7 @@ const RoomListItem = React.memo((props) => {
             senderid: state.userProfileData.userid,
             username: state.userProfileData.username
         })
-        window.require("electron").ipcRenderer.send('load-video-window', id);
+        ipcRenderer.send('load-video-window', id);
         history.push("/room-profile")
     }
 

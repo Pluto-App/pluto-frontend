@@ -6,6 +6,8 @@ import ToastNotification from '../../widgets/ToastNotification';
 
 import {AuthContext} from '../../../context/AuthContext'
 
+const { ipcRenderer } = window.require("electron");
+
 export default function TeamRegisterPage() {
 
     const { authData, setAuthData } = useContext(AuthContext);
@@ -62,7 +64,7 @@ export default function TeamRegisterPage() {
         
         actions.auth.logOut({setAuthData: setAuthData}).then(() => {
             history.push('/');
-            window.require("electron").ipcRenderer.send('resize-login');
+            ipcRenderer.send('resize-login');
         });
     }
 
