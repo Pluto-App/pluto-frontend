@@ -105,7 +105,6 @@ export default function App() {
       });
 
       socket_live.on(events.userVideoCall, (data) => {
-        console.log(data);
         playReceiveCallSound();
         actions.app.userVideoCall(data);
       });
