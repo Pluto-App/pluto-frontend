@@ -48,7 +48,6 @@ if (isDev) activeWinPath = path.join(app.getAppPath(), 'src/active-window');
 else activeWinPath = path.join(app.getAppPath(), '..', 'src/active-window');
 
 const activeWin = require(activeWinPath);
-const activeWinLib = require('active-win');
 const runApplescript = require('run-applescript');
 
 const minWidth = 350;
@@ -245,7 +244,7 @@ function createWindow() {
     windows.forEach((x) => x.close());
   });
 
-  primaryDisplay = screen.getPrimaryDisplay();
+  primaryDisplay = screen.getPrimarPyDisplay();
   sWidth = primaryDisplay.bounds.width;
   sHeight = primaryDisplay.bounds.height;
 
