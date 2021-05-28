@@ -98,7 +98,8 @@ const UserListItem = React.memo((props) => {
 
             actions.app.setUserInCall(state.userProfileData.id);
 
-            ipcRenderer.send('init-video-call-window', call_channel_id);
+            ipcRenderer.send('set-call-data', {call_data: call_data});
+            ipcRenderer.send('init-video-call-window', {call_channel_id: call_channel_id, call_data: call_data});
             
             playInitCallSound();
 

@@ -30,6 +30,7 @@ let streamWindowShareWindows = [];
 let settingsPage
 
 let user_color;
+let call_data;
 
 const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
@@ -290,6 +291,11 @@ function createWindow() {
     user_color = args.user_color;
   })
 
+  ipcMain.on('set-call-data', async (event, args) => {
+
+    call_data = args.call_data;
+  })
+
   ipcMain.on('refresh-app', async (event, arg) => {
     
     mainWindow.webContents.send('refresh', {});
@@ -359,7 +365,7 @@ function createWindow() {
     })
   });
 
-  ipcMain.on('init-video-call-window', (event, data) => {
+  ipcMain.on('init-video-call-window', (event, args) => {
 
     if (videoCallWindow) {
       try{
@@ -397,6 +403,11 @@ function createWindow() {
       protocol: 'file:',
       slashes: true
     })
+
+    videoCallWindow.data = {
+        call_data: args.call_data,
+        call_channel_id: args.call_channel_id
+    };
 
     videoCallWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/video-call' : videoUrl);
 
@@ -528,7 +539,8 @@ function createWindow() {
     });
 
     initWindowShareWindow.data = {
-        user_color: user_color
+        user_color: user_color,
+        call_data: call_data
     };
 
     initWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/init-windowshare' : windowShareWindowUrl);
@@ -699,7 +711,8 @@ function createWindow() {
           user_uid: args.user_uid,
           owner: args.owner,
           owner_color: args.owner_color,
-          user_color: user_color
+          user_color: user_color,
+          call_data: call_data
       };
 
       streamWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-windowshare' : streamWindowShareWindowUrl);

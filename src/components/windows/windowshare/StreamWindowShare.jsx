@@ -13,9 +13,8 @@ const currentWindow = remote.getCurrentWindow();
 const StreamWindowShare = React.memo((props) => {
 
     const { state, actions }  = useOvermind();
-    const call_data           = JSON.parse(localStorage.getItem('call_data'));
     const windowShareChannel  = getWindowShareChannel({user_uid: currentWindow.data.user_uid, 
-        call_channel_id: call_data.call_channel_id});
+        call_channel_id: currentWindow.data.call_data.call_channel_id});
     
     const [ screenShareState, setScreeenShareState] = useState({options: 'show', status: 'stopped'});
     const [ config, setConfig ] = useState({
