@@ -62,9 +62,14 @@ export const updateUserActiveWindowData = async ({ state, effect }, {user_id, ac
 	state.usersActiveWindows[user_id] = active_window_data;
 }
 
-export const setElectronWindowScreenShareViewers = async ({ state, effect }, screenShareViewers) => {
+export const setElectronScreenShareViewers = async ({ state, effect }, screenShareViewers) => {
 
 	state.screenShareViewers = screenShareViewers;
+}
+
+export const setElectronWindowShareViewers = async ({ state, effect }, {channel_id, windowShareViewers}) => {
+
+	state.windowShareViewers[channel_id] = windowShareViewers;
 }
 
 export const userVideoCall = async ({ state, effect }, data) => {
@@ -104,12 +109,34 @@ export const userScreenShare = async ({ state, effect }, data) => {
 	}
 }
 
+export const userWindowShare = async ({ state, effect }, data) => {
+
+	if(data.user_uid !== state.userProfileData.uid){
+
+		var windowshare_resolutions = JSON.parse(localStorage.getItem('windowshare_resolutions')) || {};
+		windowshare_resolutions[data.user_uid] = data.resolution;
+
+		localStorage.setItem("windowshare_resolutions", JSON.stringify(windowshare_resolutions));
+
+	 	state.streamingWindowShare = true;
+	 	window.require("electron").ipcRenderer.send('streaming-windowshare', data);
+	}
+}
+
 export const setSharingScreen = async ({ state, effect }, value) => {
  	state.sharingScreen = value;
 }
 
+export const setSharingWindow = async ({ state, effect }, value) => {
+ 	state.sharingWindow = value;
+}
+
 export const setStreamingScreenShare = async ({ state, effect }, value) => {
  	state.streamingScreenShare = value;
+}
+
+export const setStreamingWindowShare = async ({ state, effect }, value) => {
+ 	state.streamingWindowShare = value;
 }
 
 
@@ -120,6 +147,17 @@ export const updateScreenShareViewers = async ({ state, effect }, data) => {
 
 	// HACK to pass data to other electron windows.
 	localStorage.setItem('screenShareViewers', JSON.stringify(state.screenShareViewers));
+}
+
+export const updateWindowShareViewers = async ({ state, effect }, data) => {
+
+	if(data.user){
+		state.windowShareViewers[data.channel_id] = state.windowShareViewers[data.channel_id] || {};
+		state.windowShareViewers[data.channel_id][data.user.uid] = data.user;
+	}
+
+	// HACK to pass data to other electron windows.
+	localStorage.setItem('windowShareViewers', JSON.stringify(state.windowShareViewers));
 }
 
 export const updateScreenShareCursor = async ({ state, effect }, data) => {
@@ -148,6 +186,26 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 		else if(data.event.type === 'keyup' || data.event.type === 'keydown')
 			window.require("electron").ipcRenderer.send('emit-key', data);
 	}
+}
+
+export const updateWindowShareCursor = async ({ state, effect }, {channel_id, data}) => {
+
+	if(data.user)
+		state.windowShareCursors[channel_id + '-' + data.user.id] = data.cursor;
+
+	data.container = 'window';
+
+	if(data.event.type === 'wheel')
+		window.require("electron").ipcRenderer.send('emit-scroll', data);
+
+	else if(data.event.type === 'mousedown')
+		window.require("electron").ipcRenderer.send('emit-mousedown', data);
+
+	else if(data.event.type === 'mouseup')
+		window.require("electron").ipcRenderer.send('emit-mouseup', data);
+
+	else if(data.event.type === 'keyup' || data.event.type === 'keydown')
+		window.require("electron").ipcRenderer.send('emit-key', data);
 }
 
 export const setScreenSize = async ({ state, effect }) => {
@@ -231,6 +289,7 @@ export const clearVideoCallData = async ({ actions, state, effect }) => {
 	);
 	
 	deleteScreenShareData();
+	deleteWindowShareData();
 	localStorage.removeItem('call_channel_id');
 }
 
@@ -252,4 +311,18 @@ const deleteScreenShareData = () => {
 	localStorage.removeItem('screenShareViewers');
 	localStorage.removeItem('screenShareCursors');
 	localStorage.removeItem('remoteAccessEnabled');
+}
+
+const deleteWindowShareData = () => {
+
+	socket_live.emit(events.endWindowShare, 
+		{ 
+			channel_id: localStorage.getItem('windowshare_channel_id')
+		}
+	);
+
+	localStorage.removeItem('windowshare_sources');
+	localStorage.removeItem('windowshare_resolution');
+	localStorage.removeItem('windowShareViewers');
+	localStorage.removeItem('windowShareCursors');
 }

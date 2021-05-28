@@ -6,7 +6,6 @@ import { useHistory } from "react-router-dom"
 import * as Cookies from "js-cookie";
 import ToastNotification from '../../widgets/ToastNotification';
 import ReactTooltip from 'react-tooltip';
-import useAudio from '../../audio';
 
 import { socket_live, events } from '../../sockets';
 
@@ -14,7 +13,9 @@ import { appLogo } from '../../../utils/AppLogo';
 
 import { AuthContext } from '../../../context/AuthContext'
 
-const sounds = require.context('../../../assets/sounds', true);
+import useSound from 'use-sound';
+
+import initCallSound from '../../../assets/sounds/init_call.mp3';
 const logos = require.context('../../../assets/logos', true);
 
 const UserListItem = React.memo((props) => {
@@ -27,7 +28,7 @@ const UserListItem = React.memo((props) => {
     const [showMenu, toggleShowMenu] = useState(false);
     const [activeAppInfo, setActiveAppInfo] = useState({});
     const [user, setUser] = useState(props.user);
-    const [initCallSound, toggleInitCallSound] = useAudio(sounds('./init_call.wav'));
+    const [playInitCallSound] = useSound(initCallSound);
 
     const customMenuStyle = {
         "top": "75px",
@@ -97,7 +98,7 @@ const UserListItem = React.memo((props) => {
 
             window.require("electron").ipcRenderer.send('init-video-call-window', call_channel_id);
             
-            toggleInitCallSound();
+            playInitCallSound();
 
         } else {
             ToastNotification('error', "Can't start VC with self 😠")
@@ -109,7 +110,7 @@ const UserListItem = React.memo((props) => {
         if(user){
             
             var preference = state.teamMembersMap[user.id].user_preference;
-            setActiveAppInfo(appLogo(state.usersActiveWindows[user.id], preference));    
+            setActiveAppInfo(appLogo(state.usersActiveWindows[user.id], preference));
         }
         
     },[ state.usersActiveWindows[user.id]])

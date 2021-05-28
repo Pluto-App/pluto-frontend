@@ -12,6 +12,10 @@ import StreamScreenShare from './components/windows/screenshare/StreamScreenShar
 import ScreenShareContainer from './components/widgets/ScreenShareContainer'
 import ScreenShareControls from './components/windows/screenshare/ScreenShareControls'
 
+import InitWindowShare from './components/windows/windowshare/InitWindowShare'
+import WindowShareContainer from './components/widgets/WindowShareContainer'
+import StreamWindowShare from './components/windows/windowshare/StreamWindowShare'
+
 import TopBar from './components/widgets/Topbar'
 import ToastNotification from './components/widgets/ToastNotification'
 
@@ -28,28 +32,19 @@ import {
   Route
 } from "react-router-dom";
 
-import {AuthContext} from './context/AuthContext'
+import {AuthContext} from './context/AuthContext';
 
-import {
-  hasScreenCapturePermission,
-  hasPromptedForPermission,
-  resetPermissions
-} from 'mac-screen-capture-permissions';
+import useSound from 'use-sound';
 
-import useAudio from './components/audio';
+import receiveCallSound from './assets/sounds/receive_call.wav';
 
-const sounds = require.context('./assets/sounds', true);
-
+const { remote } = window.require('electron');
 export default function App() {
-
-  if(!hasScreenCapturePermission()){
-    resetPermissions({bundleId: 'com.pluto.office'})
-    hasScreenCapturePermission()
-  };
 
   const { state, actions } = useOvermind();
   const { authData, setAuthData } = useContext(AuthContext);
-  const [ receiveCallSound, toggleReceiveCallSound] = useAudio(sounds('./receive_call.wav'));
+  const [playReceiveCallSound] = useSound(receiveCallSound);
+  var currentWindow = remote.getCurrentWindow();
 
   useEffect(() => {
       if(state.error && state.error.message){
@@ -110,7 +105,7 @@ export default function App() {
       });
 
       socket_live.on(events.userVideoCall, (data) => {
-        toggleReceiveCallSound();
+        playReceiveCallSound();
         actions.app.userVideoCall(data);
       });
 
@@ -169,8 +164,20 @@ export default function App() {
           <InitScreenShare />
         </Route>
 
+        <Route exact path="/init-windowshare">
+          <InitWindowShare />
+        </Route>
+
+        <Route exact path="/stream-windowshare">
+          <StreamWindowShare />
+        </Route>
+
         <Route exact path="/screenshare-container">
           <ScreenShareContainer />
+        </Route>
+
+        <Route exact path="/windowshare-container">
+          <WindowShareContainer />
         </Route>
 
         <Route exact path="/screenshare-controls">

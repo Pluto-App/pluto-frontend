@@ -10,9 +10,8 @@ import {AuthContext} from '../../context/AuthContext'
 import ActiveWindowInfo from "../widgets/VideoCall/ActiveWindowInfo";
 import StreamScreenShare from "../windows/screenshare/StreamScreenShare";
 
-import useAudio from '../audio';
-
-const sounds = require.context('../../assets/sounds', true);
+import useSound from 'use-sound';
+import endCallSound from '../../assets/sounds/end_call.wav';
 
 const { remote } = window.require('electron');
 const os = window.require('os');
@@ -43,7 +42,7 @@ const VideoCallCanvas = React.memo((props) => {
   usersInCallRef.current = usersInCall;
 
   const [ numActiveVideo, setNumActiveVideo ] = useState(0);
-  const [ endCallSound, toggleEndCallSound] = useAudio(sounds('./end_call.wav'));
+  const [playEndCallSound] = useSound(endCallSound);
 
   if(needWindowUpdate){
 
@@ -267,10 +266,6 @@ const VideoCallCanvas = React.memo((props) => {
 
     if(state.userProfileData.id){
 
-      if(isMac){
-        window.require('electron').ipcRenderer.send('media-access');      
-      }
-
       AgoraClient.init(props.config.appId, async () => {
           
           subscribeStreamEvents();
@@ -287,14 +282,7 @@ const VideoCallCanvas = React.memo((props) => {
 
               addStream(localStream, true);
 
-              // socket_live.emit(events.joinRoom, { room: props.config.channel, user_id: props.config.user_id},
-              //   (data) => {
-              //     if(data.created){
-              //       actions.app.emitUpdateTeam();  
-              //     }
-              // });
-
-              const interval = setInterval(() => {
+              //const interval = setInterval(() => {
 
                 socket_live.emit(events.joinRoom, { room: props.config.channel, user_id: props.config.user_id},
                   (data) => {
@@ -303,16 +291,42 @@ const VideoCallCanvas = React.memo((props) => {
                     }
                 });
 
-              }, 2000);
+              //}, 2000);
 
               AgoraClient.publish(localStream, err => {
                   alert("Publish local stream error: " + err);
               })
             },
-              err => {
+            async (err) => {
 
-                alert("No Access to media stream", err)
-              })
+              var hasMediaAccess = await window.require("electron").ipcRenderer.sendSync('check-media-access');
+              
+              if(!hasMediaAccess){
+                
+                alert("No Access to camera or microphone!");  
+              
+              } else {
+
+                 alert("Unexpected Error!\n " + JSON.stringify(err));
+              }
+
+              actions.app.setError(err);
+            })
+
+            setTimeout(async function(){ 
+              var currentWindowShares = await actions.videocall.getCurrentWindowShares({authData: authData, 
+               callChannelId: props.config.channel});
+
+              for(var windowShare of currentWindowShares){
+                console.log(windowShare);
+                var owner = usersInCallRef.current[windowShare.user_id];
+
+                if(owner) {
+                  windowShare['owner'] = owner;
+                  actions.app.userWindowShare(windowShare);   
+                }
+              }
+            }, 3000);
           })
       }, function(err) {
           console.log("client init failed ", err);
@@ -345,11 +359,26 @@ const VideoCallCanvas = React.memo((props) => {
       actions.app.setSharingScreen(false);
     });
 
+    window.require("electron").ipcRenderer.on('stop-windowshare', function (e, args) {
+
+      socket_live.emit(events.endWindowShare, {
+          channel_id: localStorage.getItem('windowshare_channel_id')
+      });
+      
+      actions.app.setSharingWindow(false);
+    });
+
     socket_live.on(events.userScreenShare, (data) => {
 
       data['user'] = usersInCallRef.current[data.user_id];
       actions.app.userScreenShare(data);
       updateWindowSize();
+    });
+
+    socket_live.on(events.userWindowShare, (data) => {
+
+      data['owner'] = usersInCallRef.current[data.user_id];
+      actions.app.userWindowShare(data);
     });
 
   },[])
@@ -483,6 +512,20 @@ const VideoCallCanvas = React.memo((props) => {
   	}
 	}
 
+  const handleMultiWindowShare = async (e) => {
+
+    if (state.sharingWindow) {
+
+        window.require("electron").ipcRenderer.send('stop-windowshare');
+        actions.app.setSharingWindow(false);
+
+    } else {
+      
+        window.require("electron").ipcRenderer.send('init-windowshare');
+        actions.app.setSharingWindow(true);
+    }
+  }
+
   const handleCollapse = async (e) => {
 
     window.require("electron").ipcRenderer.send('collapse-video-call-window', getHeight());
@@ -498,7 +541,7 @@ const VideoCallCanvas = React.memo((props) => {
 
 	const handleExit = async (e) => {
     
-    toggleEndCallSound();
+    playEndCallSound();
 
     if (e && e.currentTarget.classList.contains('disabled')) {
     		return
@@ -577,6 +620,17 @@ const VideoCallCanvas = React.memo((props) => {
   	</span>
   )
 
+    const multiWindowShareBtn = (
+     <span
+      onClick={handleMultiWindowShare}
+      className='ag-btn exitBtn'
+      title="Multi Window Share"
+      style={{opacity: 1, textDecoration: state.sharingWindow ? 'line-through' : ''}}
+    >
+      <i className="material-icons focus:outline-none md-light" id="compare" style={{ fontSize: "30px" }} >compare</i>
+    </span>
+  )
+
   const collapseBtn = (
 
     !state.videoCallCompactMode ?
@@ -586,7 +640,7 @@ const VideoCallCanvas = React.memo((props) => {
         title="Collapse Video Call"
         style={{opacity: 1}}
       >
-        <i className="material-icons focus:outline-none md-light" id="screen-share" style={{ fontSize: "30px" }} >fullscreen_exit</i>
+        <i className="material-icons focus:outline-none md-light" style={{ fontSize: "30px" }} >fullscreen_exit</i>
       </span>
 
       : ''
@@ -838,6 +892,7 @@ const VideoCallCanvas = React.memo((props) => {
           {videoControlBtn}
           {audioControlBtn}
           {screenShareBtn}
+          {multiWindowShareBtn}
           {collapseBtn}
       </div>
     </div>

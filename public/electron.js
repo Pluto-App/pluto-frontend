@@ -4,6 +4,7 @@ const isDev = require('electron-is-dev');
 const url = require('url')
 const robot = require('robotjs');
 const { windowManager } = require("node-window-manager");
+const allWindows = require('all-windows');
 
 const ffi = require('ffi-napi');
 const { autoUpdater } = require('electron-updater');
@@ -22,12 +23,23 @@ let initScreenShareWindow
 let screenShareContainerWindow
 let screenShareControlsWindow
 
+let initWindowShareWindow
+let windowShareContainerWindow
+let streamWindowShareWindows = [];
+
 let settingsPage
 
 const isWindows = process.platform === 'win32'
 const isMac = process.platform === "darwin";
 
-const activeWin = require('active-win');
+var activeWinPath;
+if (isDev) 
+  activeWinPath = path.join(app.getAppPath(), 'src/active-window');
+else
+  activeWinPath = path.join(app.getAppPath(), '..', 'src/active-window');
+
+const activeWin = require(activeWinPath);
+// const activeWin = require('active-win');
 const runApplescript = require('run-applescript');
 
 const minWidth = 350;
@@ -45,11 +57,16 @@ const robotKeyMap = {
   'tab'         : 'tab',
   'shift'       : 'shift',
   'alt'         : 'alt',
-  'command'     : 'command'
+  'command'     : 'command',
+  '>'           : '.',
+  '<'           : ',',
+  ':'           : ';',
+  '{'           : '[',
+  '}'           : ']',
+  '?'           : '/',
+  '|'           : '\\'
 };
 
-const robotMods = ['shift','control','alt'];
-var currentMods = [];
 var primaryDisplay;
 var sWidth;
 var sHeight;
@@ -77,7 +94,7 @@ if (isWindows) {
 
 }
 
-async function getTabUrl (activeWinInfo){
+async function getTabUrl(activeWinInfo){
 
   var url = activeWinInfo ? activeWinInfo.url : undefined;
 
@@ -118,6 +135,43 @@ async function getTabUrl (activeWinInfo){
   }
 
   return url;
+}
+
+async function getMediaAccess() {
+
+  if(systemPreferences.getMediaAccessStatus('screen') != 'granted')
+    await systemPreferences.askForMediaAccess('screen')
+
+  if(systemPreferences.getMediaAccessStatus('camera') != 'granted')
+    await systemPreferences.askForMediaAccess('camera');
+
+  if(systemPreferences.getMediaAccessStatus('microphone') != 'granted')
+    await systemPreferences.askForMediaAccess('microphone')
+
+  if(isDev) {
+    console.log('screen access: ' + systemPreferences.getMediaAccessStatus('screen'));
+    console.log('camera access: ' + systemPreferences.getMediaAccessStatus('camera'));
+    console.log('microphone access: ' + systemPreferences.getMediaAccessStatus('microphone'));
+  }
+}
+
+function getModsArray(event) {
+  
+  var mods = [];
+
+  if(event.altKey) {
+      mods.push('alt'); 
+  }
+
+  if(event.ctrlKey || event.metaKey) {
+    isMac ? mods.push('command') : mods.push('control')
+  }
+
+  if(event.shiftKey) {
+    mods.push('shift'); 
+  }
+
+  return mods;
 }
 
 function createWindow() {
@@ -174,6 +228,9 @@ function createWindow() {
   if(isWindows)
     scaleFactor = primaryDisplay.scaleFactor;
 
+  if(isMac)
+    getMediaAccess();
+
   ipcMain.on('active-win', async (event, arg) => {
 
     const activeWinInfo = await activeWin()
@@ -207,13 +264,10 @@ function createWindow() {
     mainWindow.center();
   })
 
-  ipcMain.on('media-access', async (event, arg) => {
+  ipcMain.on('check-media-access', async (event, arg) => {
 
-    if(systemPreferences.getMediaAccessStatus('camera') != 'granted')
-      await systemPreferences.askForMediaAccess('camera')
-
-    if(systemPreferences.getMediaAccessStatus('microphone') != 'granted')
-      await systemPreferences.askForMediaAccess('microphone')
+    event.returnValue = systemPreferences.getMediaAccessStatus('camera') == 'granted' &&
+      systemPreferences.getMediaAccessStatus('microphone') == 'granted'  
   })
 
   ipcMain.on('refresh-app', async (event, arg) => {
@@ -335,6 +389,19 @@ function createWindow() {
           if(screenShareControlsWindow)
             screenShareControlsWindow.close();
 
+          if(initWindowShareWindow)
+            initWindowShareWindow.close();
+
+          if(windowShareContainerWindow)
+            windowShareContainerWindow.close();
+
+          for (var streamWindowShareWindow of streamWindowShareWindows) {
+            if(streamWindowShareWindow && !streamWindowShareWindow.isDestroyed())
+              streamWindowShareWindow.close();
+          }
+
+          streamWindowShareWindows = [];
+
         } catch (error) {
           console.error(error);
         }
@@ -408,6 +475,65 @@ function createWindow() {
     }
   })
 
+  ipcMain.on('init-windowshare', (event, arg) => {
+
+    if(initWindowShareWindow){
+      try{
+        initWindowShareWindow.hide();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    initWindowShareWindow = new BrowserWindow({
+        width: 650,
+        height: 650,
+        frame: true,
+        title: "WindowShare",
+        resizable: false,
+        webPreferences: {
+          nodeIntegration: true,
+          plugins: true,
+          enableRemoteModule: true
+        }
+    });
+
+    initWindowShareWindow.setMenu(null);
+
+    const windowShareWindowUrl = url.format({
+      pathname: path.join(__dirname, '../build/index.html'),
+      hash: '/init-windowshare',
+      protocol: 'file:',
+      slashes: true
+    });
+
+    initWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/init-windowshare' : windowShareWindowUrl);
+
+    initWindowShareWindow.on('closed', () => {
+      initWindowShareWindow = undefined;
+    })
+
+    if (isDev) {
+      // initWindowShareWindow.webContents.openDevTools();
+    }
+  })
+
+  ipcMain.on('stop-windowshare', (event, arg) => {
+
+    videoCallWindow.webContents.send('stop-windowshare', {});
+    try{
+
+      if(windowShareContainerWindow)
+        windowShareContainerWindow.close();
+
+      if(initWindowShareWindow)
+        initWindowShareWindow.close();
+
+    } catch (error) {
+      console.error(error);
+    }
+  })
+
   ipcMain.on('init-screenshare', (event, arg) => {
 
     if(initScreenShareWindow){
@@ -448,6 +574,126 @@ function createWindow() {
 
     if (isDev) {
       // initScreenShareWindow.webContents.openDevTools();
+    }
+  })
+
+  ipcMain.on('sharing-window', (event, args) => {
+
+    if(initWindowShareWindow) {
+
+      initWindowShareWindow.hide();
+
+      windowShareContainerWindow = new BrowserWindow({
+        x: args.overlayBounds.x,
+        y: args.overlayBounds.y,
+        hasShadow: false,
+        transparent: true,
+        frame: false,
+        minimizable: false,
+        maximizable: false,
+        resizable: false,
+        closeable: false,
+        focusable: false,
+        enableLargerThanScreen: true,
+        webPreferences: {
+          nodeIntegration: true,
+          plugins: true,
+          enableRemoteModule: true
+        },
+        show: false
+      });
+
+      const windowshareContainerUrl = url.format({
+        pathname: path.join(__dirname, '../build/index.html'),
+        hash: '/windowshare-container',
+        protocol: 'file:',
+        slashes: true
+      })
+
+      windowShareContainerWindow.data = {
+          channel_id: args.channel_id
+      };
+
+      var [sourceType, sourceId] = args.sourceInfo.split(':');
+      windowManager.getWindows().find(o => o.id == sourceId).bringToTop();
+
+      windowShareContainerWindow.setVisibleOnAllWorkspaces(true);
+      windowShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/windowshare-container' : screenshareContainerUrl);
+      windowShareContainerWindow.setIgnoreMouseEvents(true);
+      windowShareContainerWindow.setSize(args.overlayBounds.width, args.overlayBounds.height);
+      //windowShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
+      windowShareContainerWindow.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
+
+      app.dock && app.dock.hide();
+      windowShareContainerWindow.showInactive();
+      app.dock && app.dock.show();
+
+      windowShareContainerWindow.on('closed', () => {
+        windowShareContainerWindow = undefined;
+
+        if(initWindowShareWindow)
+          initWindowShareWindow.close();
+      })
+
+      if (isDev) {
+       
+        //windowShareContainerWindow.webContents.openDevTools();
+      }
+    }
+  })
+
+  ipcMain.on('streaming-windowshare', (event, args) => {
+
+    if(args.resolution) {
+
+      var streamWindowShareWindow = new BrowserWindow({
+          width: args.resolution.width,
+          height: args.resolution.height,
+          frame: false,
+          title: "WindowShare",
+          resizable: true,
+          webPreferences: {
+            nodeIntegration: true,
+            plugins: true,
+            enableRemoteModule: true
+          }
+      });
+
+      streamWindowShareWindows.push(streamWindowShareWindow);
+
+      streamWindowShareWindow.setMenu(null);
+
+      const streamWindowShareWindowUrl = url.format({
+        pathname: path.join(__dirname, '../build/index.html'),
+        hash: '/stream-windowshare',
+        protocol: 'file:',
+        slashes: true
+      });
+
+      streamWindowShareWindow.data = {
+          user_id: args.user_id,
+          user_uid: args.user_uid,
+          owner: args.owner
+      };
+
+      streamWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-windowshare' : streamWindowShareWindow);
+
+      streamWindowShareWindow.on('closed', () => {
+        streamWindowShareWindow = undefined;
+      })
+
+      if (isDev) {
+        streamWindowShareWindow.webContents.openDevTools();
+      }  
+    }
+    
+  })
+
+  ipcMain.on('update-windowshare-container-bounds', (event, overlayBounds) => {
+
+    if(windowShareContainerWindow){
+
+      windowShareContainerWindow.setBounds(overlayBounds);
     }
   })
 
@@ -601,10 +847,69 @@ function createWindow() {
     
     } else {
 
-      overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+      var overlayBounds;
+      if(isMac) {
+
+        var windowsList = await allWindows();
+        for (var win of windowsList) {
+          if(win.id == sourceId) {
+            overlayBounds = win.bounds;
+            break;
+          }
+        }
+
+      } else {
+        windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+      } 
     }
 
       event.returnValue = overlayBounds;
+  })
+
+  // Make and use common methods for screenshare/windowshare wherever possible
+  ipcMain.on('windowshare-source-bounds', async (event, sourceInfo) => {
+
+    var [sourceType, sourceId] = sourceInfo.split(':');
+
+    var overlayBounds;
+    if(isMac) {
+
+      var windowsList = await allWindows();
+      for (var win of windowsList) {
+        if(win.id == sourceId) {
+          overlayBounds = win.bounds;
+          break;
+        }
+      }
+    } else {
+
+      overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds();
+    }
+
+    var activeWinInfo;
+
+    if(isMac) {
+      activeWinInfo = await activeWin();
+
+    } else {
+      //console.log('windowshare-source-bounds windowManager getActiveWindow start');
+      activeWinInfo = windowManager.getActiveWindow();
+      //console.log('windowshare-source-bounds windowManager getActiveWindow end');  
+    }
+    
+
+    if(windowShareContainerWindow) {
+      if(activeWinInfo.id != sourceId){
+        //windowShareContainerWindow.hide()
+        //console.log('hide');
+      } else {
+        windowShareContainerWindow.showInactive();
+        //windowShareContainerWindow.moveTop();
+        //console.log('show');
+      }
+    }
+
+    event.returnValue = overlayBounds;
   })
 
   var menu = Menu.buildFromTemplate([
@@ -633,7 +938,7 @@ function createWindow() {
       ],
     },
     {
-      label: 'File 📁',
+      label: 'File �',
       submenu: [
         {
           label: 'Share File',
@@ -657,7 +962,7 @@ function createWindow() {
       ]
     },
     {
-      label: 'Refersh 🔄',
+      label: 'Refersh �',
       submenu: [
         {
           label: 'Reset',
@@ -682,82 +987,41 @@ function createWindow() {
     }
   ])
 
-  ipcMain.on('emit-click', async (event, arg) => {
-
-    originalPos = robot.getMousePos();
-    var screenShareBounds = screenShareContainerWindow.getBounds();
-
-    robot.moveMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
-    robot.mouseClick();
-    robot.moveMouse(originalPos.x, originalPos.y);
-
-  })
-
-  ipcMain.on('emit-right-click', async (event, arg) => {
-
-    console.log('right click!');
-
-    originalPos = robot.getMousePos();
-    var screenShareBounds = screenShareContainerWindow.getBounds();
-
-    robot.moveMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
-    robot.mouseClick('right');
-    robot.moveMouse(originalPos.x, originalPos.y);
-
-  })
-
   ipcMain.on('emit-scroll', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    var screenShareBounds = screenShareContainerWindow.getBounds();
+    var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
+    robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
+    robot.scrollMouse(arg.event.deltaX, arg.event.deltaY);
 
-    switch(arg.event.direction) {
-      case 'up':
-        robot.scrollMouse(0, -5);
-        break;
-      case 'down':
-        robot.scrollMouse(0, 5);
-        break;
-      default:
-        // code block
-    }
-    // robot.moveMouse(originalPos.x, originalPos.y);
-  })
-
-  ipcMain.on('emit-drag', async (event, arg) => {
-
-    originalPos = robot.getMousePos();
-    var screenShareBounds = screenShareContainerWindow.getBounds();
-
-    robot.moveMouse((screenShareBounds.x + arg.event.start_x) * scaleFactor, (screenShareBounds.y + arg.event.start_y) * scaleFactor);
-    robot.mouseToggle("down");
-    robot.dragMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
-    robot.mouseToggle("up");
-    
-    robot.moveMouse(originalPos.x, originalPos.y);
   })
 
   ipcMain.on('emit-mousedown', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    var screenShareBounds = screenShareContainerWindow.getBounds();
+    var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
-    robot.mouseToggle("down");
-    //robot.moveMouse(originalPos.x, originalPos.y);
+    robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
+
+    if(arg.event.which == 3)
+      robot.mouseToggle("down", 'right');
+    else
+      robot.mouseToggle("down", 'left');
 
   })
 
   ipcMain.on('emit-mouseup', async (event, arg) => {
 
     originalPos = robot.getMousePos();
-    var screenShareBounds = screenShareContainerWindow.getBounds();
+    var containerBounds = arg.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse((screenShareBounds.x + arg.cursor.x) * scaleFactor, (screenShareBounds.y + arg.cursor.y) * scaleFactor);
-    robot.mouseToggle("up"); 
-    //robot.moveMouse(originalPos.x, originalPos.y);
+    robot.moveMouse((containerBounds.x + arg.cursor.x) * scaleFactor, (containerBounds.y + arg.cursor.y) * scaleFactor);
+    
+    if(arg.event.which == 3)
+      robot.mouseToggle("up", 'right');
+    else
+      robot.mouseToggle("up", 'left');
   })
 
 
@@ -767,41 +1031,27 @@ function createWindow() {
   ipcMain.on('emit-key', async (event, arg) => {
 
     var rawKey = arg.event.key.toLowerCase();
-    var key = robotKeyMap[rawKey] || arg.event.key
+    var key = robotKeyMap[rawKey] || rawKey;
+    var keyCode = arg.event.which || arg.event.keyCode;
 
-    if(robotMods.includes(key)){
+    key = keyCode >= 48 && keyCode <= 57 ? String.fromCharCode(keyCode) : key;
+
+    if(keyCode == 222)
+      key = "'";
+
+    if(keyCode == 192)
+      key = '`';
+
+    var mods = getModsArray(arg.event);
+
+    if(arg.event.type == 'keyup'){
       
-      if(arg.event.type == 'keyup'){
+      robot.keyToggle(key, 'up', mods);
 
-        if(currentMods.indexOf(key) != -1)
-          currentMods.splice(currentMods.indexOf(key), 1);
-
-        robot.keyToggle(key,'up');
+    } else if(arg.event.type == 'keydown') {
       
-      } else if(arg.event.type == 'keydown'){
+      robot.keyToggle(key, 'down', mods);
 
-        if(currentMods.indexOf(key) == -1)
-          currentMods.push(key)
-
-        robot.keyToggle(key,'down');
-      }
-
-    }  else if(arg.event.type == 'keydown'){
-
-      if(Object.keys(robotKeyMap).includes(rawKey)){
-
-        robot.keyTap(key, currentMods);
-      
-      } else {
-        if(currentMods.includes('control')){
-
-          robot.keyTap(key.toLowerCase(), currentMods);
-
-        } else {
-
-          robot.typeString(key);
-        }
-      }
     }
   })
 }

@@ -4,13 +4,16 @@ import AgoraRTC from 'agora-rtc-sdk'
 import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 
-const StreamScreenShareCanvas = React.memo((props) => {
+const { remote } = window.require('electron');
+const currentWindow = remote.getCurrentWindow();
+const windowshare_resolutions = JSON.parse(localStorage.getItem('windowshare_resolutions'));
+
+const StreamWindowShareCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
 
-	const AgoraClient = AgoraRTC.createClient({ mode: props.transcode, codec: "vp8" });
-	const [screenShareResolution, setScreenShareResolution] = useState(JSON.parse(localStorage.getItem("screenshare_resolution")));
-
+	const AgoraClient = AgoraRTC.createClient({ mode: props.config.transcode, codec: "vp8" });
+	const [windowShareResolution, setWindowShareResolution] = useState(windowshare_resolutions[currentWindow.data.user_uid]);
 	const [ streamList, setStreamList ] = useState([]);
 
 	const subscribeStreamEvents = () => {
@@ -87,8 +90,8 @@ const StreamScreenShareCanvas = React.memo((props) => {
     		)
 	    }
 	    
-	    if(state.screenShareUser.id != state.userProfileData.id)
-	    	actions.app.setStreamingScreenShare(true);
+	    if(props.config.owner.id != state.userProfileData.id)
+	    	actions.app.setStreamingWindowShare(true);
   	}
 
   	const removeStream = (uid) => {
@@ -107,19 +110,20 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	    })
 
 	    if(streamList.length == 0)
-	    	exitScreenShare();
+	    	exitWindowShare();
   	}
 
-  	const exitScreenShare = () => {
+  	const exitWindowShare = () => {
 
-  		actions.app.setStreamingScreenShare(false);
-  		//actions.app.clearScreenShareData();
+  		actions.app.setStreamingWindowShare(false);
+  		currentWindow.destroy();
+  		//actions.app.clearWindowShareData();
   	}
 
-  	const viewingScreenShare = async () => {
+  	const viewingWindowShare = async () => {
 
-  		socket_live.emit(events.viewScreenShare, {
-	 		channel_id: props.channel,
+  		socket_live.emit(events.viewWindowShare, {
+	 		channel_id: props.config.channel,
 	 		user:  		{
 	 			id: 	state.loggedInUser.id,
 	 			uid: 	state.loggedInUser.uid,
@@ -144,23 +148,27 @@ const StreamScreenShareCanvas = React.memo((props) => {
       		var yPercentage = y/rect.height;
 
             var cursorData = {
-            	x: xPercentage * screenShareResolution.width,
-            	y: yPercentage * screenShareResolution.height
+            	x: xPercentage * windowShareResolution.width,
+            	y: yPercentage * windowShareResolution.height
             }
 
             var eventData = {
- 				type: 		e.type || e.nativeEvent.type,
- 				key:  		e.key || e.nativeEvent.key,
- 				keyCode: 	e.keyCode || e.nativeEvent.keyCode,
- 				which: 		e.which || e.nativeEvent.which  		
+ 				type: 		e.type ||(e.nativeEvent ? e.nativeEvent.type : undefined),
+ 				key:  		e.key || (e.nativeEvent ? e.nativeEvent.key : undefined),
+ 				keyCode: 	e.keyCode || (e.nativeEvent ? e.nativeEvent.keyCode : undefined),
+ 				which: 		e.which || (e.nativeEvent ? e.nativeEvent.which : undefined),
+ 				deltaX: 	e.deltaX,
+ 				deltaY: 	e.deltaY,
+ 				altKey: 	e.altKey,
+ 				ctrlKey: 	e.ctrlKey,
+ 				metaKey: 	e.metaKey,
+ 				shiftKey: 	e.shiftKey
+
  			}
 
- 			if(e.type === 'wheel')
- 				eventData['direction'] = e.deltaY > 0 ? 'up' : 'down';
-
-        	socket_live.emit(events.screenShareCursor, {
-		 		channel_id: 		props.channel,
-		 		screenshare_owner: 	localStorage.getItem("screenshare_owner"),
+ 			var data = {
+		 		channel_id: 		props.config.channel,
+		 		windowshare_owner: 	props.config.channel.split('-')[1],
 		 		user:  	{
 		 			id: 	state.loggedInUser.id,
 		 			uid: 	state.loggedInUser.uid,
@@ -168,9 +176,12 @@ const StreamScreenShareCanvas = React.memo((props) => {
 		 		},
 	 			cursor: cursorData,
 	 			event: 	eventData
-		 	});	
+		 	};
+
+        	socket_live.emit(events.windowShareCursor, data);
 
         } catch (error) {
+        	console.log(error);
             // Do something here!
         }
   	}
@@ -182,8 +193,8 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
   	function Area(Increment, Count, Width, Height, Margin = 0) {
       
-      var resolution = screenShareResolution;
-      var ratio = screenShareResolution ? resolution.height/resolution.width : 1.33;
+      var resolution = windowShareResolution;
+      var ratio = windowShareResolution ? resolution.height/resolution.width : 1.33;
 
       let w = 0;
       let i = 0;
@@ -224,15 +235,16 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
 	      max = max - (Margin * 2);
 
-	      setWidth(max, Margin);  
+	      setWidth(max, Margin);
+	      console.log('DISH CALLED!');
 	    }
   	}
 
   	function setWidth(width, margin) {
 
       let Cameras = document.getElementsByClassName('ScreenShareCamera');
-      var resolution = screenShareResolution;
-      var ratio = screenShareResolution ? resolution.height/resolution.width : 1.33;
+      var resolution = windowShareResolution;
+      var ratio = windowShareResolution ? resolution.height/resolution.width : 1.33;
 
       for (var s = 0; s < Cameras.length; s++) {
           Cameras[s].style.width = width + "px";
@@ -246,22 +258,23 @@ const StreamScreenShareCanvas = React.memo((props) => {
     	actions.app.setLoggedInUser();
     	actions.app.setScreenSize();
 
-        AgoraClient.init(props.appId, async () => {
+        AgoraClient.init(props.config.appId, async () => {
 
 	      	subscribeStreamEvents();
-	      	const agoraAccessToken = await actions.auth.getAgoraAccessToken({ requestParams: {channel: props.channel}});
+	      	const agoraAccessToken = await actions.auth.getAgoraAccessToken({ requestParams: {channel: props.config.channel}});
 
-	      	AgoraClient.join(agoraAccessToken, props.channel, props.uid, (uid) => {
+	      	AgoraClient.join(agoraAccessToken, props.config.channel, props.config.user_uid+'tmp', (uid) => {
 
-	      		socket_live.emit(events.joinRoom, props.channel);
-	        	viewingScreenShare();
+	      		socket_live.emit(events.joinRoom, props.config.channel);
+	        	viewingWindowShare();
 	      	})
     	})
 
     	document.getElementById("root").addEventListener("wheel", handleScroll);
 
-    	socket_live.on(events.screenShareSourceResize, (data) => {
-            setScreenShareResolution(data.resolution);
+    	socket_live.on(events.windowShareSourceResize, (data) => {
+            setWindowShareResolution(data.resolution);
+            currentWindow.setSize(data.resolution.width, data.resolution.height);
         });
 
     	return () => {
@@ -287,15 +300,32 @@ const StreamScreenShareCanvas = React.memo((props) => {
 
 	    return () => window.removeEventListener("resize", Dish);
 
-    }, [screenShareResolution])
+    }, [windowShareResolution])
+
+    const controlsTopBarStyle = {
+	    'height': '25px',
+	    'backgroundColor': 'transparent',
+	    'WebkitUserSelect': 'none',
+	    'WebkitAppRegion': 'drag',
+    	'width': '100%',
+    	'position': 'fixed',
+    	'top': 0,
+    	'zIndex': 100
+  	}
+
+  	const streamContainerStyle = { 
+  		// display: 'flex', width: '100%', position: 'fixed', top: 0,
+  		// 'border': '5px solid ' + '#' + Math.floor(Math.random()*16770000).toString(16)
+  	}
 
     return (
-		<div id="ScreenShareDish" >
-			<div style={{ display: 'flex', width: '100%' }}>
+		<div id="ScreenShareDish">
+			<div id="controls-topbar" style={controlsTopBarStyle}>
+	      	</div>
+			<div style={streamContainerStyle}>
 				<section style={{ 
 					width: '100%', 
-					position: 'relative',
-					border: '1px #636161 solid'
+					position: 'relative'
 				}}>
 					<div id="ag-screen" className="ScreenShareCamera" tabIndex="0"
 						onMouseMove={ shareCursorData }
@@ -304,6 +334,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
 						onKeyDown={ shareCursorData }
 						onMouseDown={ shareCursorData }
 						onMouseUp={ shareCursorData }
+						style={{border: '5px solid ' + '#' + Math.floor(Math.random()*16770000).toString(16)}}
 					>
 	    			</div>
                   
@@ -319,8 +350,7 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	                    <div style={{ display: "table", height: '30px'}}>
 	                      <span className="text-gray-200 px-1" style={{ display: 'table-cell', verticalAlign: 'middle'}}>
 	                        {
-	                          state.screenShareUser && state.screenShareUser.name ?
-	                          state.screenShareUser.name.split(' ')[0] + "'s Screen"
+	                          props.config.owner.name ? props.config.owner.name.split(' ')[0] + "'s Screen"
 	                          : ''
 	                        }
 	                      </span>
@@ -332,5 +362,4 @@ const StreamScreenShareCanvas = React.memo((props) => {
 	);
 })
 
-export default StreamScreenShareCanvas;
-
+export default StreamWindowShareCanvas;

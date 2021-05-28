@@ -20,7 +20,7 @@ const ScreenShareContainer = React.memo((props) => {
         const setScreenShareViewers = setInterval(async () => {
 
             let screenShareViewers = JSON.parse(localStorage.getItem("screenShareViewers")) || []
-            actions.app.setElectronWindowScreenShareViewers(screenShareViewers);
+            actions.app.setElectronScreenShareViewers(screenShareViewers);
 
         }, 100)
 
@@ -56,10 +56,6 @@ const ScreenShareContainer = React.memo((props) => {
                 }, 2000)    
             }    
         }
-
-        socket_live.on(events.viewScreenShare, (data) => {
-            actions.app.updateScreenShareViewers(data);
-        });
 
         socket_live.on(events.screenShareCursor, (data) => {
             console.log('updating cursor');
