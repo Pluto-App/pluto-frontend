@@ -676,7 +676,7 @@ function createWindow() {
           owner: args.owner
       };
 
-      streamWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-windowshare' : streamWindowShareWindow);
+      streamWindowShareWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/stream-windowshare' : streamWindowShareWindowUrl);
 
       streamWindowShareWindow.on('closed', () => {
         streamWindowShareWindow = undefined;
