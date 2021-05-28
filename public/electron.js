@@ -48,6 +48,7 @@ if (isDev) activeWinPath = path.join(app.getAppPath(), 'src/active-window');
 else activeWinPath = path.join(app.getAppPath(), '..', 'src/active-window');
 
 const activeWin = require(activeWinPath);
+// const activeWin = require('active-win');
 const runApplescript = require('run-applescript');
 
 const minWidth = 350;
@@ -235,7 +236,7 @@ function createWindow() {
   if (isDev) {
     // Open the DevTools.
     // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on('closed', () => {
@@ -244,7 +245,7 @@ function createWindow() {
     windows.forEach((x) => x.close());
   });
 
-  primaryDisplay = screen.getPrimarPyDisplay();
+  primaryDisplay = screen.getPrimaryDisplay();
   sWidth = primaryDisplay.bounds.width;
   sHeight = primaryDisplay.bounds.height;
 
@@ -260,6 +261,7 @@ function createWindow() {
       } else {
         activeWinInfo = {}
       }
+      
 
       if (activeWinInfo && activeWinInfo.owner && activeWinInfo.owner.name) {
         activeWinInfo.url = await getTabUrl(activeWinInfo);
@@ -481,11 +483,7 @@ function createWindow() {
     });
 
     if (isDev) {
-<<<<<<< HEAD
-      videoCallWindow.webContents.openDevTools();
-=======
-       //videoCallWindow.webContents.openDevTools();
->>>>>>> trying a fix for cursor speed
+       videoCallWindow.webContents.openDevTools();
     }
   });
 
@@ -717,12 +715,8 @@ function createWindow() {
       });
 
       if (isDev) {
-<<<<<<< HEAD
-        //windowShareContainerWindow.webContents.openDevTools();
-=======
        
-        windowShareContainerWindow.webContents.openDevTools();
->>>>>>> trying a fix for cursor speed
+        //windowShareContainerWindow.webContents.openDevTools();
       }
     }
   });
@@ -841,12 +835,8 @@ function createWindow() {
       });
 
       if (isDev) {
-<<<<<<< HEAD
-        screenShareContainerWindow.webContents.openDevTools();
-=======
        
-        // screenShareContainerWindow.webContents.openDevTools();
->>>>>>> trying a fix for cursor speed
+        screenShareContainerWindow.webContents.openDevTools();
       }
 
       // ScreenShare Controls
@@ -898,7 +888,7 @@ function createWindow() {
       });
 
       if (isDev) {
-        // screenShareControlsWindow.webContents.openDevTools();
+        screenShareControlsWindow.webContents.openDevTools();
       }
     }
   });
