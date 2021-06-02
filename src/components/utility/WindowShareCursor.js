@@ -15,6 +15,8 @@ const WindowShareCursor = React.memo((props) => {
 
     useEffect(() => {
 
+        let sourceInfo = localStorage.getItem("windowshare_source");
+
         socket_live.emit(events.joinRoom, props.channel_id);
         
         socket_live.on(events.windowShareCursor, (data) => {
@@ -22,6 +24,7 @@ const WindowShareCursor = React.memo((props) => {
             if(data.user.id == props.user.id){
                 setCursorPos({x: data.cursor.x, y: data.cursor.y});
                 data.container = 'window';
+                data.sourceInfo = sourceInfo;
 
                 if(props.remote_access && data.event && data.event.type != 'mousemove'){
                     actions.app.emitRemoteEvent({ data: data});    
