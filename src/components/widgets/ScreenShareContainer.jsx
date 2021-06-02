@@ -17,16 +17,14 @@ const ScreenShareContainer = React.memo((props) => {
 	const { state, actions } = useOvermind();
     const { authData, setAuthData } = useContext(AuthContext);
 
+    const [ screenShareViewers, setScreenShareViewers ] = useState({});
+    const screenShareViewersRef = useRef();
+    screenShareViewersRef.current = screenShareViewers;
+
 	useEffect(() => {
 
-        const setScreenShareViewers = setInterval(async () => {
-
-            let screenShareViewers = JSON.parse(localStorage.getItem("screenShareViewers")) || []
-            actions.app.setElectronScreenShareViewers(screenShareViewers);
-
-        }, 100)
-
         let sourceInfo = localStorage.getItem("screenshare_source");
+        actions.app.setScreenSize();
 
         if(sourceInfo){
             let [sourceType, sourceId] = sourceInfo.split(':');
@@ -60,14 +58,13 @@ const ScreenShareContainer = React.memo((props) => {
         }
 
         socket_live.on(events.screenShareCursor, (data) => {
-            console.log('updating cursor');
-            actions.app.updateScreenShareCursor(data);
+
+            if(data.user.id && (!screenShareViewersRef.current[data.user.id])){
+
+                setScreenShareViewers({...screenShareViewers, [data.user.id] : data.user});
+            }
         });
 
-    },[])
-
-    useEffect(() => {
-        actions.app.setScreenSize();
     },[])
 
     useEffect(() => {
@@ -87,8 +84,8 @@ const ScreenShareContainer = React.memo((props) => {
         <StyledContainer className="screen-share-container">
 
             {
-                Object.keys(state.screenShareViewers).map(key => 
-                    <Cursor key={key} user={state.screenShareViewers[key]}></Cursor>
+                Object.keys(screenShareViewers).map(user_id => 
+                    <Cursor key={user_id} user={screenShareViewers[user_id]}></Cursor>
                 )
             }
 
