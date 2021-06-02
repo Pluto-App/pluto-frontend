@@ -177,7 +177,7 @@ function getModsArray(event) {
   return mods;
 }
 
-function getwindowBounds(sourceInfo) {
+async function getwindowBounds(sourceInfo, sWidth, sHeight) {
 
   var [sourceType, sourceId] = sourceInfo.split(':');
   var overlayBounds;
@@ -192,27 +192,25 @@ function getwindowBounds(sourceInfo) {
 
     try {
 
-      overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds();
+      if(isMac) {
+
+        var windowsList = await allWindows();
+        for (var win of windowsList) {
+          if(win.id == sourceId) {
+            overlayBounds = win.bounds;
+            break;
+          }
+        }
+
+      } else {
+        windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+      } 
 
     } catch (error) {
 
       console.log('Error fetching bounds for: ' + sourceInfo);
       console.log(error);
     }
-
-    // if(isMac) {
-
-    //   var windowsList = await allWindows();
-    //   for (var win of windowsList) {
-    //     if(win.id == sourceId) {
-    //       overlayBounds = win.bounds;
-    //       break;
-    //     }
-    //   }
-
-    // } else {
-    //   windowManager.getWindows().find(o => o.id == sourceId).getBounds()
-    // } 
   }
 
   return overlayBounds;
@@ -927,7 +925,7 @@ function createWindow() {
 
   ipcMain.on('screenshare-source-bounds', async (event, sourceInfo) => {
 
-    var overlayBounds = getwindowBounds(sourceInfo);
+    var overlayBounds = await getwindowBounds(sourceInfo, sWidth, sHeight);
 
     event.returnValue = overlayBounds;
   })
@@ -935,7 +933,7 @@ function createWindow() {
   // Make and use common methods for screenshare/windowshare wherever possible
   ipcMain.on('windowshare-source-bounds', async (event, sourceInfo) => {
 
-    var overlayBounds = getwindowBounds(sourceInfo)
+    var overlayBounds = await getwindowBounds(sourceInfo, sWidth, sHeight)
 
     if(windowShareContainerWindow)
       windowShareContainerWindow.moveAbove(sourceInfo);

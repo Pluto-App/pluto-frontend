@@ -109,10 +109,6 @@ export default function App() {
         actions.app.userVideoCall(data);
       });
 
-      socket_live.on(events.viewScreenShare, (data) => {
-        actions.app.updateScreenShareViewers(data);
-      });
-
       socket_live.on(events.updateTeam, (data) => {
 
         if(data.tid === state.currentTeam.tid){
