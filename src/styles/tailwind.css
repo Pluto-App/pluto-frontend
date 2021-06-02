@@ -104511,8 +104511,3 @@ video {
     animation: bounce 1s infinite;
   }
 }
-html,
-body,
-#root {
-  height: 100%;
-}
