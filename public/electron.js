@@ -219,11 +219,11 @@ async function getwindowBounds(sourceInfo, sWidth, sHeight) {
   
   } else {
 
-    var retry = 3;
+    var retry = 2;
 
     while(retry > 0) {
       try {
-        console,log('Fetching window bounds #getwindowBounds: ' + sourceInfo + ' for try: ' + retry);
+        //console.log('Fetching window bounds #getwindowBounds: ' + sourceInfo + ' for try: ' + retry);
         retry -= 1;
         if(isMac) {
 
@@ -530,9 +530,6 @@ function createWindow() {
       isDev ? process.env.ELECTRON_START_URL + '#/video-call' : videoUrl
     );
 
-    console.log('streamWindowShareWindows: '+ streamWindowShareWindows.length);
-    console.log(streamWindowShareWindows);
-
     videoCallWindow.on('closed', () => {
       try {
         if (initScreenShareWindow) initScreenShareWindow.close();
@@ -783,8 +780,6 @@ function createWindow() {
   });
 
   ipcMain.on('streaming-windowshare', (event, args) => {
-
-    console.log('streaming-windowshare');
 
     if (args.resolution) {
     

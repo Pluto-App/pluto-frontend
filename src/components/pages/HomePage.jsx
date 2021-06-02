@@ -153,7 +153,7 @@ export default function HomePage() {
               className="px-3 font-bold tracking-wide"
               style={{ fontWeight: '600', color: '#C4C4C4', fontSize: '14px' }}
             >
-              ROOMS123
+              ROOMS
             </div>
 
             <button
