@@ -206,6 +206,46 @@ function getModsArray(event) {
   return mods;
 }
 
+function getwindowBounds(sourceInfo) {
+
+  var [sourceType, sourceId] = sourceInfo.split(':');
+  var overlayBounds;
+              
+  if(sourceType == 'screen'){
+    
+    overlayBounds = {
+      x: 0, y: 0, width: sWidth, height: sHeight
+    }
+  
+  } else {
+
+    try {
+
+      overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+
+    } catch (error) {
+
+      console.log(error);
+    }
+
+    // if(isMac) {
+
+    //   var windowsList = await allWindows();
+    //   for (var win of windowsList) {
+    //     if(win.id == sourceId) {
+    //       overlayBounds = win.bounds;
+    //       break;
+    //     }
+    //   }
+
+    // } else {
+    //   windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+    // } 
+  }
+
+  return overlayBounds;
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: minWidth,
@@ -731,6 +771,8 @@ function createWindow() {
       app.dock && app.dock.hide();
       windowShareContainerWindow.showInactive();
       app.dock && app.dock.show();
+
+      windowShareContainerWindow.moveAbove(args.sourceInfo);
 
       windowShareContainerWindow.on('closed', () => {
         windowShareContainerWindow = undefined;

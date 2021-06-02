@@ -14,7 +14,6 @@ import useSound from 'use-sound';
 import endCallSound from '../../assets/sounds/end_call.wav';
 
 const { remote, ipcRenderer } = window.require('electron');
-const os = window.require('os');
 
 var localStream = {};
 var streamState = {};
@@ -26,8 +25,6 @@ const VideoCallCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
 	const { authData } = useContext(AuthContext);
-
-  const isMac = os.platform() === "darwin";
 
 	const [ streamList, setStreamList ] = useState([]);
   const streamListRef = useRef();
