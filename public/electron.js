@@ -192,10 +192,11 @@ function getwindowBounds(sourceInfo) {
 
     try {
 
-      overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+      overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds();
 
     } catch (error) {
 
+      console.log('Error fetching bounds for: ' + sourceInfo);
       console.log(error);
     }
 
