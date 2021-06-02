@@ -9,12 +9,6 @@ body {
   width: 100%;
 }
 
-html,
-body,
-#root {
-  height: 100%;
-}
-
 .topBar {
   position: fixed;
   height: 45px;
