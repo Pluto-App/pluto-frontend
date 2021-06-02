@@ -64,11 +64,6 @@ export const updateUserActiveWindowData = async ({ state, effect }, {user_id, ac
 	state.usersActiveWindows[user_id] = active_window_data;
 }
 
-export const setElectronScreenShareViewers = async ({ state, effect }, screenShareViewers) => {
-
-	state.screenShareViewers = screenShareViewers;
-}
-
 export const userVideoCall = async ({ state, effect }, data) => {
 		
 	if(localStorage.getItem("call_channel_id") && localStorage.getItem("call_channel_id") === data.call_channel_id){
@@ -253,7 +248,6 @@ export const clearVideoCallData = async ({ actions, state, effect }, {call_chann
 }
 
 export const clearScreenShareData = async ({ state, effect }) => {
-	state.screenShareViewers = {};
 	state.streamingScreenShare = false;
 	state.screenShareUser = {};
 	deleteScreenShareData();
@@ -267,8 +261,6 @@ const deleteScreenShareData = () => {
 	localStorage.removeItem('screenshare_owner');
 	localStorage.removeItem('screenshare_source');
 	localStorage.removeItem('screenshare_resolution');
-	localStorage.removeItem('screenShareViewers');
-	localStorage.removeItem('screenShareCursors');
 	localStorage.removeItem('remoteAccessEnabled');
 }
 

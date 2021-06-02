@@ -206,7 +206,7 @@ function getModsArray(event) {
   return mods;
 }
 
-function getwindowBounds(sourceInfo) {
+async function getwindowBounds(sourceInfo, sWidth, sHeight) {
 
   var [sourceType, sourceId] = sourceInfo.split(':');
   var overlayBounds;
@@ -221,27 +221,25 @@ function getwindowBounds(sourceInfo) {
 
     try {
 
-      overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds();
+      if(isMac) {
+
+        var windowsList = await allWindows();
+        for (var win of windowsList) {
+          if(win.id == sourceId) {
+            overlayBounds = win.bounds;
+            break;
+          }
+        }
+
+      } else {
+        windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+      } 
 
     } catch (error) {
 
       console.log('Error fetching bounds for: ' + sourceInfo);
       console.log(error);
     }
-
-    // if(isMac) {
-
-    //   var windowsList = await allWindows();
-    //   for (var win of windowsList) {
-    //     if(win.id == sourceId) {
-    //       overlayBounds = win.bounds;
-    //       break;
-    //     }
-    //   }
-
-    // } else {
-    //   windowManager.getWindows().find(o => o.id == sourceId).getBounds()
-    // } 
   }
 
   return overlayBounds;
@@ -983,85 +981,19 @@ function createWindow() {
   });
 
   ipcMain.on('screenshare-source-bounds', async (event, sourceInfo) => {
-    var [sourceType, sourceId] = sourceInfo.split(':');
-    var overlayBounds;
 
-    if (sourceType == 'screen') {
-      overlayBounds = {
-        x: 0,
-        y: 0,
-        width: sWidth,
-        height: sHeight,
-      };
-    } else {
-      var overlayBounds;
-      if (isMac) {
-      var windowsList = [];
-      try {
-        windowsList = await allWindows();  
-      
-      } catch (error) {
-          
-        console.error(error);
-      }
-      
-        for (var win of windowsList) {
-          if (win.id == sourceId) {
-            overlayBounds = win.bounds;
-            break;
-          }
-        }
-      } else {
-        windowManager
-          .getWindows()
-          .find((o) => o.id == sourceId)
-          .getBounds();
-      }
-    }
+    var overlayBounds = await getwindowBounds(sourceInfo, sWidth, sHeight);
 
     event.returnValue = overlayBounds;
   });
 
   // Make and use common methods for screenshare/windowshare wherever possible
   ipcMain.on('windowshare-source-bounds', async (event, sourceInfo) => {
-    var [sourceType, sourceId] = sourceInfo.split(':');
 
-    var overlayBounds;
-    if (isMac) {
-      var windowsList = await allWindows();
-      for (var win of windowsList) {
-        if (win.id == sourceId) {
-          overlayBounds = win.bounds;
-          break;
-        }
-      }
-    } else {
-      overlayBounds = windowManager
-        .getWindows()
-        .find((o) => o.id == sourceId)
-        .getBounds();
-    }
+    var overlayBounds = await getwindowBounds(sourceInfo, sWidth, sHeight)
 
-    var activeWinInfo;
-
-    if (isMac) {
-      activeWinInfo = await activeWin();
-    } else {
-      //console.log('windowshare-source-bounds windowManager getActiveWindow start');
-      activeWinInfo = windowManager.getActiveWindow();
-      //console.log('windowshare-source-bounds windowManager getActiveWindow end');
-    }
-
-    if (windowShareContainerWindow) {
-      if (activeWinInfo.id != sourceId) {
-        //windowShareContainerWindow.hide()
-        //console.log('hide');
-      } else {
-        windowShareContainerWindow.showInactive();
-        //windowShareContainerWindow.moveTop();
-        //console.log('show');
-      }
-    }
+    if(windowShareContainerWindow)
+      windowShareContainerWindow.moveAbove(sourceInfo);
 
     event.returnValue = overlayBounds;
   });
