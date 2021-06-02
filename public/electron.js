@@ -257,10 +257,17 @@ async function bringToTop(sourceInfo) {
 
   var [sourceType, sourceId] = sourceInfo.split(':');
 
-  if(isMac)
-    focusWindow(sourceId);
-  else
-    windowManager.getWindows().find(o => o.id == sourceId).bringToTop();
+  try {
+    
+    if(isMac)
+      focusWindow(sourceId);
+    else
+      windowManager.getWindows().find(o => o.id == sourceId).bringToTop();  
+  
+  } catch (error) {
+    console.log('#bringToTop Error: ' + error);
+  }
+  
 }
 
 function createWindow() {
@@ -774,7 +781,7 @@ function createWindow() {
 
       if (isDev) {
        
-        // windowShareContainerWindow.webContents.openDevTools();
+        windowShareContainerWindow.webContents.openDevTools();
       }
     }
   });
@@ -999,19 +1006,18 @@ function createWindow() {
 
   ipcMain.on('emit-scroll', async (event, args) => {
 
-    await bringToTop(args.sourceInfo);
-
     originalPos = robot.getMousePos();
     var containerBounds = args.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
     robot.moveMouse((containerBounds.x + args.cursor.x) * scaleFactor, (containerBounds.y + args.cursor.y) * scaleFactor);
-    robot.scrollMouse(args.event.deltaX, args.event.deltaY);
+    robot.scrollMouse(-1 * args.event.deltaX, -1 * args.event.deltaY);
 
   })
 
   ipcMain.on('emit-mousedown', async (event, args) => {
 
     await bringToTop(args.sourceInfo);
+
     originalPos = robot.getMousePos();
     var containerBounds = args.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
@@ -1025,7 +1031,6 @@ function createWindow() {
 
   ipcMain.on('emit-mouseup', async (event, args) => {
 
-    await bringToTop(args.sourceInfo);
     originalPos = robot.getMousePos();
     var containerBounds = args.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
@@ -1040,7 +1045,8 @@ function createWindow() {
 
   ipcMain.on('emit-key', async (event, args) => {
 
-    await bringToTop(args.sourceInfo);
+    await bringToTop(args.sourceInfo);  
+    
     var rawKey = args.event.key.toLowerCase();
     var key = robotKeyMap[rawKey] || rawKey;
     var keyCode = args.event.which || args.event.keyCode;
