@@ -163,6 +163,9 @@ async function getMediaAccess() {
 
   mediaAccessPage.setMenu(null);
   mediaAccessPage.setAlwaysOnTop(true, 'screen');
+  if (isDev) {
+    mediaAccessPage.webContents.openDevTools();
+  }
   const mediaAccessPageUrl = url.format({
     pathname: path.join(__dirname, '../build/index.html'),
     hash: '/permissions',
