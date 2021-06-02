@@ -1038,7 +1038,6 @@ function createWindow() {
       robot.mouseToggle("down", 'right');
     else
       robot.mouseToggle("down", 'left');
-
   })
 
   ipcMain.on('emit-mouseup', async (event, arg) => {

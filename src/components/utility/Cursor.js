@@ -19,9 +19,11 @@ const Cursor = React.memo((props) => {
         
             if(data.user.id == props.user.id){
                 setCursorPos({x: data.cursor.x, y: data.cursor.y});
-                actions.app.emitRemoteEvent({ data: data});
+
+                if(data.event && data.event.type != 'mousemove'){
+                    actions.app.emitRemoteEvent({ data: data});
+                }   
             }
-            
         });
     },[])
 
@@ -35,7 +37,9 @@ const Cursor = React.memo((props) => {
         'borderRadius': '50%',
         'position': 'absolute',
         'backgroundColor': cursorColor,
-        'opacity': '60%'
+        'opacity': '60%',
+        zIndex: '100',
+        pointerEvents: 'none'
     }
 
     const arrowStyle = {
