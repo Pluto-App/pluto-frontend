@@ -18,8 +18,8 @@ const Cursor = React.memo((props) => {
         socket_live.on(events.screenShareCursor, (data) => {
         
             if(data.user.id == props.user.id){
-                setCursorPos({x: data.cursor.x, y: data.cursor.y})
-                actions.app.updateScreenShareCursor({ channel_id: props.channel_id, data: data});
+                setCursorPos({x: data.cursor.x, y: data.cursor.y});
+                actions.app.emitRemoteEvent({ data: data});
             }
             
         });

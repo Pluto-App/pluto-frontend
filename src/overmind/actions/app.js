@@ -148,17 +148,11 @@ export const updateScreenShareViewers = async ({ state, effect }, data) => {
 	localStorage.setItem('screenShareViewers', JSON.stringify(state.screenShareViewers));
 }
 
-export const updateScreenShareCursor = async ({ state, effect }, data) => {
+export const emitRemoteEvent = async ({ state, effect }, data) => {
 
-	var remoteAccessEnabled = localStorage.getItem('remoteAccessEnabled');
+	var remoteAccessEnabled = data.container == 'window' ? 'true' : localStorage.getItem('remoteAccessEnabled');
+
 	if(remoteAccessEnabled && remoteAccessEnabled === 'true'){
-
-		if(data.event.type === 'click'){
-			if(data.event.witch === 3)
-				ipcRenderer.send('emit-right-click', data);
-			else
-				ipcRenderer.send('emit-click', data);
-		}
 		
 		else if(data.event.type === 'wheel')
 			ipcRenderer.send('emit-scroll', data);
@@ -172,23 +166,6 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 		else if(data.event.type === 'keyup' || data.event.type === 'keydown')
 			ipcRenderer.send('emit-key', data);
 	}
-}
-
-export const updateWindowShareCursor = async ({ state, effect }, {channel_id, data}) => {
-
-	data.container = 'window';
-
-	if(data.event.type === 'wheel')
-		ipcRenderer.send('emit-scroll', data);
-
-	else if(data.event.type === 'mousedown')
-		ipcRenderer.send('emit-mousedown', data);
-
-	else if(data.event.type === 'mouseup')
-		ipcRenderer.send('emit-mouseup', data);
-
-	else if(data.event.type === 'keyup' || data.event.type === 'keydown')
-		ipcRenderer.send('emit-key', data);
 }
 
 export const setScreenSize = async ({ state, effect }) => {
