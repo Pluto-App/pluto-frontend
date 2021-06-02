@@ -232,7 +232,7 @@ async function getwindowBounds(sourceInfo, sWidth, sHeight) {
         }
 
       } else {
-        windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+        overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds()
       } 
 
     } catch (error) {
