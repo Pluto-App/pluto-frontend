@@ -13,6 +13,7 @@ const url = require('url');
 const robot = require('robotjs');
 const { windowManager } = require('node-window-manager');
 const allWindows = require('all-windows');
+const focusWindow = require('mac-focus-window');
 
 const ffi = require('ffi-napi');
 const { autoUpdater } = require('electron-updater');
@@ -243,6 +244,16 @@ async function getwindowBounds(sourceInfo, sWidth, sHeight) {
   }
 
   return overlayBounds;
+}
+
+async function bringToTop(sourceInfo) {
+
+  var [sourceType, sourceId] = sourceInfo.split(':');
+
+  if(isMac)
+    focusWindow(sourceId);
+  else
+    windowManager.getWindows().find(o => o.id == sourceId).bringToTop();
 }
 
 function createWindow() {
@@ -710,7 +721,7 @@ function createWindow() {
     }
   });
 
-  ipcMain.on('sharing-window', (event, args) => {
+  ipcMain.on('sharing-window', async (event, args) => {
     if (initWindowShareWindow) {
       initWindowShareWindow.hide();
 
@@ -1057,6 +1068,8 @@ function createWindow() {
   ]);
 
   ipcMain.on('emit-scroll', async (event, arg) => {
+    await bringToTop(data.sourceInfo);
+
     originalPos = robot.getMousePos();
     var containerBounds =
       arg.container == 'window'
@@ -1071,6 +1084,7 @@ function createWindow() {
   });
 
   ipcMain.on('emit-mousedown', async (event, arg) => {
+    await bringToTop(data.sourceInfo);
     originalPos = robot.getMousePos();
     var containerBounds =
       arg.container == 'window'
@@ -1087,6 +1101,7 @@ function createWindow() {
   });
 
   ipcMain.on('emit-mouseup', async (event, arg) => {
+    await bringToTop(data.sourceInfo);
     originalPos = robot.getMousePos();
     var containerBounds =
       arg.container == 'window'
@@ -1102,10 +1117,8 @@ function createWindow() {
     else robot.mouseToggle('up', 'left');
   });
 
-  //////////////////////////////////////////////////////////////////////
-  // Use attributes from javascript keyboard event to fetch robotMods //
-  //////////////////////////////////////////////////////////////////////
   ipcMain.on('emit-key', async (event, arg) => {
+    await bringToTop(data.sourceInfo);
     var rawKey = arg.event.key.toLowerCase();
     var key = robotKeyMap[rawKey] || rawKey;
     var keyCode = arg.event.which || arg.event.keyCode;
