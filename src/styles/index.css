@@ -20,7 +20,7 @@ body {
 .main-container {
   position: fixed;
   top: 45px;
-  background: #2F3136;
+  background: #2f3136;
 }
 
 .sidebar-container {
@@ -38,12 +38,12 @@ body {
   padding-left: 10px;
 }
 
-.settings-menu-item:hover { 
-  background: #73767D;
+.settings-menu-item:hover {
+  background: #73767d;
 }
 
-.settings-menu-item.active { 
-  background: #73767D;
+.settings-menu-item.active {
+  background: #73767d;
 }
 
 .pointer {
@@ -63,10 +63,9 @@ body {
 }
 
 button:disabled,
-button[disabled]{
+button[disabled] {
   cursor: not-allowed;
 }
-
 
 /**
  * From Agora OpenAgoraWWeb-React GitHub Repo
@@ -91,14 +90,14 @@ button[disabled]{
 
 .ag-item {
   border-radius: 6px;
-  background: url("../assets/avatar.png") center no-repeat;
+  background: url('../assets/avatar.png') center no-repeat;
   height: 100%;
   width: 100%;
 }
 
 #ag-screenshare-canvas {
-   height: 100%;
-   width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 #ag-resize-container {
@@ -145,7 +144,6 @@ button[disabled]{
   background: rgba(34, 36, 37, 0.8);
 }
 
-
 .ag-btn {
   z-index: 12;
   opacity: 0;
@@ -160,12 +158,12 @@ button[disabled]{
 }
 
 .ag-btn:hover {
-  color: #00B6ED;
+  color: #00b6ed;
 }
 
 .ag-btn.disabled,
 .ag-btn.disabled:hover {
-  color: #637C8E;
+  color: #637c8e;
   cursor: not-allowed;
 }
 
@@ -311,15 +309,15 @@ video {
 }
 
 .login-subtitle {
-  color: #637C8E;
+  color: #637c8e;
 }
 
 .channel-wrapper {
   padding-bottom: 30px;
 }
 
-.channel-wrapper>span {
-  height: 35px!important;
+.channel-wrapper > span {
+  height: 35px !important;
 }
 
 #channel {
@@ -330,12 +328,12 @@ video {
 }
 
 #channel:focus:not(.is-success):not(.is-danger) {
-  border-color: #00B6ED;
+  border-color: #00b6ed;
 }
 
 #channel::-webkit-input-placeholder {
   color: white;
-  opacity: .5;
+  opacity: 0.5;
 }
 
 .channel-wrapper.has-icons-left .icon.is-left {
@@ -345,7 +343,7 @@ video {
 #baseMode {
   font-size: 14px;
   width: 160px;
-  border: 1px solid transparent!important;
+  border: 1px solid transparent !important;
 }
 
 #joinBtn {
@@ -356,22 +354,22 @@ video {
 }
 
 #joinBtn:hover {
-  box-shadow: 0 2px 2px 1px #0056ED;
-  transition: box-shadow .1s ease-in-out;
+  box-shadow: 0 2px 2px 1px #0056ed;
+  transition: box-shadow 0.1s ease-in-out;
 }
 
 .dropdown.is-active .dropdown-menu {
-  animation: dropdown .25s ease-in-out
+  animation: dropdown 0.25s ease-in-out;
 }
 
 @keyframes dropdown {
   from {
     opacity: 0;
-    transform: scale(.92) translate(0, -4px)
+    transform: scale(0.92) translate(0, -4px);
   }
   to {
     opacity: 1;
-    transform: scale(none) translate(none)
+    transform: scale(none) translate(none);
   }
 }
 
@@ -386,11 +384,11 @@ video {
 
 .dropdown.is-active #advancedProfile,
 #advancedProfile:hover {
-  transition: .1s background ease-in-out;
-  background: #004A65;
+  transition: 0.1s background ease-in-out;
+  background: #004a65;
 }
 
-#attendeeMode input[type="radio"] {
+#attendeeMode input[type='radio'] {
   position: absolute;
   left: -99999px;
 }
@@ -435,26 +433,30 @@ video {
 
 #attendeeMode .radio-msg {
   margin-left: 10px;
-  color: #637C8E;
+  color: #637c8e;
 }
 
-#attendeeMode input[type="radio"]:checked+.radio-btn {
+#attendeeMode input[type='radio']:checked + .radio-btn {
   background: url('../assets/images/ag-oval-active.png') no-repeat center;
 }
 
-#attendeeMode input[type="radio"]:checked+.radio-btn+.radio-img.video {
+#attendeeMode input[type='radio']:checked + .radio-btn + .radio-img.video {
   background: url('../assets/images/ag-video-active-s.png') no-repeat center;
 }
 
-#attendeeMode input[type="radio"]:checked+.radio-btn+.radio-img.audio {
+#attendeeMode input[type='radio']:checked + .radio-btn + .radio-img.audio {
   background: url('../assets/images/ag-mic-active-s.png') no-repeat center;
 }
 
-#attendeeMode input[type="radio"]:checked+.radio-btn+.radio-img.audience {
+#attendeeMode input[type='radio']:checked + .radio-btn + .radio-img.audience {
   background: url('../assets/images/ag-audience-active.png') no-repeat center;
 }
 
-#attendeeMode input[type="radio"]:checked+.radio-btn+.radio-img+.radio-msg {
+#attendeeMode
+  input[type='radio']:checked
+  + .radio-btn
+  + .radio-img
+  + .radio-msg {
   color: rgb(0, 182, 237);
   opacity: 1;
 }
@@ -476,7 +478,7 @@ video {
 }
 
 #baseModeOptions .dropdown-item:hover p:first-child {
-  color: #00B6ED;
+  color: #00b6ed;
 }
 
 #baseModeOptions .dropdown-item hr {
@@ -485,13 +487,13 @@ video {
 
 #baseModeOptions .dropdown-item p:nth-child(3) {
   font-size: 12px;
-  color: rgba(0, 0, 0, .5);
+  color: rgba(0, 0, 0, 0.5);
 }
 
 #advancedOptions .dropdown-content {
   border-radius: 12px;
   border: 1px solid rgb(0, 182, 237);
-  background: #004A65;
+  background: #004a65;
   text-align: center;
   padding: 12px 3px;
   cursor: pointer;
@@ -531,12 +533,12 @@ video {
   align-items: center;
 }
 
-.validate-icon>.ag-icon-invalid {
-  color: #D0021B;
+.validate-icon > .ag-icon-invalid {
+  color: #d0021b;
 }
 
-.validate-icon>.ag-icon-valid {
-  color: #7ED321;
+.validate-icon > .ag-icon-valid {
+  color: #7ed321;
 }
 
 #nprogress .bar {
@@ -548,26 +550,24 @@ video {
 }
 
 #nprogress .spinner-icon {
-  border-top-color:transparent !important;
-  border-left-color:transparent !important;
+  border-top-color: transparent !important;
+  border-left-color: transparent !important;
 }
 
 /* Container */
 #Dish {
-    display: flex;
-    height: calc(100vh - 70px);
-    left: 0px;
-    bottom: 0px;
-    top: 0px;
-    right: 0px; 
-    position: absolute;
-    align-content: center;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    vertical-align: middle;
-   
-   
+  display: flex;
+  height: calc(100vh - 70px);
+  left: 0px;
+  bottom: 0px;
+  top: 0px;
+  right: 0px;
+  position: absolute;
+  align-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
 }
 
 #ScreenShareDish {
@@ -587,53 +587,49 @@ video {
 /* Details (optional) */
 /* Aspect Ratio Number */
 #ScreenShareDish .ag-item-info {
-    font-size: 12px;
-    font-family: Arial, Helvetica, sans-serif;
-    position: absolute;
-    font-weight: 100;
-    display: block;
-    opacity: 0.7;
-    background: black;
-    padding: 2px;
+  font-size: 12px;
+  font-family: Arial, Helvetica, sans-serif;
+  position: absolute;
+  font-weight: 100;
+  display: block;
+  opacity: 0.7;
+  background: black;
+  padding: 2px;
 }
 
 /* Camera */
 #Dish .ag-item {
-
-    position: relative;
-    vertical-align: middle;
-    align-self: center;
-    overflow: hidden;
-    display: inline-block;
-    background: #fff;
-
+  position: relative;
+  vertical-align: middle;
+  align-self: center;
+  overflow: hidden;
+  display: inline-block;
+  background: #fff;
 }
 
 /* Details (optional) */
 /* Aspect Ratio Number */
 #Dish .ag-item-info {
-    font-size: 12px;
-    font-family: Arial, Helvetica, sans-serif;
-    position: absolute;
-    font-weight: 100;
-    display: block;
-    opacity: 0.7;
-    background: black;
-    padding: 2px;
+  font-size: 12px;
+  font-family: Arial, Helvetica, sans-serif;
+  position: absolute;
+  font-weight: 100;
+  display: block;
+  opacity: 0.7;
+  background: black;
+  padding: 2px;
 }
-
-
 
 /* Animation */
 @keyframes show {
-    0% {
-        opacity: 0;
-        transform: scale(0.4) translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
+  0% {
+    opacity: 0;
+    transform: scale(0.4) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .main-team-select {
@@ -644,52 +640,51 @@ video {
 }
 
 .custom-select__trigger {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 18px;
-    font-weight: 300;
-    cursor: pointer;
-    color: #B8B9BC;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 300;
+  cursor: pointer;
+  color: #b8b9bc;
 }
- .main-team-select-options {
-    width: 230px;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    border-top: 0;
-    background: #25272C;
-    transition: all 0.5s;
-    z-index: 2;
-    border-radius: 10px;
-    max-height: calc(100vh - 200px);
-    min-height: 300px;
-    overflow-y: scroll;
+.main-team-select-options {
+  width: 230px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  border-top: 0;
+  background: #25272c;
+  transition: all 0.5s;
+  z-index: 2;
+  border-radius: 10px;
+  max-height: calc(100vh - 200px);
+  min-height: 300px;
+  overflow-y: scroll;
 }
 
- .main-team-select-option {
-    position: relative;
-    margin: 5px;
-    border-radius: 20px;
-    font-size: 16px;
-    font-weight: 500;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.5s;
-    background: #202225;
-    padding: 10px;
-    height: 65px;
-
+.main-team-select-option {
+  position: relative;
+  margin: 5px;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.5s;
+  background: #202225;
+  padding: 10px;
+  height: 65px;
 }
 
 .main-team-select-option:hover {
-     cursor: pointer;
-     background-color: #b2b2b2;
+  cursor: pointer;
+  background-color: #b2b2b2;
 }
- .main-team-select-option.selected {
-     color: #ffffff;
-     background-color: #305c91;
+.main-team-select-option.selected {
+  color: #ffffff;
+  background-color: #305c91;
 }
 
 .rooms-list-container {
@@ -701,31 +696,31 @@ video {
 }
 
 .members-list-item:hover {
-  background: #202225
+  background: #202225;
 }
 
 .btn-add:before {
   content: '\FF0B';
   top: -2px;
   position: relative;
-  font-size: 14px
+  font-size: 14px;
 }
 
 .btn-add {
   border-radius: 50%;
   height: 24px;
   width: 24px;
-  background: #673AB7;
+  background: #673ab7;
 }
 
 .btn-join-room {
   border-radius: 10px;
-  background: #673AB7;
+  background: #673ab7;
   height: 30px;
 }
 
 .room-list-item:hover {
-  background: #202225
+  background: #202225;
 }
 
 .room-list-item {
@@ -734,26 +729,24 @@ video {
 }
 
 .bg-purple {
-  background:   #673AB7
+  background: #673ab7;
 }
 
 .bg-light-blue {
-  background: #768AD4
+  background: #768ad4;
 }
 
 .bg-grey {
-  background: #202225
+  background: #202225;
 }
 
-
 .bg-red {
-  background: #FF5959
+  background: #ff5959;
 }
 
 .bg-green {
-  background: #5CFF59
+  background: #5cff59;
 }
-
 
 .center {
   text-align: center;
@@ -772,9 +765,7 @@ video {
 
 .rating > span:hover:before,
 .rating > span:hover ~ span:before {
-   content: "\2605";
-   position: absolute;
-   color: #f7b806;
+  content: '\2605';
+  position: absolute;
+  color: #f7b806;
 }
-
-
