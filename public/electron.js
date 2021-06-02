@@ -177,6 +177,46 @@ function getModsArray(event) {
   return mods;
 }
 
+function getwindowBounds(sourceInfo) {
+
+  var [sourceType, sourceId] = sourceInfo.split(':');
+  var overlayBounds;
+              
+  if(sourceType == 'screen'){
+    
+    overlayBounds = {
+      x: 0, y: 0, width: sWidth, height: sHeight
+    }
+  
+  } else {
+
+    try {
+
+      overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+
+    } catch (error) {
+
+      console.log(error);
+    }
+
+    // if(isMac) {
+
+    //   var windowsList = await allWindows();
+    //   for (var win of windowsList) {
+    //     if(win.id == sourceId) {
+    //       overlayBounds = win.bounds;
+    //       break;
+    //     }
+    //   }
+
+    // } else {
+    //   windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+    // } 
+  }
+
+  return overlayBounds;
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: minWidth,
@@ -663,7 +703,6 @@ function createWindow() {
       var [sourceType, sourceId] = args.sourceInfo.split(':');
       windowManager.getWindows().find(o => o.id == sourceId).bringToTop();
 
-      windowShareContainerWindow.setVisibleOnAllWorkspaces(true);
       windowShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/windowshare-container' : windowshareContainerUrl);
       windowShareContainerWindow.setIgnoreMouseEvents(true);
       windowShareContainerWindow.setSize(args.overlayBounds.width, args.overlayBounds.height);
@@ -673,6 +712,8 @@ function createWindow() {
       app.dock && app.dock.hide();
       windowShareContainerWindow.showInactive();
       app.dock && app.dock.show();
+
+      windowShareContainerWindow.moveAbove(args.sourceInfo);
 
       windowShareContainerWindow.on('closed', () => {
         windowShareContainerWindow = undefined;
@@ -885,86 +926,18 @@ function createWindow() {
 
   ipcMain.on('screenshare-source-bounds', async (event, sourceInfo) => {
 
-    var [sourceType, sourceId] = sourceInfo.split(':');
-    var overlayBounds;
-              
-    if(sourceType == 'screen'){
-      
-      overlayBounds = {
-        x: 0, y: 0, width: sWidth, height: sHeight
-      }
-    
-    } else {
+    var overlayBounds = getwindowBounds(sourceInfo);
 
-      var overlayBounds;
-      if(isMac) {
-
-        var windowsList = await allWindows();
-        for (var win of windowsList) {
-          if(win.id == sourceId) {
-            overlayBounds = win.bounds;
-            break;
-          }
-        }
-
-      } else {
-        windowManager.getWindows().find(o => o.id == sourceId).getBounds()
-      } 
-    }
-
-      event.returnValue = overlayBounds;
+    event.returnValue = overlayBounds;
   })
 
   // Make and use common methods for screenshare/windowshare wherever possible
   ipcMain.on('windowshare-source-bounds', async (event, sourceInfo) => {
 
-    var [sourceType, sourceId] = sourceInfo.split(':');
+    var overlayBounds = getwindowBounds(sourceInfo)
 
-    var overlayBounds;
-    if(isMac) {
-      var windowsList = [];
-
-      try {
-        windowsList = await allWindows();  
-      
-      } catch (error) {
-          
-        console.error(error);
-      }
-      
-      for (var win of windowsList) {
-        if(win.id == sourceId) {
-          overlayBounds = win.bounds;
-          break;
-        }
-      }
-    } else {
-
-      overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds();
-    }
-
-    var activeWinInfo;
-
-    if(isMac) {
-      activeWinInfo = await activeWin();
-
-    } else {
-      //console.log('windowshare-source-bounds windowManager getActiveWindow start');
-      activeWinInfo = windowManager.getActiveWindow();
-      //console.log('windowshare-source-bounds windowManager getActiveWindow end');  
-    }
-    
-
-    if(windowShareContainerWindow) {
-      if(activeWinInfo.id != sourceId){
-        //windowShareContainerWindow.hide()
-        //console.log('hide');
-      } else {
-        windowShareContainerWindow.showInactive();
-        //windowShareContainerWindow.moveTop();
-        //console.log('show');
-      }
-    }
+    if(windowShareContainerWindow)
+      windowShareContainerWindow.moveAbove(sourceInfo);
 
     event.returnValue = overlayBounds;
   })

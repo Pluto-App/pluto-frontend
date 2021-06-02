@@ -4,11 +4,12 @@ import AgoraRTC from 'agora-rtc-sdk'
 import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 
+const AgoraClient = AgoraRTC.createClient({ mode: 'interop', codec: "vp8" });
+
 const StreamScreenShareCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
-
-	const AgoraClient = AgoraRTC.createClient({ mode: props.transcode, codec: "vp8" });
+	
 	const [screenShareResolution, setScreenShareResolution] = useState(JSON.parse(localStorage.getItem("screenshare_resolution")));
 
 	const [ streamList, setStreamList ] = useState([]);
