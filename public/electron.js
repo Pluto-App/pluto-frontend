@@ -3,7 +3,6 @@ const {
   BrowserWindow,
   ipcMain,
   screen,
-  Menu,
   dialog,
   systemPreferences,
 } = require('electron');
@@ -220,76 +219,35 @@ async function getwindowBounds(sourceInfo, sWidth, sHeight) {
   
   } else {
 
-    try {
+    var retry = 3;
 
-      if(isMac) {
+    while(retry > 0) {
+      try {
+        console,log('Fetching window bounds #getwindowBounds: ' + sourceInfo + ' for try: ' + retry);
+        retry -= 1;
+        if(isMac) {
 
-        var windowsList = await allWindows();
-        for (var win of windowsList) {
-          if(win.id == sourceId) {
-            overlayBounds = win.bounds;
-            break;
+          var windowsList = await allWindows();
+          for (var win of windowsList) {
+            if(win.id == sourceId) {
+              overlayBounds = win.bounds;
+              break;
+            }
           }
-        }
 
-      } else {
-        overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds()
-      } 
+        } else {
+          overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds();
+        } 
 
-    } catch (error) {
+        break;
 
-      console.log('Error fetching bounds for: ' + sourceInfo);
-      console.log(error);
+      } catch (error) {
+
+        console.log('Error fetching bounds for: ' + sourceInfo);
+        console.log(error);
+      }  
     }
-  }
-
-  return overlayBounds;
-}
-
-async function bringToTop(sourceInfo) {
-
-  var [sourceType, sourceId] = sourceInfo.split(':');
-
-  if(isMac)
-    focusWindow(sourceId);
-  else
-    windowManager.getWindows().find(o => o.id == sourceId).bringToTop();
-}
-
-async function getwindowBounds(sourceInfo, sWidth, sHeight) {
-
-  var [sourceType, sourceId] = sourceInfo.split(':');
-  var overlayBounds;
-              
-  if(sourceType == 'screen'){
     
-    overlayBounds = {
-      x: 0, y: 0, width: sWidth, height: sHeight
-    }
-  
-  } else {
-
-    try {
-
-      if(isMac) {
-
-        var windowsList = await allWindows();
-        for (var win of windowsList) {
-          if(win.id == sourceId) {
-            overlayBounds = win.bounds;
-            break;
-          }
-        }
-
-      } else {
-        overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds()
-      } 
-
-    } catch (error) {
-
-      console.log('Error fetching bounds for: ' + sourceInfo);
-      console.log(error);
-    }
   }
 
   return overlayBounds;
@@ -466,16 +424,6 @@ function createWindow() {
   })
 
 
-  ipcMain.on(`display-app-menu`, function (e, args) {
-    if (isWindows && mainWindow) {
-      menu.popup({
-        window: mainWindow,
-        x: args.x,
-        y: args.y,
-      });
-    }
-  });
-
   ipcMain.on(`open-settings`, (events, data) => {
     if (settingsPage) {
       settingsPage.close();
@@ -581,6 +529,9 @@ function createWindow() {
     videoCallWindow.loadURL(
       isDev ? process.env.ELECTRON_START_URL + '#/video-call' : videoUrl
     );
+
+    console.log('streamWindowShareWindows: '+ streamWindowShareWindows.length);
+    console.log(streamWindowShareWindows);
 
     videoCallWindow.on('closed', () => {
       try {
@@ -826,13 +777,17 @@ function createWindow() {
 
       if (isDev) {
        
-        windowShareContainerWindow.webContents.openDevTools();
+        // windowShareContainerWindow.webContents.openDevTools();
       }
     }
   });
 
   ipcMain.on('streaming-windowshare', (event, args) => {
+
+    console.log('streaming-windowshare');
+
     if (args.resolution) {
+    
       var streamWindowShareWindow = new BrowserWindow({
         width: args.resolution.width,
         height: args.resolution.height,
@@ -879,6 +834,9 @@ function createWindow() {
       if (isDev) {
         // streamWindowShareWindow.webContents.openDevTools();
       }  
+    
+    } else {
+      console.log('#streaming-windowshare Error: No resolution provided to stream windowshare.')
     }
     
   })
@@ -1044,63 +1002,6 @@ function createWindow() {
     event.returnValue = overlayBounds;
   });
 
-  var menu = Menu.buildFromTemplate([
-    {
-      label: 'App ',
-      submenu: [
-        {
-          label: 'Join Team',
-          click() {},
-        },
-        {
-          label: 'Join Room',
-          click() {},
-        },
-        { type: 'separator' },
-        {
-          label: 'Exit',
-          click() {},
-        },
-      ],
-    },
-    {
-      label: 'File �',
-      submenu: [
-        {
-          label: 'Share File',
-          click() {},
-        },
-        {
-          label: 'Sync With GCloud',
-          click() {},
-        },
-        { type: 'separator' },
-        {
-          label: 'Exit',
-          click() {},
-        },
-      ],
-    },
-    {
-      label: 'Refersh �',
-      submenu: [
-        {
-          label: 'Reset',
-          click() {},
-        },
-        {
-          label: 'Logout',
-          click() {},
-        },
-        { type: 'separator' },
-        {
-          label: 'Exit',
-          click() {},
-        },
-      ],
-    },
-  ]);
-
   ipcMain.on('emit-scroll', async (event, args) => {
 
     await bringToTop(args.sourceInfo);
@@ -1202,7 +1103,6 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (mainWindow === null) {
-    Menu.setApplicationMenu(menu);
     createWindow();
   }
 });
