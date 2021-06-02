@@ -123,7 +123,6 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
   		actions.app.setStreamingWindowShare(false);
   		currentWindow.destroy();
-  		//actions.app.clearWindowShareData();
   	}
 
   	const viewingWindowShare = async () => {
@@ -269,7 +268,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 	      	subscribeStreamEvents();
 	      	const agoraAccessToken = await actions.auth.getAgoraAccessToken({ requestParams: {channel: props.config.channel}});
 
-	      	AgoraClient.join(agoraAccessToken, props.config.channel, props.config.user_uid, (uid) => {
+	      	AgoraClient.join(agoraAccessToken, props.config.channel, props.config.user_uid+'-'+Date.now(), (uid) => {
 
 	      		socket_live.emit(events.joinRoom, props.config.channel);
 	        	viewingWindowShare();
