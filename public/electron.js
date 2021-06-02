@@ -669,8 +669,8 @@ function createWindow() {
       initWindowShareWindow.hide();
 
       windowShareContainerWindow = new BrowserWindow({
-        x: args.overlayBounds.x,
-        y: args.overlayBounds.y,
+        x: args.overlayBounds.x || 400,
+        y: args.overlayBounds.y || 400,
         hasShadow: false,
         transparent: true,
         frame: false,
