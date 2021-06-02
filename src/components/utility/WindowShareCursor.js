@@ -20,8 +20,9 @@ const WindowShareCursor = React.memo((props) => {
         socket_live.on(events.windowShareCursor, (data) => {
         
             if(data.user.id == props.user.id){
-                setCursorPos({x: data.cursor.x, y: data.cursor.y})
-                actions.app.updateWindowShareCursor({ channel_id: props.channel_id, data: data});
+                setCursorPos({x: data.cursor.x, y: data.cursor.y});
+                data.container = 'window';
+                actions.app.emitRemoteEvent({ channel_id: props.channel_id, data: data});
             }
             
         });
