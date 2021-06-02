@@ -236,7 +236,7 @@ function createWindow() {
   if (isDev) {
     // Open the DevTools.
     // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on('closed', () => {
@@ -254,10 +254,22 @@ function createWindow() {
   if (isMac) getMediaAccess();
 
   ipcMain.on('active-win', async (event, arg) => {
-    try {
+
+    try{
+
       var activeWinInfo;
-      if (isMac) {
-        activeWinInfo = await activeWin();
+      if(isMac){
+        
+        try {
+          activeWinInfo = await activeWin()  
+        
+        } catch (error) {
+          
+          console.error(error);
+          activeWinInfo = {};
+        }
+        
+
       } else {
         activeWinInfo = {}
       }
@@ -495,7 +507,7 @@ function createWindow() {
     });
 
     if (isDev) {
-       videoCallWindow.webContents.openDevTools();
+       // videoCallWindow.webContents.openDevTools();
     }
   });
 
@@ -728,7 +740,7 @@ function createWindow() {
 
       if (isDev) {
        
-        //windowShareContainerWindow.webContents.openDevTools();
+        windowShareContainerWindow.webContents.openDevTools();
       }
     }
   });
@@ -779,10 +791,11 @@ function createWindow() {
       });
 
       if (isDev) {
-        streamWindowShareWindow.webContents.openDevTools();
-      }
+        // streamWindowShareWindow.webContents.openDevTools();
+      }  
     }
-  });
+    
+  })
 
   ipcMain.on('update-windowshare-container-bounds', (event, overlayBounds) => {
     if (windowShareContainerWindow) {
@@ -940,7 +953,15 @@ function createWindow() {
     } else {
       var overlayBounds;
       if (isMac) {
-        var windowsList = await allWindows();
+      var windowsList = [];
+      try {
+        windowsList = await allWindows();  
+      
+      } catch (error) {
+          
+        console.error(error);
+      }
+      
         for (var win of windowsList) {
           if (win.id == sourceId) {
             overlayBounds = win.bounds;
