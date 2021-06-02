@@ -87,7 +87,7 @@ const WindowShareContainer = React.memo((props) => {
                 Object.keys(windowShareViewers).map(user_id => 
 
                     <WindowShareCursor key={user_id} channel_id={currentWindow.data.channel_id} 
-                        user={windowShareViewers[user_id]}>
+                        user={windowShareViewers[user_id]} remote_access=1>
                     </WindowShareCursor>
                 )
             }
