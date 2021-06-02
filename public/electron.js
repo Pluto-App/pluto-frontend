@@ -905,6 +905,7 @@ function createWindow() {
   ipcMain.on('stop-screenshare', (event, arg) => {
 
     videoCallWindow.webContents.send('stop-screenshare', {});
+    
     try{
 
       if(initScreenShareWindow)
