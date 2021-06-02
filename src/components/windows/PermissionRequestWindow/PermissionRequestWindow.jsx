@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-const {ipcRenderer} = window.require('electron');
+const { ipcRenderer } = window.require('electron');
 const StyledRow = styled.div`
   display: flex;
   justify-content: space-between;
@@ -43,7 +43,7 @@ const StyledSpan = styled.div`
   margin: 0;
 `;
 const StyledButton = styled.button`
-  background: ${({hasAccess, theme}) =>
+  background: ${({ hasAccess, theme }) =>
     hasAccess ? theme.colors.sharedWindowPrimary : '#768AD4'};
   color: #fff;
   border-radius: 10px;
@@ -58,6 +58,9 @@ const StyledRowLabel = styled.div`
   font-size: 1.2em;
   font-weight: 300;
   line-height: 1.5em;
+  /* color: ${({ disabled }) => (disabled ? '#9b9b9b' : '#fff')}; */
+  color: ${({ disabled }) => (disabled ? '#9b9b9b' : '#fff')};
+  /* color: #9b9b9b; */
   display: flex;
 `;
 const StyledIcon = styled.i`
@@ -102,10 +105,8 @@ export default function PermissionRequestWindow() {
         </StyledSubTitle>
       </StyledHeaderSection>
       <StyledRow>
-        <StyledRowLabel>
-          <StyledIcon className="material-icons md-light md-inactive">
-            mic_on
-          </StyledIcon>
+        <StyledRowLabel disabled={!mediaAccessStatus.hasMicAccess}>
+          <StyledIcon className="material-icons md-light">mic_on</StyledIcon>
           Microphone{' '}
         </StyledRowLabel>
 
@@ -124,10 +125,8 @@ export default function PermissionRequestWindow() {
         }
       </StyledRow>
       <StyledRow>
-        <StyledRowLabel>
-          <StyledIcon className="material-icons md-light md-inactive">
-            mic_on
-          </StyledIcon>
+        <StyledRowLabel disabled={!mediaAccessStatus.hasCameraAccess}>
+          <StyledIcon className="material-icons md-light">videocam</StyledIcon>
           Camera{' '}
         </StyledRowLabel>
         {
@@ -145,9 +144,9 @@ export default function PermissionRequestWindow() {
         }
       </StyledRow>
       <StyledRow>
-        <StyledRowLabel>
-          <StyledIcon className="material-icons md-light md-inactive">
-            mic_on
+        <StyledRowLabel disabled={!mediaAccessStatus.hasScreenAccess}>
+          <StyledIcon className="material-icons md-light">
+            screen_share
           </StyledIcon>
           Screen Sharing{' '}
         </StyledRowLabel>
