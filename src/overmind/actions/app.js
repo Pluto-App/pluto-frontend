@@ -147,10 +147,6 @@ export const emitRemoteEvent = async ({ state, effect }, {data}) => {
 
 	var remoteAccessEnabled = data.container == 'window' ? 'true' : localStorage.getItem('remoteAccessEnabled');
 
-	console.log('data.container: ' + data.container);
-
-	console.log('remoteAccessEnabled: ' + remoteAccessEnabled);
-
 	if(remoteAccessEnabled && remoteAccessEnabled === 'true'){
 
 		if(data.event.type === 'wheel')

@@ -57,7 +57,6 @@ const WindowShareContainer = React.memo((props) => {
         }
 
         socket_live.on(events.windowShareCursor, (data) => {
-            //actions.app.updateWindowShareCursor({ channel_id: currentWindow.data.channel_id, data: data});
             if(data.user.id && (!windowShareViewersRef.current[data.user.id])){
 
                 setWindowShareViewers({...windowShareViewers, [data.user.id] : data.user});

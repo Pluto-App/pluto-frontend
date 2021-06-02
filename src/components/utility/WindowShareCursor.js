@@ -23,7 +23,7 @@ const WindowShareCursor = React.memo((props) => {
                 setCursorPos({x: data.cursor.x, y: data.cursor.y});
                 data.container = 'window';
 
-                if(props.remote_access){
+                if(props.remote_access && data.event && data.event.type != 'mousemove'){
                     actions.app.emitRemoteEvent({ data: data});    
                 }
             }
@@ -41,7 +41,8 @@ const WindowShareCursor = React.memo((props) => {
         'position': 'absolute',
         'backgroundColor': cursorColor,
         'opacity': '60%',
-        zIndex: '100'
+        zIndex: '100',
+        pointerEvents: 'none'
     }
 
     const arrowStyle = {
