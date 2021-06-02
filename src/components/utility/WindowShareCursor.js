@@ -24,7 +24,7 @@ const WindowShareCursor = React.memo((props) => {
                 data.container = 'window';
 
                 if(props.remote_access){
-                    actions.app.emitRemoteEvent({ channel_id: props.channel_id, data: data});    
+                    actions.app.emitRemoteEvent({ data: data});    
                 }
             }
         });
