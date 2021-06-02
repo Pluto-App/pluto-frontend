@@ -1067,76 +1067,73 @@ function createWindow() {
     },
   ]);
 
-  ipcMain.on('emit-scroll', async (event, arg) => {
-    await bringToTop(data.sourceInfo);
+  ipcMain.on('emit-scroll', async (event, args) => {
+    await bringToTop(args.sourceInfo);
 
     originalPos = robot.getMousePos();
-    var containerBounds =
-      arg.container == 'window'
-        ? windowShareContainerWindow.getBounds()
-        : screenShareContainerWindow.getBounds();
+    var containerBounds = args.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse(
-      (containerBounds.x + arg.cursor.x) * scaleFactor,
-      (containerBounds.y + arg.cursor.y) * scaleFactor
-    );
-    robot.scrollMouse(arg.event.deltaX, arg.event.deltaY);
-  });
+    robot.moveMouse((containerBounds.x + args.cursor.x) * scaleFactor, (containerBounds.y + args.cursor.y) * scaleFactor);
+    robot.scrollMouse(args.event.deltaX, args.event.deltaY);
 
-  ipcMain.on('emit-mousedown', async (event, arg) => {
-    await bringToTop(data.sourceInfo);
+  })
+
+  ipcMain.on('emit-mousedown', async (event, args) => {
+
+    await bringToTop(args.sourceInfo);
     originalPos = robot.getMousePos();
-    var containerBounds =
-      arg.container == 'window'
-        ? windowShareContainerWindow.getBounds()
-        : screenShareContainerWindow.getBounds();
+    var containerBounds = args.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse(
-      (containerBounds.x + arg.cursor.x) * scaleFactor,
-      (containerBounds.y + arg.cursor.y) * scaleFactor
-    );
+    robot.moveMouse((containerBounds.x + args.cursor.x) * scaleFactor, (containerBounds.y + args.cursor.y) * scaleFactor);
 
-    if (arg.event.which == 3) robot.mouseToggle('down', 'right');
-    else robot.mouseToggle('down', 'left');
-  });
+    if(args.event.which == 3)
+      robot.mouseToggle("down", 'right');
+    else
+      robot.mouseToggle("down", 'left');
+  })
 
-  ipcMain.on('emit-mouseup', async (event, arg) => {
-    await bringToTop(data.sourceInfo);
+  ipcMain.on('emit-mouseup', async (event, args) => {
+
+    await bringToTop(args.sourceInfo);
     originalPos = robot.getMousePos();
-    var containerBounds =
-      arg.container == 'window'
-        ? windowShareContainerWindow.getBounds()
-        : screenShareContainerWindow.getBounds();
+    var containerBounds = args.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse(
-      (containerBounds.x + arg.cursor.x) * scaleFactor,
-      (containerBounds.y + arg.cursor.y) * scaleFactor
-    );
+    robot.moveMouse((containerBounds.x + args.cursor.x) * scaleFactor, (containerBounds.y + args.cursor.y) * scaleFactor);
+    
+    if(args.event.which == 3)
+      robot.mouseToggle("up", 'right');
+    else
+      robot.mouseToggle("up", 'left');
+  })
 
-    if (arg.event.which == 3) robot.mouseToggle('up', 'right');
-    else robot.mouseToggle('up', 'left');
-  });
 
-  ipcMain.on('emit-key', async (event, arg) => {
-    await bringToTop(data.sourceInfo);
-    var rawKey = arg.event.key.toLowerCase();
+  ipcMain.on('emit-key', async (event, args) => {
+
+    await bringToTop(args.sourceInfo);
+    var rawKey = args.event.key.toLowerCase();
     var key = robotKeyMap[rawKey] || rawKey;
-    var keyCode = arg.event.which || arg.event.keyCode;
+    var keyCode = args.event.which || args.event.keyCode;
 
     key = keyCode >= 48 && keyCode <= 57 ? String.fromCharCode(keyCode) : key;
 
-    if (keyCode == 222) key = "'";
+    if(keyCode == 222)
+      key = "'";
 
-    if (keyCode == 192) key = '`';
+    if(keyCode == 192)
+      key = '`';
 
-    var mods = getModsArray(arg.event);
+    var mods = getModsArray(args.event);
 
-    if (arg.event.type == 'keyup') {
+    if(args.event.type == 'keyup'){
+      
       robot.keyToggle(key, 'up', mods);
-    } else if (arg.event.type == 'keydown') {
+
+    } else if(args.event.type == 'keydown') {
+      
       robot.keyToggle(key, 'down', mods);
+
     }
-  });
+  })
 }
 
 ///////////////////
