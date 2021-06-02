@@ -269,7 +269,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 	      	subscribeStreamEvents();
 	      	const agoraAccessToken = await actions.auth.getAgoraAccessToken({ requestParams: {channel: props.config.channel}});
 
-	      	AgoraClient.join(agoraAccessToken, props.config.channel, props.config.user_uid+'tmp', (uid) => {
+	      	AgoraClient.join(agoraAccessToken, props.config.channel, props.config.user_uid, (uid) => {
 
 	      		socket_live.emit(events.joinRoom, props.config.channel);
 	        	viewingWindowShare();
