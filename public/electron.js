@@ -256,6 +256,55 @@ async function bringToTop(sourceInfo) {
     windowManager.getWindows().find(o => o.id == sourceId).bringToTop();
 }
 
+async function getwindowBounds(sourceInfo, sWidth, sHeight) {
+
+  var [sourceType, sourceId] = sourceInfo.split(':');
+  var overlayBounds;
+              
+  if(sourceType == 'screen'){
+    
+    overlayBounds = {
+      x: 0, y: 0, width: sWidth, height: sHeight
+    }
+  
+  } else {
+
+    try {
+
+      if(isMac) {
+
+        var windowsList = await allWindows();
+        for (var win of windowsList) {
+          if(win.id == sourceId) {
+            overlayBounds = win.bounds;
+            break;
+          }
+        }
+
+      } else {
+        overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+      } 
+
+    } catch (error) {
+
+      console.log('Error fetching bounds for: ' + sourceInfo);
+      console.log(error);
+    }
+  }
+
+  return overlayBounds;
+}
+
+async function bringToTop(sourceInfo) {
+
+  var [sourceType, sourceId] = sourceInfo.split(':');
+
+  if(isMac)
+    focusWindow(sourceId);
+  else
+    windowManager.getWindows().find(o => o.id == sourceId).bringToTop();
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: minWidth,
@@ -753,30 +802,15 @@ function createWindow() {
       });
 
       windowShareContainerWindow.data = {
-        channel_id: args.channel_id,
+          channel_id: args.channel_id
       };
 
-      var [sourceType, sourceId] = args.sourceInfo.split(':');
-      windowManager
-        .getWindows()
-        .find((o) => o.id == sourceId)
-        .bringToTop();
+      await bringToTop(args.sourceInfo);
 
-      windowShareContainerWindow.setVisibleOnAllWorkspaces(true);
-      windowShareContainerWindow.loadURL(
-        isDev
-          ? process.env.ELECTRON_START_URL + '#/windowshare-container'
-          : windowshareContainerUrl
-      );
+      windowShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/windowshare-container' : windowshareContainerUrl);
       windowShareContainerWindow.setIgnoreMouseEvents(true);
-      windowShareContainerWindow.setSize(
-        args.overlayBounds.width,
-        args.overlayBounds.height
-      );
-      //windowShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
-      windowShareContainerWindow.setVisibleOnAllWorkspaces(true, {
-        visibleOnFullScreen: true,
-      });
+      windowShareContainerWindow.setSize(args.overlayBounds.width, args.overlayBounds.height);
+      windowShareContainerWindow.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
 
       app.dock && app.dock.hide();
       windowShareContainerWindow.showInactive();
@@ -1068,6 +1102,7 @@ function createWindow() {
   ]);
 
   ipcMain.on('emit-scroll', async (event, args) => {
+
     await bringToTop(args.sourceInfo);
 
     originalPos = robot.getMousePos();
