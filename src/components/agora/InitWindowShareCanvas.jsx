@@ -100,10 +100,6 @@ const InitWindowShareCanvas = React.memo((props) => {
 		    setScreenSources(windowSources);
 		})
 
-		socket_live.on(events.viewWindowShare, (data) => {
-        	actions.app.updateWindowShareViewers(data);
-      	});
-
     },[])
 
     useEffect(() => {

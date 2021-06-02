@@ -69,11 +69,6 @@ export const setElectronScreenShareViewers = async ({ state, effect }, screenSha
 	state.screenShareViewers = screenShareViewers;
 }
 
-export const setElectronWindowShareViewers = async ({ state, effect }, {channel_id, windowShareViewers}) => {
-
-	state.windowShareViewers[channel_id] = windowShareViewers;
-}
-
 export const userVideoCall = async ({ state, effect }, data) => {
 		
 	if(localStorage.getItem("call_channel_id") && localStorage.getItem("call_channel_id") === data.call_channel_id){
@@ -153,17 +148,6 @@ export const updateScreenShareViewers = async ({ state, effect }, data) => {
 	localStorage.setItem('screenShareViewers', JSON.stringify(state.screenShareViewers));
 }
 
-export const updateWindowShareViewers = async ({ state, effect }, data) => {
-
-	if(data.user){
-		state.windowShareViewers[data.channel_id] = state.windowShareViewers[data.channel_id] || {};
-		state.windowShareViewers[data.channel_id][data.user.uid] = data.user;
-	}
-
-	// HACK to pass data to other electron windows.
-	localStorage.setItem('windowShareViewers', JSON.stringify(state.windowShareViewers));
-}
-
 export const updateScreenShareCursor = async ({ state, effect }, data) => {
 	if(data.user)
 		state.screenShareCursors[data.user.id] = data.cursor;
@@ -193,9 +177,6 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 }
 
 export const updateWindowShareCursor = async ({ state, effect }, {channel_id, data}) => {
-
-	if(data.user)
-		state.windowShareCursors[channel_id + '-' + data.user.id] = data.cursor;
 
 	data.container = 'window';
 
@@ -326,6 +307,4 @@ const deleteWindowShareData = () => {
 
 	localStorage.removeItem('windowshare_sources');
 	localStorage.removeItem('windowshare_resolution');
-	localStorage.removeItem('windowShareViewers');
-	localStorage.removeItem('windowShareCursors');
 }

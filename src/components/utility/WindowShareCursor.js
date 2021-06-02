@@ -8,19 +8,14 @@ const WindowShareCursor = React.memo((props) => {
     const { state, actions } = useOvermind();
     const [ cursorPos, setCursorPos ] = useState({})
 
-    // var cursorData = state.windowShareCursors[props.channel_id + '-' + props.user.id];
-
-    // const cursorPosition = {
-    //     left: props.user && cursorData ? cursorData['x'] : 0,
-    //     top: props.user && cursorData ? cursorData['y'] : 0,
-    // }
-
     var cursorPosition = {
         left: cursorPos.x || 0,
         top: cursorPos.y || 0,
     }
 
     useEffect(() => {
+
+        socket_live.emit(events.joinRoom, props.channel_id);
         
         socket_live.on(events.windowShareCursor, (data) => {
         
@@ -42,7 +37,8 @@ const WindowShareCursor = React.memo((props) => {
         'borderRadius': '50%',
         'position': 'absolute',
         'backgroundColor': cursorColor,
-        'opacity': '60%'
+        'opacity': '60%',
+        zIndex: '100'
     }
 
     const arrowStyle = {
@@ -61,7 +57,7 @@ const WindowShareCursor = React.memo((props) => {
     }
 
     return (
-        <span className="w-full flex" style={cursorStyle}>
+        <span className="w-full flex windowshare-cursor" style={cursorStyle}>
             <span className="material-icons" style={arrowStyle}>
                 north_west
             </span>
