@@ -105,7 +105,7 @@ export const userScreenShare = async ({ state, effect }, data) => {
 
 export const userWindowShare = async ({ state, effect }, data) => {
 
-	if(data.user_uid !== state.userProfileData.uid){
+	if(data.user_uid === state.userProfileData.uid){
 
 		var windowshare_resolutions = JSON.parse(localStorage.getItem('windowshare_resolutions')) || {};
 		windowshare_resolutions[data.user_uid] = data.resolution;
@@ -143,12 +143,16 @@ export const updateScreenShareViewers = async ({ state, effect }, data) => {
 	localStorage.setItem('screenShareViewers', JSON.stringify(state.screenShareViewers));
 }
 
-export const emitRemoteEvent = async ({ state, effect }, data) => {
+export const emitRemoteEvent = async ({ state, effect }, {data}) => {
 
 	var remoteAccessEnabled = data.container == 'window' ? 'true' : localStorage.getItem('remoteAccessEnabled');
 
+	console.log('data.container: ' + data.container);
+
+	console.log('remoteAccessEnabled: ' + remoteAccessEnabled);
+
 	if(remoteAccessEnabled && remoteAccessEnabled === 'true'){
-		
+
 		if(data.event.type === 'wheel')
 			ipcRenderer.send('emit-scroll', data);
 
