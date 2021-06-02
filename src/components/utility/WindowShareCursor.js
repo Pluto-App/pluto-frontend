@@ -1,17 +1,37 @@
 /* eslint-disable no-unused-vars */
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { useOvermind } from '../../overmind'
+import { socket_live, events } from '../sockets'
 
 const WindowShareCursor = React.memo((props) => {
 
-    const { state } = useOvermind();
+    const { state, actions } = useOvermind();
+    const [ cursorPos, setCursorPos ] = useState({})
 
-    var cursorData = state.windowShareCursors[props.channel_id + '-' + props.user.id];
-
-    const cursorPosition = {
-        left: props.user && cursorData ? cursorData['x'] : 0,
-        top: props.user && cursorData ? cursorData['y'] : 0,
+    var cursorPosition = {
+        left: cursorPos.x || 0,
+        top: cursorPos.y || 0,
     }
+
+    useEffect(() => {
+
+        let sourceInfo = localStorage.getItem("windowshare_source");
+
+        socket_live.emit(events.joinRoom, props.channel_id);
+        
+        socket_live.on(events.windowShareCursor, (data) => {
+        
+            if(data.user.id == props.user.id){
+                setCursorPos({x: data.cursor.x, y: data.cursor.y});
+                data.container = 'window';
+                data.sourceInfo = sourceInfo;
+
+                if(props.remote_access && data.event && data.event.type != 'mousemove'){
+                    actions.app.emitRemoteEvent({ data: data});    
+                }
+            }
+        });
+    },[])
 
     const cursorColor = props.user ? props.user.color : 'blue';
 
@@ -23,7 +43,9 @@ const WindowShareCursor = React.memo((props) => {
         'borderRadius': '50%',
         'position': 'absolute',
         'backgroundColor': cursorColor,
-        'opacity': '60%'
+        'opacity': '60%',
+        zIndex: '100',
+        pointerEvents: 'none'
     }
 
     const arrowStyle = {
@@ -42,7 +64,7 @@ const WindowShareCursor = React.memo((props) => {
     }
 
     return (
-        <span className="w-full flex" style={cursorStyle}>
+        <span className="w-full flex windowshare-cursor" style={cursorStyle}>
             <span className="material-icons" style={arrowStyle}>
                 north_west
             </span>

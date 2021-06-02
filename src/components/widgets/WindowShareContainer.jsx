@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState, useContext, useRef } from 'react'
 import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 import WindowShareCursor from '../utility/WindowShareCursor'
@@ -14,16 +14,16 @@ const WindowShareContainer = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
     const { authData, setAuthData } = useContext(AuthContext);
-    
 
+    const [ windowShareViewers, setWindowShareViewers ] = useState({});
+    const windowShareViewersRef = useRef();
+    windowShareViewersRef.current = windowShareViewers;
+    
 	useEffect(() => {
 
-        const setWindowShareViewers = setInterval(async () => {
+        socket_live.emit(events.joinRoom, currentWindow.data.channel_id);
 
-            let windowShareViewers = JSON.parse(localStorage.getItem("windowShareViewers") || "{}")[currentWindow.data.channel_id] || []
-            actions.app.setElectronWindowShareViewers({ channel_id: currentWindow.data.channel_id, windowShareViewers: windowShareViewers});
-
-        }, 100)
+        actions.app.setScreenSize();
 
         let sourceInfo = localStorage.getItem("windowshare_source");
 
@@ -57,13 +57,12 @@ const WindowShareContainer = React.memo((props) => {
         }
 
         socket_live.on(events.windowShareCursor, (data) => {
-            actions.app.updateWindowShareCursor({ channel_id: currentWindow.data.channel_id, data: data});
+            if(data.user.id && (!windowShareViewersRef.current[data.user.id])){
+
+                setWindowShareViewers({...windowShareViewers, [data.user.id] : data.user});
+            }
         });
 
-    },[])
-
-    useEffect(() => {
-        actions.app.setScreenSize();
     },[])
 
     useEffect(() => {
@@ -84,10 +83,10 @@ const WindowShareContainer = React.memo((props) => {
         <div className="window-share-container" style={containerStyle}>
 
             {
-                Object.keys(state.windowShareViewers[currentWindow.data.channel_id] || {} ).map(user_id => 
+                Object.keys(windowShareViewers).map(user_id => 
 
                     <WindowShareCursor key={user_id} channel_id={currentWindow.data.channel_id} 
-                        user={(state.windowShareViewers[currentWindow.data.channel_id] || {})[user_id]}>
+                        user={windowShareViewers[user_id]} remote_access={1}>
                     </WindowShareCursor>
                 )
             }

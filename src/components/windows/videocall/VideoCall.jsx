@@ -8,21 +8,20 @@ import { AuthContext } from '../../../context/AuthContext'
 
 import VideoCallCanvas from "../../agora/VideoCallCanvas";
 
+const { remote } = window.require('electron');
+const currentWindow = remote.getCurrentWindow();
+
 const VideoCall = React.memo((props) => {
 
   const { state, actions } = useOvermind();
-
   const { authData } = useContext(AuthContext);
-  
-  const user        = JSON.parse(localStorage.getItem('currentUser')).user;
-  const call_data   = JSON.parse(localStorage.getItem('call_data'));
 
   const [ config, setConfig ] = useState({
       videoProfile: "720p_1",
-      channel: call_data.call_channel_id,
+      channel: currentWindow.data.call_channel_id,
       appId : process.env.REACT_APP_AGORA_APP_ID,
-      user_id: user.id,
-      user_uid: user.uid
+      user_id: authData.user.id,
+      user_uid: authData.user.uid
   });
 
   useEffect(() => {

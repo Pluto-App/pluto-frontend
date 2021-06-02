@@ -1,15 +1,31 @@
 /* eslint-disable no-unused-vars */
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { useOvermind } from '../../overmind'
+import { socket_live, events } from '../sockets'
 
 const Cursor = React.memo((props) => {
 
-    const { state } = useOvermind();
+    const { state, actions } = useOvermind();
+    const [ cursorPos, setCursorPos ] = useState({});
 
-    const cursorPosition = {
-        left: props.user && state.screenShareCursors[props.user.id] ? state.screenShareCursors[props.user.id]['x'] : 0,
-        top: props.user && state.screenShareCursors[props.user.id] ? state.screenShareCursors[props.user.id]['y'] : 0,
+    var cursorPosition = {
+        left: cursorPos.x || 0,
+        top: cursorPos.y || 0,
     }
+
+    useEffect(() => {
+        
+        socket_live.on(events.screenShareCursor, (data) => {
+        
+            if(data.user.id == props.user.id){
+                setCursorPos({x: data.cursor.x, y: data.cursor.y});
+
+                if(data.event && data.event.type != 'mousemove'){
+                    actions.app.emitRemoteEvent({ data: data});
+                }   
+            }
+        });
+    },[])
 
     const cursorColor = props.user ? props.user.color : 'blue';
 
@@ -21,7 +37,9 @@ const Cursor = React.memo((props) => {
         'borderRadius': '50%',
         'position': 'absolute',
         'backgroundColor': cursorColor,
-        'opacity': '60%'
+        'opacity': '60%',
+        zIndex: '100',
+        pointerEvents: 'none'
     }
 
     const arrowStyle = {

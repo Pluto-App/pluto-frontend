@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import * as Cookies from "js-cookie";
 import { useOvermind } from '../../../overmind'
+import { AuthContext } from '../../../context/AuthContext'
+
 import InitWindowShareCanvas from "../../agora/InitWindowShareCanvas";
 
 import { getWindowShareChannel } from '../../../utils/Util';
@@ -11,12 +13,11 @@ const currentWindow = remote.getCurrentWindow();
 
 const InitWindowShare = React.memo((props) => {
 
-  const { state, actions } = useOvermind();
+    const { state, actions } = useOvermind();
+    const { authData } = useContext(AuthContext);
 
-    const user                = JSON.parse(localStorage.getItem('currentUser')).user;
-    const call_data           = JSON.parse(localStorage.getItem('call_data'));
-    const windowShareChannel  = getWindowShareChannel({user_uid: user.uid, 
-        call_channel_id: call_data.call_channel_id});
+    const windowShareChannel  = getWindowShareChannel({user_uid: authData.user.uid, 
+        call_channel_id: currentWindow.data.call_data.call_channel_id});
     
     const [ config, setConfig ] = useState({
         videoProfile: "720p_1",
@@ -26,8 +27,8 @@ const InitWindowShare = React.memo((props) => {
         attendeeMode: "screen",
         baseMode: "avc",
         appId : process.env.REACT_APP_AGORA_APP_ID,
-        user_id: user.id,
-        user_uid: user.uid,
+        user_id: authData.user.id,
+        user_uid: authData.user.uid,
         user_color: currentWindow.data.user_color
     });
 

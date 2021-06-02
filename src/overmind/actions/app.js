@@ -64,31 +64,23 @@ export const updateUserActiveWindowData = async ({ state, effect }, {user_id, ac
 	state.usersActiveWindows[user_id] = active_window_data;
 }
 
-export const setElectronScreenShareViewers = async ({ state, effect }, screenShareViewers) => {
-
-	state.screenShareViewers = screenShareViewers;
-}
-
-export const setElectronWindowShareViewers = async ({ state, effect }, {channel_id, windowShareViewers}) => {
-
-	state.windowShareViewers[channel_id] = windowShareViewers;
-}
-
 export const userVideoCall = async ({ state, effect }, data) => {
-
+		
 	if(localStorage.getItem("call_channel_id") && localStorage.getItem("call_channel_id") === data.call_channel_id){
-		// Do nothing
+
 	} else {
 		
 		var call_data = {
 			call_channel_id: data.call_channel_id
 		};
 
-		localStorage.setItem("call_data", JSON.stringify(call_data));
-		localStorage.setItem("call_channel_id", data.call_channel_id);
-	 	socket_live.emit(events.joinRoom, data.channel_id);
+		localStorage.setItem('call_channel_id', data.call_channel_id);
+    	localStorage.setItem('call_data', JSON.stringify(call_data));
 
-	    ipcRenderer.send('init-video-call-window', data.call_channel_id);	
+	 	socket_live.emit(events.joinRoom, data.call_channel_id);
+
+	 	ipcRenderer.send('set-call-data', {call_data: call_data});
+	    ipcRenderer.send('init-video-call-window', {call_data: call_data, call_channel_id: data.call_channel_id});	
 	}
  	
     ToastNotification('success', `Incoming VC`);
@@ -151,32 +143,13 @@ export const updateScreenShareViewers = async ({ state, effect }, data) => {
 	localStorage.setItem('screenShareViewers', JSON.stringify(state.screenShareViewers));
 }
 
-export const updateWindowShareViewers = async ({ state, effect }, data) => {
+export const emitRemoteEvent = async ({ state, effect }, {data}) => {
 
-	if(data.user){
-		state.windowShareViewers[data.channel_id] = state.windowShareViewers[data.channel_id] || {};
-		state.windowShareViewers[data.channel_id][data.user.uid] = data.user;
-	}
+	var remoteAccessEnabled = data.container == 'window' ? 'true' : localStorage.getItem('remoteAccessEnabled');
 
-	// HACK to pass data to other electron windows.
-	localStorage.setItem('windowShareViewers', JSON.stringify(state.windowShareViewers));
-}
-
-export const updateScreenShareCursor = async ({ state, effect }, data) => {
-	if(data.user)
-		state.screenShareCursors[data.user.id] = data.cursor;
-
-	var remoteAccessEnabled = localStorage.getItem('remoteAccessEnabled');
 	if(remoteAccessEnabled && remoteAccessEnabled === 'true'){
 
-		if(data.event.type === 'click'){
-			if(data.event.witch === 3)
-				ipcRenderer.send('emit-right-click', data);
-			else
-				ipcRenderer.send('emit-click', data);
-		}
-		
-		else if(data.event.type === 'wheel')
+		if(data.event.type === 'wheel')
 			ipcRenderer.send('emit-scroll', data);
 
 		else if(data.event.type === 'mousedown')
@@ -188,26 +161,6 @@ export const updateScreenShareCursor = async ({ state, effect }, data) => {
 		else if(data.event.type === 'keyup' || data.event.type === 'keydown')
 			ipcRenderer.send('emit-key', data);
 	}
-}
-
-export const updateWindowShareCursor = async ({ state, effect }, {channel_id, data}) => {
-
-	if(data.user)
-		state.windowShareCursors[channel_id + '-' + data.user.id] = data.cursor;
-
-	data.container = 'window';
-
-	if(data.event.type === 'wheel')
-		ipcRenderer.send('emit-scroll', data);
-
-	else if(data.event.type === 'mousedown')
-		ipcRenderer.send('emit-mousedown', data);
-
-	else if(data.event.type === 'mouseup')
-		ipcRenderer.send('emit-mouseup', data);
-
-	else if(data.event.type === 'keyup' || data.event.type === 'keydown')
-		ipcRenderer.send('emit-key', data);
 }
 
 export const setScreenSize = async ({ state, effect }) => {
@@ -272,9 +225,9 @@ export const emitUpdateTeamMembers = async ({ actions, state, effect }) => {
 	}
 }
 
-export const clearVideoCallData = async ({ actions, state, effect }) => {
+export const clearVideoCallData = async ({ actions, state, effect }, {call_channel_id}) => {
 
-	var call_channel_id = localStorage.getItem('call_channel_id');
+	localStorage.removeItem('call_channel_id');
 	var curent_team = localStorage.getItem('current_team');
 	var rid = call_channel_id.split('-')[1];
 
@@ -292,11 +245,9 @@ export const clearVideoCallData = async ({ actions, state, effect }) => {
 	
 	deleteScreenShareData();
 	deleteWindowShareData();
-	localStorage.removeItem('call_channel_id');
 }
 
 export const clearScreenShareData = async ({ state, effect }) => {
-	state.screenShareViewers = {};
 	state.streamingScreenShare = false;
 	state.screenShareUser = {};
 	deleteScreenShareData();
@@ -310,8 +261,6 @@ const deleteScreenShareData = () => {
 	localStorage.removeItem('screenshare_owner');
 	localStorage.removeItem('screenshare_source');
 	localStorage.removeItem('screenshare_resolution');
-	localStorage.removeItem('screenShareViewers');
-	localStorage.removeItem('screenShareCursors');
 	localStorage.removeItem('remoteAccessEnabled');
 }
 
@@ -325,6 +274,4 @@ const deleteWindowShareData = () => {
 
 	localStorage.removeItem('windowshare_sources');
 	localStorage.removeItem('windowshare_resolution');
-	localStorage.removeItem('windowShareViewers');
-	localStorage.removeItem('windowShareCursors');
 }

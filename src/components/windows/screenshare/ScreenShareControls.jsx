@@ -29,24 +29,24 @@ const ScreenShareControls = React.memo((props) => {
   }
 
   const controlsButtonStyle = {
-    'font-size': '12px',
-    'transition': 'all .60s ease',
-    'whiteSpace': 'nowrap'
+    fontSize: '12px',
+    transition: 'all .60s ease',
+    whiteSpace: 'nowrap'
   }
 
   const controlsTopBarStyle = {
-    'height': '20px',
-    'textAlign': 'right',
-    'color': 'white',
-    'backgroundColor': '#202225',
-    '-webkit-user-select': 'none',
-    '-webkit-app-region': 'drag'
+    height: '20px',
+    textAlign: 'right',
+    color: 'white',
+    backgroundColor: '#202225',
+    WebkitUserSelect: 'none',
+    WebkitAppRegion: 'drag'
   }
 
   return (
     <>
       <div id="controls-topbar" style={controlsTopBarStyle}>
-        <i className="material-icons md-light md-inactive mr-2" style={{'font-size': '16px'}}>drag_handle</i>
+        <i className="material-icons md-light md-inactive mr-2" style={{fontSize: '16px'}}>drag_handle</i>
       </div>
       <div id="controls-container" style={controlsContainerStyle}>
         <div className="px-2 w-full">
@@ -59,7 +59,7 @@ const ScreenShareControls = React.memo((props) => {
                       stopScreenShare();
                   }}
               >
-                <i className="material-icons md-light md-inactive mr-2" style={{'font-size': '16px'}}>stop_screen_share</i>
+                <i className="material-icons md-light md-inactive mr-2" style={{fontSize: '16px'}}>stop_screen_share</i>
                   Stop ScreenShare
             </button>
         </div>
@@ -78,7 +78,7 @@ const ScreenShareControls = React.memo((props) => {
                   }}
                 >
               
-                  <i className="material-icons md-light md-inactive mr-2" style={{'font-size': '16px'}}>desktop_access_disabled</i>
+                  <i className="material-icons md-light md-inactive mr-2" style={{fontSize: '16px'}}>desktop_access_disabled</i>
                     Disable Remote Access
                 </button>
 
@@ -94,7 +94,7 @@ const ScreenShareControls = React.memo((props) => {
                   }}
                 >
               
-                  <i className="material-icons md-light md-inactive mr-2" style={{'font-size': '16px'}}>
+                  <i className="material-icons md-light md-inactive mr-2" style={{fontSize: '16px'}}>
                     desktop_windows
                   </i>
                     Enable Remote Access

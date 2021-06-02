@@ -50,9 +50,5 @@ export const state = {
     loggedInUser: {},
     userProfileData: {},
     usersActiveWindows: {},
-    screenShareViewers: {},
-    screenShareCursors: {},
-    windowShareViewers: {},
-    windowShareCursors: {},
     screenSize: {}
 }

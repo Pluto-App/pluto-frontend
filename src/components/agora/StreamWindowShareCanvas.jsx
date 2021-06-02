@@ -1,20 +1,26 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import AgoraRTC from 'agora-rtc-sdk'
 
 import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 
+import WindowShareCursor from '../utility/WindowShareCursor'
+
 const { remote } = window.require('electron');
 const currentWindow = remote.getCurrentWindow();
 const windowshare_resolutions = JSON.parse(localStorage.getItem('windowshare_resolutions'));
+const AgoraClient = AgoraRTC.createClient({ mode: 'interop', codec: "vp8" });
 
 const StreamWindowShareCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
 
-	const AgoraClient = AgoraRTC.createClient({ mode: props.config.transcode, codec: "vp8" });
 	const [windowShareResolution, setWindowShareResolution] = useState(windowshare_resolutions[currentWindow.data.user_uid]);
 	const [ streamList, setStreamList ] = useState([]);
+
+	const [ windowShareViewers, setWindowShareViewers ] = useState({});
+	const windowShareViewersRef = useRef();
+  	windowShareViewersRef.current = windowShareViewers;
 
 	const subscribeStreamEvents = () => {
 
@@ -172,7 +178,8 @@ const StreamWindowShareCanvas = React.memo((props) => {
 		 		user:  	{
 		 			id: 	state.loggedInUser.id,
 		 			uid: 	state.loggedInUser.uid,
-		 			name: 	state.loggedInUser.name
+		 			name: 	state.loggedInUser.name,
+		 			color:  props.config.user_color
 		 		},
 	 			cursor: cursorData,
 	 			event: 	eventData
@@ -236,7 +243,6 @@ const StreamWindowShareCanvas = React.memo((props) => {
 	      max = max - (Margin * 2);
 
 	      setWidth(max, Margin);
-	      console.log('DISH CALLED!');
 	    }
   	}
 
@@ -276,6 +282,14 @@ const StreamWindowShareCanvas = React.memo((props) => {
             setWindowShareResolution(data.resolution);
             // currentWindow.setSize(data.resolution.width, data.resolution.height);
         });
+
+        socket_live.on(events.windowShareCursor, (data) => {
+
+        	if(data.user.id && (!windowShareViewersRef.current[data.user.id])){
+
+        		setWindowShareViewers({...windowShareViewers, [data.user.id] : data.user});
+        	}
+        })
 
     	return () => {
       		document.getElementById("root").removeEventListener("wheel", handleScroll);
@@ -320,6 +334,16 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
     return (
 		<div id="ScreenShareDish">
+
+			{
+                Object.keys(windowShareViewers).map(user_id => 
+
+                    <WindowShareCursor key={user_id} channel_id={props.config.channel} 
+                        user={windowShareViewers[user_id]}>
+                    </WindowShareCursor>
+                )
+            }
+
 			<div id="controls-topbar" style={controlsTopBarStyle}>
 	      	</div>
 			<div style={streamContainerStyle}>

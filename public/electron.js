@@ -13,6 +13,7 @@ const url = require('url');
 const robot = require('robotjs');
 const { windowManager } = require('node-window-manager');
 const allWindows = require('all-windows');
+const focusWindow = require('mac-focus-window');
 
 const ffi = require('ffi-napi');
 const { autoUpdater } = require('electron-updater');
@@ -38,6 +39,7 @@ let streamWindowShareWindows = [];
 let settingsPage;
 
 let user_color;
+let call_data;
 
 const isWindows = process.platform === 'win32';
 const isMac = process.platform === 'darwin';
@@ -205,6 +207,104 @@ function getModsArray(event) {
   return mods;
 }
 
+async function getwindowBounds(sourceInfo, sWidth, sHeight) {
+
+  var [sourceType, sourceId] = sourceInfo.split(':');
+  var overlayBounds;
+              
+  if(sourceType == 'screen'){
+    
+    overlayBounds = {
+      x: 0, y: 0, width: sWidth, height: sHeight
+    }
+  
+  } else {
+
+    try {
+
+      if(isMac) {
+
+        var windowsList = await allWindows();
+        for (var win of windowsList) {
+          if(win.id == sourceId) {
+            overlayBounds = win.bounds;
+            break;
+          }
+        }
+
+      } else {
+        overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+      } 
+
+    } catch (error) {
+
+      console.log('Error fetching bounds for: ' + sourceInfo);
+      console.log(error);
+    }
+  }
+
+  return overlayBounds;
+}
+
+async function bringToTop(sourceInfo) {
+
+  var [sourceType, sourceId] = sourceInfo.split(':');
+
+  if(isMac)
+    focusWindow(sourceId);
+  else
+    windowManager.getWindows().find(o => o.id == sourceId).bringToTop();
+}
+
+async function getwindowBounds(sourceInfo, sWidth, sHeight) {
+
+  var [sourceType, sourceId] = sourceInfo.split(':');
+  var overlayBounds;
+              
+  if(sourceType == 'screen'){
+    
+    overlayBounds = {
+      x: 0, y: 0, width: sWidth, height: sHeight
+    }
+  
+  } else {
+
+    try {
+
+      if(isMac) {
+
+        var windowsList = await allWindows();
+        for (var win of windowsList) {
+          if(win.id == sourceId) {
+            overlayBounds = win.bounds;
+            break;
+          }
+        }
+
+      } else {
+        overlayBounds = windowManager.getWindows().find(o => o.id == sourceId).getBounds()
+      } 
+
+    } catch (error) {
+
+      console.log('Error fetching bounds for: ' + sourceInfo);
+      console.log(error);
+    }
+  }
+
+  return overlayBounds;
+}
+
+async function bringToTop(sourceInfo) {
+
+  var [sourceType, sourceId] = sourceInfo.split(':');
+
+  if(isMac)
+    focusWindow(sourceId);
+  else
+    windowManager.getWindows().find(o => o.id == sourceId).bringToTop();
+}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: minWidth,
@@ -235,7 +335,7 @@ function createWindow() {
   if (isDev) {
     // Open the DevTools.
     // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on('closed', () => {
@@ -253,13 +353,26 @@ function createWindow() {
   if (isMac) getMediaAccess();
 
   ipcMain.on('active-win', async (event, arg) => {
-    try {
+
+    try{
+
       var activeWinInfo;
-      if (isMac) {
-        activeWinInfo = await activeWin();
+      if(isMac){
+        
+        try {
+          activeWinInfo = await activeWin()  
+        
+        } catch (error) {
+          
+          console.error(error);
+          activeWinInfo = {};
+        }
+        
+
       } else {
-        activeWinInfo = {};
+        activeWinInfo = {}
       }
+      
 
       if (activeWinInfo && activeWinInfo.owner && activeWinInfo.owner.name) {
         activeWinInfo.url = await getTabUrl(activeWinInfo);
@@ -337,9 +450,21 @@ function createWindow() {
     user_color = args.user_color;
   });
 
+  ipcMain.on('set-call-data', async (event, args) => {
+
+    call_data = args.call_data;
+  })
+
+  ipcMain.on('set-call-data', async (event, args) => {
+
+    call_data = args.call_data;
+  })
+
   ipcMain.on('refresh-app', async (event, arg) => {
+    
     mainWindow.webContents.send('refresh', {});
-  });
+  })
+
 
   ipcMain.on(`display-app-menu`, function (e, args) {
     if (isWindows && mainWindow) {
@@ -405,7 +530,7 @@ function createWindow() {
     });
   });
 
-  ipcMain.on('init-video-call-window', (event, data) => {
+  ipcMain.on('init-video-call-window', (event, args) => {
     if (videoCallWindow) {
       try {
         videoCallWindow.close();
@@ -443,6 +568,16 @@ function createWindow() {
       slashes: true,
     });
 
+    videoCallWindow.data = {
+      call_data: args.call_data,
+      call_channel_id: args.call_channel_id
+    }
+
+    videoCallWindow.data = {
+        call_data: args.call_data,
+        call_channel_id: args.call_channel_id
+    };
+
     videoCallWindow.loadURL(
       isDev ? process.env.ELECTRON_START_URL + '#/video-call' : videoUrl
     );
@@ -471,7 +606,7 @@ function createWindow() {
     });
 
     if (isDev) {
-      videoCallWindow.webContents.openDevTools();
+       // videoCallWindow.webContents.openDevTools();
     }
   });
 
@@ -559,7 +694,8 @@ function createWindow() {
     });
 
     initWindowShareWindow.data = {
-      user_color: user_color,
+        user_color: user_color,
+        call_data: call_data
     };
 
     initWindowShareWindow.loadURL(
@@ -634,13 +770,13 @@ function createWindow() {
     }
   });
 
-  ipcMain.on('sharing-window', (event, args) => {
+  ipcMain.on('sharing-window', async (event, args) => {
     if (initWindowShareWindow) {
       initWindowShareWindow.hide();
 
       windowShareContainerWindow = new BrowserWindow({
-        x: args.overlayBounds.x,
-        y: args.overlayBounds.y,
+        x: args.overlayBounds.x || 400,
+        y: args.overlayBounds.y || 400,
         hasShadow: false,
         transparent: true,
         frame: false,
@@ -666,34 +802,21 @@ function createWindow() {
       });
 
       windowShareContainerWindow.data = {
-        channel_id: args.channel_id,
+          channel_id: args.channel_id
       };
 
-      var [sourceType, sourceId] = args.sourceInfo.split(':');
-      windowManager
-        .getWindows()
-        .find((o) => o.id == sourceId)
-        .bringToTop();
+      await bringToTop(args.sourceInfo);
 
-      windowShareContainerWindow.setVisibleOnAllWorkspaces(true);
-      windowShareContainerWindow.loadURL(
-        isDev
-          ? process.env.ELECTRON_START_URL + '#/windowshare-container'
-          : windowshareContainerUrl
-      );
+      windowShareContainerWindow.loadURL(isDev ? process.env.ELECTRON_START_URL + '#/windowshare-container' : windowshareContainerUrl);
       windowShareContainerWindow.setIgnoreMouseEvents(true);
-      windowShareContainerWindow.setSize(
-        args.overlayBounds.width,
-        args.overlayBounds.height
-      );
-      //windowShareContainerWindow.setAlwaysOnTop(true,'pop-up-menu');
-      windowShareContainerWindow.setVisibleOnAllWorkspaces(true, {
-        visibleOnFullScreen: true,
-      });
+      windowShareContainerWindow.setSize(args.overlayBounds.width, args.overlayBounds.height);
+      windowShareContainerWindow.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen: true});
 
       app.dock && app.dock.hide();
       windowShareContainerWindow.showInactive();
       app.dock && app.dock.show();
+
+      windowShareContainerWindow.moveAbove(args.sourceInfo);
 
       windowShareContainerWindow.on('closed', () => {
         windowShareContainerWindow = undefined;
@@ -702,7 +825,8 @@ function createWindow() {
       });
 
       if (isDev) {
-        //windowShareContainerWindow.webContents.openDevTools();
+       
+        windowShareContainerWindow.webContents.openDevTools();
       }
     }
   });
@@ -734,11 +858,12 @@ function createWindow() {
       });
 
       streamWindowShareWindow.data = {
-        user_id: args.user_id,
-        user_uid: args.user_uid,
-        owner: args.owner,
-        owner_color: args.owner_color,
-        user_color: user_color,
+          user_id: args.user_id,
+          user_uid: args.user_uid,
+          owner: args.owner,
+          owner_color: args.owner_color,
+          user_color: user_color,
+          call_data: call_data
       };
 
       streamWindowShareWindow.loadURL(
@@ -752,10 +877,11 @@ function createWindow() {
       });
 
       if (isDev) {
-        streamWindowShareWindow.webContents.openDevTools();
-      }
+        // streamWindowShareWindow.webContents.openDevTools();
+      }  
     }
-  });
+    
+  })
 
   ipcMain.on('update-windowshare-container-bounds', (event, overlayBounds) => {
     if (windowShareContainerWindow) {
@@ -820,6 +946,7 @@ function createWindow() {
       });
 
       if (isDev) {
+       
         screenShareContainerWindow.webContents.openDevTools();
       }
 
@@ -885,6 +1012,7 @@ function createWindow() {
 
   ipcMain.on('stop-screenshare', (event, arg) => {
     videoCallWindow.webContents.send('stop-screenshare', {});
+    
     try {
       if (initScreenShareWindow) initScreenShareWindow.close();
 
@@ -899,77 +1027,19 @@ function createWindow() {
   });
 
   ipcMain.on('screenshare-source-bounds', async (event, sourceInfo) => {
-    var [sourceType, sourceId] = sourceInfo.split(':');
-    var overlayBounds;
 
-    if (sourceType == 'screen') {
-      overlayBounds = {
-        x: 0,
-        y: 0,
-        width: sWidth,
-        height: sHeight,
-      };
-    } else {
-      var overlayBounds;
-      if (isMac) {
-        var windowsList = await allWindows();
-        for (var win of windowsList) {
-          if (win.id == sourceId) {
-            overlayBounds = win.bounds;
-            break;
-          }
-        }
-      } else {
-        windowManager
-          .getWindows()
-          .find((o) => o.id == sourceId)
-          .getBounds();
-      }
-    }
+    var overlayBounds = await getwindowBounds(sourceInfo, sWidth, sHeight);
 
     event.returnValue = overlayBounds;
   });
 
   // Make and use common methods for screenshare/windowshare wherever possible
   ipcMain.on('windowshare-source-bounds', async (event, sourceInfo) => {
-    var [sourceType, sourceId] = sourceInfo.split(':');
 
-    var overlayBounds;
-    if (isMac) {
-      var windowsList = await allWindows();
-      for (var win of windowsList) {
-        if (win.id == sourceId) {
-          overlayBounds = win.bounds;
-          break;
-        }
-      }
-    } else {
-      overlayBounds = windowManager
-        .getWindows()
-        .find((o) => o.id == sourceId)
-        .getBounds();
-    }
+    var overlayBounds = await getwindowBounds(sourceInfo, sWidth, sHeight)
 
-    var activeWinInfo;
-
-    if (isMac) {
-      activeWinInfo = await activeWin();
-    } else {
-      //console.log('windowshare-source-bounds windowManager getActiveWindow start');
-      activeWinInfo = windowManager.getActiveWindow();
-      //console.log('windowshare-source-bounds windowManager getActiveWindow end');
-    }
-
-    if (windowShareContainerWindow) {
-      if (activeWinInfo.id != sourceId) {
-        //windowShareContainerWindow.hide()
-        //console.log('hide');
-      } else {
-        windowShareContainerWindow.showInactive();
-        //windowShareContainerWindow.moveTop();
-        //console.log('show');
-      }
-    }
+    if(windowShareContainerWindow)
+      windowShareContainerWindow.moveAbove(sourceInfo);
 
     event.returnValue = overlayBounds;
   });
@@ -1031,74 +1101,74 @@ function createWindow() {
     },
   ]);
 
-  ipcMain.on('emit-scroll', async (event, arg) => {
+  ipcMain.on('emit-scroll', async (event, args) => {
+
+    await bringToTop(args.sourceInfo);
+
     originalPos = robot.getMousePos();
-    var containerBounds =
-      arg.container == 'window'
-        ? windowShareContainerWindow.getBounds()
-        : screenShareContainerWindow.getBounds();
+    var containerBounds = args.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse(
-      (containerBounds.x + arg.cursor.x) * scaleFactor,
-      (containerBounds.y + arg.cursor.y) * scaleFactor
-    );
-    robot.scrollMouse(arg.event.deltaX, arg.event.deltaY);
-  });
+    robot.moveMouse((containerBounds.x + args.cursor.x) * scaleFactor, (containerBounds.y + args.cursor.y) * scaleFactor);
+    robot.scrollMouse(args.event.deltaX, args.event.deltaY);
 
-  ipcMain.on('emit-mousedown', async (event, arg) => {
+  })
+
+  ipcMain.on('emit-mousedown', async (event, args) => {
+
+    await bringToTop(args.sourceInfo);
     originalPos = robot.getMousePos();
-    var containerBounds =
-      arg.container == 'window'
-        ? windowShareContainerWindow.getBounds()
-        : screenShareContainerWindow.getBounds();
+    var containerBounds = args.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse(
-      (containerBounds.x + arg.cursor.x) * scaleFactor,
-      (containerBounds.y + arg.cursor.y) * scaleFactor
-    );
+    robot.moveMouse((containerBounds.x + args.cursor.x) * scaleFactor, (containerBounds.y + args.cursor.y) * scaleFactor);
 
-    if (arg.event.which == 3) robot.mouseToggle('down', 'right');
-    else robot.mouseToggle('down', 'left');
-  });
+    if(args.event.which == 3)
+      robot.mouseToggle("down", 'right');
+    else
+      robot.mouseToggle("down", 'left');
+  })
 
-  ipcMain.on('emit-mouseup', async (event, arg) => {
+  ipcMain.on('emit-mouseup', async (event, args) => {
+
+    await bringToTop(args.sourceInfo);
     originalPos = robot.getMousePos();
-    var containerBounds =
-      arg.container == 'window'
-        ? windowShareContainerWindow.getBounds()
-        : screenShareContainerWindow.getBounds();
+    var containerBounds = args.container == 'window' ? windowShareContainerWindow.getBounds() : screenShareContainerWindow.getBounds();
 
-    robot.moveMouse(
-      (containerBounds.x + arg.cursor.x) * scaleFactor,
-      (containerBounds.y + arg.cursor.y) * scaleFactor
-    );
+    robot.moveMouse((containerBounds.x + args.cursor.x) * scaleFactor, (containerBounds.y + args.cursor.y) * scaleFactor);
+    
+    if(args.event.which == 3)
+      robot.mouseToggle("up", 'right');
+    else
+      robot.mouseToggle("up", 'left');
+  })
 
-    if (arg.event.which == 3) robot.mouseToggle('up', 'right');
-    else robot.mouseToggle('up', 'left');
-  });
 
-  //////////////////////////////////////////////////////////////////////
-  // Use attributes from javascript keyboard event to fetch robotMods //
-  //////////////////////////////////////////////////////////////////////
-  ipcMain.on('emit-key', async (event, arg) => {
-    var rawKey = arg.event.key.toLowerCase();
+  ipcMain.on('emit-key', async (event, args) => {
+
+    await bringToTop(args.sourceInfo);
+    var rawKey = args.event.key.toLowerCase();
     var key = robotKeyMap[rawKey] || rawKey;
-    var keyCode = arg.event.which || arg.event.keyCode;
+    var keyCode = args.event.which || args.event.keyCode;
 
     key = keyCode >= 48 && keyCode <= 57 ? String.fromCharCode(keyCode) : key;
 
-    if (keyCode == 222) key = "'";
+    if(keyCode == 222)
+      key = "'";
 
-    if (keyCode == 192) key = '`';
+    if(keyCode == 192)
+      key = '`';
 
-    var mods = getModsArray(arg.event);
+    var mods = getModsArray(args.event);
 
-    if (arg.event.type == 'keyup') {
+    if(args.event.type == 'keyup'){
+      
       robot.keyToggle(key, 'up', mods);
-    } else if (arg.event.type == 'keydown') {
+
+    } else if(args.event.type == 'keydown') {
+      
       robot.keyToggle(key, 'down', mods);
+
     }
-  });
+  })
 }
 
 ///////////////////
