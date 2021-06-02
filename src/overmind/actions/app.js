@@ -154,7 +154,7 @@ export const emitRemoteEvent = async ({ state, effect }, data) => {
 
 	if(remoteAccessEnabled && remoteAccessEnabled === 'true'){
 		
-		else if(data.event.type === 'wheel')
+		if(data.event.type === 'wheel')
 			ipcRenderer.send('emit-scroll', data);
 
 		else if(data.event.type === 'mousedown')

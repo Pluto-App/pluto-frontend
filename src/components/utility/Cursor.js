@@ -1,11 +1,11 @@
 /* eslint-disable no-unused-vars */
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useOvermind } from '../../overmind'
 import { socket_live, events } from '../sockets'
 
 const Cursor = React.memo((props) => {
 
-    const { state } = useOvermind();
+    const { state, actions } = useOvermind();
     const [ cursorPos, setCursorPos ] = useState({});
 
     var cursorPosition = {
