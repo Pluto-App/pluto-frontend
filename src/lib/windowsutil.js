@@ -224,8 +224,6 @@ function windows() {
 	/* eslint-enable new-cap */
 }
 
-// module.exports = () => Promise.resolve(windows());
-// module.exports.sync = windows;
 module.exports = windows;
 
 

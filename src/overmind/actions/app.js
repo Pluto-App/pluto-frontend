@@ -219,21 +219,26 @@ export const emitUpdateTeamMembers = async ({ actions, state, effect }) => {
 
 export const clearVideoCallData = async ({ actions, state, effect }, {call_channel_id}) => {
 
+	call_channel_id = call_channel_id || localStorage.getItem('call_channel_id');
 	localStorage.removeItem('call_channel_id');
-	var curent_team = localStorage.getItem('current_team');
-	var rid = call_channel_id.split('-')[1];
 
-	const room_id = state.teamRooms.find(room => room.rid === rid);
-	
-	socket_live.emit(events.exitRoomVideoCall, 
-		{ 
-			tid: 		curent_team,
-			rid: 		rid, 
-			uid: 		state.userProfileData.uid ,
-			teams: 		state.userProfileData.teams,
-			channel_id: call_channel_id
-		}
-	);
+	if(call_channel_id) {
+		var curent_team = localStorage.getItem('current_team');
+
+		var rid = call_channel_id.split('-')[1];
+
+		const room_id = state.teamRooms.find(room => room.rid === rid);
+		
+		socket_live.emit(events.exitRoomVideoCall, 
+			{ 
+				tid: 		curent_team,
+				rid: 		rid, 
+				uid: 		state.userProfileData.uid ,
+				teams: 		state.userProfileData.teams,
+				channel_id: call_channel_id
+			}
+		);	
+	}
 	
 	deleteScreenShareData();
 	deleteWindowShareData();

@@ -292,9 +292,7 @@ function createWindow() {
   mainWindow.loadURL(isDev ? process.env.ELECTRON_START_URL : startPageUrl);
 
   if (isDev) {
-    // Open the DevTools.
-    // BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on('closed', () => {
