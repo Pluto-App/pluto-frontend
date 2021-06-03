@@ -11,8 +11,7 @@ const isDev = require('electron-is-dev');
 const url = require('url');
 const robot = require('robotjs');
 const { windowManager } = require('node-window-manager');
-const allWindows = require('all-windows');
-const focusWindow = require('mac-focus-window');
+const childProcess = require('child_process');
 
 const ffi = require('ffi-napi');
 const { autoUpdater } = require('electron-updater');
@@ -43,13 +42,13 @@ let call_data;
 const isWindows = process.platform === 'win32';
 const isMac = process.platform === 'darwin';
 
-var activeWinPath;
-if (isDev) activeWinPath = path.join(app.getAppPath(), 'src/active-window');
-else activeWinPath = path.join(app.getAppPath(), '..', 'src/active-window');
+var macUtilsPath;
+if (isDev) macUtilsPath = path.join(app.getAppPath(), 'src/bin/macutil');
+else macUtilsPath = path.join(app.getAppPath(), '..', 'src/bin/macutil');
 
-const activeWin = require(activeWinPath);
-// const activeWin = require('active-win');
-const runApplescript = require('run-applescript');
+var windowsUtilsPath;
+if (isDev) windowsUtilsPath = path.join(app.getAppPath(), 'src/lib/windowsutil');
+else windowsUtilsPath = path.join(app.getAppPath(), '..', 'src/lib/windowsutil');
 
 const minWidth = 350;
 const minHeight = 475;
@@ -104,17 +103,17 @@ async function getTabUrl(activeWinInfo) {
   var url = activeWinInfo ? activeWinInfo.url : undefined;
 
   if (activeWinInfo && !url) {
-    if (activeWinInfo.platform == 'macos') {
-      if (activeWinInfo.owner.bundleId == 'com.google.Chrome') {
-        url = await runApplescript(
-          'tell application "Google Chrome" to return URL of active tab of front window'
-        );
-      } else if (activeWinInfo.owner.bundleId == 'com.apple.Safari') {
-        url = await runApplescript(
-          'tell app "Safari" to get URL of front document'
-        );
-      }
-    } else if (activeWinInfo.platform == 'windows') {
+    if (isMac) {
+      // if (activeWinInfo.owner.bundleId == 'com.google.Chrome') {
+      //   url = await runApplescript(
+      //     'tell application "Google Chrome" to return URL of active tab of front window'
+      //   );
+      // } else if (activeWinInfo.owner.bundleId == 'com.apple.Safari') {
+      //   url = await runApplescript(
+      //     'tell app "Safari" to get URL of front document'
+      //   );
+      // }
+    } else if (isWindows) {
       var activeWindowHandle = user32.GetForegroundWindow();
 
       if (activeWinInfo.owner.name == 'chrome.exe') {
@@ -225,13 +224,10 @@ async function getwindowBounds(sourceInfo, sWidth, sHeight) {
         //console.log('Fetching window bounds #getwindowBounds: ' + sourceInfo + ' for try: ' + retry);
         retry -= 1;
         if (isMac) {
-          var windowsList = await allWindows();
-          for (var win of windowsList) {
-            if (win.id == sourceId) {
-              overlayBounds = win.bounds;
-              break;
-            }
-          }
+
+          var windowInfo = JSON.parse(childProcess.execFileSync(macUtilsPath, ['window-bounds', sourceId], {encoding: 'utf8'}));
+          overlayBounds = windowInfo.bounds;
+                 
         } else {
           overlayBounds = windowManager
             .getWindows()
@@ -250,12 +246,13 @@ async function getwindowBounds(sourceInfo, sWidth, sHeight) {
   return overlayBounds;
 }
 
-async function bringToTop(sourceInfo) {
+async function bringToTop(sourceInfo, skipCheck) {
   var [sourceType, sourceId] = sourceInfo.split(':');
 
   try {
-    if (windowManager.getActiveWindow().id != sourceId) {
-      if (isMac) focusWindow(sourceId);
+    if (skipCheck || windowManager.getActiveWindow().id != sourceId) {
+      if (isMac)
+        childProcess.execFileSync(macUtilsPath, ['focus-window', sourceId], {encoding: 'utf8'})
       else
         windowManager
           .getWindows()
@@ -319,11 +316,16 @@ function createWindow() {
       var activeWinInfo;
       if (isMac) {
         try {
-          activeWinInfo = await activeWin();
+          activeWinInfo = JSON.parse(childProcess.execFileSync(macUtilsPath, ['active-window'], {encoding: 'utf8'}))
+
         } catch (error) {
           console.error(error);
           activeWinInfo = {};
         }
+      } else if(isWindows) {
+        
+        activeWinInfo = {}; //return require(windowsUtilsPath);
+
       } else {
         activeWinInfo = {};
       }
@@ -332,13 +334,14 @@ function createWindow() {
         activeWinInfo.url = await getTabUrl(activeWinInfo);
         event.returnValue = activeWinInfo;
       } else {
-        event.returnValue = 'None';
+        event.returnValue = undefined;
       }
     } catch (error) {
       console.error(error);
-      event.returnValue = 'None';
+      event.returnValue = undefined;
     }
   });
+
   ipcMain.on('ask-media-status', async (event, mediaType) => {
     const hasScreenAccess =
       systemPreferences.getMediaAccessStatus('screen') === 'granted';
@@ -352,6 +355,7 @@ function createWindow() {
       hasMicAccess,
     });
   });
+
   ipcMain.handle('ask-media-access', async (event, mediaType) => {
     const mediaTypeToKeyMap = {
       screen: 'hasScreenAccess',
@@ -375,6 +379,7 @@ function createWindow() {
       }
     }
   });
+
   ipcMain.on('logout', (event, arg) => {
     mainWindow.webContents.send('logout', {});
   });
@@ -725,8 +730,6 @@ function createWindow() {
         resizable: false,
         closeable: false,
         focusable: false,
-        excludedFromShownWindowsMenu: true,
-        enableLargerThanScreen: true,
         webPreferences: {
           nodeIntegration: true,
           plugins: true,
@@ -746,7 +749,7 @@ function createWindow() {
         channel_id: args.channel_id,
       };
 
-      await bringToTop(args.sourceInfo);
+      await bringToTop(args.sourceInfo, true);
 
       windowShareContainerWindow.loadURL(
         isDev
@@ -837,6 +840,12 @@ function createWindow() {
 
   ipcMain.on('update-windowshare-container-bounds', (event, overlayBounds) => {
     if (windowShareContainerWindow) {
+      
+      // overlayBounds.width = overlayBounds.width + 10
+      // overlayBounds.height = overlayBounds.width + 10
+      // overlayBounds.x = overlayBounds.x - 5
+      // overlayBounds.y = overlayBounds.y - 5
+
       windowShareContainerWindow.setBounds(overlayBounds);
     }
   });
@@ -985,13 +994,34 @@ function createWindow() {
 
   // Make and use common methods for screenshare/windowshare wherever possible
   ipcMain.on('windowshare-source-bounds', async (event, sourceInfo) => {
-    var overlayBounds = await getwindowBounds(sourceInfo, sWidth, sHeight);
 
-    if (windowShareContainerWindow)
-      windowShareContainerWindow.moveAbove(sourceInfo);
+    var overlayBounds = await getwindowBounds(sourceInfo, sWidth, sHeight);
+    
+    // if (windowShareContainerWindow)
+    //   windowShareContainerWindow.moveAbove(sourceInfo);
 
     event.returnValue = overlayBounds;
   });
+
+  ipcMain.on('move-container-above-source', (event, sourceInfo) => {
+    
+    var [sourceType, sourceId] = sourceInfo.split(':');
+
+    // if(windowManager.getActiveWindow().id == sourceId) {
+    //   if (windowShareContainerWindow)
+    //     windowShareContainerWindow.setAlwaysOnTop(true);
+    // } else {
+    //   if (windowShareContainerWindow)
+    //     windowShareContainerWindow.setAlwaysOnTop(false);
+    // }
+
+    if (windowShareContainerWindow){
+      //windowShareContainerWindow.showInactive();
+      windowShareContainerWindow.moveAbove(sourceInfo);
+      //windowShareContainerWindow.blur();
+    }
+  });
+
 
   ipcMain.on('emit-scroll', async (event, args) => {
     originalPos = robot.getMousePos();

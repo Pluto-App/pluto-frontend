@@ -10,7 +10,6 @@
   "repository": "github:Pluto-App/pluto-desktop-releases",
   "dependencies": {
     "agora-rtc-sdk": "^3.1.1",
-    "all-windows": "^2.0.0",
     "axios": "^0.21.1",
     "axios-progress-bar": "^1.2.0",
     "electron-is-dev": "^1.2.0",
@@ -20,7 +19,6 @@
     "iconv": "^3.0.0",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.21",
-    "mac-focus-window": "^1.0.0",
     "node-window-manager": "^2.2.4",
     "overmind": "^23.1.0",
     "overmind-react": "^24.1.0",
@@ -51,7 +49,7 @@
     "afterSign": "src/scripts/notarize.js",
     "extraResources": [
       "src/dlls",
-      "src/active-window"
+      "src/bin"
     ],
     "files": [
       "build/**/*",
