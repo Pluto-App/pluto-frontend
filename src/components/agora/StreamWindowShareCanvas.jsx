@@ -257,7 +257,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
     	socket_live.on(events.windowShareSourceResize, (data) => {
             setWindowShareResolution(data.resolution);
-            // currentWindow.setSize(data.resolution.width, data.resolution.height);
+            currentWindow.setSize(data.resolution.width, data.resolution.height);
         });
 
         socket_live.on(events.windowShareCursor, (data) => {
@@ -268,26 +268,39 @@ const StreamWindowShareCanvas = React.memo((props) => {
         	}
         })
 
+    	let agScreenDiv = document.getElementById('ag-screen');
+
+    	agScreenDiv.addEventListener("wheel", shareCursorData);
+    	agScreenDiv.addEventListener("doubleclick", shareCursorData);
+    	agScreenDiv.addEventListener("mousemove", shareCursorData);
+    	agScreenDiv.addEventListener("mouseup", shareCursorData);
+    	agScreenDiv.addEventListener("mousedown", shareCursorData);
+    	agScreenDiv.addEventListener("keyup", shareCursorData);
+    	agScreenDiv.addEventListener("keydown", shareCursorData);
+
+    	document.body.addEventListener('focus', () => {
+    		document.getElementById('ag-screen').focus();	
+    	})
+
     	
-    	document.body.addEventListener("wheel", shareCursorData);
-    	document.body.addEventListener("doubleclick", shareCursorData);
-    	document.body.addEventListener("mousemove", shareCursorData);
-    	document.body.addEventListener("mouseup", shareCursorData);
-    	document.body.addEventListener("mousedown", shareCursorData);
-    	document.body.addEventListener("keyup", shareCursorData);
-    	document.body.addEventListener("keydown", shareCursorData);
 
     	window.addEventListener("resize", Dish);
 
 	    return () => {
 
-	    	document.body.removeEventListener("wheel", shareCursorData);
-    		document.body.removeEventListener("doubleclick", shareCursorData);
-    		document.body.removeEventListener("mousemove", shareCursorData);
-    		document.body.removeEventListener("mouseup", shareCursorData);
-    		document.body.removeEventListener("mousedown", shareCursorData);
-    		document.body.removeEventListener("keyup", shareCursorData);
-    		document.body.removeEventListener("keydown", shareCursorData);
+	    	let agScreenDiv = document.getElementById('ag-screen');
+
+	    	agScreenDiv.removeEventListener("wheel", shareCursorData);
+    		agScreenDiv.removeEventListener("doubleclick", shareCursorData);
+    		agScreenDiv.removeEventListener("mousemove", shareCursorData);
+    		agScreenDiv.removeEventListener("mouseup", shareCursorData);
+    		agScreenDiv.removeEventListener("mousedown", shareCursorData);
+    		agScreenDiv.removeEventListener("keyup", shareCursorData);
+    		agScreenDiv.removeEventListener("keydown", shareCursorData);
+
+    		document.body.removeEventListener('focus', () => {
+	    		document.getElementById('ag-screen').focus();	
+	    	})
 
 	    	window.removeEventListener("resize", Dish);
 	    }
@@ -345,8 +358,8 @@ const StreamWindowShareCanvas = React.memo((props) => {
 					width: '100%', 
 					position: 'relative'
 				}}>
-					<div id="ag-screen" className="ScreenShareCamera"
-						style={{border: '5px solid ' + props.config.owner_color}}
+					<div id="ag-screen" className="ScreenShareCamera" tabIndex="0"
+						style={{border: '5px solid ' + props.config.owner_color, outline: 'none'}}
 					>
 	    			</div>
                   
