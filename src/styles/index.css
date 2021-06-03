@@ -4,7 +4,9 @@
 
 @tailwind utilities;
 
-body {
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
 }
