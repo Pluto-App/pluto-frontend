@@ -59,7 +59,7 @@ const WindowShareContainer = React.memo((props) => {
         socket_live.on(events.windowShareCursor, (data) => {
             if(data.user.id && (!windowShareViewersRef.current[data.user.id])){
 
-                setWindowShareViewers({...windowShareViewers, [data.user.id] : data.user});
+                setWindowShareViewers({...windowShareViewersRef.curren, [data.user.id] : data.user});
             }
         });
 

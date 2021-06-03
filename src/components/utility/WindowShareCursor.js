@@ -6,7 +6,8 @@ import { socket_live, events } from '../sockets'
 const WindowShareCursor = React.memo((props) => {
 
     const { state, actions } = useOvermind();
-    const [ cursorPos, setCursorPos ] = useState({})
+    const [ cursorPos, setCursorPos ] = useState({});
+    const [ displayCursor, setDisplayCursor ] = useState(true);
 
     var cursorPosition = {
         left: cursorPos.x || 0,
@@ -22,12 +23,18 @@ const WindowShareCursor = React.memo((props) => {
         socket_live.on(events.windowShareCursor, (data) => {
         
             if(data.user.id == props.user.id){
+
+                if(!data.cursor.x || !data.cursor.y)
+                    setDisplayCursor(false)
+                else
+                    setDisplayCursor(true)
+
                 setCursorPos({x: data.cursor.x, y: data.cursor.y});
                 data.container = 'window';
                 data.sourceInfo = sourceInfo;
 
                 if(props.remote_access && data.event && data.event.type != 'mousemove'){
-                    actions.app.emitRemoteEvent({ data: data});    
+                    actions.app.emitRemoteEvent({ data: data});
                 }
             }
         });
@@ -45,7 +52,8 @@ const WindowShareCursor = React.memo((props) => {
         'backgroundColor': cursorColor,
         'opacity': '60%',
         zIndex: '100',
-        pointerEvents: 'none'
+        pointerEvents: 'none',
+        visibility: displayCursor ? 'visible' : 'hidden'
     }
 
     const arrowStyle = {
