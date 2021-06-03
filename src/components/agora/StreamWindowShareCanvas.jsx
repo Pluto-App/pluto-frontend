@@ -15,7 +15,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
 	const { state, actions } = useOvermind();
 
-	const [windowShareResolution, setWindowShareResolution] = useState(windowshare_resolutions[currentWindow.data.user_uid]);
+	const [ windowShareResolution, setWindowShareResolution ] = useState(windowshare_resolutions[currentWindow.data.user_uid]);
 	const [ streamList, setStreamList ] = useState([]);
 
 	const [ windowShareViewers, setWindowShareViewers ] = useState({});
@@ -138,7 +138,9 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
             var cursorData = {
             	x: xPercentage * windowShareResolution.width,
-            	y: yPercentage * windowShareResolution.height
+            	y: yPercentage * windowShareResolution.height,
+            	xPercentage: xPercentage,
+            	yPercentage: yPercentage
             }
 
             var eventData = {
@@ -282,8 +284,6 @@ const StreamWindowShareCanvas = React.memo((props) => {
     		document.getElementById('ag-screen').focus();	
     	})
 
-    	
-
     	window.addEventListener("resize", Dish);
 
 	    return () => {
@@ -342,15 +342,6 @@ const StreamWindowShareCanvas = React.memo((props) => {
     return (
 		<div id="ScreenShareDish">
 
-			{
-                Object.keys(windowShareViewers).map(user_id => 
-
-                    <WindowShareCursor key={user_id} channel_id={props.config.channel} 
-                        user={windowShareViewers[user_id]}>
-                    </WindowShareCursor>
-                )
-            }
-
 			<div id="controls-topbar" style={controlsTopBarStyle}>
 	      	</div>
 			<div style={streamContainerStyle}>
@@ -359,8 +350,18 @@ const StreamWindowShareCanvas = React.memo((props) => {
 					position: 'relative'
 				}}>
 					<div id="ag-screen" className="ScreenShareCamera" tabIndex="0"
-						style={{border: '5px solid ' + props.config.owner_color, outline: 'none'}}
+						style={{border: '5px solid ' + props.config.owner_color, outline: 'none', position: 'relative'}}
 					>
+
+						{
+			                Object.keys(windowShareViewers).map(user_id => 
+
+			                    <WindowShareCursor key={user_id} channel_id={props.config.channel} 
+			                        user={windowShareViewers[user_id]}> 
+			                    </WindowShareCursor>
+			                )
+			            }
+
 	    			</div>
                   
                   	<div 
