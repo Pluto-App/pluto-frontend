@@ -253,12 +253,18 @@ async function getwindowBounds(sourceInfo, sWidth, sHeight) {
 async function bringToTop(sourceInfo) {
   var [sourceType, sourceId] = sourceInfo.split(':');
 
-  if (isMac) focusWindow(sourceId);
-  else
-    windowManager
-      .getWindows()
-      .find((o) => o.id == sourceId)
-      .bringToTop();
+  try {
+    if (windowManager.getActiveWindow().id != sourceId) {
+      if (isMac) focusWindow(sourceId);
+      else
+        windowManager
+          .getWindows()
+          .find((o) => o.id == sourceId)
+          .bringToTop();
+    }
+  } catch (error) {
+    console.log('#bringToTop Error: ' + error);
+  }
 }
 
 function createWindow() {
@@ -719,6 +725,7 @@ function createWindow() {
         resizable: false,
         closeable: false,
         focusable: false,
+        excludedFromShownWindowsMenu: true,
         enableLargerThanScreen: true,
         webPreferences: {
           nodeIntegration: true,
@@ -768,7 +775,7 @@ function createWindow() {
       });
 
       if (isDev) {
-        // windowShareContainerWindow.webContents.openDevTools();
+        windowShareContainerWindow.webContents.openDevTools();
       }
     }
   });
@@ -819,7 +826,7 @@ function createWindow() {
       });
 
       if (isDev) {
-        // streamWindowShareWindow.webContents.openDevTools();
+        streamWindowShareWindow.webContents.openDevTools();
       }
     } else {
       console.log(
@@ -987,8 +994,6 @@ function createWindow() {
   });
 
   ipcMain.on('emit-scroll', async (event, args) => {
-    await bringToTop(args.sourceInfo);
-
     originalPos = robot.getMousePos();
     var containerBounds =
       args.container == 'window'
@@ -999,11 +1004,12 @@ function createWindow() {
       (containerBounds.x + args.cursor.x) * scaleFactor,
       (containerBounds.y + args.cursor.y) * scaleFactor
     );
-    robot.scrollMouse(args.event.deltaX, args.event.deltaY);
+    robot.scrollMouse(-1 * args.event.deltaX, -1 * args.event.deltaY);
   });
 
   ipcMain.on('emit-mousedown', async (event, args) => {
     await bringToTop(args.sourceInfo);
+
     originalPos = robot.getMousePos();
     var containerBounds =
       args.container == 'window'
@@ -1020,7 +1026,6 @@ function createWindow() {
   });
 
   ipcMain.on('emit-mouseup', async (event, args) => {
-    await bringToTop(args.sourceInfo);
     originalPos = robot.getMousePos();
     var containerBounds =
       args.container == 'window'
@@ -1038,6 +1043,7 @@ function createWindow() {
 
   ipcMain.on('emit-key', async (event, args) => {
     await bringToTop(args.sourceInfo);
+
     var rawKey = args.event.key.toLowerCase();
     var key = robotKeyMap[rawKey] || rawKey;
     var keyCode = args.event.which || args.event.keyCode;
@@ -1050,10 +1056,13 @@ function createWindow() {
 
     var mods = getModsArray(args.event);
 
-    if (args.event.type == 'keyup') {
-      robot.keyToggle(key, 'up', mods);
-    } else if (args.event.type == 'keydown') {
-      robot.keyToggle(key, 'down', mods);
+    // Ignore if only a mod is pressed.
+    if (mods.indexOf(key) == -1) {
+      if (args.event.type == 'keyup') {
+        robot.keyToggle(key, 'up', mods);
+      } else if (args.event.type == 'keydown') {
+        robot.keyToggle(key, 'down', mods);
+      }
     }
   });
 }
