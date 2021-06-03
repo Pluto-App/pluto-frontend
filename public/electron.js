@@ -838,7 +838,7 @@ function createWindow() {
       });
 
       if (isDev) {
-        // streamWindowShareWindow.webContents.openDevTools();
+        streamWindowShareWindow.webContents.openDevTools();
       }  
     
     } else {
@@ -1065,14 +1065,17 @@ function createWindow() {
 
     var mods = getModsArray(args.event);
 
-    if(args.event.type == 'keyup'){
+    // Ignore if only a mod is pressed.
+    if(mods.indexOf(key) == -1) {
+      if(args.event.type == 'keyup'){
       
-      robot.keyToggle(key, 'up', mods);
+        robot.keyToggle(key, 'up', mods);
 
-    } else if(args.event.type == 'keydown') {
-      
-      robot.keyToggle(key, 'down', mods);
+      } else if(args.event.type == 'keydown') {
+        
+        robot.keyToggle(key, 'down', mods);
 
+      }
     }
   })
 }

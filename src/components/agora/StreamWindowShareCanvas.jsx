@@ -125,23 +125,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
   		currentWindow.destroy();
   	}
 
-  	const viewingWindowShare = async () => {
-
-  		socket_live.emit(events.viewWindowShare, {
-	 		channel_id: props.config.channel,
-	 		user:  		{
-	 			id: 	state.loggedInUser.id,
-	 			uid: 	state.loggedInUser.uid,
-	 			name: 	state.loggedInUser.name,
-	 			color:  props.config.user_color
-	 		}
-	 	});
-  	}
-
   	const shareCursorData = async (e) => {
-
-  		if(e.type !== 'wheel')
-  			e.persist();
 
   		try {
 
@@ -190,11 +174,6 @@ const StreamWindowShareCanvas = React.memo((props) => {
         	console.log(error);
             // Do something here!
         }
-  	}
-
-  	const handleScroll = (e) => {
-
-  		shareCursorData(e);
   	}
 
   	function Area(Increment, Count, Width, Height, Margin = 0) {
@@ -271,11 +250,10 @@ const StreamWindowShareCanvas = React.memo((props) => {
 	      	AgoraClient.join(agoraAccessToken, props.config.channel, props.config.user_uid+'-'+Date.now(), (uid) => {
 
 	      		socket_live.emit(events.joinRoom, props.config.channel);
-	        	viewingWindowShare();
 	      	})
     	})
 
-    	document.getElementById("root").addEventListener("wheel", handleScroll);
+    	
 
     	socket_live.on(events.windowShareSourceResize, (data) => {
             setWindowShareResolution(data.resolution);
@@ -290,9 +268,29 @@ const StreamWindowShareCanvas = React.memo((props) => {
         	}
         })
 
-    	return () => {
-      		document.getElementById("root").removeEventListener("wheel", handleScroll);
-    	};
+    	
+    	document.body.addEventListener("wheel", shareCursorData);
+    	document.body.addEventListener("doubleclick", shareCursorData);
+    	document.body.addEventListener("mousemove", shareCursorData);
+    	document.body.addEventListener("mouseup", shareCursorData);
+    	document.body.addEventListener("mousedown", shareCursorData);
+    	document.body.addEventListener("keyup", shareCursorData);
+    	document.body.addEventListener("keydown", shareCursorData);
+
+    	window.addEventListener("resize", Dish);
+
+	    return () => {
+
+	    	document.body.removeEventListener("wheel", shareCursorData);
+    		document.body.removeEventListener("doubleclick", shareCursorData);
+    		document.body.removeEventListener("mousemove", shareCursorData);
+    		document.body.removeEventListener("mouseup", shareCursorData);
+    		document.body.removeEventListener("mousedown", shareCursorData);
+    		document.body.removeEventListener("keyup", shareCursorData);
+    		document.body.removeEventListener("keydown", shareCursorData);
+
+	    	window.removeEventListener("resize", Dish);
+	    }
 
     }, [])
 
@@ -309,9 +307,6 @@ const StreamWindowShareCanvas = React.memo((props) => {
     useEffect(() => {
 
 	    Dish();
-	    window.addEventListener("resize", Dish);
-
-	    return () => window.removeEventListener("resize", Dish);
 
     }, [windowShareResolution])
 
@@ -350,13 +345,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 					width: '100%', 
 					position: 'relative'
 				}}>
-					<div id="ag-screen" className="ScreenShareCamera" tabIndex="0"
-						onMouseMove={ shareCursorData }
-						onDoubleClick={ shareCursorData }
-						onKeyUp={ shareCursorData }
-						onKeyDown={ shareCursorData }
-						onMouseDown={ shareCursorData }
-						onMouseUp={ shareCursorData }
+					<div id="ag-screen" className="ScreenShareCamera"
 						style={{border: '5px solid ' + props.config.owner_color}}
 					>
 	    			</div>

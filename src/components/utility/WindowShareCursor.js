@@ -7,7 +7,6 @@ const WindowShareCursor = React.memo((props) => {
 
     const { state, actions } = useOvermind();
     const [ cursorPos, setCursorPos ] = useState({});
-    const [ displayCursor, setDisplayCursor ] = useState(true);
 
     var cursorPosition = {
         left: cursorPos.x || 0,
@@ -23,11 +22,6 @@ const WindowShareCursor = React.memo((props) => {
         socket_live.on(events.windowShareCursor, (data) => {
         
             if(data.user.id == props.user.id){
-
-                if(!data.cursor.x || !data.cursor.y)
-                    setDisplayCursor(false)
-                else
-                    setDisplayCursor(true)
 
                 setCursorPos({x: data.cursor.x, y: data.cursor.y});
                 data.container = 'window';
@@ -53,7 +47,7 @@ const WindowShareCursor = React.memo((props) => {
         'opacity': '60%',
         zIndex: '100',
         pointerEvents: 'none',
-        visibility: displayCursor ? 'visible' : 'hidden'
+        visibility: (cursorPos.x && cursorPos.y) ? 'visible' : 'hidden'
     }
 
     const arrowStyle = {
