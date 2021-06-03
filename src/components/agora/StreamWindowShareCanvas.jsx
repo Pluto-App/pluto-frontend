@@ -22,6 +22,8 @@ const StreamWindowShareCanvas = React.memo((props) => {
 	const windowShareViewersRef = useRef();
   	windowShareViewersRef.current = windowShareViewers;
 
+  	const [ screenDivBounds, setScreenDivBounds ] = useState();
+
 	const subscribeStreamEvents = () => {
 
 	    AgoraClient.on('stream-added', function (evt) {
@@ -201,8 +203,13 @@ const StreamWindowShareCanvas = React.memo((props) => {
 
   	const Dish = () => {
 
+
+
 	    let Margin = 0;
 	    let Scenary = document.getElementById('ScreenShareDish');
+	    let agScreenDiv = document.getElementById('ag-screen');
+
+	    setScreenDivBounds(agScreenDiv.getBoundingClientRect());
 
 	    if(Scenary){
 	      let Width = Scenary.offsetWidth - (Margin * 2);
@@ -254,8 +261,6 @@ const StreamWindowShareCanvas = React.memo((props) => {
 	      		socket_live.emit(events.joinRoom, props.config.channel);
 	      	})
     	})
-
-    	
 
     	socket_live.on(events.windowShareSourceResize, (data) => {
             setWindowShareResolution(data.resolution);
@@ -357,7 +362,7 @@ const StreamWindowShareCanvas = React.memo((props) => {
 			                Object.keys(windowShareViewers).map(user_id => 
 
 			                    <WindowShareCursor key={user_id} channel_id={props.config.channel} 
-			                        user={windowShareViewers[user_id]}> 
+			                        user={windowShareViewers[user_id]} streaming={1} screenDivBounds={screenDivBounds}> 
 			                    </WindowShareCursor>
 			                )
 			            }
