@@ -117,32 +117,6 @@ export const userWindowShare = async ({ state, effect }, data) => {
 	}
 }
 
-export const setSharingScreen = async ({ state, effect }, value) => {
- 	state.sharingScreen = value;
-}
-
-export const setSharingWindow = async ({ state, effect }, value) => {
- 	state.sharingWindow = value;
-}
-
-export const setStreamingScreenShare = async ({ state, effect }, value) => {
- 	state.streamingScreenShare = value;
-}
-
-export const setStreamingWindowShare = async ({ state, effect }, value) => {
- 	state.streamingWindowShare = value;
-}
-
-
-export const updateScreenShareViewers = async ({ state, effect }, data) => {
-
-	if(data.user)
-		state.screenShareViewers[data.user.uid] = data.user;
-
-	// HACK to pass data to other electron windows.
-	localStorage.setItem('screenShareViewers', JSON.stringify(state.screenShareViewers));
-}
-
 export const emitRemoteEvent = async ({ state, effect }, {data}) => {
 
 	var remoteAccessEnabled = data.container == 'window' ? 'true' : localStorage.getItem('remoteAccessEnabled');
@@ -158,9 +132,27 @@ export const emitRemoteEvent = async ({ state, effect }, {data}) => {
 		else if(data.event.type === 'mouseup')
 			ipcRenderer.send('emit-mouseup', data);
 
-		else if(data.event.type === 'keyup' || data.event.type === 'keydown')
+		else if(data.event.type === 'keyup' || data.event.type === 'keydown'){
+			console.log(data.event.type);
 			ipcRenderer.send('emit-key', data);
+		}
 	}
+}
+
+export const setSharingScreen = async ({ state, effect }, value) => {
+ 	state.sharingScreen = value;
+}
+
+export const setSharingWindow = async ({ state, effect }, value) => {
+ 	state.sharingWindow = value;
+}
+
+export const setStreamingScreenShare = async ({ state, effect }, value) => {
+ 	state.streamingScreenShare = value;
+}
+
+export const setStreamingWindowShare = async ({ state, effect }, value) => {
+ 	state.streamingWindowShare = value;
 }
 
 export const setScreenSize = async ({ state, effect }) => {
