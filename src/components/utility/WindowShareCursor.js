@@ -9,8 +9,10 @@ const WindowShareCursor = React.memo((props) => {
     const [ cursorPos, setCursorPos ] = useState({});
 
     var cursorPosition = {
-        left: cursorPos.x || 0,
-        top: cursorPos.y || 0,
+        left: props.screenDivBounds ? 
+            props.screenDivBounds.width * (cursorPos.xPercentage || 0) : cursorPos.x || 0,
+        top: props.screenDivBounds ? 
+            props.screenDivBounds.height * (cursorPos.yPercentage || 0) : cursorPos.y || 0
     }
 
     useEffect(() => {
@@ -23,7 +25,8 @@ const WindowShareCursor = React.memo((props) => {
         
             if(data.user.id == props.user.id){
 
-                setCursorPos({x: data.cursor.x, y: data.cursor.y});
+                setCursorPos({x: data.cursor.x, y: data.cursor.y, 
+                    xPercentage: data.cursor.xPercentage, yPercentage: data.cursor.yPercentage});
                 data.container = 'window';
                 data.sourceInfo = sourceInfo;
 
