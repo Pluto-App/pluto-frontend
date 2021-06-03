@@ -13,7 +13,6 @@ const robot = require('robotjs');
 const { windowManager } = require('node-window-manager');
 const childProcess = require('child_process');
 
-const ffi = require('ffi-napi');
 const { autoUpdater } = require('electron-updater');
 
 if (isDev) {
@@ -50,6 +49,10 @@ var windowsUtilsPath;
 if (isDev) windowsUtilsPath = path.join(app.getAppPath(), 'src/lib/windowsutil');
 else windowsUtilsPath = path.join(app.getAppPath(), '..', 'src/lib/windowsutil');
 
+var browserURLsDllPath;
+if (isDev) browserURLsDllPath = path.join(app.getAppPath(), 'src/dlls/BrowserURLs.dll');
+else browserURLsDllPath = path.join(app.getAppPath(), '..', 'src/dlls/BrowserURLs.dll');
+
 const minWidth = 350;
 const minHeight = 475;
 
@@ -81,59 +84,6 @@ var sHeight;
 var compactVideoWidth = 170;
 var previousVideoBounds;
 var scaleFactor = 1;
-
-if (isWindows) {
-  user32 = new ffi.Library('User32.dll', {
-    GetForegroundWindow: ['pointer', []],
-  });
-
-  var _path;
-
-  if (isDev) _path = path.join(app.getAppPath(), 'src/dlls/BrowserURLs.dll');
-  else _path = path.join(app.getAppPath(), '..', 'src/dlls/BrowserURLs.dll');
-
-  winurl = new ffi.Library(_path, {
-    FetchChromeURL: ['string', ['pointer']],
-    FetchFirefoxURL: ['string', ['pointer']],
-    FetchEdgeURL: ['string', ['pointer']],
-  });
-}
-
-async function getTabUrl(activeWinInfo) {
-  var url = activeWinInfo ? activeWinInfo.url : undefined;
-
-  if (activeWinInfo && !url) {
-    if (isMac) {
-      // if (activeWinInfo.owner.bundleId == 'com.google.Chrome') {
-      //   url = await runApplescript(
-      //     'tell application "Google Chrome" to return URL of active tab of front window'
-      //   );
-      // } else if (activeWinInfo.owner.bundleId == 'com.apple.Safari') {
-      //   url = await runApplescript(
-      //     'tell app "Safari" to get URL of front document'
-      //   );
-      // }
-    } else if (isWindows) {
-      var activeWindowHandle = user32.GetForegroundWindow();
-
-      if (activeWinInfo.owner.name == 'chrome.exe') {
-        url = winurl.FetchChromeURL(activeWindowHandle);
-      } else if (activeWinInfo.owner.name == 'firefox.exe') {
-        url = winurl.FetchFirefoxURL(activeWindowHandle);
-      }
-
-      url = url == 'null' ? undefined : url;
-
-      if (url) {
-        if (!/^https?:\/\//i.test(url)) {
-          url = 'http://' + url;
-        }
-      }
-    }
-  }
-
-  return url;
-}
 
 async function getMediaAccess() {
   const hasScreenAccess =
@@ -324,14 +274,13 @@ function createWindow() {
         }
       } else if(isWindows) {
         
-        activeWinInfo = {}; //return require(windowsUtilsPath);
+        activeWinInfo = require(windowsUtilsPath)(browserURLsDllPath);
 
       } else {
         activeWinInfo = {};
       }
 
       if (activeWinInfo && activeWinInfo.owner && activeWinInfo.owner.name) {
-        activeWinInfo.url = await getTabUrl(activeWinInfo);
         event.returnValue = activeWinInfo;
       } else {
         event.returnValue = undefined;

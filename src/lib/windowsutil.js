@@ -140,7 +140,7 @@ function getProcessIdAndHandle(windowHandle) {
 	return [processId, processHandle];
 }
 
-function windows() {
+function windows(_path) {
 	// Windows C++ APIs' functions are declared with capitals, so this rule has to be turned off
 
 	// Get a "handle" of the active window
@@ -203,6 +203,28 @@ function windows() {
 		return undefined; // Failed to get window rect
 	}
 
+	let winurl = new ffi.Library(_path, {
+	    FetchChromeURL: ['string', ['pointer']],
+	    FetchFirefoxURL: ['string', ['pointer']],
+	    FetchEdgeURL: ['string', ['pointer']],
+  	});
+  	
+  	let url;
+
+  	if (processName == 'chrome.exe') {
+    	url = winurl.FetchChromeURL(activeWindowHandle);
+  	} else if (processName == 'firefox.exe') {
+    	url = winurl.FetchFirefoxURL(activeWindowHandle);
+  	}
+
+  	url = url == 'null' ? undefined : url;
+
+  	if (url) {
+    	if (!/^https?:\/\//i.test(url)) {
+      		url = 'http://' + url;
+    	}
+  	}
+
 	return {
 		platform: 'windows',
 		title: windowTitle,
@@ -218,7 +240,8 @@ function windows() {
 			width: bounds.right - bounds.left,
 			height: bounds.bottom - bounds.top
 		},
-		memoryUsage: memoryCounters.WorkingSetSize
+		url: url
+		//memoryUsage: memoryCounters.WorkingSetSize
 	};
 
 	/* eslint-enable new-cap */
