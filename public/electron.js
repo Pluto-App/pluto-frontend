@@ -259,11 +259,14 @@ async function bringToTop(sourceInfo) {
 
   try {
     
-    if(isMac)
-      focusWindow(sourceId);
-    else
-      windowManager.getWindows().find(o => o.id == sourceId).bringToTop();  
-  
+    if(windowManager.getActiveWindow().id != sourceId) {
+
+      if(isMac)
+        focusWindow(sourceId);
+      else
+        windowManager.getWindows().find(o => o.id == sourceId).bringToTop();    
+    }
+
   } catch (error) {
     console.log('#bringToTop Error: ' + error);
   }
@@ -740,6 +743,7 @@ function createWindow() {
         resizable: false,
         closeable: false,
         focusable: false,
+        excludedFromShownWindowsMenu: true,
         enableLargerThanScreen: true,
         webPreferences: {
           nodeIntegration: true,
