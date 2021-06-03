@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-const { ipcRenderer } = window.require('electron');
+const { ipcRenderer, remote } = window.require('electron');
+
 const StyledRow = styled.div`
   display: flex;
   justify-content: space-between;
@@ -78,12 +79,21 @@ export default function PermissionRequestWindow() {
       'ask-media-access',
       requestType
     );
-    console.log('updatedPermission--->', updatedPermission, mediaAccessStatus);
     setMediaAccessStatus({
       ...mediaAccessStatus,
       ...updatedPermission,
     });
   };
+  useEffect(() => {
+    const permissionStatues = Object.values(mediaAccessStatus);
+    const hasAllPermissions =
+      permissionStatues.length &&
+      permissionStatues.every((permissionStatus) => permissionStatus === true);
+    if (hasAllPermissions) {
+      const permissionWindow = remote.getCurrentWindow();
+      permissionWindow.close();
+    }
+  }, [mediaAccessStatus]);
   useEffect(() => {
     ipcRenderer.on('permission-data', function (event, data) {
       setMediaAccessStatus(data);
