@@ -48,6 +48,7 @@ else macUtilsPath = path.join(app.getAppPath(), '..', 'src/bin/macutil');
 var windowsUtilsPath;
 if (isDev) windowsUtilsPath = path.join(app.getAppPath(), 'src/lib/windowsutil');
 else windowsUtilsPath = path.join(app.getAppPath(), '..', 'src/lib/windowsutil');
+const windowsUtil = require(windowsUtilsPath);
 
 var browserURLsDllPath;
 if (isDev) browserURLsDllPath = path.join(app.getAppPath(), 'src/dlls/BrowserURLs.dll');
@@ -272,7 +273,7 @@ function createWindow() {
         }
       } else if(isWindows) {
         
-        activeWinInfo = require(windowsUtilsPath)(browserURLsDllPath);
+        activeWinInfo = windowsUtil.activeWindow(browserURLsDllPath);
 
       } else {
         activeWinInfo = {};

@@ -15,6 +15,7 @@ const Rect = struct({
 });
 const RectPointer = ref.refType(Rect);
 const VoidPointer = ref.refType(ref.types.void);
+const StringPointer = ref.refType(ref.types.CString);
 
 // Required by QueryFullProcessImageName
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ms684880(v=vs.85).aspx
@@ -35,7 +36,9 @@ const user32 = new ffi.Library('User32.dll', {
 	GetWindowRect: ['bool', ['pointer', RectPointer]],
 	// Iterate through child windows
 	// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-enumchildwindows
-	EnumChildWindows: ['bool', ['pointer', VoidPointer, 'int32']]
+	EnumChildWindows: ['bool', ['pointer', VoidPointer, 'int32']],
+	EnumWindows: ['bool', [VoidPointer, 'int32']],
+	GetWindowTextA : ['long', ['long', StringPointer, 'long']]
 });
 
 const SIZE_T = 'uint64';
@@ -140,113 +143,131 @@ function getProcessIdAndHandle(windowHandle) {
 	return [processId, processHandle];
 }
 
-function windows(_path) {
-	// Windows C++ APIs' functions are declared with capitals, so this rule has to be turned off
+module.exports = {
+	activeWindow: function(_path) {
+		// Windows C++ APIs' functions are declared with capitals, so this rule has to be turned off
 
-	// Get a "handle" of the active window
-	const activeWindowHandle = user32.GetForegroundWindow();
+		// Get a "handle" of the active window
+		const activeWindowHandle = user32.GetForegroundWindow();
 
-	if (ref.isNull(activeWindowHandle)) {
-		return undefined; // Failed to get active window handle
+		if (ref.isNull(activeWindowHandle)) {
+			return undefined; // Failed to get active window handle
+		}
+
+		// Get memory address of the window handle as the "window ID"
+		const windowId = ref.address(activeWindowHandle);
+		// Get the window text length in "characters" to create the buffer
+		const windowTextLength = user32.GetWindowTextLengthW(activeWindowHandle);
+		// Allocate a buffer large enough to hold the window text as "Unicode" (UTF-16) characters (using ref-wchar-napi)
+		// This assumes using the "Basic Multilingual Plane" of Unicode, only 2 characters per Unicode code point
+		// Include some extra bytes for possible null characters
+		const windowTextBuffer = Buffer.alloc((windowTextLength * 2) + 4);
+		// Write the window text to the buffer (it returns the text size, but it's not used here)
+		user32.GetWindowTextW(activeWindowHandle, windowTextBuffer, windowTextLength + 2);
+		// Remove trailing null characters
+		const windowTextBufferClean = ref.reinterpretUntilZeros(windowTextBuffer, wchar.size);
+		// The text as a JavaScript string
+		const windowTitle = wchar.toString(windowTextBufferClean);
+
+		// Return the Process ID & Process Handle from the Active Window Handle
+		const [processId, processHandle] = getProcessIdAndHandle(activeWindowHandle);
+
+		if (ref.isNull(processHandle)) {
+			return undefined; // Failed to get process handle
+		}
+
+		// Return the Process Path & Process Name from a Process Handle
+		let processPath = getProcessPath(processHandle);
+		// Get process file name from path
+		let processName = path.basename(processPath);
+
+		// ApplicationFrameHost & Universal Windows Platform Support
+		if (processName === 'ApplicationFrameHost.exe') {
+			processPath = getSubWindowRealProcessPath(activeWindowHandle, processPath);
+			processName = path.basename(processPath);
+		}
+
+		// Get process memory counters
+		const memoryCounters = new ProcessMemoryCounters();
+		memoryCounters.cb = ProcessMemoryCounters.size;
+		const getProcessMemoryInfoResult = psapi.GetProcessMemoryInfo(processHandle, memoryCounters.ref(), ProcessMemoryCounters.size);
+
+		// Close the "handle" of the process
+		kernel32.CloseHandle(processHandle);
+		// Create a new instance of Rect, the struct required by the `GetWindowRect` method
+		const bounds = new Rect();
+		// Get the window bounds and save it into the `bounds` variable
+		const getWindowRectResult = user32.GetWindowRect(activeWindowHandle, bounds.ref());
+
+		if (getProcessMemoryInfoResult === 0) {
+			return undefined; // Failed to get process memory
+		}
+
+		if (getWindowRectResult === 0) {
+			return undefined; // Failed to get window rect
+		}
+
+		let winurl = new ffi.Library(_path, {
+		    FetchChromeURL: ['string', ['pointer']],
+		    FetchFirefoxURL: ['string', ['pointer']],
+		    FetchEdgeURL: ['string', ['pointer']],
+	  	});
+	  	
+	  	let url;
+
+	  	if (processName == 'chrome.exe') {
+	    	url = winurl.FetchChromeURL(activeWindowHandle);
+	  	} else if (processName == 'firefox.exe') {
+	    	url = winurl.FetchFirefoxURL(activeWindowHandle);
+	  	}
+
+	  	url = url == 'null' ? undefined : url;
+
+	  	if (url) {
+	    	if (!/^https?:\/\//i.test(url)) {
+	      		url = 'http://' + url;
+	    	}
+	  	}
+
+		return {
+			platform: 'windows',
+			title: windowTitle,
+			id: windowId,
+			owner: {
+				name: processName,
+				processId,
+				path: processPath
+			},
+			bounds: {
+				x: bounds.left,
+				y: bounds.top,
+				width: bounds.right - bounds.left,
+				height: bounds.bottom - bounds.top
+			},
+			url: url
+			//memoryUsage: memoryCounters.WorkingSetSize
+		};
+	},
+	findWindow: function(windowId) {
+
+		// This is work in progress. Not Imeplemented Yet.
+		var windows = [];
+
+		const windowProc = ffi.Callback('bool', ['long', 'int32'], function(hwnd, lParam) {
+		  var buf, name, ret;
+		  buf = new Buffer(255);
+		  ret = user32.GetWindowTextA(hwnd, buf, 255);
+		  name = ref.readCString(buf, 0);
+		  console.log(name);
+		  windows.push(name);
+		  return true;
+		});
+
+		user32.EnumWindows(windowProc, 0);
+
+		return windows;
 	}
-
-	// Get memory address of the window handle as the "window ID"
-	const windowId = ref.address(activeWindowHandle);
-	// Get the window text length in "characters" to create the buffer
-	const windowTextLength = user32.GetWindowTextLengthW(activeWindowHandle);
-	// Allocate a buffer large enough to hold the window text as "Unicode" (UTF-16) characters (using ref-wchar-napi)
-	// This assumes using the "Basic Multilingual Plane" of Unicode, only 2 characters per Unicode code point
-	// Include some extra bytes for possible null characters
-	const windowTextBuffer = Buffer.alloc((windowTextLength * 2) + 4);
-	// Write the window text to the buffer (it returns the text size, but it's not used here)
-	user32.GetWindowTextW(activeWindowHandle, windowTextBuffer, windowTextLength + 2);
-	// Remove trailing null characters
-	const windowTextBufferClean = ref.reinterpretUntilZeros(windowTextBuffer, wchar.size);
-	// The text as a JavaScript string
-	const windowTitle = wchar.toString(windowTextBufferClean);
-
-	// Return the Process ID & Process Handle from the Active Window Handle
-	const [processId, processHandle] = getProcessIdAndHandle(activeWindowHandle);
-
-	if (ref.isNull(processHandle)) {
-		return undefined; // Failed to get process handle
-	}
-
-	// Return the Process Path & Process Name from a Process Handle
-	let processPath = getProcessPath(processHandle);
-	// Get process file name from path
-	let processName = path.basename(processPath);
-
-	// ApplicationFrameHost & Universal Windows Platform Support
-	if (processName === 'ApplicationFrameHost.exe') {
-		processPath = getSubWindowRealProcessPath(activeWindowHandle, processPath);
-		processName = path.basename(processPath);
-	}
-
-	// Get process memory counters
-	const memoryCounters = new ProcessMemoryCounters();
-	memoryCounters.cb = ProcessMemoryCounters.size;
-	const getProcessMemoryInfoResult = psapi.GetProcessMemoryInfo(processHandle, memoryCounters.ref(), ProcessMemoryCounters.size);
-
-	// Close the "handle" of the process
-	kernel32.CloseHandle(processHandle);
-	// Create a new instance of Rect, the struct required by the `GetWindowRect` method
-	const bounds = new Rect();
-	// Get the window bounds and save it into the `bounds` variable
-	const getWindowRectResult = user32.GetWindowRect(activeWindowHandle, bounds.ref());
-
-	if (getProcessMemoryInfoResult === 0) {
-		return undefined; // Failed to get process memory
-	}
-
-	if (getWindowRectResult === 0) {
-		return undefined; // Failed to get window rect
-	}
-
-	let winurl = new ffi.Library(_path, {
-	    FetchChromeURL: ['string', ['pointer']],
-	    FetchFirefoxURL: ['string', ['pointer']],
-	    FetchEdgeURL: ['string', ['pointer']],
-  	});
-  	
-  	let url;
-
-  	if (processName == 'chrome.exe') {
-    	url = winurl.FetchChromeURL(activeWindowHandle);
-  	} else if (processName == 'firefox.exe') {
-    	url = winurl.FetchFirefoxURL(activeWindowHandle);
-  	}
-
-  	url = url == 'null' ? undefined : url;
-
-  	if (url) {
-    	if (!/^https?:\/\//i.test(url)) {
-      		url = 'http://' + url;
-    	}
-  	}
-
-	return {
-		platform: 'windows',
-		title: windowTitle,
-		id: windowId,
-		owner: {
-			name: processName,
-			processId,
-			path: processPath
-		},
-		bounds: {
-			x: bounds.left,
-			y: bounds.top,
-			width: bounds.right - bounds.left,
-			height: bounds.bottom - bounds.top
-		},
-		url: url
-		//memoryUsage: memoryCounters.WorkingSetSize
-	};
-
-	/* eslint-enable new-cap */
 }
 
-module.exports = windows;
 
 
