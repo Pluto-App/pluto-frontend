@@ -53,7 +53,13 @@ const WindowShareContainer = React.memo((props) => {
                     ipcRenderer.send('update-windowshare-container-bounds',overlayBounds);
                 }
 
-            }, 200)    
+            }, 1000)
+
+            const move = setInterval(() => {                
+                    
+                ipcRenderer.send('move-container-above-source', 
+                                        sourceInfo);
+            }, 200)
         }
 
         socket_live.on(events.windowShareCursor, (data) => {

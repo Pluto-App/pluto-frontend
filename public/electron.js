@@ -250,11 +250,11 @@ async function getwindowBounds(sourceInfo, sWidth, sHeight) {
   return overlayBounds;
 }
 
-async function bringToTop(sourceInfo) {
+async function bringToTop(sourceInfo, skipCheck) {
   var [sourceType, sourceId] = sourceInfo.split(':');
 
   try {
-    if (windowManager.getActiveWindow().id != sourceId) {
+    if (skipCheck || windowManager.getActiveWindow().id != sourceId) {
       if (isMac) focusWindow(sourceId);
       else
         windowManager
@@ -339,6 +339,7 @@ function createWindow() {
       event.returnValue = 'None';
     }
   });
+
   ipcMain.on('ask-media-status', async (event, mediaType) => {
     const hasScreenAccess =
       systemPreferences.getMediaAccessStatus('screen') === 'granted';
@@ -352,6 +353,7 @@ function createWindow() {
       hasMicAccess,
     });
   });
+
   ipcMain.handle('ask-media-access', async (event, mediaType) => {
     const mediaTypeToKeyMap = {
       screen: 'hasScreenAccess',
@@ -375,6 +377,7 @@ function createWindow() {
       }
     }
   });
+
   ipcMain.on('logout', (event, arg) => {
     mainWindow.webContents.send('logout', {});
   });
@@ -725,8 +728,6 @@ function createWindow() {
         resizable: false,
         closeable: false,
         focusable: false,
-        excludedFromShownWindowsMenu: true,
-        enableLargerThanScreen: true,
         webPreferences: {
           nodeIntegration: true,
           plugins: true,
@@ -746,7 +747,7 @@ function createWindow() {
         channel_id: args.channel_id,
       };
 
-      await bringToTop(args.sourceInfo);
+      await bringToTop(args.sourceInfo, true);
 
       windowShareContainerWindow.loadURL(
         isDev
@@ -837,6 +838,12 @@ function createWindow() {
 
   ipcMain.on('update-windowshare-container-bounds', (event, overlayBounds) => {
     if (windowShareContainerWindow) {
+      
+      // overlayBounds.width = overlayBounds.width + 10
+      // overlayBounds.height = overlayBounds.width + 10
+      // overlayBounds.x = overlayBounds.x - 5
+      // overlayBounds.y = overlayBounds.y - 5
+
       windowShareContainerWindow.setBounds(overlayBounds);
     }
   });
@@ -985,13 +992,34 @@ function createWindow() {
 
   // Make and use common methods for screenshare/windowshare wherever possible
   ipcMain.on('windowshare-source-bounds', async (event, sourceInfo) => {
-    var overlayBounds = await getwindowBounds(sourceInfo, sWidth, sHeight);
 
-    if (windowShareContainerWindow)
-      windowShareContainerWindow.moveAbove(sourceInfo);
+    var overlayBounds = await getwindowBounds(sourceInfo, sWidth, sHeight);
+    
+    // if (windowShareContainerWindow)
+    //   windowShareContainerWindow.moveAbove(sourceInfo);
 
     event.returnValue = overlayBounds;
   });
+
+  ipcMain.on('move-container-above-source', (event, sourceInfo) => {
+    
+    var [sourceType, sourceId] = sourceInfo.split(':');
+
+    // if(windowManager.getActiveWindow().id == sourceId) {
+    //   if (windowShareContainerWindow)
+    //     windowShareContainerWindow.setAlwaysOnTop(true);
+    // } else {
+    //   if (windowShareContainerWindow)
+    //     windowShareContainerWindow.setAlwaysOnTop(false);
+    // }
+
+    if (windowShareContainerWindow){
+      //windowShareContainerWindow.showInactive();
+      windowShareContainerWindow.moveAbove(sourceInfo);
+      //windowShareContainerWindow.blur();
+    }
+  });
+
 
   ipcMain.on('emit-scroll', async (event, args) => {
     originalPos = robot.getMousePos();
