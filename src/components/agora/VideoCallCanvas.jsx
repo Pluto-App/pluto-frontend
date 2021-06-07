@@ -581,7 +581,7 @@ const VideoCallCanvas = React.memo((props) => {
         className="material-icons exit focus:outline-none md-light"
         style={{ fontSize: '30px' }}
       >
-        locallgout
+        call_end
       </i>
     </span>
   );
