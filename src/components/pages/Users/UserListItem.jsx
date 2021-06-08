@@ -58,7 +58,6 @@ const UserListItem = React.memo((props) => {
     const activeAppClick = (e, url) => {
         e.preventDefault();
         if(url && url.href){
-            console.log(url);
             window.require("electron").shell.openExternal( url.href);
         }
     }

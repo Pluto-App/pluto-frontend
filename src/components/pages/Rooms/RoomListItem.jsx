@@ -82,7 +82,7 @@ const RoomListItem = React.memo((props) => {
     const startVideo = async () => {
 
         if(localStorage.getItem('call_channel_id'))
-            await actions.app.clearVideoCallData();
+            await actions.app.clearVideoCallData({});
 
         let call_channel_id = 'rvc-' + room.rid;
         let call_data = {

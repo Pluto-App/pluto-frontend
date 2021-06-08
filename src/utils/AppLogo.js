@@ -88,30 +88,36 @@ export const appLogo = function(appData, userPreference) {
     }
 
     if(url) {
-      url = new URL(url);
+      try {
+        url = new URL(url);
 
-      if (!/^https?:\/\//i.test(url)) {
-          url = 'http://' + url;
-      }
-
-      appName = hostApp[url.hostname] ? hostApp[url.hostname] : appName;
-
-      // Google Document or Google Sheet?
-      if(appName === 'googledocs|googlesheets') {
-
-        var doc_type = url.pathname.split('/')[1]; 
-
-        switch(doc_type) {
-          case 'document':
-            appName = 'googledocs';
-            break;
-          case 'spreadsheets':
-            appName = 'googlesheets';
-            break;
-          default:
-            // do nothing
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'http://' + url;
         }
+
+        appName = hostApp[url.hostname] ? hostApp[url.hostname] : appName;
+
+        // Google Document or Google Sheet?
+        if(appName === 'googledocs|googlesheets') {
+
+          var doc_type = url.pathname.split('/')[1]; 
+
+          switch(doc_type) {
+            case 'document':
+              appName = 'googledocs';
+              break;
+            case 'spreadsheets':
+              appName = 'googlesheets';
+              break;
+            default:
+              // do nothing
+          }
+        }  
+      } catch (error) {
+        console.log('Error parsing URL: ' + url);
+        console.log(error);
       }
+      
     }
 
     if(appLogos[appName]) {
