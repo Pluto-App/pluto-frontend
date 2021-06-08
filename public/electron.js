@@ -46,9 +46,13 @@ if (isDev) macUtilsPath = path.join(app.getAppPath(), 'src/bin/macutil');
 else macUtilsPath = path.join(app.getAppPath(), '..', 'src/bin/macutil');
 
 var windowsUtilsPath;
-if (isDev) windowsUtilsPath = path.join(app.getAppPath(), 'src/lib/windowsutil');
-else windowsUtilsPath = path.join(app.getAppPath(), '..', 'src/lib/windowsutil');
-const windowsUtil = require(windowsUtilsPath);
+let windowsUtil;
+
+if(isWindows) {
+  if (isDev) windowsUtilsPath = path.join(app.getAppPath(), 'src/lib/windowsutil');
+  else windowsUtilsPath = path.join(app.getAppPath(), '..', 'src/lib/windowsutil');
+  windowsUtil = require(windowsUtilsPath);
+}
 
 var browserURLsDllPath;
 if (isDev) browserURLsDllPath = path.join(app.getAppPath(), 'src/dlls/BrowserURLs.dll');
