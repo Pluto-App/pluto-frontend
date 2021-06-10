@@ -26,32 +26,6 @@ const Cursor = React.memo((props) => {
 
   const cursorColor = props.user ? props.user.color : '#0000ff';
 
-  const cursorStyle = {
-    width: '120px',
-    left: cursorPosition['left'],
-    top: cursorPosition['top'],
-    borderRadius: '50%',
-    position: 'absolute',
-    zIndex: '100',
-    pointerEvents: 'none',
-  };
-
-  const textStyle = {
-    //   b3 is added as suffix to give semi-transparent background to the user marker.
-    backgroundColor: `${cursorColor}b3`,
-    fontSize: '12px',
-    whiteSpace: 'nowrap',
-    color: 'white',
-    display: 'block',
-    position: 'relative',
-    top: '25px',
-    left: '-10px',
-    padding: '3px 5px',
-    textTransform: 'uppercase',
-    borderRadius: '5px',
-    border: `1px solid ${cursorColor}`,
-  };
-
   return (
     <Pointer
       position={cursorPosition}
