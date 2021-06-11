@@ -26,6 +26,7 @@ const VideoCallCanvas = React.memo((props) => {
   const { authData } = useContext(AuthContext);
 
   const [streamList, setStreamList] = useState([]);
+  const [micOn, setMicOn] = useState(false);
   const streamListRef = useRef();
   streamListRef.current = streamList;
 
@@ -97,9 +98,13 @@ const VideoCallCanvas = React.memo((props) => {
       removeStream(stream.getId());
     });
 
+    AgoraClient.on('mute-audio', (evt) => toggleAudioStatus(evt, 'mute-audio'));
+    AgoraClient.on('unmute-audio', (evt) =>
+      toggleAudioStatus(evt, 'unmute-audio')
+    );
+
     AgoraClient.on('mute-video', function (evt) {
       let uid = evt.uid;
-      console.log('Mute videos: ' + uid);
       var found = false;
 
       streamListRef.current.forEach((stream, index) => {
@@ -120,7 +125,6 @@ const VideoCallCanvas = React.memo((props) => {
 
     AgoraClient.on('unmute-video', function (evt) {
       let uid = evt.uid;
-      console.log('Unmute video: ' + uid);
       var found = false;
 
       streamListRef.current.forEach((stream, index) => {
@@ -141,6 +145,8 @@ const VideoCallCanvas = React.memo((props) => {
   };
 
   const addStream = (stream, push = false) => {
+    if (!stream) return;
+    stream.muted = stream.userMuteAudio;
     let repeatition = streamListRef.current.some((item) => {
       return item.getId() === stream.getId();
     });
@@ -155,7 +161,7 @@ const VideoCallCanvas = React.memo((props) => {
       tempStreamList = [stream].concat(streamListRef.current);
     }
 
-    setStreamList(tempStreamList);
+    setStreamList([...tempStreamList]);
   };
 
   const removeStream = (uid) => {
@@ -175,7 +181,16 @@ const VideoCallCanvas = React.memo((props) => {
       }
     });
   };
-
+  const toggleAudioStatus = ({ uid }, action) => {
+    const newStream = streamListRef.current.map((stream) => {
+      if (stream.getId() === uid) {
+        stream.muted = action === 'mute-audio';
+      }
+      return stream;
+    });
+    setStreamList(newStream);
+    // const mutedUser = streamListRef.current.find((s) => s.getId === uid);
+  };
   const toggleVideoView = (stream, action) => {
     var uid = stream.getId();
 
@@ -405,7 +420,6 @@ const VideoCallCanvas = React.memo((props) => {
         var tempUsersInCallIds = usersInCallIdsRef.current.concat([streamId]);
         setUsersInCallIds(tempUsersInCallIds);
       }
-
       if (stream.isPlaying()) stream.stop();
 
       if (streamState[streamId]) {
@@ -464,10 +478,12 @@ const VideoCallCanvas = React.memo((props) => {
   const handleMic = (e) => {
     if (localStream.isAudioOn()) {
       localStream.disableAudio();
-      document.getElementById('mic-icon').innerHTML = 'mic_off';
+      setMicOn(false);
+      toggleAudioStatus({ uid: localStream.getId() }, 'mute-audio');
     } else {
       localStream.unmuteAudio();
-      document.getElementById('mic-icon').innerHTML = 'mic';
+      setMicOn(true);
+      toggleAudioStatus({ uid: localStream.getId() }, 'unmute-audio');
     }
   };
 
@@ -562,10 +578,10 @@ const VideoCallCanvas = React.memo((props) => {
     >
       <i
         className="material-icons focus:outline-none md-light"
-        style={{ fontSize: '30px' }}
+        style={{ fontSize: '30px', width: '30px' }}
         id="mic-icon"
       >
-        mic_off
+        {micOn ? 'mic_on' : 'mic_off'}
       </i>
     </span>
   );
@@ -709,7 +725,6 @@ const VideoCallCanvas = React.memo((props) => {
       Cameras[s].style.height = width * 0.75 + 'px';
     }
   }
-
   return (
     <div
       id="ag-canvas"
@@ -786,7 +801,6 @@ const VideoCallCanvas = React.memo((props) => {
             }}
           >
             {
-              //Array(6).fill(0).map((x, i) =>
               streamList.map((stream) => (
                 <section
                   className="flex-1 center"
@@ -834,14 +848,31 @@ const VideoCallCanvas = React.memo((props) => {
                             : '10px',
                       }}
                     >
-                      <div style={{ display: 'table', height: '30px' }}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          height: '30px',
+                        }}
+                      >
                         <span
                           className="text-gray-200 px-1"
                           style={{
-                            display: 'table-cell',
+                            display: 'flex',
                             verticalAlign: 'middle',
                           }}
                         >
+                          <i
+                            className="material-icons focus:outline-none md-light"
+                            style={{
+                              fontSize: '15px',
+                              marginRight: '4px',
+                              width: '15px',
+                            }}
+                            id="mic-icon"
+                          >
+                            {stream.muted ? 'mic_off' : 'mic_on'}
+                          </i>
                           {usersInCall[stream.getId()]
                             ? usersInCall[stream.getId()].name.split(' ')[0]
                             : ''}
@@ -899,7 +930,7 @@ const VideoCallCanvas = React.memo((props) => {
                       <div
                         className="text-white px-1 font-bold pointer"
                         style={{
-                          display: 'table',
+                          display: 'flex',
                           height: '50px',
                           marginLeft: '10px',
                         }}
@@ -909,14 +940,25 @@ const VideoCallCanvas = React.memo((props) => {
                       >
                         <span
                           style={{
-                            display: 'table-cell',
-                            verticalAlign: 'middle',
+                            display: 'flex',
+                            alignItems: 'center',
                             fontSize: '14px',
                           }}
                         >
                           {usersInCall[stream.getId()]
                             ? usersInCall[stream.getId()].name.split(' ')[0]
                             : ''}
+                          <i
+                            className="material-icons focus:outline-none md-light"
+                            style={{
+                              fontSize: '15px',
+                              paddingLeft: '4px',
+                              width: '15px',
+                            }}
+                            id="mic-icon"
+                          >
+                            {stream.muted ? 'mic_off' : 'mic_on'}
+                          </i>
                         </span>
                       </div>
                       {usersInCall[stream.getId()] &&
