@@ -12,7 +12,7 @@ const url = require('url');
 const robot = require('robotjs');
 const { windowManager } = require('node-window-manager');
 const childProcess = require('child_process');
-
+const { openSystemPreferences } = require('electron-util');
 const { autoUpdater } = require('electron-updater');
 
 if (isDev) {
@@ -48,15 +48,23 @@ else macUtilsPath = path.join(app.getAppPath(), '..', 'src/bin/macutil');
 var windowsUtilsPath;
 let windowsUtil;
 
-if(isWindows) {
-  if (isDev) windowsUtilsPath = path.join(app.getAppPath(), 'src/lib/windowsutil');
-  else windowsUtilsPath = path.join(app.getAppPath(), '..', 'src/lib/windowsutil');
+if (isWindows) {
+  if (isDev)
+    windowsUtilsPath = path.join(app.getAppPath(), 'src/lib/windowsutil');
+  else
+    windowsUtilsPath = path.join(app.getAppPath(), '..', 'src/lib/windowsutil');
   windowsUtil = require(windowsUtilsPath);
 }
 
 var browserURLsDllPath;
-if (isDev) browserURLsDllPath = path.join(app.getAppPath(), 'src/dlls/BrowserURLs.dll');
-else browserURLsDllPath = path.join(app.getAppPath(), '..', 'src/dlls/BrowserURLs.dll');
+if (isDev)
+  browserURLsDllPath = path.join(app.getAppPath(), 'src/dlls/BrowserURLs.dll');
+else
+  browserURLsDllPath = path.join(
+    app.getAppPath(),
+    '..',
+    'src/dlls/BrowserURLs.dll'
+  );
 
 const minWidth = 350;
 const minHeight = 475;
@@ -179,10 +187,14 @@ async function getwindowBounds(sourceInfo, sWidth, sHeight) {
         //console.log('Fetching window bounds #getwindowBounds: ' + sourceInfo + ' for try: ' + retry);
         retry -= 1;
         if (isMac) {
-
-          var windowInfo = JSON.parse(childProcess.execFileSync(macUtilsPath, ['window-bounds', sourceId], {encoding: 'utf8'}));
+          var windowInfo = JSON.parse(
+            childProcess.execFileSync(
+              macUtilsPath,
+              ['window-bounds', sourceId],
+              { encoding: 'utf8' }
+            )
+          );
           overlayBounds = windowInfo.bounds;
-                 
         } else {
           overlayBounds = windowManager
             .getWindows()
@@ -207,7 +219,9 @@ async function bringToTop(sourceInfo, skipCheck) {
   try {
     if (skipCheck || windowManager.getActiveWindow().id != sourceId) {
       if (isMac)
-        childProcess.execFileSync(macUtilsPath, ['focus-window', sourceId], {encoding: 'utf8'})
+        childProcess.execFileSync(macUtilsPath, ['focus-window', sourceId], {
+          encoding: 'utf8',
+        });
       else
         windowManager
           .getWindows()
@@ -269,16 +283,17 @@ function createWindow() {
       var activeWinInfo;
       if (isMac) {
         try {
-          activeWinInfo = JSON.parse(childProcess.execFileSync(macUtilsPath, ['active-window'], {encoding: 'utf8'}))
-
+          activeWinInfo = JSON.parse(
+            childProcess.execFileSync(macUtilsPath, ['active-window'], {
+              encoding: 'utf8',
+            })
+          );
         } catch (error) {
           console.error(error);
           activeWinInfo = {};
         }
-      } else if(isWindows) {
-        
+      } else if (isWindows) {
         activeWinInfo = windowsUtil.activeWindow(browserURLsDllPath);
-
       } else {
         activeWinInfo = {};
       }
@@ -320,12 +335,15 @@ function createWindow() {
     if (hasAccess) {
       returnValue[mediaType] = true;
       return returnValue;
-      event.returnValue = returnValue;
     } else {
       try {
-        const status = await systemPreferences.askForMediaAccess(mediaType);
-        returnValue[mediaTypeToKeyMap[mediaType]] = status;
-        return returnValue;
+        if (mediaType === 'screen') {
+          openSystemPreferences('security', 'Privacy_ScreenCapture');
+        } else {
+          const status = await systemPreferences.askForMediaAccess(mediaType);
+          returnValue[mediaTypeToKeyMap[mediaType]] = status;
+          return returnValue;
+        }
       } catch (e) {
         console.error('ERROR: Failed to get media access ', e);
       }
@@ -792,7 +810,6 @@ function createWindow() {
 
   ipcMain.on('update-windowshare-container-bounds', (event, overlayBounds) => {
     if (windowShareContainerWindow) {
-      
       // overlayBounds.width = overlayBounds.width + 10
       // overlayBounds.height = overlayBounds.width + 10
       // overlayBounds.x = overlayBounds.x - 5
@@ -946,9 +963,8 @@ function createWindow() {
 
   // Make and use common methods for screenshare/windowshare wherever possible
   ipcMain.on('windowshare-source-bounds', async (event, sourceInfo) => {
-
     var overlayBounds = await getwindowBounds(sourceInfo, sWidth, sHeight);
-    
+
     // if (windowShareContainerWindow)
     //   windowShareContainerWindow.moveAbove(sourceInfo);
 
@@ -956,7 +972,6 @@ function createWindow() {
   });
 
   ipcMain.on('move-container-above-source', (event, sourceInfo) => {
-    
     var [sourceType, sourceId] = sourceInfo.split(':');
 
     // if(windowManager.getActiveWindow().id == sourceId) {
@@ -967,13 +982,12 @@ function createWindow() {
     //     windowShareContainerWindow.setAlwaysOnTop(false);
     // }
 
-    if (windowShareContainerWindow){
+    if (windowShareContainerWindow) {
       //windowShareContainerWindow.showInactive();
       windowShareContainerWindow.moveAbove(sourceInfo);
       //windowShareContainerWindow.blur();
     }
   });
-
 
   ipcMain.on('emit-scroll', async (event, args) => {
     originalPos = robot.getMousePos();

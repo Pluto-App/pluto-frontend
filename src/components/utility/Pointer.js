@@ -14,7 +14,7 @@ const Pointer = React.memo((props) => {
   } = props;
 
   const cursorStyle = {
-    width: '120px',
+    width: '7.5em',
     left: position['left'],
     top: position['top'],
     borderRadius: '50%',
