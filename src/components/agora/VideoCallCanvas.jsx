@@ -24,8 +24,6 @@ var localStream = {};
 var streamState = {};
 var needWindowUpdate = false;
 
-const AgoraClient = AgoraRTC.createClient({ mode: 'interop', codec: 'vp8' });
-
 const VideoCallCanvas = React.memo((props) => {
   const { state, actions } = useOvermind();
   const { authData } = useContext(AuthContext);
@@ -42,61 +40,12 @@ const VideoCallCanvas = React.memo((props) => {
   const [playEndCallSound] = useSound(endCallSound);
 
   const { rtmLoggedIn, joinRTMChannel, sendChannelMessage, sendChannelMediaMessage, newMessage } = useAgoraRTM(props.config);
-  const { initAgoraRTC, streamList, localStream } = useAgoraRTC(props.config);
+  const {initAgoraRTC, streamList, localStream, toggleVideoView } = useAgoraRTC(props.config);
 
   if (needWindowUpdate) {
     setNumActiveVideo(document.getElementsByClassName('ag-video-on').length);
     needWindowUpdate = false;
   }
-
-  const streamInit = (uid, videoProfile, config) => {
-    let defaultConfig = {
-      streamID: uid,
-      audio: true,
-      video: true,
-      screen: false,
-    };
-
-    let stream = AgoraRTC.createStream(merge(defaultConfig, config));
-    stream.setVideoProfile(videoProfile);
-
-    return stream;
-  };
-
-  const toggleVideoView = (stream, action) => {
-    var uid = stream.getId();
-
-    let elementID = 'ag-item-' + uid;
-    let element = document.getElementById(elementID);
-    element.classList.toggle('ag-video-on');
-
-    let elementInfoId = 'ag-item-info-' + uid;
-    let elementInfo = document.getElementById(elementInfoId);
-
-    let userDetailsID = 'user-details-' + uid;
-    let userDetailsElement = document.getElementById(userDetailsID);
-    userDetailsElement.classList.toggle('user-details');
-
-    if (action === 'mute') {
-      stream.muteVideo();
-
-      if (element) element.style.display = 'none';
-
-      if (elementInfo) elementInfo.style.display = 'none';
-
-      if (userDetailsElement) userDetailsElement.style.display = 'flex';
-    } else {
-      stream.unmuteVideo();
-
-      if (element) element.style.display = 'block';
-
-      if (elementInfo) elementInfo.style.display = 'flex';
-
-      if (userDetailsElement) userDetailsElement.style.display = 'none';
-    }
-
-    updateWindowSize();
-  };
 
   const getHeight = () => {
     let videoElements = document.getElementsByClassName('ag-video-on').length;

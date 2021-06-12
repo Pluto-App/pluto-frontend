@@ -127,9 +127,6 @@ export default function useAgoraRTC(props) {
     	if (repetition)
       		return;
 
-      	console.log('Adding Stream!');
-      	console.log(streamList);
-
     	let tempStreamList;
     	if (push)
       		tempStreamList = streamListRef.current.concat([stream]);
@@ -189,13 +186,78 @@ export default function useAgoraRTC(props) {
 	    });
 
 	    AgoraRTCClient.on('mute-video', function (evt) {
-	      
+	    	
+	    	let uid = evt.uid;
+	      	var found = false;
+
+	      	streamList.forEach((stream, index) => {
+	        	if (stream.getId() === uid) {
+	          		toggleVideoView(stream, 'mute');
+	          		found = true;
+	        	}
+	      	});
+
+	      	if (!found) {
+	        	if (!streamState[uid]) streamState[uid] = {};
+
+        		streamState[uid]['video'] = false;
+	      	}
 	    });
 
 	    AgoraRTCClient.on('unmute-video', function (evt) {
-	      
+
+	    	let uid = evt.uid;
+	        var found = false;
+
+	        streamList.forEach((stream, index) => {
+	          if (stream.getId() === uid) {
+	            toggleVideoView(stream, 'unmute');
+	            found = true;
+	          }
+	        });
+
+	        if (!found) {
+	          	if (!streamState[uid]) streamState[uid] = {};
+
+	          	streamState[uid]['video'] = true;
+	        }
 	    });
-	  };
+  	};
+
+	const toggleVideoView = (stream, action) => {
+	    var uid = stream.getId();
+
+	    let elementID = 'ag-item-' + uid;
+	    let element = document.getElementById(elementID);
+	    element.classList.toggle('ag-video-on');
+
+	    let elementInfoId = 'ag-item-info-' + uid;
+	    let elementInfo = document.getElementById(elementInfoId);
+
+	    let userDetailsID = 'user-details-' + uid;
+	    let userDetailsElement = document.getElementById(userDetailsID);
+	    userDetailsElement.classList.toggle('user-details');
+
+	    if (action === 'mute') {
+	      stream.muteVideo();
+
+	      if (element) element.style.display = 'none';
+
+	      if (elementInfo) elementInfo.style.display = 'none';
+
+	      if (userDetailsElement) userDetailsElement.style.display = 'flex';
+	    } else {
+	      stream.unmuteVideo();
+
+	      if (element) element.style.display = 'block';
+
+	      if (elementInfo) elementInfo.style.display = 'flex';
+
+	      if (userDetailsElement) userDetailsElement.style.display = 'none';
+	    }
+
+	    updateWindowSize();
+  	};
 
 	return {
 		initAgoraRTC, streamList, localStream

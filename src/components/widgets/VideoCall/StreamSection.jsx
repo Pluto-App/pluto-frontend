@@ -5,6 +5,7 @@ import { useOvermind } from '../../../overmind';
 import ActiveWindowInfo from './ActiveWindowInfo';
 
 const StreamSection = React.memo(({stream, usersInCall, handleExpand}) => {
+  
 	const { state, actions } = useOvermind();
 
 	return (
