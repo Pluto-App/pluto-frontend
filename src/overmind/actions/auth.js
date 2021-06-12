@@ -77,4 +77,19 @@ export const getAgoraAccessToken = async ({state, effects}, {requestParams}) => 
     }
 }
 
+export const getAgoraRTMToken = async ({state, effects}, {requestParams}) => {
+
+    try {
+
+        var agoraRTMToken = await effects.auth.getAgoraRTMToken(requestParams);
+        return agoraRTMToken.token;
+      
+        
+    } catch (error){
+        
+        state.error = error;
+        ToastNotification('error', error);
+    }
+}
+
 

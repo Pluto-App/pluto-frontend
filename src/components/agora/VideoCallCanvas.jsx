@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { merge } from 'lodash';
 import AgoraRTC from 'agora-rtc-sdk';
+import AgoraRTM from 'agora-rtm-sdk';
 
 import { useOvermind } from '../../overmind';
 import { socket_live, events } from '../sockets';
@@ -12,6 +13,8 @@ import StreamScreenShare from '../windows/screenshare/StreamScreenShare';
 
 import useSound from 'use-sound';
 import endCallSound from '../../assets/sounds/end_call.wav';
+
+import useAgoraRTM from '../../hooks/useAgoraRTM';
 
 const { remote, ipcRenderer } = window.require('electron');
 
@@ -39,6 +42,8 @@ const VideoCallCanvas = React.memo((props) => {
 
   const [numActiveVideo, setNumActiveVideo] = useState(0);
   const [playEndCallSound] = useSound(endCallSound);
+
+  const { newMessage, joinRTMChannel, sendChannelMessage, sendChannelMediaMessage } = useAgoraRTM(props.config);
 
   if (needWindowUpdate) {
     setNumActiveVideo(document.getElementsByClassName('ag-video-on').length);
@@ -241,7 +246,7 @@ const VideoCallCanvas = React.memo((props) => {
         async () => {
           subscribeStreamEvents();
           const agoraAccessToken = await actions.auth.getAgoraAccessToken({
-            requestParams: { channel: props.config.channel },
+            requestParams: { channel: props.config.channel, user_id: props.config.user_id },
           });
 
           AgoraClient.join(
@@ -299,6 +304,8 @@ const VideoCallCanvas = React.memo((props) => {
                 }
               );
 
+              joinRTMChannel(props.config.channel);
+
               setTimeout(async function () {
                 var currentWindowShares =
                   await actions.videocall.getCurrentWindowShares({
@@ -315,6 +322,7 @@ const VideoCallCanvas = React.memo((props) => {
                     actions.app.userWindowShare(windowShare);
                   }
                 }
+
               }, 3000);
             }
           );
@@ -330,6 +338,26 @@ const VideoCallCanvas = React.memo((props) => {
       };
     }
   }, [state.userProfileData.id]);
+
+  useEffect(() => {
+    
+    if(newMessage)
+      console.log(newMessage);
+
+  }, [newMessage])
+
+  // useEffect(() => {
+
+  //   const interval = setInterval(() => {
+  //     sendChannelMessage( "What's up bro?! The time is: " + new Date().toLocaleTimeString() );
+
+  //   }, 3000);
+
+  //   return () => {
+  //     clearInterval(interval);
+  //   }
+
+  // }, [sendChannelMessage])
 
   useEffect(() => {
     // Load and Resize Event
