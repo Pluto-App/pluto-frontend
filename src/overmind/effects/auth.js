@@ -68,3 +68,26 @@ export const getAgoraAccessToken = async (requestParams) => {
       // Error handling
   });
 }
+
+export const getAgoraRTMToken = async (requestParams) => {
+
+  return fetch(
+
+    BACKEND_URL + "/agora-rtm-token" ,
+     {
+          method: 'POST',
+          headers: headers(),
+          body: JSON.stringify(requestParams)
+     }
+  )
+  .then(response => response.json())
+  .then(responseData => {
+    return responseData;
+  })
+  .catch((error) => {
+    return {};
+      // Error handling
+  });
+}
+
+

@@ -10,6 +10,7 @@
   "repository": "github:Pluto-App/pluto-desktop-releases",
   "dependencies": {
     "agora-rtc-sdk": "^3.6.0",
+    "agora-rtm-sdk": "^1.4.3",
     "axios": "^0.21.1",
     "axios-progress-bar": "^1.2.0",
     "electron-is-dev": "^1.2.0",
