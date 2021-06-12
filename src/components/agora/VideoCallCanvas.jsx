@@ -42,7 +42,7 @@ const VideoCallCanvas = React.memo((props) => {
   const [playEndCallSound] = useSound(endCallSound);
 
   const { rtmLoggedIn, joinRTMChannel, sendChannelMessage, sendChannelMediaMessage, newMessage } = useAgoraRTM(props.config);
-  const { initAgoraRTC, streamList, setStreamList, localStream } = useAgoraRTC(props.config);
+  const { initAgoraRTC, streamList, localStream } = useAgoraRTC(props.config);
 
   if (needWindowUpdate) {
     setNumActiveVideo(document.getElementsByClassName('ag-video-on').length);

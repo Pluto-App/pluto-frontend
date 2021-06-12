@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AgoraRTC from 'agora-rtc-sdk';
 import { merge } from 'lodash';
 
@@ -14,6 +14,9 @@ export default function useAgoraRTC(props) {
 
 	const { state, actions } = useOvermind();
 	const [ streamList, setStreamList ] = useState([]);
+	
+	const streamListRef = useRef();
+  	streamListRef.current = streamList;
 
 	useEffect (() => {
 
@@ -116,36 +119,39 @@ export default function useAgoraRTC(props) {
     	return stream;
   	};
 
-  	const addStream = useCallback( (stream, push = false) => {
-    	let repeatition = streamList.some((item) => {
+  	const addStream = (stream, push = false) => {
+    	let repetition = streamListRef.current.some((item) => {
       		return item.getId() === stream.getId();
 		});
     	
-    	if (repeatition)
+    	if (repetition)
       		return;
+
+      	console.log('Adding Stream!');
+      	console.log(streamList);
 
     	let tempStreamList;
     	if (push)
-      		tempStreamList = streamList.concat([stream]);
+      		tempStreamList = streamListRef.current.concat([stream]);
     	else 
-      		tempStreamList = [stream].concat(streamList);
+      		tempStreamList = [stream].concat(streamListRef.current);
     
     	setStreamList(tempStreamList);
-  	}, [streamList]);
+  	};
 
-  	const removeStream = useCallback( (uid) => {
+  	const removeStream = (uid) => {
 
-	    streamList.forEach((item, index) => {
+	    streamListRef.current.forEach((item, index) => {
 	      if (item.getId() === uid) {
 	        item.close();
 
-	        let tempList = [...streamList.current];
+	        let tempList = [...streamListRef.current];
 	        tempList.splice(index, 1);
 
 	        setStreamList(tempList);
 	      }
 	    });
-  	},[streamList]);
+  	};
 
   	const subscribeStreamEvents = () => {
 
@@ -192,6 +198,6 @@ export default function useAgoraRTC(props) {
 	  };
 
 	return {
-		initAgoraRTC, streamList, setStreamList, localStream
+		initAgoraRTC, streamList, localStream
   	};
 }
