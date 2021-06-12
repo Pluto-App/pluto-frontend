@@ -41,11 +41,8 @@ const VideoCallCanvas = React.memo((props) => {
   const [numActiveVideo, setNumActiveVideo] = useState(0);
   const [playEndCallSound] = useSound(endCallSound);
 
-  const { newMessage, joinRTMChannel, sendChannelMessage, sendChannelMediaMessage } = useAgoraRTM(props.config);
+  const { rtmLoggedIn, joinRTMChannel, sendChannelMessage, sendChannelMediaMessage, newMessage } = useAgoraRTM(props.config);
   const { initAgoraRTC, streamList, setStreamList, localStream } = useAgoraRTC(props.config);
-
-  const streamListRef = useRef();
-  streamListRef.current = streamList;
 
   if (needWindowUpdate) {
     setNumActiveVideo(document.getElementsByClassName('ag-video-on').length);
@@ -64,123 +61,6 @@ const VideoCallCanvas = React.memo((props) => {
     stream.setVideoProfile(videoProfile);
 
     return stream;
-  };
-
-  const subscribeStreamEvents = () => {
-    AgoraClient.on('stream-added', function (evt) {
-      let stream = evt.stream;
-      console.log('New stream added: ' + stream.getId());
-
-      AgoraClient.subscribe(stream, function (err) {
-        console.log('Subscribe stream failed', err);
-      });
-    });
-
-    AgoraClient.on('user-published', function (evt) {
-      let stream = evt.stream;
-      console.log('New stream added: ' + stream.getId());
-
-      AgoraClient.subscribe(stream, function (err) {
-        console.log('Subscribe stream failed', err);
-      });
-    });
-
-    AgoraClient.on('peer-leave', function (evt) {
-      console.log('Peer has left: ' + evt.uid);
-      removeStream(evt.uid);
-    });
-
-    AgoraClient.on('stream-subscribed', function (evt) {
-      let stream = evt.stream;
-      console.log('New stream subscribed: ' + stream.getId());
-
-      addStream(stream);
-    });
-
-    AgoraClient.on('stream-removed', function (evt) {
-      let stream = evt.stream;
-      console.log('Stream removed: ' + stream.getId());
-
-      removeStream(stream.getId());
-    });
-
-    AgoraClient.on('mute-video', function (evt) {
-      let uid = evt.uid;
-      console.log('Mute videos: ' + uid);
-      var found = false;
-
-      streamListRef.current.forEach((stream, index) => {
-        if (stream.getId() === uid) {
-          toggleVideoView(stream, 'mute');
-          found = true;
-        }
-      });
-
-      if (!found) {
-        if (!streamState[uid]) streamState[uid] = {};
-
-        streamState[uid]['video'] = false;
-      }
-
-      needWindowUpdate = true;
-    });
-
-    AgoraClient.on('unmute-video', function (evt) {
-      let uid = evt.uid;
-      console.log('Unmute video: ' + uid);
-      var found = false;
-
-      streamListRef.current.forEach((stream, index) => {
-        if (stream.getId() === uid) {
-          toggleVideoView(stream, 'unmute');
-          found = true;
-        }
-      });
-
-      if (!found) {
-        if (!streamState[uid]) streamState[uid] = {};
-
-        streamState[uid]['video'] = true;
-      }
-
-      needWindowUpdate = true;
-    });
-  };
-
-  const addStream = (stream, push = false) => {
-    let repeatition = streamListRef.current.some((item) => {
-      return item.getId() === stream.getId();
-    });
-    if (repeatition) {
-      return;
-    }
-
-    var tempStreamList;
-    if (push) {
-      tempStreamList = streamListRef.current.concat([stream]);
-    } else {
-      tempStreamList = [stream].concat(streamListRef.current);
-    }
-
-    setStreamList(tempStreamList);
-  };
-
-  const removeStream = (uid) => {
-    let element = document.getElementById('ag-item-' + uid);
-    if (element) {
-      element.parentNode.removeChild(element);
-    }
-
-    streamListRef.current.forEach((item, index) => {
-      if (item.getId() === uid) {
-        item.close();
-
-        let tempList = [...streamListRef.current];
-        tempList.splice(index, 1);
-
-        setStreamList(tempList);
-      }
-    });
   };
 
   const toggleVideoView = (stream, action) => {
@@ -246,98 +126,6 @@ const VideoCallCanvas = React.memo((props) => {
 
     initAgoraRTC(props.config);
 
-    // AgoraClient.init(
-    //   props.config.appId,
-    //   async () => {
-    //     subscribeStreamEvents();
-    //     const agoraAccessToken = await actions.auth.getAgoraAccessToken({
-    //       requestParams: { channel: props.config.channel, user_id: props.config.user_id },
-    //     });
-
-    //     AgoraClient.join(
-    //       agoraAccessToken,
-    //       props.config.channel,
-    //       props.config.user_id,
-    //       (user_id) => {
-    //         localStream = streamInit(user_id, props.config.videoProfile);
-
-    //         localStream.init(
-    //           () => {
-    //             localStream.muteVideo();
-    //             localStream.muteAudio();
-
-    //             addStream(localStream, true);
-
-    //             ipcRenderer.send('set-user-color', {
-    //               user_color:
-    //                 '#' + Math.floor(Math.random() * 16770000).toString(16),
-    //             });
-
-    //             //const interval = setInterval(() => {
-
-    //             socket_live.emit(
-    //               events.joinRoom,
-    //               {
-    //                 room: props.config.channel,
-    //                 user_id: props.config.user_id,
-    //               },
-    //               (data) => {
-    //                 if (data.created) {
-    //                   actions.app.emitUpdateTeam();
-    //                 }
-    //               }
-    //             );
-
-    //             //}, 2000);
-
-    //             AgoraClient.publish(localStream, (err) => {
-    //               alert('Publish local stream error: ' + err);
-    //             });
-    //           },
-    //           async (err) => {
-    //             var hasMediaAccess = await ipcRenderer.sendSync(
-    //               'check-media-access'
-    //             );
-
-    //             if (!hasMediaAccess) {
-    //               alert('No Access to camera or microphone!');
-    //             } else {
-    //               alert('Unexpected Error!\n ' + JSON.stringify(err));
-    //             }
-
-    //             actions.app.setError(err);
-    //           }
-    //         );
-
-    //         joinRTMChannel(props.config.channel);
-
-    //         setTimeout(async function () {
-    //           var currentWindowShares =
-    //             await actions.videocall.getCurrentWindowShares({
-    //               authData: authData,
-    //               callChannelId: props.config.channel,
-    //             });
-
-    //           for (var windowShare of currentWindowShares) {
-    //             console.log(windowShare);
-    //             var owner = usersInCallRef.current[windowShare.user_id];
-
-    //             if (owner) {
-    //               windowShare['owner'] = owner;
-    //               actions.app.userWindowShare(windowShare);
-    //             }
-    //           }
-
-    //         }, 3000);
-    //       }
-    //     );
-    //   },
-    //   function (err) {
-    //     console.log('client init failed ', err);
-    //     // Error handling
-    //   }
-    // );
-
     return () => {
       handleExit();
     };
@@ -349,6 +137,13 @@ const VideoCallCanvas = React.memo((props) => {
       console.log(newMessage);
 
   }, [newMessage])
+
+  useEffect(() => {
+    
+    if(rtmLoggedIn)
+      joinRTMChannel(props.config.channel);
+
+  }, [rtmLoggedIn])
 
   // useEffect(() => {
 
@@ -820,7 +615,7 @@ const VideoCallCanvas = React.memo((props) => {
             {
               streamList.map((stream) => (
 
-               <StreamSection key={stream.getId()} stream={stream} usersInCall={usersInCall} handleExpand={handleExpand}/> 
+                <StreamSection key={stream.getId()} stream={stream} usersInCall={usersInCall} handleExpand={handleExpand}/> 
                 
               ))
             }

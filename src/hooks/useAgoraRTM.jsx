@@ -8,8 +8,10 @@ const AgoraRTMClient = AgoraRTM.createInstance(process.env.REACT_APP_AGORA_APP_I
 export default function useAgoraRTM(props) {
 
 	const { state, actions } = useOvermind();
+	const [ rtmLoggedIn, setRTMLoggedIn ] = useState(false);
 	const [ newMessage, setNewMessage ] = useState(undefined);
 	const [ rtmChannel, setRtmChannel ] = useState(undefined);
+
 
 	useEffect(() => {
 		if (!AgoraRTMClient) return;
@@ -38,6 +40,7 @@ export default function useAgoraRTM(props) {
 			
 			await rtmChannel.join();
 			subscribeChannelEvents();
+			setRTMLoggedIn(true);
 		}
 
 		joinChannel();
@@ -87,6 +90,6 @@ export default function useAgoraRTM(props) {
     }, [sendChannelMessage])
 
 	return {
-    	newMessage, joinRTMChannel, sendChannelMessage, sendChannelMediaMessage
+    	rtmLoggedIn, joinRTMChannel, sendChannelMessage, sendChannelMediaMessage, newMessage
   	};
 }
