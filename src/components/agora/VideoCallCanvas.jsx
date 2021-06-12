@@ -8,6 +8,7 @@ import { socket_live, events } from '../sockets';
 
 import { AuthContext } from '../../context/AuthContext';
 
+import StreamSection from '../widgets/VideoCall/StreamSection';
 import ActiveWindowInfo from '../widgets/VideoCall/ActiveWindowInfo';
 import StreamScreenShare from '../windows/screenshare/StreamScreenShare';
 
@@ -15,6 +16,7 @@ import useSound from 'use-sound';
 import endCallSound from '../../assets/sounds/end_call.wav';
 
 import useAgoraRTM from '../../hooks/useAgoraRTM';
+import useAgoraRTC from '../../hooks/useAgoraRTC';
 
 const { remote, ipcRenderer } = window.require('electron');
 
@@ -28,10 +30,6 @@ const VideoCallCanvas = React.memo((props) => {
   const { state, actions } = useOvermind();
   const { authData } = useContext(AuthContext);
 
-  const [streamList, setStreamList] = useState([]);
-  const streamListRef = useRef();
-  streamListRef.current = streamList;
-
   const [usersInCallIds, setUsersInCallIds] = useState([]);
   const usersInCallIdsRef = useRef();
   usersInCallIdsRef.current = usersInCallIds;
@@ -44,6 +42,10 @@ const VideoCallCanvas = React.memo((props) => {
   const [playEndCallSound] = useSound(endCallSound);
 
   const { newMessage, joinRTMChannel, sendChannelMessage, sendChannelMediaMessage } = useAgoraRTM(props.config);
+  const { initAgoraRTC, streamList, setStreamList, localStream } = useAgoraRTC(props.config);
+
+  const streamListRef = useRef();
+  streamListRef.current = streamList;
 
   if (needWindowUpdate) {
     setNumActiveVideo(document.getElementsByClassName('ag-video-on').length);
@@ -240,103 +242,105 @@ const VideoCallCanvas = React.memo((props) => {
   };
 
   useEffect(() => {
-    if (state.userProfileData.id) {
-      AgoraClient.init(
-        props.config.appId,
-        async () => {
-          subscribeStreamEvents();
-          const agoraAccessToken = await actions.auth.getAgoraAccessToken({
-            requestParams: { channel: props.config.channel, user_id: props.config.user_id },
-          });
+    if(!state.userProfileData.id) return;
 
-          AgoraClient.join(
-            agoraAccessToken,
-            props.config.channel,
-            props.config.user_id,
-            (user_id) => {
-              localStream = streamInit(user_id, props.config.videoProfile);
+    initAgoraRTC(props.config);
 
-              localStream.init(
-                () => {
-                  localStream.muteVideo();
-                  localStream.muteAudio();
+    // AgoraClient.init(
+    //   props.config.appId,
+    //   async () => {
+    //     subscribeStreamEvents();
+    //     const agoraAccessToken = await actions.auth.getAgoraAccessToken({
+    //       requestParams: { channel: props.config.channel, user_id: props.config.user_id },
+    //     });
 
-                  addStream(localStream, true);
+    //     AgoraClient.join(
+    //       agoraAccessToken,
+    //       props.config.channel,
+    //       props.config.user_id,
+    //       (user_id) => {
+    //         localStream = streamInit(user_id, props.config.videoProfile);
 
-                  ipcRenderer.send('set-user-color', {
-                    user_color:
-                      '#' + Math.floor(Math.random() * 16770000).toString(16),
-                  });
+    //         localStream.init(
+    //           () => {
+    //             localStream.muteVideo();
+    //             localStream.muteAudio();
 
-                  //const interval = setInterval(() => {
+    //             addStream(localStream, true);
 
-                  socket_live.emit(
-                    events.joinRoom,
-                    {
-                      room: props.config.channel,
-                      user_id: props.config.user_id,
-                    },
-                    (data) => {
-                      if (data.created) {
-                        actions.app.emitUpdateTeam();
-                      }
-                    }
-                  );
+    //             ipcRenderer.send('set-user-color', {
+    //               user_color:
+    //                 '#' + Math.floor(Math.random() * 16770000).toString(16),
+    //             });
 
-                  //}, 2000);
+    //             //const interval = setInterval(() => {
 
-                  AgoraClient.publish(localStream, (err) => {
-                    alert('Publish local stream error: ' + err);
-                  });
-                },
-                async (err) => {
-                  var hasMediaAccess = await ipcRenderer.sendSync(
-                    'check-media-access'
-                  );
+    //             socket_live.emit(
+    //               events.joinRoom,
+    //               {
+    //                 room: props.config.channel,
+    //                 user_id: props.config.user_id,
+    //               },
+    //               (data) => {
+    //                 if (data.created) {
+    //                   actions.app.emitUpdateTeam();
+    //                 }
+    //               }
+    //             );
 
-                  if (!hasMediaAccess) {
-                    alert('No Access to camera or microphone!');
-                  } else {
-                    alert('Unexpected Error!\n ' + JSON.stringify(err));
-                  }
+    //             //}, 2000);
 
-                  actions.app.setError(err);
-                }
-              );
+    //             AgoraClient.publish(localStream, (err) => {
+    //               alert('Publish local stream error: ' + err);
+    //             });
+    //           },
+    //           async (err) => {
+    //             var hasMediaAccess = await ipcRenderer.sendSync(
+    //               'check-media-access'
+    //             );
 
-              joinRTMChannel(props.config.channel);
+    //             if (!hasMediaAccess) {
+    //               alert('No Access to camera or microphone!');
+    //             } else {
+    //               alert('Unexpected Error!\n ' + JSON.stringify(err));
+    //             }
 
-              setTimeout(async function () {
-                var currentWindowShares =
-                  await actions.videocall.getCurrentWindowShares({
-                    authData: authData,
-                    callChannelId: props.config.channel,
-                  });
+    //             actions.app.setError(err);
+    //           }
+    //         );
 
-                for (var windowShare of currentWindowShares) {
-                  console.log(windowShare);
-                  var owner = usersInCallRef.current[windowShare.user_id];
+    //         joinRTMChannel(props.config.channel);
 
-                  if (owner) {
-                    windowShare['owner'] = owner;
-                    actions.app.userWindowShare(windowShare);
-                  }
-                }
+    //         setTimeout(async function () {
+    //           var currentWindowShares =
+    //             await actions.videocall.getCurrentWindowShares({
+    //               authData: authData,
+    //               callChannelId: props.config.channel,
+    //             });
 
-              }, 3000);
-            }
-          );
-        },
-        function (err) {
-          console.log('client init failed ', err);
-          // Error handling
-        }
-      );
+    //           for (var windowShare of currentWindowShares) {
+    //             console.log(windowShare);
+    //             var owner = usersInCallRef.current[windowShare.user_id];
 
-      return () => {
-        handleExit();
-      };
-    }
+    //             if (owner) {
+    //               windowShare['owner'] = owner;
+    //               actions.app.userWindowShare(windowShare);
+    //             }
+    //           }
+
+    //         }, 3000);
+    //       }
+    //     );
+    //   },
+    //   function (err) {
+    //     console.log('client init failed ', err);
+    //     // Error handling
+    //   }
+    // );
+
+    return () => {
+      handleExit();
+    };
   }, [state.userProfileData.id]);
 
   useEffect(() => {
@@ -537,18 +541,18 @@ const VideoCallCanvas = React.memo((props) => {
     }
 
     try {
-      AgoraClient && AgoraClient.unpublish(localStream);
-      localStream && localStream.close();
+      // AgoraClient && AgoraClient.unpublish(localStream);
+      // localStream && localStream.close();
 
-      AgoraClient &&
-        AgoraClient.leave(
-          () => {
-            console.log('Client succeed to leave.');
-          },
-          () => {
-            console.log('Client failed to leave.');
-          }
-        );
+      // AgoraClient &&
+      //   AgoraClient.leave(
+      //     () => {
+      //       console.log('Client succeed to leave.');
+      //     },
+      //     () => {
+      //       console.log('Client failed to leave.');
+      //     }
+      //   );
     } finally {
       var call_channel_id = props.config.channel;
       var rid = call_channel_id.split('-')[1];
@@ -814,151 +818,11 @@ const VideoCallCanvas = React.memo((props) => {
             }}
           >
             {
-              //Array(6).fill(0).map((x, i) =>
               streamList.map((stream) => (
-                <section
-                  className="flex-1 center"
-                  style={{
-                    width: '100%',
-                    position: 'relative',
-                    margin: '2px',
-                    cursor: stream.isVideoOn() ? 'pointer' : '',
-                  }}
-                  key={stream.getId()}
-                >
-                  <div
-                    style={{
-                      display:
-                        state.videoCallCompactMode || state.streamingScreenShare
-                          ? ''
-                          : 'inline-block',
-                    }}
-                  >
-                    <div
-                      id={'ag-item-' + stream.getId()}
-                      className={
-                        stream.isVideoOn()
-                          ? 'ag-item Camera ag-video-on'
-                          : 'ag-item Camera'
-                      }
-                      style={{
-                        height: '120px',
-                        display: stream.isVideoOn() ? 'block' : 'none',
-                      }}
-                      onClick={() => {
-                        if (state.videoCallCompactMode) handleExpand();
-                      }}
-                    ></div>
 
-                    <div
-                      id={'ag-item-info-' + stream.getId()}
-                      className="ag-item-info"
-                      style={{
-                        display: stream.isVideoOn() ? 'flex' : 'none',
-                        bottom:
-                          state.videoCallCompactMode ||
-                          state.streamingScreenShare
-                            ? '5px'
-                            : '10px',
-                      }}
-                    >
-                      <div style={{ display: 'table', height: '30px' }}>
-                        <span
-                          className="text-gray-200 px-1"
-                          style={{
-                            display: 'table-cell',
-                            verticalAlign: 'middle',
-                          }}
-                        >
-                          {usersInCall[stream.getId()]
-                            ? usersInCall[stream.getId()].name.split(' ')[0]
-                            : ''}
-                        </span>
-                      </div>
-                      <div
-                        className="pointer items-center flex overflow-hidden"
-                        style={{ display: 'table' }}
-                      >
-                        {usersInCall[stream.getId()] &&
-                          usersInCall[stream.getId()].id && (
-                            <ActiveWindowInfo
-                              user={usersInCall[stream.getId()]}
-                              user_id={usersInCall[stream.getId()].id}
-                              videoOn={true}
-                            />
-                          )}
-                      </div>
-                    </div>
-
-                    <div
-                      id={'user-details-' + stream.getId()}
-                      className={stream.isVideoOn() ? '' : 'user-details'}
-                      style={{
-                        height: '50px',
-                        display: stream.isVideoOn() ? 'none' : 'flex',
-                        width:
-                          state.videoCallCompactMode ||
-                          state.streamingScreenShare
-                            ? ''
-                            : '180px',
-                        margin: '10px',
-                      }}
-                    >
-                      <div style={{ display: 'table' }}>
-                        <div
-                          className="rounded-full"
-                          style={{
-                            display: 'table-cell',
-                            verticalAlign: 'middle',
-                            height: '50px',
-                          }}
-                        >
-                          <img
-                            style={{ height: '30px' }}
-                            src={
-                              usersInCall[stream.getId()]
-                                ? usersInCall[stream.getId()].avatar
-                                : ''
-                            }
-                            alt=""
-                          />
-                        </div>
-                      </div>
-                      <div
-                        className="text-white px-1 font-bold pointer"
-                        style={{
-                          display: 'table',
-                          height: '50px',
-                          marginLeft: '10px',
-                        }}
-                        onClick={() => {
-                          if (state.videoCallCompactMode) handleExpand();
-                        }}
-                      >
-                        <span
-                          style={{
-                            display: 'table-cell',
-                            verticalAlign: 'middle',
-                            fontSize: '14px',
-                          }}
-                        >
-                          {usersInCall[stream.getId()]
-                            ? usersInCall[stream.getId()].name.split(' ')[0]
-                            : ''}
-                        </span>
-                      </div>
-                      {usersInCall[stream.getId()] &&
-                        usersInCall[stream.getId()].id && (
-                          <ActiveWindowInfo
-                            user={usersInCall[stream.getId()]}
-                            user_id={usersInCall[stream.getId()].id}
-                          />
-                        )}
-                    </div>
-                  </div>
-                </section>
+               <StreamSection key={stream.getId()} stream={stream} usersInCall={usersInCall} handleExpand={handleExpand}/> 
+                
               ))
-              //)
             }
           </div>
         </div>
