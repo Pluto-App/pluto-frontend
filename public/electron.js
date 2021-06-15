@@ -492,7 +492,9 @@ function createWindow() {
       call_data: args.call_data,
       call_channel_id: args.call_channel_id,
     };
-
+    if (isDev) {
+      videoCallWindow.webContents.openDevTools();
+    }
     videoCallWindow.loadURL(
       isDev ? process.env.ELECTRON_START_URL + '#/video-call' : videoUrl
     );
