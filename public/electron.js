@@ -94,7 +94,7 @@ const robotKeyMap = {
 var primaryDisplay;
 var sWidth;
 var sHeight;
-var compactVideoWidth = 170;
+var compactVideoWidth = 255;
 var previousVideoBounds;
 var scaleFactor = 1;
 

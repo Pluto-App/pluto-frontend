@@ -24,7 +24,6 @@ const AgoraClient = AgoraRTC.createClient({ mode: 'interop', codec: 'vp8' });
 const VideoCallCanvas = React.memo((props) => {
   const { state, actions } = useOvermind();
   const { authData } = useContext(AuthContext);
-
   const [streamList, setStreamList] = useState([]);
   const [micOn, setMicOn] = useState(false);
   const streamListRef = useRef();
@@ -33,7 +32,7 @@ const VideoCallCanvas = React.memo((props) => {
   const [usersInCallIds, setUsersInCallIds] = useState([]);
   const usersInCallIdsRef = useRef();
   usersInCallIdsRef.current = usersInCallIds;
-
+  const [userColor, setUserColor] = useState({});
   const [usersInCall, setUsersInCall] = useState({});
   const usersInCallRef = useRef();
   usersInCallRef.current = usersInCall;
@@ -87,7 +86,6 @@ const VideoCallCanvas = React.memo((props) => {
     AgoraClient.on('stream-subscribed', function (evt) {
       let stream = evt.stream;
       console.log('New stream subscribed: ' + stream.getId());
-
       addStream(stream);
     });
 
@@ -285,6 +283,7 @@ const VideoCallCanvas = React.memo((props) => {
                     {
                       room: props.config.channel,
                       user_id: props.config.user_id,
+                      user_color: props.config.user_color,
                     },
                     (data) => {
                       if (data.created) {
@@ -320,11 +319,12 @@ const VideoCallCanvas = React.memo((props) => {
                     authData: authData,
                     callChannelId: props.config.channel,
                   });
-
                 for (var windowShare of currentWindowShares) {
-                  console.log(windowShare);
                   var owner = usersInCallRef.current[windowShare.user_id];
-
+                  // setUserColor({
+                  //   ...userColor,
+                  //   [windowShare.user_id]: windowShare.owner_color,
+                  // });
                   if (owner) {
                     windowShare['owner'] = owner;
                     actions.app.userWindowShare(windowShare);
@@ -339,7 +339,6 @@ const VideoCallCanvas = React.memo((props) => {
           // Error handling
         }
       );
-
       return () => {
         handleExit();
       };
@@ -380,8 +379,9 @@ const VideoCallCanvas = React.memo((props) => {
       actions.app.userScreenShare(data);
       updateWindowSize();
     });
-
     socket_live.on(events.userWindowShare, (data) => {
+      // TODO: Karan Save user color data into state.
+      setUserColor({ ...userColor, [data.user_id]: data.owner_color });
       data['owner'] = usersInCallRef.current[data.user_id];
       actions.app.userWindowShare(data);
     });
@@ -604,7 +604,7 @@ const VideoCallCanvas = React.memo((props) => {
 
   const screenShareBtn = (
     <span
-      onClick={handleScreenShare}
+      onClick={handleMultiWindowShare}
       className="ag-btn exitBtn"
       title="Enable/Disable Screen Share"
       style={{ opacity: 1 }}
@@ -798,6 +798,7 @@ const VideoCallCanvas = React.memo((props) => {
               position: state.streamingScreenShare ? 'relative' : '',
               flexWrap: 'wrap',
               overflowY: 'scroll',
+              width: '100%',
             }}
           >
             {
@@ -817,7 +818,9 @@ const VideoCallCanvas = React.memo((props) => {
                       display:
                         state.videoCallCompactMode || state.streamingScreenShare
                           ? ''
-                          : 'inline-block',
+                          : 'flex',
+                      width: '100%',
+                      justifyContent: 'space-between',
                     }}
                   >
                     <div
@@ -892,7 +895,6 @@ const VideoCallCanvas = React.memo((props) => {
                           )}
                       </div>
                     </div>
-
                     <div
                       id={'user-details-' + stream.getId()}
                       className={stream.isVideoOn() ? '' : 'user-details'}
@@ -903,21 +905,39 @@ const VideoCallCanvas = React.memo((props) => {
                           state.videoCallCompactMode ||
                           state.streamingScreenShare
                             ? ''
-                            : '180px',
+                            : '100%',
                         margin: '10px',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        opacity: stream.muted ? '0.8' : '1',
+                        color: stream.muted ? 'gray' : 'white',
                       }}
                     >
-                      <div style={{ display: 'table' }}>
+                      <div style={{ display: 'flex' }}>
                         <div
                           className="rounded-full"
                           style={{
                             display: 'table-cell',
                             verticalAlign: 'middle',
-                            height: '50px',
+                            marginRight: '8px',
                           }}
                         >
                           <img
-                            style={{ height: '30px' }}
+                            style={{
+                              height: '50px',
+                              borderRadius: '6px',
+                              // border: `3px solid ${
+                              //   userColor[stream.getId()] || '#8d8d8d'
+                              // } `,
+                              // }
+                              border: `3px solid ${
+                                userColor[stream.getId()]
+                                  ? userColor[stream.getId()]
+                                  : stream.muted
+                                  ? '#8d8d8d'
+                                  : '#f6f6f6'
+                              } `,
+                            }}
                             src={
                               usersInCall[stream.getId()]
                                 ? usersInCall[stream.getId()].avatar
@@ -926,18 +946,6 @@ const VideoCallCanvas = React.memo((props) => {
                             alt=""
                           />
                         </div>
-                      </div>
-                      <div
-                        className="text-white px-1 font-bold pointer"
-                        style={{
-                          display: 'flex',
-                          height: '50px',
-                          marginLeft: '10px',
-                        }}
-                        onClick={() => {
-                          if (state.videoCallCompactMode) handleExpand();
-                        }}
-                      >
                         <span
                           style={{
                             display: 'flex',
@@ -948,26 +956,44 @@ const VideoCallCanvas = React.memo((props) => {
                           {usersInCall[stream.getId()]
                             ? usersInCall[stream.getId()].name.split(' ')[0]
                             : ''}
-                          <i
-                            className="material-icons focus:outline-none md-light"
-                            style={{
-                              fontSize: '15px',
-                              paddingLeft: '4px',
-                              width: '15px',
-                            }}
-                            id="mic-icon"
-                          >
-                            {stream.muted ? 'mic_off' : 'mic_on'}
-                          </i>
                         </span>
                       </div>
-                      {usersInCall[stream.getId()] &&
-                        usersInCall[stream.getId()].id && (
-                          <ActiveWindowInfo
-                            user={usersInCall[stream.getId()]}
-                            user_id={usersInCall[stream.getId()].id}
-                          />
-                        )}
+                      <div
+                        className="px-1 font-bold pointer"
+                        style={{
+                          display: 'flex',
+                          height: '50px',
+                          marginLeft: '10px',
+                        }}
+                        onClick={() => {
+                          if (state.videoCallCompactMode) handleExpand();
+                        }}
+                      ></div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        {usersInCall[stream.getId()] &&
+                          usersInCall[stream.getId()].id && (
+                            <ActiveWindowInfo
+                              user={usersInCall[stream.getId()]}
+                              user_id={usersInCall[stream.getId()].id}
+                            />
+                          )}
+                        <i
+                          className="material-icons focus:outline-none md-light"
+                          style={{
+                            fontSize: '15px',
+                            paddingLeft: '4px',
+                            width: '15px',
+                          }}
+                          id="mic-icon"
+                        >
+                          {stream.muted ? 'mic_off' : 'mic_on'}
+                        </i>
+                      </div>
                     </div>
                   </div>
                 </section>
@@ -989,11 +1015,11 @@ const VideoCallCanvas = React.memo((props) => {
           bottom: '0',
         }}
       >
-        {exitBtn}
         {videoControlBtn}
         {audioControlBtn}
         {screenShareBtn}
-        {multiWindowShareBtn}
+        {/* {multiWindowShareBtn} */}
+        {exitBtn}
         {collapseBtn}
       </div>
     </div>
