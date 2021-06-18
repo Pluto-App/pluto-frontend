@@ -215,7 +215,6 @@ async function getwindowBounds(sourceInfo, sWidth, sHeight) {
 
 async function bringToTop(sourceInfo, skipCheck) {
   var [sourceType, sourceId] = sourceInfo.split(':');
-
   try {
     if (skipCheck || windowManager.getActiveWindow().id != sourceId) {
       if (isMac)
@@ -717,7 +716,7 @@ function createWindow() {
       windowShareContainerWindow.data = {
         channel_id: args.channel_id,
       };
-
+      alert(args.sourceInfo);
       await bringToTop(args.sourceInfo, true);
 
       windowShareContainerWindow.loadURL(
@@ -1001,6 +1000,15 @@ function createWindow() {
       (containerBounds.y + args.cursor.y) * scaleFactor
     );
     robot.scrollMouse(-1 * args.event.deltaX, -1 * args.event.deltaY);
+  });
+  // TODO: How do we get sourceInfo here?
+  ipcMain.on('profile-picture-click', async (event, args) => {
+    console.log(
+      'streamWindowShareWindows--------->',
+      streamWindowShareWindows,
+      args
+    );
+    // await bringToTop(args.sourceInfo);
   });
 
   ipcMain.on('emit-mousedown', async (event, args) => {

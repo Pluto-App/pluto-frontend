@@ -32,7 +32,6 @@ const VideoCallCanvas = React.memo((props) => {
   const [usersInCallIds, setUsersInCallIds] = useState([]);
   const usersInCallIdsRef = useRef();
   usersInCallIdsRef.current = usersInCallIds;
-  const [userColor, setUserColor] = useState({});
   const [usersInCall, setUsersInCall] = useState({});
   const usersInCallRef = useRef();
   usersInCallRef.current = usersInCall;
@@ -324,7 +323,7 @@ const VideoCallCanvas = React.memo((props) => {
                   // we need to store user color for the session at the backend to
                   // ensure that user who is joining letter on the session should have
                   // color synced.
-                  // setUserColor({
+                  // state.setUserColor({
                   //   ...userColor,
                   //   [windowShare.user_id]: windowShare.owner_color,
                   // });
@@ -388,7 +387,6 @@ const VideoCallCanvas = React.memo((props) => {
       updateWindowSize();
     });
     socket_live.on(events.userWindowShare, (data) => {
-      // TODO: Karan Save user color data into state.
       actions.user.setUserColor({
         user_id: data.user_id,
         userColor: data.owner_color,
@@ -944,6 +942,12 @@ const VideoCallCanvas = React.memo((props) => {
                                   ? '#8d8d8d'
                                   : '#f6f6f6'
                               } `,
+                            }}
+                            onClick={() => {
+                              ipcRenderer.send(
+                                'profile-picture-click',
+                                stream.getId()
+                              );
                             }}
                             src={
                               usersInCall[stream.getId()]
