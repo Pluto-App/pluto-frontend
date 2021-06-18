@@ -321,6 +321,9 @@ const VideoCallCanvas = React.memo((props) => {
                   });
                 for (var windowShare of currentWindowShares) {
                   var owner = usersInCallRef.current[windowShare.user_id];
+                  // we need to store user color for the session at the backend to
+                  // ensure that user who is joining letter on the session should have
+                  // color synced.
                   // setUserColor({
                   //   ...userColor,
                   //   [windowShare.user_id]: windowShare.owner_color,
@@ -369,8 +372,13 @@ const VideoCallCanvas = React.memo((props) => {
     ipcRenderer.on('stop-windowshare', function (e, args) {
       socket_live.emit(events.endWindowShare, {
         channel_id: localStorage.getItem('windowshare_channel_id'),
+        user_id: state.userProfileData.id,
+        userColor: null,
       });
-
+      actions.user.setUserColor({
+        user_id: state.userProfileData.id,
+        userColor: null,
+      });
       actions.app.setSharingWindow(false);
     });
 
@@ -381,7 +389,10 @@ const VideoCallCanvas = React.memo((props) => {
     });
     socket_live.on(events.userWindowShare, (data) => {
       // TODO: Karan Save user color data into state.
-      setUserColor({ ...userColor, [data.user_id]: data.owner_color });
+      actions.user.setUserColor({
+        user_id: data.user_id,
+        userColor: data.owner_color,
+      });
       data['owner'] = usersInCallRef.current[data.user_id];
       actions.app.userWindowShare(data);
     });
@@ -926,13 +937,9 @@ const VideoCallCanvas = React.memo((props) => {
                             style={{
                               height: '50px',
                               borderRadius: '6px',
-                              // border: `3px solid ${
-                              //   userColor[stream.getId()] || '#8d8d8d'
-                              // } `,
-                              // }
                               border: `3px solid ${
-                                userColor[stream.getId()]
-                                  ? userColor[stream.getId()]
+                                state.userColor[stream.getId()]
+                                  ? state.userColor[stream.getId()]
                                   : stream.muted
                                   ? '#8d8d8d'
                                   : '#f6f6f6'

@@ -767,8 +767,6 @@ function createWindow() {
         },
       });
 
-      streamWindowShareWindows.push(streamWindowShareWindow);
-
       streamWindowShareWindow.setMenu(null);
 
       const streamWindowShareWindowUrl = url.format({
@@ -792,6 +790,9 @@ function createWindow() {
           ? process.env.ELECTRON_START_URL + '#/stream-windowshare'
           : streamWindowShareWindowUrl
       );
+      streamWindowShareWindow.once('did-finish-load', () => {
+        streamWindowShareWindows.push(streamWindowShareWindow);
+      });
 
       streamWindowShareWindow.on('closed', () => {
         streamWindowShareWindow = undefined;
