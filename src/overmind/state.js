@@ -1,54 +1,53 @@
-
 export const state = {
-    teamowner: "",
-    signedUp: false,
-    loggedIn: false,
-    addingTeam: false,
-    loginStarted: false,
-    loadingTeams: true,
-    loadingMembers: true,
-    userTeamDataInfo: {},
-    activeTeamId: 0,
-    activeRoomId: 0,
-    activeRoomName: "",
-    RoomListArray: [],
-    userMapping: {},
-    teamMemberList: [],
-    
-    // App Settings
-    
+  teamowner: '',
+  signedUp: false,
+  loggedIn: false,
+  addingTeam: false,
+  loginStarted: false,
+  loadingTeams: true,
+  loadingMembers: true,
+  userTeamDataInfo: {},
+  activeTeamId: 0,
+  activeRoomId: 0,
+  activeRoomName: '',
+  RoomListArray: [],
+  userMapping: {},
+  teamMemberList: [],
 
-    // App State
-    online: true,
-    teamUpdateReq: true,
-    addingRoom: false,
-    loadingTeam: false,
-    error: {},
-    noTeams: false,
+  // App Settings
 
-    // Video Call
-    streamingScreenShare: false,
-    sharingScreen: false,
-    sharingWindow: false,
-    screenShareUser: {},
-    videoCallCompactMode: true,
+  // App State
+  online: true,
+  teamUpdateReq: true,
+  addingRoom: false,
+  loadingTeam: false,
+  error: {},
+  noTeams: false,
 
-    // App Data
-    teamRooms: [],
-    teamRoomsMap: {},
-    teamMembers: [],
-    teamMembersMap: {},
-    onlineUsers: {},
-    userTeams: [],
-    currentTeam: {},
+  // Video Call
+  streamingScreenShare: false,
+  sharingScreen: false,
+  sharingWindow: false,
+  screenShareUser: {},
+  videoCallCompactMode: true,
+  userColor: {},
 
-    activeWindowApp: {},
-    userPreference: {
-        show_active_app: true,
-        share_active_app: true
-    },
-    loggedInUser: {},
-    userProfileData: {},
-    usersActiveWindows: {},
-    screenSize: {}
-}
+  // App Data
+  teamRooms: [],
+  teamRoomsMap: {},
+  teamMembers: [],
+  teamMembersMap: {},
+  onlineUsers: {},
+  userTeams: [],
+  currentTeam: {},
+
+  activeWindowApp: {},
+  userPreference: {
+    show_active_app: true,
+    share_active_app: true,
+  },
+  loggedInUser: {},
+  userProfileData: {},
+  usersActiveWindows: {},
+  screenSize: {},
+};

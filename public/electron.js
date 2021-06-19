@@ -94,7 +94,7 @@ const robotKeyMap = {
 var primaryDisplay;
 var sWidth;
 var sHeight;
-var compactVideoWidth = 170;
+var compactVideoWidth = 255;
 var previousVideoBounds;
 var scaleFactor = 1;
 
@@ -215,7 +215,6 @@ async function getwindowBounds(sourceInfo, sWidth, sHeight) {
 
 async function bringToTop(sourceInfo, skipCheck) {
   var [sourceType, sourceId] = sourceInfo.split(':');
-
   try {
     if (skipCheck || windowManager.getActiveWindow().id != sourceId) {
       if (isMac)
@@ -720,7 +719,7 @@ function createWindow() {
       windowShareContainerWindow.data = {
         channel_id: args.channel_id,
       };
-
+      alert(args.sourceInfo);
       await bringToTop(args.sourceInfo, true);
 
       windowShareContainerWindow.loadURL(
@@ -770,8 +769,6 @@ function createWindow() {
         },
       });
 
-      streamWindowShareWindows.push(streamWindowShareWindow);
-
       streamWindowShareWindow.setMenu(null);
 
       const streamWindowShareWindowUrl = url.format({
@@ -795,6 +792,9 @@ function createWindow() {
           ? process.env.ELECTRON_START_URL + '#/stream-windowshare'
           : streamWindowShareWindowUrl
       );
+      streamWindowShareWindow.once('did-finish-load', () => {
+        streamWindowShareWindows.push(streamWindowShareWindow);
+      });
 
       streamWindowShareWindow.on('closed', () => {
         streamWindowShareWindow = undefined;
@@ -1003,6 +1003,15 @@ function createWindow() {
       (containerBounds.y + args.cursor.y) * scaleFactor
     );
     robot.scrollMouse(-1 * args.event.deltaX, -1 * args.event.deltaY);
+  });
+  // TODO: How do we get sourceInfo here?
+  ipcMain.on('profile-picture-click', async (event, args) => {
+    console.log(
+      'streamWindowShareWindows--------->',
+      streamWindowShareWindows,
+      args
+    );
+    // await bringToTop(args.sourceInfo);
   });
 
   ipcMain.on('emit-mousedown', async (event, args) => {
