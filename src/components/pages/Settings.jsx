@@ -602,7 +602,7 @@ const Settings = React.memo(() => {
           {activeSection === 'insights' && (
             <div>
               <p className="text-grey font-bold text-lg tracking-wide mt-2 mb-12">
-                Insights 123
+                Insights
               </p>
               <SettingsGraph></SettingsGraph>
             </div>
