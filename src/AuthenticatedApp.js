@@ -3,7 +3,7 @@ import React, { useEffect, useState, useContext } from 'react';
 
 import HomePage from './components/pages/HomePage';
 import TeamRegisterPage from './components/pages/Teams/TeamRegisterPage';
-import Settings from './components/pages/Settings';
+import { Settings } from './components/pages/Settings';
 
 import VideoCall from './components/windows/videocall/VideoCall';
 
@@ -38,7 +38,7 @@ const { remote, ipcRenderer } = window.require('electron');
 export default function App() {
   const { state, actions } = useOvermind();
   const { authData, setAuthData } = useContext(AuthContext);
-  const [ playReceiveCallSound ] = useSound(receiveCallSound);
+  const [playReceiveCallSound] = useSound(receiveCallSound);
   var currentWindow = remote.getCurrentWindow();
 
   useEffect(() => {
