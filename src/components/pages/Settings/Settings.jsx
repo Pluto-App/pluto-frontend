@@ -1,18 +1,29 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useContext } from 'react';
 
-import { useOvermind } from '../../overmind';
-import { useHistory } from 'react-router-dom';
-import ToastNotification from '../widgets/ToastNotification';
-import SettingsGraph from './SettingsGraph';
-import { supportedApps } from '../../utils/AppLogo';
+import {
+  StyledUserWrapper,
+  AvatarWrapper,
+  StyledHeaderWrapper,
+  StyledButton,
+  StyledStatsRow,
+} from './styles';
 
-import { AuthContext } from '../../context/AuthContext';
+import { SingleStatCard, Card } from './common';
+import { useOvermind } from '../../../overmind';
+import { useHistory } from 'react-router-dom';
+import ToastNotification from '../../widgets/ToastNotification';
+import SettingsGraph from '../SettingsGraph';
+import { supportedApps } from '../../../utils/AppLogo';
+
+import { AuthContext } from '../../../context/AuthContext';
+import { UserAvatar } from '../../common';
+import SettingAreaChart from '../../common/SettingAreaChart';
 
 const os = window.require('os');
 const { remote, ipcRenderer } = window.require('electron');
 
-const Settings = React.memo(() => {
+export const Settings = React.memo(() => {
   let history = useHistory();
   const supportedAppsList = supportedApps();
 
@@ -614,21 +625,42 @@ const Settings = React.memo(() => {
                 <div className="h-8 w-8 flex items-center justify-center overflow-hidden">
                   <img src={activeTeam.avatar} alt="" />
                 </div>
-                <div className="ml-3" style={{ alignSelf: 'flex-end' }}>
+                <StyledHeaderWrapper className="ml-3">
                   <p className="text-grey font-bold text-lg tracking-wide">
                     {activeTeam.name}
                   </p>
-                </div>
+                  <div
+                    className="w-full"
+                    style={{ width: '105px', display: 'inline-block' }}
+                  >
+                    <StyledButton
+                      type="button"
+                      style={{ fontSize: '14px', borderRadius: '8px' }}
+                      onClick={() => {
+                        setUserToRemove(currentUser);
+                        setConfirmLeaveTeam(true);
+                      }}
+                    >
+                      <i
+                        className="material-icons mr-2"
+                        style={{ fontSize: '14px' }}
+                      >
+                        person_remove
+                      </i>
+                      Leave Team
+                    </StyledButton>
+                  </div>
+                </StyledHeaderWrapper>
               </div>
 
               <p className="text-grey text-md tracking-wide mt-12 mb-8">
                 Team Members
               </p>
-
-              <div className="">
+              <div className="pin-b pb-4" style={{}}></div>
+              <StyledUserWrapper>
                 {activeTeamUsers &&
                   activeTeamUsers.map((user) => (
-                    <div
+                    <AvatarWrapper
                       key={user.id}
                       className="px-3 pt-2 pb-2 flex pointer settings-menu-item"
                       onMouseEnter={function () {
@@ -638,14 +670,15 @@ const Settings = React.memo(() => {
                         setHoverUser();
                       }}
                     >
-                      <div
+                      <UserAvatar user={user}></UserAvatar>
+                      {/* <div
                         className="flex items-center justify-center mr-3 overflow-hidden"
                         style={{ height: '30px', width: '30px' }}
                       >
                         <img src={user.avatar} alt="" />
                       </div>
 
-                      <div>{user.name}</div>
+                      <div>{user.name}</div> */}
 
                       {activeTeam.owner_id == user.id && (
                         <div
@@ -654,7 +687,7 @@ const Settings = React.memo(() => {
                             background: '#b59400',
                             fontSize: '12px',
                             borderRadius: '8px',
-                            padding: '5px',
+                            padding: '2px 6px',
                           }}
                         >
                           <span>Owner</span>
@@ -689,9 +722,9 @@ const Settings = React.memo(() => {
                             </button>
                           )}
                       </div>
-                    </div>
+                    </AvatarWrapper>
                   ))}
-              </div>
+              </StyledUserWrapper>
 
               {activeTeam.owner_id == currentUser.id ? (
                 <div>
@@ -786,32 +819,6 @@ const Settings = React.memo(() => {
                       background: '#484e52',
                     }}
                   ></div>
-
-                  <div className="pin-b pb-4" style={{}}>
-                    <div
-                      className="mt-4 w-full"
-                      style={{ width: '105px', display: 'inline-block' }}
-                    >
-                      <button
-                        className="w-full flex justify-center items-center bg-purple-700
-                                                text-white py-2 mt-2"
-                        type="button"
-                        style={{ fontSize: '14px', borderRadius: '8px' }}
-                        onClick={() => {
-                          setUserToRemove(currentUser);
-                          setConfirmLeaveTeam(true);
-                        }}
-                      >
-                        <i
-                          className="material-icons mr-2"
-                          style={{ fontSize: '14px' }}
-                        >
-                          person_remove
-                        </i>
-                        Leave Team
-                      </button>
-                    </div>
-                  </div>
                 </div>
               )}
 
@@ -988,6 +995,58 @@ const Settings = React.memo(() => {
                   </div>
                 </div>
               )}
+              <StyledStatsRow>
+                <Card
+                  title="Calls"
+                  style={{
+                    background: '#242424',
+                  }}
+                >
+                  <SingleStatCard
+                    icon="mic"
+                    value={10}
+                    label="Audio"
+                  ></SingleStatCard>
+                  <SingleStatCard
+                    icon="videocam"
+                    value={20}
+                    label="Video "
+                  ></SingleStatCard>
+                </Card>
+
+                <Card
+                  title="Screen Share"
+                  style={{
+                    background: '#242424',
+                  }}
+                >
+                  <SingleStatCard
+                    icon="screen_share"
+                    value={10}
+                    label="Screen Share"
+                  ></SingleStatCard>
+                  <SingleStatCard
+                    icon="branding_watermark"
+                    value={20}
+                    label="Multi-Window Share"
+                  ></SingleStatCard>
+                  <SingleStatCard
+                    icon="cast_connected"
+                    value={20}
+                    label="Remote Screen Session "
+                  ></SingleStatCard>
+                </Card>
+              </StyledStatsRow>
+              <Card
+                title="App Usage"
+                style={{
+                  background: '#242424',
+                  width: '75vw',
+                  height: '40vw',
+                }}
+              >
+                <SettingAreaChart></SettingAreaChart>
+              </Card>
             </div>
           )}
 
@@ -1050,5 +1109,3 @@ const Settings = React.memo(() => {
     </div>
   );
 });
-
-export default Settings;
