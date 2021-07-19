@@ -33,3 +33,7 @@ export const StyledButton = styled.button`
   align-items: center;
   width: 115px;
 `;
+
+export const StyledStatsRow = styled.div`
+  display: flex;
+`;

@@ -6,7 +6,10 @@ import {
   AvatarWrapper,
   StyledHeaderWrapper,
   StyledButton,
+  StyledStatsRow,
 } from './styles';
+
+import { SingleStatCard, Card } from './common';
 import { useOvermind } from '../../../overmind';
 import { useHistory } from 'react-router-dom';
 import ToastNotification from '../../widgets/ToastNotification';
@@ -15,6 +18,7 @@ import { supportedApps } from '../../../utils/AppLogo';
 
 import { AuthContext } from '../../../context/AuthContext';
 import { UserAvatar } from '../../common';
+import SettingAreaChart from '../../common/SettingAreaChart';
 
 const os = window.require('os');
 const { remote, ipcRenderer } = window.require('electron');
@@ -991,7 +995,58 @@ export const Settings = React.memo(() => {
                   </div>
                 </div>
               )}
-              <SettingsGraph></SettingsGraph>
+              <StyledStatsRow>
+                <Card
+                  title="Calls"
+                  style={{
+                    background: '#242424',
+                  }}
+                >
+                  <SingleStatCard
+                    icon="mic"
+                    value={10}
+                    label="Audio"
+                  ></SingleStatCard>
+                  <SingleStatCard
+                    icon="videocam"
+                    value={20}
+                    label="Video "
+                  ></SingleStatCard>
+                </Card>
+
+                <Card
+                  title="Screen Share"
+                  style={{
+                    background: '#242424',
+                  }}
+                >
+                  <SingleStatCard
+                    icon="screen_share"
+                    value={10}
+                    label="Screen Share"
+                  ></SingleStatCard>
+                  <SingleStatCard
+                    icon="branding_watermark"
+                    value={20}
+                    label="Multi-Window Share"
+                  ></SingleStatCard>
+                  <SingleStatCard
+                    icon="cast_connected"
+                    value={20}
+                    label="Remote Screen Session "
+                  ></SingleStatCard>
+                </Card>
+              </StyledStatsRow>
+              <Card
+                title="App Usage"
+                style={{
+                  background: '#242424',
+                  width: '75vw',
+                  height: '40vw',
+                }}
+              >
+                <SettingAreaChart></SettingAreaChart>
+              </Card>
             </div>
           )}
 
